@@ -1,6 +1,7 @@
 function (
-    strimzi_kafka_cluster_operator_installed=true,
-    hyperauth_image="tmaxcloudck/hyperauth:latest",
+    hyperauth_image_repo="tmaxcloudck"
+    hyperauth_image_name="hyperauth"
+    hyperauth_image_tag="latest",
     hyperauth_svc_type="Ingress",
     hyperauth_external_dns="hyperauth.172.22.6.18.nip.io",
     hyperauth_external_ip="172.22.6.8"
@@ -103,7 +104,7 @@ local svcType = if hyperauth_svc_type == "Ingress" then "ClusterIP" else hyperau
           "containers": [
             {
               "name": "hyperauth",
-              "image": hyperauth_image,
+              "image": std.join("", [hyperauth_image_repo, "/", hyperauth_image_name, ":", hyperauth_image_tag]),
               "args": [
                 "-c standalone-ha.xml",
                 "-Dkeycloak.profile.feature.upload_scripts=enabled",
