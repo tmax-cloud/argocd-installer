@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: hyperauth
+spec:
+  destination:
+    name: ''
+    namespace: hyperauth
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: manifest/hyperauth
+    repoURL: 'https://github.com/tmax-cloud/argocd-installer'
+    targetRevision: main
+    directory:
+      jsonnet:
+        tlas:
+          - name: hyperauth_image_repo
+            value: tmaxcloudck
+            code: true
+          - name: hyperauth_image_name
+            value: hyperauth
+            code: true
+          - name: hyperauth_image_tag
+            value: latest
+            code: true
+          - name: hyperauth_svc_type
+            value: Ingress
+            code: true
+          - name: hyperauth_external_dns
+            value: >-
+              hyperauth.a8e9df7fb87ba4e81b4a38e06187c6c1-820671877.eu-central-1.elb.amazonaws.com.nip.io
+            code: true
+  project: default
+  syncPolicy:
+    automated: null

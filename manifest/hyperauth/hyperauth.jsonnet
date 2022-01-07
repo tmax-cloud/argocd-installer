@@ -1,6 +1,6 @@
 function (
-    hyperauth_image_repo="tmaxcloudck"
-    hyperauth_image_name="hyperauth"
+    hyperauth_image_repo="tmaxcloudck",
+    hyperauth_image_name="hyperauth",
     hyperauth_image_tag="latest",
     hyperauth_svc_type="Ingress",
     hyperauth_external_dns="hyperauth.172.22.6.18.nip.io",
