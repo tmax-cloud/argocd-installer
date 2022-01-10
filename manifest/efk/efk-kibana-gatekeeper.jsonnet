@@ -22,7 +22,7 @@ function (
       "type": "LoadBalancer",
       "ports": [
         {
-          "port": "3000",
+          "port": 3000,
           "name": "gatekeeper",
         }
       ],
@@ -106,7 +106,7 @@ function (
                 {
                   "name": "secret",
                   "mountPath": "/etc/secrets",
-                  "readOnly": "true"
+                  "readOnly": true
                 }
               ]
             },
