@@ -5,7 +5,7 @@ metadata:
   namespace: kube-logging
 spec:
   secretName: kibana-secret
-  # isCA: false
+  isCA: false
   usages:
     - digital signature
     - key encipherment
@@ -17,4 +17,4 @@ spec:
   issuerRef:
     kind: ClusterIssuer
     group: cert-manager.io
-    name: tmaxcloud-issuer
+    name: ck-selfsigned-clusterissuer
