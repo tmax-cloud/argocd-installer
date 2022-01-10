@@ -1,6 +1,6 @@
 function (
-    kibana_client_secret="23077707-908e-4633-956d-5adcaed4caa7"
-    hyperauth_url="172.23.4.105"
+    kibana_client_secret="23077707-908e-4633-956d-5adcaed4caa7",
+    hyperauth_url="172.23.4.105",
     encryption_key="AgXa7xRcoClDEU0ZDSH4X0XhL5Qy2Z2j"
 )
 
