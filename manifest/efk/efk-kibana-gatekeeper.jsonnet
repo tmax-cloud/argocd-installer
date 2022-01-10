@@ -4,7 +4,6 @@ function (
     encryption_key="AgXa7xRcoClDEU0ZDSH4X0XhL5Qy2Z2j"
 )
 
-
 [
   {
     "apiVersion": "v1",
@@ -20,7 +19,7 @@ function (
        }
     },
     "spec": {
-      "type": "ClusterIP"
+      "type": "ClusterIP",
       "ports": [
         {
           "port": "443",
