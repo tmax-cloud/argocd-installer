@@ -39,10 +39,10 @@ spec:
         imagePullPolicy: Always
         args:
         - --client-id=kibana
-        - --client-secret={KIBANA_CLIENT_SECRET}
+        - --client-secret=23077707-908e-4633-956d-5adcaed4caa7
         - --listen=:3000
         - --upstream-url=http://127.0.0.1:5601
-        - --discovery-url=https://{HYPERAUTH_URL}/auth/realms/tmax
+        - --discovery-url=https://172.23.4.105/auth/realms/tmax
         - --secure-cookie=false
         - --skip-openid-provider-tls-verify=true
         - --enable-self-signed-tls=false
@@ -54,7 +54,7 @@ spec:
         - --enable-default-deny=true
         - --enable-refresh-tokens=true
         - --enable-metrics=true
-        - --encryption-key={ENCRYPTION_KEY}
+        - --encryption-key=AgXa7xRcoClDEU0ZDSH4X0XhL5Qy2Z2j
         - --resources=uri=/*|roles=kibana:kibana-manager
         - --verbose
         ports:
