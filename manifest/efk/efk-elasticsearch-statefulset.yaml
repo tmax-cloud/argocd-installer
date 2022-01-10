@@ -51,11 +51,11 @@ spec:
           privileged: true
         resources:
             limits:
-              cpu: 1000m
-              memory: 16000Mi
-            requests:
               cpu: 500m
-              memory: 8000Mi
+              memory: 3000Mi
+            requests:
+              cpu: 100m
+              memory: 100Mi
         ports:
         - containerPort: 9200
           name: rest
@@ -78,7 +78,7 @@ spec:
           - name: cluster.initial_master_nodes
             value: "es-cluster-0"
           - name: ES_JAVA_OPTS
-            value: "-Xms8g -Xmx8g"
+            value: "-Xms2g -Xmx2g"
       initContainers:
       - name: fix-permissions
         image: busybox:1.32.0
@@ -105,6 +105,7 @@ spec:
         app: elasticsearch
     spec:
       accessModes: [ "ReadWriteOnce" ]
+      storageClassName: nfs
       resources:
         requests:
           storage: 50Gi
