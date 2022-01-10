@@ -17,4 +17,4 @@ spec:
   issuerRef:
     kind: ClusterIssuer
     group: cert-manager.io
-    name: tmaxcloud-issuer
+    name: ck-selfsigned-clusterissuer
