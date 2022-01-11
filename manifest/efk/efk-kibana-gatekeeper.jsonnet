@@ -23,7 +23,7 @@ function (
       "ports": [
         {
           "port": 3000,
-          "name": "gatekeeper",
+          "name": "gatekeeper"
         }
       ],
       "selector": {
