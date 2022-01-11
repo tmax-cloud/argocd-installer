@@ -158,5 +158,32 @@ function (
     "data": {
       "kibana.yml": std.join("", ["server.name: kibana", "\nserver.host: '0'", "\nelasticsearch.hosts: [ 'http://elasticsearch:9200' ]", "\nelasticsearch.requestTimeout: '100000ms'"])
     }
+  },
+  {
+    "apiVersion": "cert-manager.io/v1",
+    "kind": "Certificate",
+    "metadata": {
+      "name": "kibana-cert",
+      "namespace": "kube-logging"
+    },
+    "spec": {
+      "secretName": "kibana-secret",
+      "isCA": false,
+      "usages": [
+        "digital signature",
+        "key encipherment",
+        "server auth",
+        "client auth"
+      ],
+      "dnsNames": [
+          "tmax-cloud",
+          "kibana.kube-logging.svc"
+      ],
+      "issuerRef": {
+        "kind": "ClusterIssuer",
+        "group": "cert-manager.io",
+        "name": custom_clusterissuer
+      }
+    }
   }
 ]
