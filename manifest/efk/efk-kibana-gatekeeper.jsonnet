@@ -22,7 +22,7 @@ function (
       "type": "LoadBalancer",
       "ports": [
         {
-          "port": "3000",
+          "port": 3000,
           "name": "gatekeeper",
         }
       ],
