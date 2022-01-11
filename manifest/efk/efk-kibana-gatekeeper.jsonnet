@@ -3,6 +3,7 @@ function (
     hyperauth_url="172.23.4.105",
     encryption_key="AgXa7xRcoClDEU0ZDSH4X0XhL5Qy2Z2j",
     custom_clusterissuer="tmaxcloud-issuer"
+    custom_domain_name="tmaxcloud.org"
 )
 
 [
@@ -20,11 +21,11 @@ function (
        }
     },
     "spec": {
-      "type": "LoadBalancer",
+      "type": "ClusterIP",
       "ports": [
         {
-          "port": 3000,
-          "name": "gatekeeper"
+          "port": 443,
+          "targetPort": 3000
         }
       ],
       "selector": {
@@ -184,6 +185,52 @@ function (
         "group": "cert-manager.io",
         "name": custom_clusterissuer
       }
+    }
+  },
+  {
+    "apiVersion": "networking.k8s.io/v1",
+    "kind": "Ingress",
+    "metadata": {
+      "name": "kibana",
+      "namespace": "kube-logging",
+      "labels": {
+        "ingress.tmaxcloud.org/name": "kibana"
+      },
+      "annotations": {
+        "traefik.ingress.kubernetes.io/router.entrypoints": "websecure",
+        "cert-manager.io/cluster-issuer": custom_clusterissuer
+      }
+    },
+    "spec": {
+      "ingressClassName": "tmax-cloud",
+      "rules": [
+        {
+          "host": std.join("", ["kibana.", custom_domain_name]),
+          "http": {
+            "paths": [
+              {
+                "backend": {
+                  "service": {
+                    "name": "kibana",
+                    "port": {
+                      "number": 443
+                    }
+                  }
+                },
+                "path": "/",
+                "pathType": "Prefix"
+              }
+            ]
+          }
+        }
+      ],
+      "tls": [
+        {
+          "hosts": [
+            std.join("", ["kibana.", custom_domain_name])
+          ]
+        }
+      ]
     }
   }
 ]
