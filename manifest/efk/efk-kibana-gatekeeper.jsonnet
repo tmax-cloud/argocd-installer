@@ -136,8 +136,9 @@ function (
               ],
               "volumeMounts": [
                 {
-                  "mountPath": "/usr/share/kibana/config/",
+                  "mountPath": "/usr/share/kibana/config/kibana.yml",
                   "name": "config",
+                  "subPath": "kibana.yml"
                 }
               ]
             }
@@ -154,7 +155,7 @@ function (
       "namespace": "kube-logging"
     },
     "data": {
-      "kibana.yaml": std.join("", ["server.name: kibana", "\nserver.host: '0'", "\nelasticsearch.hosts: [ 'http://elasticsearch:9200' ]", "\nelasticsearch.requestTimeout: '100000ms'"])
+      "kibana.yml": std.join("", ["server.name: kibana", "\nserver.host: '0'", "\nelasticsearch.hosts: [ 'http://elasticsearch:9200' ]", "\nelasticsearch.requestTimeout: '100000ms'"])
     }
   }
 ]
