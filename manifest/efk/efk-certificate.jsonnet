@@ -1,5 +1,5 @@
 function (
-    clusterissuer="tmaxcloud-issuer"
+    custom_clusterissuer="tmaxcloud-issuer"
 )
 
 [
@@ -12,7 +12,7 @@ function (
     },
     "spec": {
       "secretName": "kibana-secret",
-      "isCA": "false",
+      "isCA": false,
       "usages": [
         {
           "digital signature",
@@ -30,7 +30,7 @@ function (
       "issuerRef": {
         "kind": "ClusterIssuer",
         "group": "cert-manager.io",
-        "name": clusterissuer
+        "name": custom_clusterissuer
       }
     }
   }
