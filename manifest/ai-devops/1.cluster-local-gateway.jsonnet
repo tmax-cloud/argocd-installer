@@ -399,7 +399,7 @@ function (
                     "value": "kubernetes://api/apps/v1/namespaces/istio-system/deployments/cluster-local-gateway"
                 }
                 ],
-                "image": std.join("", [istio_proxyv_image_repo, "/", istio_proxyv_image_name, ":", istio_proxyv_tag]),
+                "image": std.join("", [istio_proxyv_image_repo, "/", istio_proxyv_image_name, ":", istio_proxyv_image_tag]),
                 "imagePullPolicy": "ifNotPresent",
                 "name": "istio-proxy",
                 "ports": [
