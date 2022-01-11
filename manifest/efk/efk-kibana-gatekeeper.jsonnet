@@ -1,9 +1,9 @@
 function (
     kibana_client_id="kibana",
-    kibana_client_secret="23077707-908e-4633-956d-5adcaed4caa7",
-    hyperauth_url="172.23.4.105",
+    kibana_client_secret="client_secret",
+    hyperauth_url="hyperauth_url",
     hyperauth_realm="tmax",
-    custom_domain_name="tmaxcloud.org",
+    custom_domain_name="domain_name",
     encryption_key="AgXa7xRcoClDEU0ZDSH4X0XhL5Qy2Z2j",
     custom_clusterissuer="tmaxcloud-issuer"
 )
