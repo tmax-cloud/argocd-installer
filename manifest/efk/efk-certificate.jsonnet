@@ -14,18 +14,14 @@ function (
       "secretName": "kibana-secret",
       "isCA": false,
       "usages": [
-        {
-          "digital signature",
-          "key encipherment",
-          "server auth",
-          "client auth"
-        }
+        "digital signature",
+        "key encipherment",
+        "server auth",
+        "client auth"
       ],
       "dnsNames": [
-        {
           "tmax-cloud",
           "kibana.kube-logging.svc"
-        }
       ],
       "issuerRef": {
         "kind": "ClusterIssuer",
