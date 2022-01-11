@@ -136,9 +136,8 @@ function (
               ],
               "volumeMounts": [
                 {
-                  "mountPath": "/usr/share/kibana/config/kibana.yml",
+                  "mountPath": "/usr/share/kibana/config/",
                   "name": "config",
-                  "subPath": "kibana.yml"
                 }
               ]
             }
