@@ -1,6 +1,6 @@
 function (
-    ai_devops_namespace="kubeflow"
-    istio_namespace="istio-system"
+    ai_devops_namespace="kubeflow",
+    istio_namespace="istio-system",
     istio_proxyv_image_repo="docker.io/istio",
     istio_proxyv_image_name="proxyv2",
     istio_proxyv_image_tag="1.3.1"
