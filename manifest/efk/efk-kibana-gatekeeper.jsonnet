@@ -1,9 +1,11 @@
 function (
+    kibana_client_id="kibana",
     kibana_client_secret="23077707-908e-4633-956d-5adcaed4caa7",
     hyperauth_url="172.23.4.105",
+    hyperauth_realm="tmax",
+    custom_domain_name="tmaxcloud.org",
     encryption_key="AgXa7xRcoClDEU0ZDSH4X0XhL5Qy2Z2j",
     custom_clusterissuer="tmaxcloud-issuer"
-    custom_domain_name="tmaxcloud.org"
 )
 
 [
@@ -78,11 +80,11 @@ function (
               "image": "quay.io/keycloak/keycloak-gatekeeper:10.0.0",
               "imagePullPolicy": "Always",
               "args": [
-                "--client-id=kibana",
+                std.join("", ["--client-id=", kibana_client_id]),
                 std.join("", ["--client-secret=", kibana_client_secret]),
                 "--listen=:3000",
                 "--upstream-url=http://127.0.0.1:5601",
-                std.join("", ["--discovery-url=https://", hyperauth_url, "/auth/realms/tmax"]),
+                std.join("", ["--discovery-url=https://", hyperauth_url, "/auth/realms/", hyperauth_realm]),
                 "--secure-cookie=false",
                 "--skip-openid-provider-tls-verify=true",
                 "--enable-self-signed-tls=false",
