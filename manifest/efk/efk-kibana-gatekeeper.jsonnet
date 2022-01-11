@@ -106,7 +106,7 @@ function (
                 {
                   "name": "secret",
                   "mountPath": "/etc/secrets",
-                  "readOnly": "true"
+                  "readOnly": true
                 }
               ]
             },
