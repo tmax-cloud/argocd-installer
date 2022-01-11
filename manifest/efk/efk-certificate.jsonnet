@@ -7,7 +7,7 @@ function (
     "apiVersion": "cert-manager.io/v1",
     "kind": "Certificate",
     "metadata": {
-      "name": kibana-cert",
+      "name": "kibana-cert",
       "namespace": "kube-logging"
     },
     "spec": {
