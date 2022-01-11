@@ -12,7 +12,7 @@ function (
     },
     "spec": {
       "secretName": "kibana-secret",
-      "isCA": false,
+      "isCA": "false",
       "usages": [
         {
           "digital signature",
