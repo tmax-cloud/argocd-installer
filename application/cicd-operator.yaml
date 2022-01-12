@@ -1,0 +1,8 @@
+project: default
+source:
+  repoURL: 'https://github.com/tmax-cloud/argocd-installer'
+  path: manifest/cicd-oprerator
+  targetRevision: HEAD
+destination:
+  server: 'https://kubernetes.default.svc'
+  namespace: cicd-system
