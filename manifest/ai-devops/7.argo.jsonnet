@@ -39,6 +39,7 @@ function (
     triton_image_repo="nvcr.io/nvidia/tritonserver",
     triton_image_tag="20.08-py3"
 )
+[
 {
   "apiVersion": "apiextensions.k8s.io/v1beta1",
   "kind": "CustomResourceDefinition",
@@ -1098,3 +1099,4 @@ function (
     ]
   }
 }
+]
