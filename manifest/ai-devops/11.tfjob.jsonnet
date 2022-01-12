@@ -14198,7 +14198,7 @@ function (
         }
         ],
         "descriptor": {
-        "description": "Tf-job-crds contains the \"TFJob\" custom resource definition.",
+        "description": "Tf-job-crds contains the TFJob custom resource definition.",
         "keywords": [
             "tfjob",
             "tf-operator",
@@ -14273,7 +14273,7 @@ function (
         }
         ],
         "descriptor": {
-        "description": "Tf-operator allows users to create and manage the \"TFJob\" custom resource.",
+        "description": "Tf-operator allows users to create and manage the TFJob custom resource.",
         "keywords": [
             "tfjob",
             "tf-operator",
