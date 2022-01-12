@@ -7,7 +7,7 @@ function (
 local svcType = if kibana_svc_type == "Ingress" then "ClusterIP" else kibana_svc_type;
 
 [
- {
+  {
     "apiVersion": "v1",
     "kind": "Service",
     "metadata": {
@@ -22,13 +22,11 @@ local svcType = if kibana_svc_type == "Ingress" then "ClusterIP" else kibana_svc
     },
     "spec": {
       "type": svcType,
-      "ports": if kibana_svc_type == "ClusterIP" then [
-        {
+      "ports": [
+        if kibana_svc_type == "ClusterIP" then {
           "port": 443,
           "targetPort": 3000
-        }
-      ] else [
-        {
+        } else {
           "port": 3000,
           "name": "gatekeeper"
         }
