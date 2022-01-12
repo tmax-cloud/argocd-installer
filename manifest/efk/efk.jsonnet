@@ -6,6 +6,7 @@ function (
     es_volume_size="50Gi",
     kibana_image_repo="docker.elastic.co/kibana/kibana",
     kibana_image_tag="7.2.0",
+    kibana_svc_type="ClusterIP",
     gatekeeper_image_repo="quay.io/keycloak/keycloak-gatekeeper",
     gatekeeper_image_tag="10.0.0",
     kibana_client_id="kibana",
@@ -299,6 +300,81 @@ function (
     },
     "data": {
       "kibana.yml": std.join("", ["server.name: kibana", "\nserver.host: '0'", "\nelasticsearch.hosts: [ 'http://elasticsearch:9200' ]", "\nelasticsearch.requestTimeout: '100000ms'"])
+    }
+  },
+  {
+    "apiVersion": "v1",
+    "kind": "Service",
+    "metadata": {
+       "name": "kibana",
+       "namespace": "kube-logging",
+       "labels": {
+          "app": "kibana"
+       },
+       "annotations": {
+          "traefik.ingress.kubernetes.io/service.serverstransport": "tmaxcloud@file"
+       }
+    },
+    "spec": {
+      "type": kibana_svc_type,
+      "ports": [
+        if kibana_svc_type == "ClusterIP" then {
+          "port": 443,
+          "targetPort": 3000
+        } else {
+          "port": 3000,
+          "name": "gatekeeper"
+        }
+      ],
+      "selector": {
+        "app": "kibana"
+      }
+    }
+  },
+  {
+    "apiVersion": "networking.k8s.io/v1",
+    "kind": "Ingress",
+    "metadata": {
+      "name": "kibana",
+      "namespace": "kube-logging",
+      "labels": {
+        "ingress.tmaxcloud.org/name": "kibana"
+      },
+      "annotations": {
+        "traefik.ingress.kubernetes.io/router.entrypoints": "websecure",
+        "cert-manager.io/cluster-issuer": custom_clusterissuer
+      }
+    },
+    "spec": {
+      "ingressClassName": "tmax-cloud",
+      "rules": [
+        {
+          "host": std.join("", ["kibana.", custom_domain_name]),
+          "http": {
+            "paths": [
+              {
+                "backend": {
+                  "service": {
+                    "name": "kibana",
+                    "port": {
+                      "number": 443
+                    }
+                  }
+                },
+                "path": "/",
+                "pathType": "Prefix"
+              }
+            ]
+          }
+        }
+      ],
+      "tls": [
+        {
+          "hosts": [
+            std.join("", ["kibana.", custom_domain_name])
+          ]
+        }
+      ]
     }
   },
   {
