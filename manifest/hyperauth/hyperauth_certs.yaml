@@ -6,7 +6,6 @@ metadata:
 spec:
   secretName: hyperauth-kafka-jks
   commonName: hyperauth
-  isCA: false
   keySize: 2048
   duration: 8760h0m0s # 360d=1y
   renewBefore: 720h0m0s # 30d
@@ -42,7 +41,6 @@ spec:
     - "*.kafka-kafka-brokers.hyperauth.svc"
     - "*.hyperauth"
     - tmax-cloud
-  isCA: false
   keySize: 2048
   duration: 8760h0m0s # 360d=1y
   renewBefore: 720h0m0s # 30d
