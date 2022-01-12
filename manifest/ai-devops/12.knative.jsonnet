@@ -25,19 +25,7 @@ function (
     kfserving_gcr_image_repo="gcr.io/kfserving",
     kfserving_docker_image_repo="docker.io/kfserving",
     kube_rbac_proxy_image_repo="gcr.io/kubebuilder/kube-rbac-proxy",
-    kube_rbac_proxy_image_tag="v0.4.0",
-    tensorflow_image_repo="docker.io/tensorflow/serving",
-    tensorflow_image_tag="1.14.0",
-    tensorflow_image_gpu_tag="1.14.0-gpu",
-    onnx_image_repo="mcr.microsoft.com/onnxruntime/server",
-    onnx_image_tag="v1.0.0",
-    mlserver_image_repo="docker.io/seldonio/mlserver",
-    mlserver_image_tag="0.2.1",
-    pytorch_server_image_gpu_tag="v0.5.1-gpu",
-    torchserve_kfs_image_tag="0.3.0",
-    torchserve_kfs_image_gpu_tag="0.3.0-gpu",
-    triton_image_repo="nvcr.io/nvidia/tritonserver",
-    triton_image_tag="20.08-py3"
+    kube_rbac_proxy_image_tag="v0.4.0"    
 )
 [    
     {
