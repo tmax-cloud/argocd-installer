@@ -1,7 +1,11 @@
 function (
+    kibana_image_repo="docker.elastic.co/kibana/kibana",
+    kibana_image_tag="7.2.0",
+    gatekeeper_image_repo="quay.io/keycloak/keycloak-gatekeeper",
+    gatekeeper_image_tag="10.0.0",
     kibana_client_id="kibana",
-    kibana_client_secret="client_secret",
-    hyperauth_url="hyperauth_url",
+    kibana_client_secret="23077707-908e-4633-956d-5adcaed4caa7",
+    hyperauth_url="172.23.4.105",
     hyperauth_realm="tmax",
     custom_domain_name="domain_name",
     encryption_key="AgXa7xRcoClDEU0ZDSH4X0XhL5Qy2Z2j",
@@ -77,7 +81,7 @@ function (
           "containers": [
             {
               "name": "gatekeeper",
-              "image": "quay.io/keycloak/keycloak-gatekeeper:10.0.0",
+              "image": std.join("",[gatekeeper_image_repo, ":", gatekeeper_image_tag])
               "imagePullPolicy": "Always",
               "args": [
                 std.join("", ["--client-id=", kibana_client_id]),
@@ -116,7 +120,7 @@ function (
             },
             {
               "name": "kibana",
-              "image": "docker.elastic.co/kibana/kibana:7.10.2",
+              "image": std.join("",[kibana_image_repo, ":", kibana_image_tag])
               "resources": {
                 "limits": {
                   "cpu": "500m",
