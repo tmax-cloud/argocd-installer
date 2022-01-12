@@ -45,7 +45,7 @@ spec:
       serviceAccount: efk-service-account
       containers:
       - name: elasticsearch
-        image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.2.0
         securityContext:
           allowPrivilegeEscalation: true
           privileged: true
