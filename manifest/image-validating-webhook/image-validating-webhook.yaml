@@ -1,0 +1,342 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: registry-system
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.4.1
+  creationTimestamp: null
+  name: clusterregistrysecuritypolicies.tmax.io
+spec:
+  group: tmax.io
+  names:
+    kind: ClusterRegistrySecurityPolicy
+    listKind: ClusterRegistrySecurityPolicyList
+    plural: clusterregistrysecuritypolicies
+    shortNames:
+      - crsp
+    singular: clusterregistrysecuritypolicy
+  scope: Cluster
+  versions:
+    - name: v1
+      schema:
+        openAPIV3Schema:
+          description: ClusterRegistrySecurityPolicy contains the list of valid registry
+            in a cluster
+          properties:
+            apiVersion:
+              description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+              type: string
+            kind:
+              description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+              type: string
+            metadata:
+              type: object
+            spec:
+              description: ClusterRegistrySecurityPolicySpec is a spec of ClusterRegistrySecurityPolicy
+              properties:
+                registries:
+                  description: Registries are the list of registries allowed in the
+                    cluster
+                  items:
+                    description: RegistrySpec is a spec of Registries
+                    properties:
+                      notary:
+                        description: Notary is URL of registry's notary server
+                        type: string
+                      registry:
+                        description: Registry is URL of target registry
+                        type: string
+                      signcheck:
+                        description: SignCheck is a flag to decide to check sign data
+                          or not. If it is set false, sign check is skipped
+                        type: boolean
+                    required:
+                      - registry
+                      - signcheck
+                    type: object
+                  type: array
+              required:
+                - registries
+              type: object
+          required:
+            - spec
+          type: object
+      served: true
+      storage: true
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.4.1
+  creationTimestamp: null
+  name: registrysecuritypolicies.tmax.io
+spec:
+  group: tmax.io
+  names:
+    kind: RegistrySecurityPolicy
+    listKind: RegistrySecurityPolicyList
+    plural: registrysecuritypolicies
+    shortNames:
+      - rsp
+    singular: registrysecuritypolicy
+  scope: Namespaced
+  versions:
+    - name: v1
+      schema:
+        openAPIV3Schema:
+          description: RegistrySecurityPolicy contains the list of valid registry in
+            a namespace
+          properties:
+            apiVersion:
+              description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+              type: string
+            kind:
+              description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+              type: string
+            metadata:
+              type: object
+            spec:
+              description: RegistrySecurityPolicySpec is a spec of RegistrySecurityPolicy
+              properties:
+                registries:
+                  description: Registries are the list of registries allowed in the
+                    namespace
+                  items:
+                    description: RegistrySpec is a spec of Registries
+                    properties:
+                      notary:
+                        description: Notary is URL of registry's notary server
+                        type: string
+                      registry:
+                        description: Registry is URL of target registry
+                        type: string
+                      signcheck:
+                        description: SignCheck is a flag to decide to check sign data
+                          or not. If it is set false, sign check is skipped
+                        type: boolean
+                    required:
+                      - registry
+                      - signcheck
+                    type: object
+                  type: array
+              required:
+                - registries
+              type: object
+          required:
+            - spec
+          type: object
+      served: true
+      storage: true
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: image-validation-webhook
+  namespace: registry-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: image-validation-webhook-role
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - pods/exec
+      - pods
+      - configmaps
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - tmax.io
+    resources:
+      - registries
+      - registries/status
+      - registrysecuritypolicies
+      - clusterregistrysecuritypolicies
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    verbs:
+      - get
+      - list
+  - apiGroups:
+      - "admissionregistration.k8s.io"
+    resources:
+      - mutatingwebhookconfigurations
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: image-validation-webhook-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: image-validation-webhook-role
+subjects:
+  - kind: ServiceAccount
+    name: image-validation-webhook
+    namespace: registry-system
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: image-validation-webhook-whitelist
+  namespace: registry-system
+data:
+  whitelist-images: |-
+    tmaxcloudck/image-validation-webhook
+    registry:2.7.1
+    tmaxcloudck/notary_mysql:0.6.2-rc2
+    tmaxcloudck/notary_server:0.6.2-rc1
+    tmaxcloudck/notary_signer:0.6.2-rc1
+  whitelist-namespaces: |-
+    capa-system
+    capi-kubeadm-bootstrap-system
+    capi-kubeadm-control-plane-system
+    capi-system
+    capi-webhook-system
+    catalog
+    ceph-csi
+    cert-manager
+    cluster-tsb-ns
+    console-system
+    default
+    hypercloud5-system
+    ingress-nginx
+    ingress-nginx-shared
+    istio-system
+    istio-test
+    kube-federation-system
+    kube-logging
+    kube-node-lease
+    kube-public
+    kube-system
+    metallb-system
+    monitoring
+    registry-system
+    template
+    tsb-ns
+    tsb-test
+    olm
+    operators
+    tekton-pipelines
+    scheduled-scaler-operator-system
+    cicd-system
+    tfapplyclaim
+    hyperauth
+    gitlab-system
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: image-validation-admission
+  namespace: registry-system
+  labels:
+    name: image-validation-admission
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: image-validation-admission
+  template:
+    metadata:
+      labels:
+        app: image-validation-admission
+    spec:
+      containers:
+        - name: webhook
+          image: tmaxcloudck/image-validation-webhook:v5.0.3
+          imagePullPolicy: Always
+      serviceAccountName: image-validation-webhook
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: image-validation-admission-svc
+  namespace: registry-system
+  labels:
+    name: image-validation-admission
+spec:
+  ports:
+    - name: webhook
+      port: 443
+      targetPort: 8443
+  selector:
+    app: image-validation-admission
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: image-validation-admission
+  namespace: registry-system
+webhooks:
+  - name: image-validation-admission.tmax-cloud.github.com
+    admissionReviewVersions:
+      - v1beta1
+    clientConfig:
+      service:
+        name: image-validation-admission-svc
+        namespace: registry-system
+        port: 443
+        path: "/validate"
+      caBundle: ""
+    sideEffects: None
+    rules:
+      - operations: ["CREATE"]
+        apiGroups: ["*"]
+        apiVersions: ["*"]
+        resources:
+          - "pods"
+    objectSelector:
+      matchExpressions:
+        - key: app
+          operator: NotIn
+          values:
+            - image-validation-admission
+    failurePolicy: Fail
+    matchPolicy: Equivalent

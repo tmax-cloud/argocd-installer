@@ -1,0 +1,1188 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: template
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cluster-tsb-ns
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tsb-ns
+
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.3.0
+  creationTimestamp: null
+  name: clustertemplates.tmax.io
+spec:
+  group: tmax.io
+  names:
+    kind: ClusterTemplate
+    listKind: ClusterTemplateList
+    plural: clustertemplates
+    singular: clustertemplate
+  scope: Cluster
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      description: ClusterTemplate is the Schema for the clustertemplates API
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+          type: string
+        categories:
+          description: Categories for arranging templates by similarity
+          items:
+            type: string
+          type: array
+        imageUrl:
+          description: An image url to be displayed with your template in the web
+            console.
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+          type: string
+        labels:
+          additionalProperties:
+            type: string
+          description: Templates can include a set of labels. These labels will be
+            added to each object created when the template is instantiated. Defining
+            a label in this way makes it easy for users to find and manage all the
+            objects created from a particular template.
+          type: object
+        longDescription:
+          description: Additional template description.
+          type: string
+        markdownDescription:
+          description: Markdown format template description.
+          type: string
+        message:
+          description: An instructional message that is displayed when this template
+            is instantiated. This field should inform the user how to use the newly
+            created resources. Parameter substitution is performed on the message
+            before being displayed so that generated credentials and other parameters
+            can be included in the output. Include links to any next-steps documentation
+            that users should follow.
+          type: string
+        metadata:
+          type: object
+        objectKinds:
+          description: The kind list of objects that will be created by the template.
+            Populated by the system. Read-only.
+          items:
+            type: string
+          type: array
+        objects:
+          description: Objects can be any valid API object, such as a IntegrationConfig,
+            Deployment, Service, etc. The object will be created exactly as defined
+            here, with any parameter values substituted in prior to creation. The
+            definition of these objects can reference parameters defined earlier.
+          items:
+            type: object
+          type: array
+        parameters:
+          description: Parameters allow a value to be supplied by the user or generated
+            when the template is instantiated. Then, that value is substituted wherever
+            the parameter is referenced. References can be defined in any field in
+            the objects list field.
+          items:
+            properties:
+              description:
+                description: A description of the parameter. Provide more detailed
+                  information for the purpose of the parameter, including any constraints
+                  on the expected value. Descriptions should use complete sentences
+                  to follow the console’s text standards. Don’t make this a duplicate
+                  of the display name.
+                type: string
+              displayName:
+                description: The user-friendly name for the parameter. This will be
+                  displayed to users.
+                type: string
+              name:
+                description: The name of the parameter. This value is used to reference
+                  the parameter within the template.
+                type: string
+              regex:
+                description: Set the "regex" value for the parameter value. Given
+                  "regex" is used to validate parameter value from template instance.
+                type: string
+              required:
+                description: Indicates this parameter is required, meaning the user
+                  cannot override it with an empty value. If the parameter does not
+                  provide a default or generated value, the user must supply a value.
+                type: boolean
+              value:
+                anyOf:
+                - type: integer
+                - type: string
+                description: A default value for the parameter which will be used
+                  if the user does not override the value when instantiating the template.
+                  Avoid using default values for things like passwords, instead use
+                  generated parameters in combination with Secrets.
+                x-kubernetes-int-or-string: true
+              valueType:
+                description: Set the data type of the parameter. You can specify string
+                  and number for a string or integer type. If not specified, it defaults
+                  to string.
+                enum:
+                - string
+                - number
+                type: string
+            required:
+            - name
+            type: object
+          type: array
+        plans:
+          description: Service plan information to be used in the service catalog.
+          items:
+            properties:
+              bindable:
+                description: Specifies whether Service Instances of the Service Plan
+                  can be bound to applications.
+                type: boolean
+              description:
+                description: A short description of the Service Plan. MUST be a non-empty
+                  string.
+                type: string
+              free:
+                description: When false, Service Instances of this Service Plan have
+                  a cost. The default is true.
+                type: boolean
+              id:
+                description: An identifier used to correlate this Service Plan in
+                  future requests to the Service Broker. Populated by the system.
+                type: string
+              maintenance_info:
+                description: Maintenance information for a Service Instance which
+                  is provisioned using the Service Plan.
+                properties:
+                  description:
+                    type: string
+                  version:
+                    type: string
+                required:
+                - version
+                type: object
+              maximum_polling_duration:
+                description: A duration, in seconds, that the Platform SHOULD use
+                  as the Service's maximum polling duration.
+                type: integer
+              metadata:
+                description: An opaque object of metadata for a Service Plan. It is
+                  expected that Platforms will treat this as a blob. Note that there
+                  are conventions in existing Service Brokers and Platforms for fields
+                  that aid in the display of catalog data.
+                properties:
+                  bullets:
+                    items:
+                      type: string
+                    type: array
+                  costs:
+                    properties:
+                      amount:
+                        type: integer
+                      unit:
+                        type: string
+                    required:
+                    - amount
+                    - unit
+                    type: object
+                  displayName:
+                    type: string
+                type: object
+              name:
+                description: The name of the Service Plan. MUST be unique within the
+                  Service Class. MUST be a non-empty string. Using a CLI-friendly
+                  name is RECOMMENDED.
+                type: string
+              plan_updateable:
+                description: Whether the Plan supports upgrade/downgrade/sidegrade
+                  to another version.
+                type: boolean
+              schemas:
+                description: Schema definitions for Service Instances and Service
+                  Bindings for the Service Plan.
+                properties:
+                  service_binding:
+                    properties:
+                      create:
+                        properties:
+                          parameters:
+                            additionalProperties:
+                              anyOf:
+                              - type: integer
+                              - type: string
+                              x-kubernetes-int-or-string: true
+                            type: object
+                        type: object
+                    type: object
+                  service_instance:
+                    properties:
+                      create:
+                        properties:
+                          parameters:
+                            additionalProperties:
+                              anyOf:
+                              - type: integer
+                              - type: string
+                              x-kubernetes-int-or-string: true
+                            type: object
+                        type: object
+                      update:
+                        properties:
+                          parameters:
+                            additionalProperties:
+                              anyOf:
+                              - type: integer
+                              - type: string
+                              x-kubernetes-int-or-string: true
+                            type: object
+                        type: object
+                    type: object
+                type: object
+            required:
+            - name
+            type: object
+            x-kubernetes-preserve-unknown-fields: true
+          type: array
+        provider:
+          description: The name of the person or organization providing the template.
+          type: string
+        recommend:
+          description: Recommend specifies whether the template is recommended or
+            not.
+          type: boolean
+        shortDescription:
+          description: A description of the template. Include enough detail that the
+            user will understand what is being deployed and any caveats they need
+            to know before deploying. This will be displayed by the service catalog.
+          type: string
+        status:
+          description: TemplateStatus defines the observed state of Template
+          properties:
+            message:
+              description: Message indicates the message for the state of the template
+              type: string
+            reason:
+              description: Reason indicates the reason for the state of the template
+              type: string
+            status:
+              description: Status indicates the status of the template.
+              type: string
+          type: object
+        tags:
+          description: Tags to be associated with the template for searching and grouping.
+            Add tags that will include it into one of the provided catalog categories.
+          items:
+            type: string
+          type: array
+        urlDescription:
+          description: A URL referencing further documentation for the template.
+          type: string
+      required:
+      - objects
+      type: object
+  version: v1
+  versions:
+  - name: v1
+    served: true
+    storage: true
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
+
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.3.0
+  creationTimestamp: null
+  name: templates.tmax.io
+spec:
+  group: tmax.io
+  names:
+    kind: Template
+    listKind: TemplateList
+    plural: templates
+    singular: template
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      description: Template is the Schema for the templates API
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+          type: string
+        categories:
+          description: Categories for arranging templates by similarity
+          items:
+            type: string
+          type: array
+        imageUrl:
+          description: An image url to be displayed with your template in the web
+            console.
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+          type: string
+        labels:
+          additionalProperties:
+            type: string
+          description: Templates can include a set of labels. These labels will be
+            added to each object created when the template is instantiated. Defining
+            a label in this way makes it easy for users to find and manage all the
+            objects created from a particular template.
+          type: object
+        longDescription:
+          description: Additional template description.
+          type: string
+        markdownDescription:
+          description: Markdown format template description.
+          type: string
+        message:
+          description: An instructional message that is displayed when this template
+            is instantiated. This field should inform the user how to use the newly
+            created resources. Parameter substitution is performed on the message
+            before being displayed so that generated credentials and other parameters
+            can be included in the output. Include links to any next-steps documentation
+            that users should follow.
+          type: string
+        metadata:
+          type: object
+        objectKinds:
+          description: The kind list of objects that will be created by the template.
+            Populated by the system. Read-only.
+          items:
+            type: string
+          type: array
+        objects:
+          description: Objects can be any valid API object, such as a IntegrationConfig,
+            Deployment, Service, etc. The object will be created exactly as defined
+            here, with any parameter values substituted in prior to creation. The
+            definition of these objects can reference parameters defined earlier.
+          items:
+            type: object
+          type: array
+        parameters:
+          description: Parameters allow a value to be supplied by the user or generated
+            when the template is instantiated. Then, that value is substituted wherever
+            the parameter is referenced. References can be defined in any field in
+            the objects list field.
+          items:
+            properties:
+              description:
+                description: A description of the parameter. Provide more detailed
+                  information for the purpose of the parameter, including any constraints
+                  on the expected value. Descriptions should use complete sentences
+                  to follow the console’s text standards. Don’t make this a duplicate
+                  of the display name.
+                type: string
+              displayName:
+                description: The user-friendly name for the parameter. This will be
+                  displayed to users.
+                type: string
+              name:
+                description: The name of the parameter. This value is used to reference
+                  the parameter within the template.
+                type: string
+              regex:
+                description: Set the "regex" value for the parameter value. Given
+                  "regex" is used to validate parameter value from template instance.
+                type: string
+              required:
+                description: Indicates this parameter is required, meaning the user
+                  cannot override it with an empty value. If the parameter does not
+                  provide a default or generated value, the user must supply a value.
+                type: boolean
+              value:
+                anyOf:
+                - type: integer
+                - type: string
+                description: A default value for the parameter which will be used
+                  if the user does not override the value when instantiating the template.
+                  Avoid using default values for things like passwords, instead use
+                  generated parameters in combination with Secrets.
+                x-kubernetes-int-or-string: true
+              valueType:
+                description: Set the data type of the parameter. You can specify string
+                  and number for a string or integer type. If not specified, it defaults
+                  to string.
+                enum:
+                - string
+                - number
+                type: string
+            required:
+            - name
+            type: object
+          type: array
+        plans:
+          description: Service plan information to be used in the service catalog.
+          items:
+            properties:
+              bindable:
+                description: Specifies whether Service Instances of the Service Plan
+                  can be bound to applications.
+                type: boolean
+              description:
+                description: A short description of the Service Plan. MUST be a non-empty
+                  string.
+                type: string
+              free:
+                description: When false, Service Instances of this Service Plan have
+                  a cost. The default is true.
+                type: boolean
+              id:
+                description: An identifier used to correlate this Service Plan in
+                  future requests to the Service Broker. Populated by the system.
+                type: string
+              maintenance_info:
+                description: Maintenance information for a Service Instance which
+                  is provisioned using the Service Plan.
+                properties:
+                  description:
+                    type: string
+                  version:
+                    type: string
+                required:
+                - version
+                type: object
+              maximum_polling_duration:
+                description: A duration, in seconds, that the Platform SHOULD use
+                  as the Service's maximum polling duration.
+                type: integer
+              metadata:
+                description: An opaque object of metadata for a Service Plan. It is
+                  expected that Platforms will treat this as a blob. Note that there
+                  are conventions in existing Service Brokers and Platforms for fields
+                  that aid in the display of catalog data.
+                properties:
+                  bullets:
+                    items:
+                      type: string
+                    type: array
+                  costs:
+                    properties:
+                      amount:
+                        type: integer
+                      unit:
+                        type: string
+                    required:
+                    - amount
+                    - unit
+                    type: object
+                  displayName:
+                    type: string
+                type: object
+              name:
+                description: The name of the Service Plan. MUST be unique within the
+                  Service Class. MUST be a non-empty string. Using a CLI-friendly
+                  name is RECOMMENDED.
+                type: string
+              plan_updateable:
+                description: Whether the Plan supports upgrade/downgrade/sidegrade
+                  to another version.
+                type: boolean
+              schemas:
+                description: Schema definitions for Service Instances and Service
+                  Bindings for the Service Plan.
+                properties:
+                  service_binding:
+                    properties:
+                      create:
+                        properties:
+                          parameters:
+                            additionalProperties:
+                              anyOf:
+                              - type: integer
+                              - type: string
+                              x-kubernetes-int-or-string: true
+                            type: object
+                        type: object
+                    type: object
+                  service_instance:
+                    properties:
+                      create:
+                        properties:
+                          parameters:
+                            additionalProperties:
+                              anyOf:
+                              - type: integer
+                              - type: string
+                              x-kubernetes-int-or-string: true
+                            type: object
+                        type: object
+                      update:
+                        properties:
+                          parameters:
+                            additionalProperties:
+                              anyOf:
+                              - type: integer
+                              - type: string
+                              x-kubernetes-int-or-string: true
+                            type: object
+                        type: object
+                    type: object
+                type: object
+            required:
+            - name
+            type: object
+            x-kubernetes-preserve-unknown-fields: true
+          type: array
+        provider:
+          description: The name of the person or organization providing the template.
+          type: string
+        recommend:
+          description: Recommend specifies whether the template is recommended or
+            not.
+          type: boolean
+        shortDescription:
+          description: A description of the template. Include enough detail that the
+            user will understand what is being deployed and any caveats they need
+            to know before deploying. This will be displayed by the service catalog.
+          type: string
+        status:
+          description: TemplateStatus defines the observed state of Template
+          properties:
+            message:
+              description: Message indicates the message for the state of the template
+              type: string
+            reason:
+              description: Reason indicates the reason for the state of the template
+              type: string
+            status:
+              description: Status indicates the status of the template.
+              type: string
+          type: object
+        tags:
+          description: Tags to be associated with the template for searching and grouping.
+            Add tags that will include it into one of the provided catalog categories.
+          items:
+            type: string
+          type: array
+        urlDescription:
+          description: A URL referencing further documentation for the template.
+          type: string
+      required:
+      - objects
+      type: object
+  version: v1
+  versions:
+  - name: v1
+    served: true
+    storage: true
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
+
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.3.0
+  creationTimestamp: null
+  name: templateinstances.tmax.io
+spec:
+  group: tmax.io
+  names:
+    kind: TemplateInstance
+    listKind: TemplateInstanceList
+    plural: templateinstances
+    singular: templateinstance
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      description: TemplateInstance is the Schema for the templateinstances API
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          oneOf:
+            - required:
+              - clustertemplate
+            - required:
+              - template
+          description: 'TemplateInstanceSpec defines the desired state of TemplateInstance
+            Important: Use only one of the fields Template and ClusterTemplate. Fill
+            in only metadata.name and parameters inside this field.'
+          properties:
+            clustertemplate:
+              properties:
+                metadata:
+                  properties:
+                    name:
+                      type: string
+                  type: object
+                objects:
+                  items:
+                    type: object
+                  type: array
+                parameters:
+                  items:
+                    properties:
+                      description:
+                        description: A description of the parameter. Provide more
+                          detailed information for the purpose of the parameter, including
+                          any constraints on the expected value. Descriptions should
+                          use complete sentences to follow the console’s text standards.
+                          Don’t make this a duplicate of the display name.
+                        type: string
+                      displayName:
+                        description: The user-friendly name for the parameter. This
+                          will be displayed to users.
+                        type: string
+                      name:
+                        description: The name of the parameter. This value is used
+                          to reference the parameter within the template.
+                        type: string
+                      regex:
+                        description: Set the "regex" value for the parameter value.
+                          Given "regex" is used to validate parameter value from template
+                          instance.
+                        type: string
+                      required:
+                        description: Indicates this parameter is required, meaning
+                          the user cannot override it with an empty value. If the
+                          parameter does not provide a default or generated value,
+                          the user must supply a value.
+                        type: boolean
+                      value:
+                        anyOf:
+                        - type: integer
+                        - type: string
+                        description: A default value for the parameter which will
+                          be used if the user does not override the value when instantiating
+                          the template. Avoid using default values for things like
+                          passwords, instead use generated parameters in combination
+                          with Secrets.
+                        x-kubernetes-int-or-string: true
+                      valueType:
+                        description: Set the data type of the parameter. You can specify
+                          string and number for a string or integer type. If not specified,
+                          it defaults to string.
+                        enum:
+                        - string
+                        - number
+                        type: string
+                    required:
+                    - name
+                    type: object
+                  type: array
+              type: object
+            gitops:
+              description: Spec for Application CR
+              properties:
+                path:
+                  description: Git repo directory
+                  type: string
+                secret:
+                  description: Secret name which contains user credentials
+                  type: string
+                sourcegitrepo:
+                  description: Git repo. ex)https://github.com/user/repo
+                  type: string
+              type: object
+            template:
+              properties:
+                metadata:
+                  properties:
+                    name:
+                      type: string
+                  type: object
+                objects:
+                  items:
+                    type: object
+                  type: array
+                parameters:
+                  items:
+                    properties:
+                      description:
+                        description: A description of the parameter. Provide more
+                          detailed information for the purpose of the parameter, including
+                          any constraints on the expected value. Descriptions should
+                          use complete sentences to follow the console’s text standards.
+                          Don’t make this a duplicate of the display name.
+                        type: string
+                      displayName:
+                        description: The user-friendly name for the parameter. This
+                          will be displayed to users.
+                        type: string
+                      name:
+                        description: The name of the parameter. This value is used
+                          to reference the parameter within the template.
+                        type: string
+                      regex:
+                        description: Set the "regex" value for the parameter value.
+                          Given "regex" is used to validate parameter value from template
+                          instance.
+                        type: string
+                      required:
+                        description: Indicates this parameter is required, meaning
+                          the user cannot override it with an empty value. If the
+                          parameter does not provide a default or generated value,
+                          the user must supply a value.
+                        type: boolean
+                      value:
+                        anyOf:
+                        - type: integer
+                        - type: string
+                        description: A default value for the parameter which will
+                          be used if the user does not override the value when instantiating
+                          the template. Avoid using default values for things like
+                          passwords, instead use generated parameters in combination
+                          with Secrets.
+                        x-kubernetes-int-or-string: true
+                      valueType:
+                        description: Set the data type of the parameter. You can specify
+                          string and number for a string or integer type. If not specified,
+                          it defaults to string.
+                        enum:
+                        - string
+                        - number
+                        type: string
+                    required:
+                    - name
+                    type: object
+                  type: array
+              type: object
+          type: object
+        status:
+          description: TemplateInstanceStatus defines the observed state of TemplateInstance
+          properties:
+            clustertemplate:
+              properties:
+                metadata:
+                  properties:
+                    name:
+                      type: string
+                  type: object
+                objects:
+                  items:
+                    type: object
+                  type: array
+                parameters:
+                  items:
+                    properties:
+                      description:
+                        description: A description of the parameter. Provide more
+                          detailed information for the purpose of the parameter, including
+                          any constraints on the expected value. Descriptions should
+                          use complete sentences to follow the console’s text standards.
+                          Don’t make this a duplicate of the display name.
+                        type: string
+                      displayName:
+                        description: The user-friendly name for the parameter. This
+                          will be displayed to users.
+                        type: string
+                      name:
+                        description: The name of the parameter. This value is used
+                          to reference the parameter within the template.
+                        type: string
+                      regex:
+                        description: Set the "regex" value for the parameter value.
+                          Given "regex" is used to validate parameter value from template
+                          instance.
+                        type: string
+                      required:
+                        description: Indicates this parameter is required, meaning
+                          the user cannot override it with an empty value. If the
+                          parameter does not provide a default or generated value,
+                          the user must supply a value.
+                        type: boolean
+                      value:
+                        anyOf:
+                        - type: integer
+                        - type: string
+                        description: A default value for the parameter which will
+                          be used if the user does not override the value when instantiating
+                          the template. Avoid using default values for things like
+                          passwords, instead use generated parameters in combination
+                          with Secrets.
+                        x-kubernetes-int-or-string: true
+                      valueType:
+                        description: Set the data type of the parameter. You can specify
+                          string and number for a string or integer type. If not specified,
+                          it defaults to string.
+                        enum:
+                        - string
+                        - number
+                        type: string
+                    required:
+                    - name
+                    type: object
+                  type: array
+              type: object
+            conditions:
+              items:
+                properties:
+                  lastTransitionTime:
+                    format: date-time
+                    type: string
+                  message:
+                    type: string
+                  reason:
+                    type: string
+                  status:
+                    type: string
+                  type:
+                    type: string
+                required:
+                - type
+                type: object
+              type: array
+            objects:
+              items:
+                properties:
+                  ref:
+                    properties:
+                      apiVersion:
+                        type: string
+                      fieldPath:
+                        type: string
+                      kind:
+                        type: string
+                      name:
+                        type: string
+                      namespace:
+                        type: string
+                      resourceVersion:
+                        type: string
+                      uid:
+                        type: string
+                    type: object
+                required:
+                - ref
+                type: object
+              type: array
+            template:
+              properties:
+                metadata:
+                  properties:
+                    name:
+                      type: string
+                  type: object
+                objects:
+                  items:
+                    type: object
+                  type: array
+                parameters:
+                  items:
+                    properties:
+                      description:
+                        description: A description of the parameter. Provide more
+                          detailed information for the purpose of the parameter, including
+                          any constraints on the expected value. Descriptions should
+                          use complete sentences to follow the console’s text standards.
+                          Don’t make this a duplicate of the display name.
+                        type: string
+                      displayName:
+                        description: The user-friendly name for the parameter. This
+                          will be displayed to users.
+                        type: string
+                      name:
+                        description: The name of the parameter. This value is used
+                          to reference the parameter within the template.
+                        type: string
+                      regex:
+                        description: Set the "regex" value for the parameter value.
+                          Given "regex" is used to validate parameter value from template
+                          instance.
+                        type: string
+                      required:
+                        description: Indicates this parameter is required, meaning
+                          the user cannot override it with an empty value. If the
+                          parameter does not provide a default or generated value,
+                          the user must supply a value.
+                        type: boolean
+                      value:
+                        anyOf:
+                        - type: integer
+                        - type: string
+                        description: A default value for the parameter which will
+                          be used if the user does not override the value when instantiating
+                          the template. Avoid using default values for things like
+                          passwords, instead use generated parameters in combination
+                          with Secrets.
+                        x-kubernetes-int-or-string: true
+                      valueType:
+                        description: Set the data type of the parameter. You can specify
+                          string and number for a string or integer type. If not specified,
+                          it defaults to string.
+                        enum:
+                        - string
+                        - number
+                        type: string
+                    required:
+                    - name
+                    type: object
+                  type: array
+              type: object
+          type: object
+      type: object
+  version: v1
+  versions:
+  - name: v1
+    served: true
+    storage: true
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
+
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.3.0
+  creationTimestamp: null
+  name: clustertemplateclaims.tmax.io
+spec:
+  group: tmax.io
+  names:
+    kind: ClusterTemplateClaim
+    listKind: ClusterTemplateClaimList
+    plural: clustertemplateclaims
+    singular: clustertemplateclaim
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      description: ClusterTemplateClaim is the Schema for the clustertemplateclaims
+        API
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          description: ClusterTemplateClaimSpec defines the desired state of ClusterTemplateClaim
+          properties:
+            resourceName:
+              type: string
+            template:
+              type: string
+          required:
+          - resourceName
+          - template
+          type: object
+        status:
+          description: ClusterTemplateClaimStatus defines the observed state of ClusterTemplateClaim
+          properties:
+            handled:
+              type: boolean
+            lastTransitionTime:
+              format: date-time
+              type: string
+            reason:
+              type: string
+            status:
+              enum:
+              - Awaiting
+              - Approved
+              - Cluster Template Deleted
+              - Error
+              - Rejected
+              type: string
+          type: object
+      type: object
+  version: v1
+  versions:
+  - name: v1
+    served: true
+    storage: true
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: template-operator
+  namespace: template
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: template-operator
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - '*'
+  verbs:
+  - '*'
+- apiGroups:
+  - '*'
+  resources:
+  - '*'
+  verbs:
+  - '*'
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: template-operator
+subjects:
+- kind: ServiceAccount
+  name: template-operator
+  namespace: template
+roleRef:
+  kind: ClusterRole
+  name: template-operator
+  apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: cluster-template-service-broker
+  name: cluster-tsb-sa
+  namespace: cluster-tsb-ns
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cluster-tsb-role
+rules:
+- apiGroups: ["tmax.io"]
+  resources: ["templates", "templateinstances", "clustertemplates"]
+  verbs: ["get", "list", "create", "update", "patch", "delete"]
+- apiGroups: [""]
+  resources: ["secrets", "services"]
+  verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cluster-tsb-rb
+subjects:
+- kind: ServiceAccount
+  name: cluster-tsb-sa
+  namespace: cluster-tsb-ns
+  apiGroup: ""
+roleRef:
+  kind: ClusterRole
+  name: cluster-tsb-role
+  apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: cluster-template-service-broker
+  name: cluster-template-service-broker
+  namespace: cluster-tsb-ns
+spec:
+  selector:
+    app: cluster-template-service-broker
+  ports:
+  - port: 80
+    targetPort: 8081
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: template-service-broker
+  name: tsb-sa
+  namespace: tsb-ns
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: tsb-role
+  namespace: tsb-ns
+rules:
+- apiGroups: ["tmax.io"]
+  resources: ["templates", "templateinstances"]
+  verbs: ["get", "list", "create", "update", "patch", "delete"]
+- apiGroups: [""]
+  resources: ["secrets", "services"]
+  verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: tsb-rb
+  namespace: tsb-ns
+subjects:
+- kind: ServiceAccount
+  name: tsb-sa
+  apiGroup: ""
+roleRef:
+  kind: Role
+  name: tsb-role
+  apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: template-service-broker
+  name: template-service-broker
+spec:
+  selector:
+    app: template-service-broker
+  ports:
+  - port: 80
+    targetPort: 8081
+  type: ClusterIP

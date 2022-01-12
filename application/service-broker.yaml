@@ -1,0 +1,14 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: service-broker
+  namespace: argocd
+spec:
+  destination:
+    namespace: clutser-tsb-ns
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: manifest/service-broker
+    repoURL: https://github.com/tmax-cloud/argocd-installer
+    targetRevision: main
