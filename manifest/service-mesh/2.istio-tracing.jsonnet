@@ -130,8 +130,8 @@ function (
     },
     data: {
       'span-storage-type': 'elasticsearch',
-      collector: 'es:\n  server-urls: http://EFK_ES_SVC_NAME.EFK_NAMESPACE.svc.cluster.local:9200\ncollector:\n  zipkin:\n    http-port: 9411\n',
-      query: 'es:\n  server-urls: http://EFK_ES_SVC_NAME.EFK_NAMESPACE.svc.cluster.local:9200\n',
+      collector: 'es:\n  server-urls: std.join(http://EFK_ES_SVC_NAME.EFK_NAMESPACE.svc.cluster.local:9200\ncollector:\n  zipkin:\n    http-port: 9411\n'),
+      query: 'es:\n  server-urls: std.join(http://EFK_ES_SVC_NAME.EFK_NAMESPACE.svc.cluster.local:9200\n'),
       agent: 'collector:\n  host-port: "jaeger-collector:14267"\n',
     },
   },
@@ -351,7 +351,7 @@ function (
                 '--client-secret=CLIENT_SECRET',
                 '--listen=:3000',
                 '--upstream-url="http://127.0.0.1:16686"',
-                '--discovery-url="https://KEYCLOAK_ADDR/auth/realms/tmax"',
+                '--discovery-url=std.join(https://KEYCLOAK_ADDR/auth/realms/tmax),
                 '--secure-cookie=true',
                 '--skip-openid-provider-tls-verify=true',
                 '--enable-self-signed-tls',
@@ -508,13 +508,13 @@ function (
       tls: [
         {
           hosts: [
-            'jaeger.CUSTOM_DOMAIN_NAME',
+            std.join(jaeger.CUSTOM_DOMAIN_NAME),
           ],
         },
       ],
       rules: [
         {
-          host: 'jaeger.CUSTOM_DOMAIN_NAME',
+          host: std.join(jaeger.CUSTOM_DOMAIN_NAME),
           http: {
             paths: [
               {
