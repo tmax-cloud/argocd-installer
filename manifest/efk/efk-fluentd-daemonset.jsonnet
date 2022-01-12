@@ -70,12 +70,12 @@ function (
             },
             {
               "name": "config",
-              "mountPath": "/fluentd/etc/kubernetes.conf"
+              "mountPath": "/fluentd/etc/kubernetes.conf",
               "subPath": "kubernetes.conf"
             },
             {
               "name": "index-template",
-              "mountPath": "/fluentd/etc/index_template.json"
+              "mountPath": "/fluentd/etc/index_template.json",
               "subPath": "index_template.json"
             }
           ]
@@ -100,7 +100,7 @@ function (
           "configMap": {
             "name": "fluentd-config",
             "items": [
-              "key": "kubernetes.conf"
+              "key": "kubernetes.conf",
               "path": "kubernetes.conf"
             ]
           }
@@ -110,7 +110,7 @@ function (
           "configMap": {
             "name": "fluentd-config",
             "items": [
-              "key": "index_template.json"
+              "key": "index_template.json",
               "path": "index_template.json"
             ]
           }
