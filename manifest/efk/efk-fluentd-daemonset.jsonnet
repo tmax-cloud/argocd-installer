@@ -25,7 +25,7 @@ function (
       "containers": [
         {
           "name": "fluentd",
-          "image": std.join("",[fluent_image_repo, ":", fluentd_image_tag]),
+          "image": std.join("",[fluentd_image_repo, ":", fluentd_image_tag]),
           "env": [
             {
               "name": "FLUENT_ELASTICSEARCH_HOST",
