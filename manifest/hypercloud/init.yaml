@@ -1,0 +1,107 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+ name: hypercloud5-api-server-cert
+ namespace: hypercloud5-system
+spec:
+ secretName: hypercloud5-api-server-certs
+ isCA: false
+ usages:
+ - digital signature
+ - key encipherment
+ - server auth
+ - client auth
+ dnsNames:
+ - "hypercloud5-api-server-service.hypercloud5-system.svc"
+ - "tmax-cloud"
+ issuerRef:
+   kind: ClusterIssuer
+   group: cert-manager.io
+   name: tmaxcloud-issuer
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: hypercloud5-system-quota
+  namespace: hypercloud5-system
+spec:
+  hard:
+    limits.cpu: "5"
+    limits.memory: "10Gi"
+    requests.storage: "50Gi"
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: hypercloud5-admin
+  namespace: hypercloud5-system
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: hypercloud5-admin
+subjects:
+- kind: ServiceAccount
+  name: hypercloud5-admin 
+  namespace: hypercloud5-system
+roleRef:
+  kind: ClusterRole  #this must be Role or ClusterRole
+  name: cluster-admin  # this must match the name of the Role or ClusterRole you wish to bind to
+  apiGroup: rbac.authorization.k8s.io
+  
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: docker-pull-secret
+  namespace: hypercloud5-system
+
+---
+
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  # name must match the spec fields below, and be in the form: <plural>.<group>
+  name: alerts.tmax.io
+spec:
+  # group name to use for REST API: /apis/<group>/<version>
+  group: tmax.io
+  # list of versions supported by this CustomResourceDefinition
+  versions:
+    - name: v1
+      # Each version can be enabled/disabled by Served flag.
+      served: true
+      # One and only one version must be marked as the storage version.
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                name:
+                  type: string
+                kind:
+                  type: string
+                resource:
+                  type: string
+                message:
+                  type: string
+  # either Namespaced or Cluster
+  scope: Namespaced
+  names:
+    # plural name to be used in the URL: /apis/<group>/<version>/<plural>
+    plural: alerts
+    # singular name to be used as an alias on the CLI and for display
+    singular: alert
+    # kind is normally the CamelCased singular type. Your resource manifests use this.
+    kind: Alert
+    # shortNames allow shorter string to match your resource on the CLI
+    shortNames:
+    - at

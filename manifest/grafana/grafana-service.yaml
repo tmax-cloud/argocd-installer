@@ -1,0 +1,42 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  labels:
+    ingress.tmaxcloud.org/name: grafana
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+  name: grafana
+  namespace: monitoring
+spec:
+  ingressClassName: tmax-cloud
+  rules:
+  - host: grafana.{DOMAIN_NAME}
+    http:
+      paths:
+        - backend:
+            service:
+              name: grafana
+              port:
+                number: 3000
+          path: /
+          pathType: Prefix
+  tls:
+  - hosts:
+    - grafana.{DOMAIN_NAME}
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: grafana
+  name: grafana
+  namespace: monitoring
+spec:
+  ports:
+  - name: http
+    port: 3000
+    targetPort: http
+  selector:
+    app: grafana
+  type: NodePort

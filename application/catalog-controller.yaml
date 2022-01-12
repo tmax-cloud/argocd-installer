@@ -1,0 +1,14 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: catalog-controller
+  namespace: argocd
+spec:
+  destination:
+    namespace: catalog
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: manifest/catalog-controller
+    repoURL: https://github.com/tmax-cloud/argocd-installer
+    targetRevision: main

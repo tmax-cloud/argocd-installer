@@ -1,0 +1,120 @@
+{{- if .Values.ingressroute.enabled -}}
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ include "console.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    helm.sh/hook: "post-install,post-upgrade"
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      {{- if and .Values.ingressroute.domain.enabled }}
+      match: PathPrefix(`/`, `/static/`, `/api/resource/`, `/api/console/`) && Host(`{{ include "console.fullname" . }}.{{ .Values.ingressroute.domain.name }}`)
+      {{- else if .Values.ingressroute.ip.enabled }}
+      match: PathPrefix(`/`, `/static/`, `/api/resource/`, `/api/console/`) && HostRegexp(`{{ include "console.fullname" . }}.{ip:.*}.nip.io`)
+      {{- else }}
+      match: PathPrefix(`/`, `/static/`, `/api/resource/`, `/api/console/`)
+      {{- end }}
+      priority: 10
+      services:
+        - name: {{ include "console.fullname" . }}
+          namespace: {{ .Release.Namespace }}
+          kind: Service
+          port: http
+    - kind: Rule
+      {{- if and .Values.ingressroute.domain.enabled }}
+      match: PathPrefix(`/api/hypercloud`, `/api/multi-hypercloud`,`/api/webhook`) && Host(`{{ include "console.fullname" . }}.{{ .Values.ingressroute.domain.name }}`)
+      {{- else if .Values.ingressroute.ip.enabled }}
+      match: PathPrefix(`/api/hypercloud`, `/api/multi-hypercloud`,`/api/webhook`) && HostRegexp(`{{ include "console.fullname" . }}.{ip:.*}.nip.io`)
+      {{- else }}
+      match: PathPrefix(`/api/hypercloud`, `/api/multi-hypercloud`,`/api/webhook`)
+      {{- end }}
+      priority: 100
+      middlewares:
+        - name: {{ .Release.Namespace }}-jwt-decode-auth@kubernetescrd
+        - name: hypercloud-stripprefix@file
+      services:
+        - kind: Service
+          name: hypercloud5-api-server-service
+          namespace: hypercloud5-system
+          port: https
+          scheme: https
+          serversTransport: insecure@file
+    - kind: Rule
+      {{- if and .Values.ingressroute.domain.enabled }}
+      match: PathPrefix(`/api/kubernetes`) && Host(`{{ include "console.fullname" . }}.{{ .Values.ingressroute.domain.name }}`)
+      {{- else if .Values.ingressroute.ip.enabled }}
+      match: PathPrefix(`/api/kubernetes`) && HostRegexp(`{{ include "console.fullname" . }}.{ip:.*}.nip.io`)
+      {{- else }}
+      match: PathPrefix(`/api/kubernetes`)
+      {{- end }}
+      priority: 100
+      middlewares:
+        - name: {{ .Release.Namespace }}-jwt-decode-auth@kubernetescrd
+        - name: kubernetes-stripprefix@file
+      services:
+        - kind: Service
+          name: kubernetes
+          namespace: default
+          port: https
+          scheme: https
+          serversTransport: kubernetes@file
+    - kind: Rule
+      {{- if and .Values.ingressroute.domain.enabled }}
+      match: PathPrefix(`/api/prometheus-tenancy/api`) && Host(`{{ include "console.fullname" . }}.{{ .Values.ingressroute.domain.name }}`)
+      {{- else if .Values.ingressroute.ip.enabled }}
+      match: PathPrefix(`/api/prometheus-tenancy/api`) && HostRegexp(`{{ include "console.fullname" . }}.{ip:.*}.nip.io`)
+      {{- else }}
+      match: PathPrefix(`/api/prometheus-tenancy/api`)
+      {{- end }}
+      priority: 100
+      middlewares:
+        - name: {{ .Release.Namespace }}-jwt-decode-auth@kubernetescrd
+        - name: monitoring-stripprefix-tenancy@file
+      services:
+        - kind: Service
+          name: prometheus-k8s
+          namespace: monitoring
+          port: web
+          scheme: http
+    - kind: Rule
+      {{- if and .Values.ingressroute.domain.enabled }}
+      match: PathPrefix(`/api/prometheus/api`) && Host(`{{ include "console.fullname" . }}.{{ .Values.ingressroute.domain.name }}`)
+      {{- else if .Values.ingressroute.ip.enabled }}
+      match: PathPrefix(`/api/prometheus/api`) && HostRegexp(`{{ include "console.fullname" . }}.{ip:.*}.nip.io`)
+      {{- else }}
+      match: PathPrefix(`/api/prometheus/api`)
+      {{- end }}
+      priority: 100
+      middlewares:
+        - name: {{ .Release.Namespace }}-jwt-decode-auth@kubernetescrd
+        - name: monitoring-stripprefix@file
+      services:
+        - kind: Service
+          name: prometheus-k8s
+          namespace: monitoring
+          port: web
+          scheme: http
+    - kind: Rule
+      {{- if and .Values.ingressroute.domain.enabled }}
+      match: PathPrefix(`/api/alertmanager/api`) && Host(`{{ include "console.fullname" . }}.{{ .Values.ingressroute.domain.name }}`)
+      {{- else if .Values.ingressroute.ip.enabled }}
+      match: PathPrefix(`/api/alertmanager/api`) && HostRegexp(`{{ include "console.fullname" . }}.{ip:.*}.nip.io`)
+      {{- else }}
+      match: PathPrefix(`/api/alertmanager/api`)
+      {{- end }}
+      priority: 100
+      middlewares:
+        - name: {{ .Release.Namespace }}-jwt-decode-auth@kubernetescrd
+        - name: monitoring-stripprefix@file
+      services:
+        - kind: Service
+          name: alertmanager-main
+          namespace: monitoring
+          port: web
+          scheme: http
+  tls: {} # use default tls
+{{- end -}}

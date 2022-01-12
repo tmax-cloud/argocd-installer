@@ -1,0 +1,15 @@
+{{- if .Values.middleware.enabled -}}
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: {{ include "jwt-decode-auth.fullname" . | default "jwt-decode-auth" }}
+spec:
+  forwardAuth:
+    address: "http://{{ include "jwt-decode-auth.fullname" . }}.{{ .Release.Namespace }}.svc:{{ .Values.service.port }}"
+    authResponseHeaders:
+      - X-Forwarded-User
+      - Authorization
+    trustForwardHeader: true
+    tls:
+      insecureSkipVerify: true
+{{- end }}

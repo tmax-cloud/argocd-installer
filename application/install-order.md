@@ -5,10 +5,15 @@ strimzi kafka operator
 hyperauth + kafka
 cluster-api
 
+catalog-controller
+template-service-broker
+service-broker
+
 
 <순서 상관없는 모듈>
 cluster-api-aws
 cluster-api-provider-vshpere
+
 
 
 

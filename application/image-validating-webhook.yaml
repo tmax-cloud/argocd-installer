@@ -1,0 +1,8 @@
+project: default
+source:
+  repoURL: 'https://github.com/tmax-cloud/argocd-installer'
+  path: manifest/image-validating-webhook
+  targetRevision: HEAD
+destination:
+  server: 'https://kubernetes.default.svc'
+  namespace: registry-system

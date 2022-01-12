@@ -1,0 +1,46 @@
+# Default values for gateway.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+tags:
+  traefik: true
+
+traefik:
+  fullnameOverride: "gateway"
+  additionalArguments:
+    # Only use dev environment
+    - "--serverstransport.insecureskipverify=true"
+    - "--serverstransport.rootcas=/run/secrets/tmaxcloud/ca.crt, /run/secrets/kubernetes.io/serviceaccount/ca.crt"
+    - "--entrypoints.websecure.http.middlewares=cors-header@file"
+  deployment:
+    imagePullSecrets:
+      - name: regcred
+  volumes:
+    - name: gateway-config
+      mountPath: "/gateway-config"
+      type: configMap
+    - name: selfsigned-ca
+      mountPath: "/run/secrets/tmaxcloud"
+      type: secret
+  ingressClass:
+    enabled: true
+    isDefaultClass: true
+    fallbackApiVersion: "v1"
+
+tls:
+  acme:
+    enabled: false
+    email: email
+    dns:
+      type: route53
+      accessKeyID: accesskey
+      accessKeySecret: secretkey
+    domains:
+      - tmaxcloud.org
+    environment: staging
+  selfsigned:
+    createTLS: true
+    useDefaultTLS: true
+    commonName: tmaxcloud.local
+    domains:
+      - tmaxcloud.local

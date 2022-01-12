@@ -1,0 +1,19 @@
+# Default values for cert-manager.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+tags:
+  certManager: true
+
+cert-manager:
+  installCRDs: true
+  fullnameOverride: "cert-manager"
+  extraArgs:
+    - "--dns01-recursive-nameservers=8.8.8.8:53"
+    - "--dns01-recursive-nameservers-only"
+
+global:
+  createCA: true
+  sleepyTime: 120
+imagePullSecrets:
+  - name: regcred

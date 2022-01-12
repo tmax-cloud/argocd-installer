@@ -1,0 +1,51 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: efk
+  namespace: argocd
+spec:
+  destination:
+    namespace: kube-logging
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: manifest/efk
+    repoURL: 'https://github.com/tmax-cloud/argocd-installer'
+    targetRevision: main
+    directory:
+      jsonnet:
+        tlas:
+          - name: es_image_repo
+            value: docker.io/tmaxcloudck/elasticsearch
+          - name: es_image_tag
+            value: 7.2.1
+          - name: busybox_image_repo
+            value: busybox
+          - name: busybox_image_tag
+            value: 1.32.0
+          - name: es_volume_size
+            value: 50Gi
+          - name: kibana_image_repo
+            value: docker.elastic.co/kibana/kibana
+          - name: kibana_image_tag
+            value: 7.2.0
+          - name: kibana_svc_type
+            value: LoadBalancer # if kibana ingress available, change to ClusterIP 
+          - name: gatekeeper_image_repo
+            value: quay.io/keycloak/keycloak-gatekeeper
+          - name: gatekeeper_image_tag
+            value: 10.0.0
+          - name: kibana_client_id
+            value: kibana
+          - name: kibana_client_secret
+            value: 23077707-908e-4633-956d-5adcaed4caa7 # hyperauth kibana client_secret copy
+          - name: hyperauth_url
+            value: 172.23.4.105 # hyperauth url
+          - name: hyperauth_realm
+            value: tmax
+          - name: custom_domain_name
+            value: . # user custom domain name
+          - name: fluentd_image_repo
+            value: fluent/fluentd-kubernetes-daemonset
+          - name: fluentd_image_tag
+            value: v1.4.2-debian-elasticsearch-1.1
+  project: default
