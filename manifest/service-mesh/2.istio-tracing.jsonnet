@@ -4,7 +4,7 @@ function (
     CLIENT_ID="jaeger",
     CLIENT_SECRET="jaeger-secret",
     CLIENT_ROLE="jaeger-manager",
-    KEYCLOAK_ADDR="KEYCLOAK_ADDR"
+    KEYCLOAK_ADDR="KEYCLOAK_ADDR",
     CUSTOM_DOMAIN_NAME="172.22.6.18.nip.io"
 "
 )
