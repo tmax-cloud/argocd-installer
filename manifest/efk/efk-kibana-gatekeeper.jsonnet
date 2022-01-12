@@ -116,7 +116,7 @@ function (
             },
             {
               "name": "kibana",
-              "image": "docker.elastic.co/kibana/kibana:7.2.0",
+              "image": "docker.elastic.co/kibana/kibana:7.10.2",
               "resources": {
                 "limits": {
                   "cpu": "500m",
