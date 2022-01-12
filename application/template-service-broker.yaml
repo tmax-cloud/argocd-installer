@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: template-service-broker
+  namespace: argocd
+spec:
+  destination:
+    namespace: template
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    directory:
+      jsonnet:
+        tlas:
+        - name: template_operator_version
+          value: 0.2.6
+        - name: cluster_tsb_version
+          value: 0.1.3
+        - name: tsb_version
+          value: 0.1.3
+    path: manifest/template-service-broker
+    repoURL: https://github.com/tmax-cloud/argocd-installer
+    targetRevision: main

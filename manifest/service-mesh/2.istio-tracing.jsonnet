@@ -1,12 +1,9 @@
 function (
-    EFK_ES_SVC_NAME="elasticsearch",
-    EFK_NAMESPACE="kube-logging",
     CLIENT_ID="jaeger",
     CLIENT_SECRET="jaeger-secret",
     CLIENT_ROLE="jaeger-manager",
     KEYCLOAK_ADDR="KEYCLOAK_ADDR",
     CUSTOM_DOMAIN_NAME="172.22.6.18.nip.io"
-"
 )
 
 [
@@ -130,12 +127,12 @@ function (
     },
     data: {
       'span-storage-type': 'elasticsearch',
-      collector: 'es:\n  server-urls: std.join(http://EFK_ES_SVC_NAME.EFK_NAMESPACE.svc.cluster.local:9200\ncollector:\n  zipkin:\n    http-port: 9411\n'),
-      query: 'es:\n  server-urls: std.join(http://EFK_ES_SVC_NAME.EFK_NAMESPACE.svc.cluster.local:9200\n'),
+      collector: 'es:\n  server-urls: http://elasticsearch.kube-logging.svc.cluster.local:9200\ncollector:\n  zipkin:\n    http-port: 9411\n',
+      query: 'es:\n  server-urls: http://elasticsearch.kube-logging.svc.cluster.local:9200\n',
       agent: 'collector:\n  host-port: "jaeger-collector:14267"\n',
     },
   },
-  null,
+
   {
     apiVersion: 'apps/v1',
     kind: 'Deployment',
@@ -351,7 +348,7 @@ function (
                 '--client-secret=CLIENT_SECRET',
                 '--listen=:3000',
                 '--upstream-url="http://127.0.0.1:16686"',
-                '--discovery-url=std.join(https://KEYCLOAK_ADDR/auth/realms/tmax),
+                '--discovery-url=std.join("https://",KEYCLOAK_ADDR,"/auth/realms/tmax")',
                 '--secure-cookie=true',
                 '--skip-openid-provider-tls-verify=true',
                 '--enable-self-signed-tls',
@@ -361,7 +358,7 @@ function (
                 '--enable-metrics=true',
                 '--encryption-key=AgXa7xRcoClDEU0ZDSH4X0XhL5Qy2Z2j',
                 '--forbidden-page=/html/access-forbidden.html',
-                '--resources=uri="/*|roles=CLIENT_ID:CLIENT_ROLE"',
+                '--resources=uri=std.join("/*|roles="CLIENT_ID,":",CLIENT_ROLE)',
                 '--enable-encrypted-token',
                 '--verbose',
               ],
@@ -508,13 +505,13 @@ function (
       tls: [
         {
           hosts: [
-            std.join(jaeger.CUSTOM_DOMAIN_NAME),
+            'std.join("jaeger.",CUSTOM_DOMAIN_NAME)',
           ],
         },
       ],
       rules: [
         {
-          host: std.join(jaeger.CUSTOM_DOMAIN_NAME),
+          host: 'std.join("jaeger.",CUSTOM_DOMAIN_NAME)',
           http: {
             paths: [
               {
