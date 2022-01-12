@@ -1,0 +1,134 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: clustermenupolicies.ui.tmax.io
+spec:
+  conversion:
+    strategy: None
+  group: ui.tmax.io
+  names:
+    kind: ClusterMenuPolicy
+    listKind: ClusterMenuPolicyList
+    plural: clustermenupolicies
+    shortNames:
+      - cmp
+    singular: clustermenupolicy
+  preserveUnknownFields: false
+  scope: Cluster
+  versions:
+    - name: v1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          description: >-
+            LNB 메뉴구성을 커스터마이징 하기 위한 리소스입니다. primary=true로 label 설정 된 리소스 중 첫번째 리소스
+            내용만 LNB 메뉴구성에 적용됩니다.
+          properties:
+            metadata:
+              properties:
+                name:
+                  type: string
+              type: object
+            menuTabs:
+              description: 메뉴단위를 구별하는 가장 큰 단위의 탭입니다. (멀티클러스터/마스터클러스터/싱글클러스터/개발자/Custom)
+              items:
+                properties:
+                  menus:
+                    description: 메뉴버튼들로 구성 된 전체메뉴입니다.
+                    items:
+                      properties:
+                        kind:
+                          description: >-
+                            리소스 메뉴의 kind 값입니다.
+
+                            (k8s리소스 kind외에 지정 가능한 메뉴 kind들 - Dashboard, Search,
+                            Event, Audit, Kibana, Grafana, Git, Topology)
+
+                            (CONTAINER, SEPERATOR, NEW_TAB_LINK 타입의 경우 kind값은 사용되지 않습니다.)
+                          type: string
+                        innerMenus:
+                          description: 2nd depth의 메뉴리스트입니다. (메뉴타입이 CONTAINER일 때만 사용되는 속성입니다.)
+                          items:
+                            properties:
+                              kind:
+                                description: >-
+                                  리소스 메뉴의 kind 값입니다.  (k8s리소스 kind외에 지정 가능한 메뉴 kind들
+                                  - Dashboard, Search, Event, Audit, Kibana,
+                                  Grafana, Git, Topology) (SEPERATOR, NEW_TAB_LINK 타입의 경우 kind값은
+                                  사용되지 않습니다.)
+                                type: string
+                              label:
+                                description: >-
+                                  menuType이 NEW_TAB_LINK일 때만 사용되는 속성입니다. 메뉴의 label을
+                                  설정해줍니다.
+                                type: string
+                              linkUrl:
+                                description: >-
+                                  menuType이 NEW_TAB_LINK일 때만 사용되는 속성입니다. 메뉴 클릭 시 설정한
+                                  linkUrl로 새 탭이 열리게 됩니다.
+                                type: string
+                              menuType:
+                                enum:
+                                  - REGISTERED_MENU
+                                  - NEW_TAB_LINK
+                                  - SEPERATOR
+                                pattern: ^(REGISTERED_MENU|SEPERATOR|NEW_TAB_LINK)$
+                                type: string
+                            type: object
+                          type: array
+                        label:
+                          description: >-
+                            CONTAINTER, NEW_TAB_LINK타입일 때만 반영되는 속성입니다. 메뉴 컨테이너의 타이틀을
+                            설정할 수 있습니다.
+
+                            (Home, Workload, Helm, Networking, Storage,  Management,
+                            Host, Authentications, ServiceCatalogs, ServiceMesh,
+                            CI/CD, AiDevOps, Image, Federation, Ansible 중 하나의 text로
+                            지정 시 번역이 적용됩니다.)
+                          type: string
+                        linkUrl:
+                          description: >-
+                            menuType이 NEW_TAB_LINK일 때만 사용되는 속성입니다. 메뉴 클릭 시 설정한
+                            linkUrl로 새 탭이 열리게 됩니다.
+                          type: string
+                        menuType:
+                          description: >-
+                            REGISTERED_MENU - HyperCloud에서 제공되는 메뉴입니다.
+                            REGISTERED_MENU타입일 경우 label속성은 지정하지 않아도 됩니다.
+
+                            CONTAINER - 메뉴를 담을 1st depth 컨테이너 타입입니다. CONTAINER타입일 경우
+                            innerMenus값을 설정해주어야 합니다. 설정하지 않을 시 메뉴에 추가 되지 않습니다.
+
+                            SEPERATOR - 메뉴 사이 구분선입니다. SEPERATOR타입일 경우 kind, label
+                            속성은 지정하지 않아도 됩니다.)
+
+                            NEW_TAB_LINK - 새로운 탭으로 url 링크를 열어주는 메뉴타입입니다.
+                          enum:
+                            - REGISTERED_MENU
+                            - NEW_TAB_LINK
+                            - CONTAINER
+                            - SEPERATOR
+                          pattern: ^(REGISTERED_MENU|CONTAINER|SEPERATOR|NEW_TAB_LINK)$
+                          type: string
+                      type: object
+                    type: array
+                  name:
+                    enum:
+                      - MASTER
+                      - MULTI
+                      - SINGLE
+                      - DEVELOPER
+                      - CUSTOM
+                    pattern: ^(MASTER|MULTI|SINGLE|DEVELOPER|CUSTOM)$
+                    type: string
+                type: object
+              required:
+                - menus
+              type: array
+            showCustomPerspective:
+              description: Perspective 드롭다운에 커스터마이징한 메뉴 선택지를 보여줄 지 결정하는 속성입니다.
+              type: boolean
+          required:
+            - menuTabs
+          type: object

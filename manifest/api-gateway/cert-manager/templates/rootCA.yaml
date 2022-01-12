@@ -1,0 +1,49 @@
+{{- if .Values.global.createCA }}
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "10"
+    "helm.sh/hook-delete-policy": before-hook-creation
+  name: tmaxcloud-selfsigned
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "11"
+    "helm.sh/hook-delete-policy": before-hook-creation
+  name: tmaxcloud-ca
+spec:
+  commonName: tmaxcloud
+  duration: 8760h # 360d=1y
+  isCA: true
+  issuerRef:
+    name: tmaxcloud-selfsigned
+    kind: ClusterIssuer
+    group: cert-manager.io
+  renewBefore: 720h # 30d
+  secretName: tmaxcloud-ca
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+    - client auth
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "12"
+    "helm.sh/hook-delete-policy": before-hook-creation
+  name: tmaxcloud-issuer
+spec:
+  ca:
+    secretName: tmaxcloud-ca
+{{- end }}
