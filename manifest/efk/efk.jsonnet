@@ -23,6 +23,52 @@ function (
 local svcType = if kibana_svc_type == "Ingress" then "ClusterIP" else kibana_svc_type;
 
 [
+   if kibana_svc_type == "Ingress" then {
+    "apiVersion": "networking.k8s.io/v1",
+    "kind": "Ingress",
+    "metadata": {
+      "name": "kibana",
+      "namespace": "kube-logging",
+      "labels": {
+        "ingress.tmaxcloud.org/name": "kibana"
+      },
+      "annotations": {
+        "traefik.ingress.kubernetes.io/router.entrypoints": "websecure",
+        "cert-manager.io/cluster-issuer": custom_clusterissuer
+      }
+    },
+    "spec": {
+      "ingressClassName": "tmax-cloud",
+      "rules": [
+        {
+          "host": std.join("", ["kibana.", custom_domain_name]),
+          "http": {
+            "paths": [
+              {
+                "backend": {
+                  "service": {
+                    "name": "kibana",
+                    "port": {
+                      "number": 443
+                    }
+                  }
+                },
+                "path": "/",
+                "pathType": "Prefix"
+              }
+            ]
+          }
+        }
+      ],
+      "tls": [
+        {
+          "hosts": [
+            std.join("", ["kibana.", custom_domain_name])
+          ]
+        }
+      ]
+    }
+  } else {},
   {
     "apiVersion": "v1",
     "kind": "Service",
@@ -37,7 +83,7 @@ local svcType = if kibana_svc_type == "Ingress" then "ClusterIP" else kibana_svc
        }
     },
     "spec": {
-      "type": kibana_svc_type,
+      "type": svcType,
       "ports": if kibana_svc_type == "ClusterIP" then [
         {
           "port": 443,
@@ -362,52 +408,6 @@ local svcType = if kibana_svc_type == "Ingress" then "ClusterIP" else kibana_svc
       }
     }
   },
-  if kibana_svc_type == "Ingress" then {
-    "apiVersion": "networking.k8s.io/v1",
-    "kind": "Ingress",
-    "metadata": {
-      "name": "kibana",
-      "namespace": "kube-logging",
-      "labels": {
-        "ingress.tmaxcloud.org/name": "kibana"
-      },
-      "annotations": {
-        "traefik.ingress.kubernetes.io/router.entrypoints": "websecure",
-        "cert-manager.io/cluster-issuer": custom_clusterissuer
-      }
-    },
-    "spec": {
-      "ingressClassName": "tmax-cloud",
-      "rules": [
-        {
-          "host": std.join("", ["kibana.", custom_domain_name]),
-          "http": {
-            "paths": [
-              {
-                "backend": {
-                  "service": {
-                    "name": "kibana",
-                    "port": {
-                      "number": 443
-                    }
-                  }
-                },
-                "path": "/",
-                "pathType": "Prefix"
-              }
-            ]
-          }
-        }
-      ],
-      "tls": [
-        {
-          "hosts": [
-            std.join("", ["kibana.", custom_domain_name])
-          ]
-        }
-      ]
-    }
-  } else {},
   {
     "apiVersion": "apps/v1",
     "kind": "DaemonSet",
