@@ -1,0 +1,77 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  creationTimestamp: "2022-01-12T10:14:45Z"
+  generation: 4
+  name: ai-devops
+  namespace: argocd
+  resourceVersion: "22064974"
+  uid: d860ae01-3df3-4a74-8826-f9124daa6a26
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    directory:
+      jsonnet:
+        tlas:
+        - name: ai_devops_namespace
+          value: kubeflow
+        - name: istio_namespace
+          value: istio-system
+        - name: knative_namespace
+          value: knative-serving
+        - name: tmaxcloud_image_repo
+          value: docker.io/tmaxcloudck
+        - name: istio_image_repo
+          value: docker.io/istio
+        - name: gatewaySelector
+          value: ingressgateway
+        - name: kubeflow_public_image_repo
+          value: gcr.io/kubeflow-images-public
+        - name: katib_image_repo
+          value: docker.io/kubeflowkatib
+        - name: katib_image_tag
+          value: v0.12.0
+        - name: katib_object_image_tag
+          value: v0.11.0
+        - name: mysql_deploy_image_repo
+          value: mysql
+        - name: mysql_deploy_image_tag
+          value: 8.0.27
+        - name: argo_image_repo
+          value: docker.io/argoproj
+        - name: argo_image_tag
+          value: v2.12.10
+        - name: minio_image_repo
+          value: gcr.io/ml-pipeline/minio
+        - name: minio_image_tag
+          value: RELEASE.2019-08-14T20-37-41Z-license-compliance
+        - name: notebook_svc_type
+          value: Ingress
+        - name: custom_domain_name
+          value: tmaxcloud.org
+        - name: knative_serving_image_repo
+          value: gcr.io/knative-releases/knative.dev/serving/cmd
+        - name: knative_istio_image_repo
+          value: gcr.io/knative-releases/knative.dev/net-istio/cmd
+        - name: knative_serving_image_tag
+          value: v0.14.3
+        - name: knative_istio_image_tag
+          value: v0.14.1
+        - name: kfserving_image_tag
+          value: v0.5.1
+        - name: kfserving_gcr_image_repo
+          value: gcr.io/kfserving
+        - name: kfserving_docker_image_repo
+          value: docker.io/kfserving
+        - name: kube_rbac_proxy_image_repo
+          value: gcr.io/kubebuilder/kube-rbac-proxy
+        - name: kube_rbac_proxy_image_tag
+          value: v0.4.0
+    path: manifest/ai-devops
+    repoURL: https://github.com/tmax-cloud/argocd-installer
+    targetRevision: main
+  syncPolicy:
+    syncOptions:
+    - Replace=true
