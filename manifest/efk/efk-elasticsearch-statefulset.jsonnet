@@ -149,7 +149,7 @@ function (
             }
           },
           "spec": {
-            "accessModes": "ReadWriteOnce",
+            "accessModes": "[ ReadWriteOnce ]",
             "storageClassName": "nfs",
             "resources": {
               "requests": {
