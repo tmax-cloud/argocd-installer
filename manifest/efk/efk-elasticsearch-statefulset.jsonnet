@@ -138,27 +138,27 @@ function (
               }
             }
           ]
-        },
-        "volumeClaimTemplates": [
-          {
-            "metadata": {
-              "name": "data",
-              "labels": {
-                "app": "elasticsearch"
-              }
-            },
-            "spec": {
-              "accessModes": "ReadWriteOnce",
-              "storageClassName": "nfs",
-              "resources": {
-                "requests": {
-                  "storage": es_volume_size
-                }
+        }
+      },
+      "volumeClaimTemplates": [
+        {
+          "metadata": {
+            "name": "data",
+            "labels": {
+              "app": "elasticsearch"
+            }
+          },
+          "spec": {
+            "accessModes": "ReadWriteOnce",
+            "storageClassName": "nfs",
+            "resources": {
+              "requests": {
+                "storage": es_volume_size
               }
             }
           }
-        ]
-      }  
-    }
+        }
+      ]
+    }  
   }
 ]    
