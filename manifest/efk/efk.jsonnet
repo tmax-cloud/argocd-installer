@@ -17,7 +17,7 @@ function (
     encryption_key="AgXa7xRcoClDEU0ZDSH4X0XhL5Qy2Z2j",
     fluentd_image_repo="fluent/fluentd-kubernetes-daemonset",
     fluentd_image_tag="v1.4.2-debian-elasticsearch-1.1",
-    custom_clusterissuer="ck-selfsigned-clusterissuer"
+    custom_clusterissuer="tmaxcloud-issuer"
 )
 
 [
