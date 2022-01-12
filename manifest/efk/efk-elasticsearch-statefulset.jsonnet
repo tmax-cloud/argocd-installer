@@ -33,7 +33,7 @@ function (
           "containers": [
             {
               "name": "elasticsearch",
-              "image": std.join("", [es_image_repo, ":", "es_image_tag"]),
+              "image": std.join("", [es_image_repo, ":", es_image_tag]),
               "securityContext": {
                 "allowPrivilegeEscalation": true,
                 "privileged": true
