@@ -6,7 +6,7 @@ function (
     es_volume_size="50Gi",
     kibana_image_repo="docker.elastic.co/kibana/kibana",
     kibana_image_tag="7.2.0",
-    kibana_svc_type="ClusterIP"
+    kibana_svc_type="ClusterIP",
     gatekeeper_image_repo="quay.io/keycloak/keycloak-gatekeeper",
     gatekeeper_image_tag="10.0.0",
     kibana_client_id="kibana",
