@@ -81,7 +81,7 @@ function (
           "containers": [
             {
               "name": "gatekeeper",
-              "image": "quay.io/keycloak/keycloak-gatekeeper:10.0.0",
+              "image": std.join("", [gatekeeper_image_repo, ":", gatekeeper_image_tag]),
               "imagePullPolicy": "Always",
               "args": [
                 std.join("", ["--client-id=", kibana_client_id]),
