@@ -1,0 +1,14 @@
+apiVersion: v2
+name: console
+description: A Console based tmax cloud UI
+type: application
+version: 0.1.0
+appVersion: "5.0.42.4"
+keywords:
+  - console
+home: https://www.tmaxcloud.com/#!/home
+sources:
+  - https://github.com/tmax-cloud/console
+maintainers:
+  - name: jinsoo_youn
+    email: jinsoo_youn@tmax.co.kr

@@ -1,0 +1,91 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gateway-config
+  labels:
+    app.kubernetes.io/name: {{ template "gateway.name" . }}
+    helm.sh/chart: {{ template "gateway.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "0"
+data:
+  traefik.yml: |
+    http:
+      serversTransports:
+        insecure:
+          insecureSkipVerify: true
+        tmaxcloud:
+          serverName: tmax-cloud
+          rootCAs:
+            - /run/secrets/tmaxcloud/ca.crt
+        kubernetes:
+          rootCAs:
+            - /run/secrets/kubernetes.io/serviceaccount/ca.crt
+      middlewares:
+        dashboard-auth:
+          basicAuth:
+            users:
+              - "admin:$apr1$WboCaB7Z$PJbsvKlI3XMq12xMeQMmG."
+        cors-header:
+          headers:
+            accessControlAllowMethods:
+              - "*"
+            accessControlAllowHeaders:
+              - "*"
+            accessControlMaxAge: 100
+            addVaryHeader: true
+        hypercloud-stripprefix:
+          stripPrefix:
+            prefixes:
+              - "/api/hypercloud"
+              - "/api/multi-hypercloud"
+              - "/api/webhook"
+        kubernetes-stripprefix:
+          stripPrefix:
+            prefixes:
+              - "/api/kubernetes"
+            forceSlash: true
+        monitoring-stripprefix:
+          stripPrefix:
+            prefixes:
+              - "/api/prometheus"
+              - "/api/alertmanager"
+        monitoring-stripprefix-tenancy:
+          stripPrefix:
+            prefixes:
+              - "/api/prometheus-tenancy"
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: selfsigned-ca
+  labels:
+    app.kubernetes.io/name: {{ template "gateway.name" . }}
+    helm.sh/chart: {{ template "gateway.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "0"
+spec:
+  secretName: selfsigned-ca
+  commonName: tmax-cloud
+  subject:
+    organizations:
+      - "tmax-cloud"
+  isCA: false
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+    - client auth
+  dnsNames:
+    - "tmax-cloud"
+    - "{{ include "gateway.fullname" . }}.{{ .Release.Namespace }}.svc"
+  issuerRef:
+    kind: ClusterIssuer
+    group: cert-manager.io
+    name: tmaxcloud-issuer
