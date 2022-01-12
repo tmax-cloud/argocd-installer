@@ -288,7 +288,6 @@ local svcType = if hyperauth_svc_type == "Ingress" then "ClusterIP" else hyperau
           "tmax-cloud"
         ]
       }
-      else {}
     ),
   },
   if hyperauth_svc_type == "Ingress" then {
