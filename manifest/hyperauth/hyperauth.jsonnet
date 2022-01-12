@@ -262,9 +262,8 @@ local svcType = if hyperauth_svc_type == "Ingress" then "ClusterIP" else hyperau
     },
     "spec": {
       "secretName": "hyperauth-https-secret",
-      "duration": "8760h",
-      "renewBefore": "720h",
-      "isCA": false,
+      "duration": "8760h0m0s",
+      "renewBefore": "720h0m0s",
       "usages": [
         "digital signature",
         "key encipherment",
@@ -277,16 +276,19 @@ local svcType = if hyperauth_svc_type == "Ingress" then "ClusterIP" else hyperau
       ] else [
         "tmax-cloud"
       ],
-      "ipAddresses": if hyperauth_svc_type == "LoadBalancer" then [
-        hyperauth_external_ip,
-        "tmax-cloud"
-      ] else [],
       "issuerRef": {
         "kind": "ClusterIssuer",
         "group": "cert-manager.io",
         "name": "tmaxcloud-issuer"
       }
-    }
+    } + (
+      if hyperauth_svc_type == "LoadBalancer" then {
+        "ipAddresses": [
+          hyperauth_external_ip,
+          "tmax-cloud"
+        ]
+      }
+    ),
   },
   if hyperauth_svc_type == "Ingress" then {
     "apiVersion": "networking.k8s.io/v1",

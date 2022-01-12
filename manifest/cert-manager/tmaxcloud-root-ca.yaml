@@ -6,7 +6,7 @@ metadata:
   labels:
     app.kubernetes.io/instance: traefik
     app.kubernetes.io/managed-bu: tmax-cloud
-    app.kubernetes.io/name: api-gateway
+    app.kubernetes.io/name: cert-manager
   name: tmaxcloud-selfsigned
 spec:
   selfSigned: {}
@@ -18,14 +18,14 @@ kind: Certificate
 metadata:
   labels:
     app.kubernetes.io/instance: traefik
-    app.kubernetes.io/managed-bu: tmax-cloud
-    app.kubernetes.io/name: api-gateway
+    app.kubernetes.io/managed-by: tmax-cloud
+    app.kubernetes.io/name: cert-manager
   name: tmaxcloud-ca
   namespace: cert-manager
 spec:
   secretName: tmaxcloud-ca
-  duration: 8760h0m0s # 360d=1y
-  renewBefore: 720h0m0s # 30d
+  duration: 8760h # 360d=1y
+  renewBefore: 720h # 30d
   commonName: tmaxcloud
   isCA: true
   usages:
@@ -45,9 +45,10 @@ kind: ClusterIssuer
 metadata:
   labels:
     app.kubernetes.io/instance: traefik
-    app.kubernetes.io/managed-bu: tmax-cloud
-    app.kubernetes.io/name: api-gateway
+    app.kubernetes.io/managed-by: tmax-cloud
+    app.kubernetes.io/name: cert-manager
   name: tmaxcloud-issuer
 spec:
   ca:
     secretName: tmaxcloud-ca
+    

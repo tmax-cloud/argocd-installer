@@ -22,6 +22,10 @@ traefik:
     - name: selfsigned-ca
       mountPath: "/run/secrets/tmaxcloud"
       type: secret
+  ingressClass:
+    enabled: true
+    isDefaultClass: true
+    fallbackApiVersion: "v1"
 
 tls:
   acme:

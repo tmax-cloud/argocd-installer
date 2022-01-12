@@ -1,0 +1,8 @@
+project: default
+source:
+  repoURL: 'https://github.com/tmax-cloud/argocd-installer'
+  path: manifest/tekton-pipeline
+  targetRevision: HEAD
+destination:
+  server: 'https://kubernetes.default.svc'
+  namespace: tekton-pipelines
