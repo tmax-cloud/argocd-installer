@@ -42,7 +42,7 @@ ingressroute:
   enabled: true
   domain:
     enabled: false
-    name: tmaxcloud.org
+    name: tmaxcloud.local
   ip:
     enabled: true
 
