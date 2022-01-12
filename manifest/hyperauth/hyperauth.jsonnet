@@ -262,8 +262,8 @@ local svcType = if hyperauth_svc_type == "Ingress" then "ClusterIP" else hyperau
     },
     "spec": {
       "secretName": "hyperauth-https-secret",
-      "duration": "8760h",
-      "renewBefore": "720h",
+      "duration": "8760h0m0s",
+      "renewBefore": "720h0m0s",
       "isCA": false,
       "usages": [
         "digital signature",
