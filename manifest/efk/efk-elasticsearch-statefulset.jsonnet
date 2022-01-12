@@ -126,7 +126,7 @@ function (
               }
             },
             {
-              "name": "fix-permissions",
+              "name": "increase-fd-ulimit",
               "image": std.join("", [busybox_image_repo, ":", busybox_image_tag]),
               "command": [
                 "sh", 
