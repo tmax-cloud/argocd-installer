@@ -58,7 +58,7 @@ function (
                 },
                 {
                   "name": "FLUENT_ELASTICSEARCH_SED_DISABLE",
-                  "value": true,
+                  "value": "true",
                 }
               ],
               "resources": {
