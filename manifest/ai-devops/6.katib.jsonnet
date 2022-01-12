@@ -921,15 +921,15 @@ function (
   },
   {
     "apiVersion": "v1",
-    "data": {
-      "early-stopping": "{\n  \"medianstop\": {\n    \"image\": std.join("", [katib_image_repo, "/earlystopping-medianstop:", katib_image_tag])\n  }\n}",
-      "metrics-collector-sidecar": "{\n  \"StdOut\": {\n    \"image\": std.join("", [katib_image_repo, "/file-metrics-collector:", katib_image_tag])\n  },\n  \"File\": {\n    \"image\": std.join("", [katib_image_repo, "/file-metrics-collector:", katib_image_tag])\n  },\n  \"TensorFlowEvent\": {\n    \"image\": std.join("", [katib_image_repo, "/tfevent-metrics-collector:", katib_image_tag]),\n    \"resources\": {\n      \"limits\": {\n        \"memory\": \"1Gi\"\n      }\n    }\n  }\n}",
-      "suggestion": "{\n  \"random\": {\n    \"image\": std.join("", [katib_image_repo, "/suggestion-hyperopt:", katib_image_tag])\n  },\n  \"tpe\": {\n    \"image\": std.join("", [katib_image_repo, "/suggestion-hyperopt:", katib_image_tag])\n  },\n  \"grid\": {\n    \"image\": std.join("", [katib_image_repo, "/suggestion-chocolate:", katib_image_tag])\n  },\n  \"hyperband\": {\n    \"image\": std.join("", [katib_image_repo, "/suggestion-hyperband:", katib_image_tag])\n  },\n  \"bayesianoptimization\": {\n    \"image\": std.join("", [katib_image_repo, "/suggestion-skopt:", katib_image_tag])\n  },\n  \"cmaes\": {\n    \"image\": std.join("", [katib_image_repo, "/suggestion-goptuna:", katib_image_tag])\n  },\n  \"sobol\": {\n    \"image\": std.join("", [katib_image_repo, "/suggestion-goptuna:", katib_image_tag])\n  },\n  \"enas\": {\n    \"image\": std.join("", [katib_image_repo, "/suggestion-enas:", katib_image_tag]),\n    \"resources\": {\n      \"limits\": {\n        \"memory\": \"200Mi\"\n      }\n    }\n  },\n  \"darts\": {\n    \"image\": std.join("", [katib_image_repo, "/suggestion-darts:", katib_image_tag])\n  }\n}"
-    },
     "kind": "ConfigMap",
     "metadata": {
       "name": "katib-config",
-      "namespace": ai_devops_namespace
+      "namespace": "kubeflow"
+    },
+    "data": {
+      "metrics-collector-sidecar": "{\n  \"StdOut\": {\n    \"image\": \"docker.io/kubeflowkatib/file-metrics-collector:v0.12.0\"\n  },\n  \"File\": {\n    \"image\": \"docker.io/kubeflowkatib/file-metrics-collector:v0.12.0\"\n  },\n  \"TensorFlowEvent\": {\n    \"image\": \"docker.io/kubeflowkatib/tfevent-metrics-collector:v0.12.0\",\n    \"resources\": {\n      \"limits\": {\n        \"memory\": \"1Gi\"\n      }\n    }\n  }\n}",
+      "suggestion": "{\n  \"random\": {\n    \"image\": \"docker.io/kubeflowkatib/suggestion-hyperopt:v0.12.0\"\n  },\n  \"tpe\": {\n    \"image\": \"docker.io/kubeflowkatib/suggestion-hyperopt:v0.12.0\"\n  },\n  \"grid\": {\n    \"image\": \"docker.io/kubeflowkatib/suggestion-chocolate:v0.12.0\"\n  },\n  \"hyperband\": {\n    \"image\": \"docker.io/kubeflowkatib/suggestion-hyperband:v0.12.0\"\n  },\n  \"bayesianoptimization\": {\n    \"image\": \"docker.io/kubeflowkatib/suggestion-skopt:v0.12.0\"\n  },\n  \"cmaes\": {\n    \"image\": \"docker.io/kubeflowkatib/suggestion-goptuna:v0.12.0\"\n  },\n  \"sobol\": {\n    \"image\": \"docker.io/kubeflowkatib/suggestion-goptuna:v0.12.0\"\n  },\n  \"multivariate-tpe\": {\n    \"image\": \"docker.io/kubeflowkatib/suggestion-optuna:v0.12.0\"\n  },\n  \"enas\": {\n    \"image\": \"docker.io/kubeflowkatib/suggestion-enas:v0.12.0\",\n    \"resources\": {\n      \"limits\": {\n        \"memory\": \"200Mi\"\n      }\n    }\n  },\n  \"darts\": {\n    \"image\": \"docker.io/kubeflowkatib/suggestion-darts:v0.12.0\"\n  }\n}",
+      "early-stopping": "{\n  \"medianstop\": {\n    \"image\": \"docker.io/kubeflowkatib/earlystopping-medianstop:v0.12.0\"\n  }\n}"
     }
   },
   {
