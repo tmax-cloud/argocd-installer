@@ -9,7 +9,7 @@ function (
 [
   {
     "apiVersion": "apps/v1",
-    "kind": StatefulSet,
+    "kind": "StatefulSet",
     "metadata": {
       "name": "es-cluster",
       "namespace": "kube-logging"
