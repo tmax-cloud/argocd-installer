@@ -100,8 +100,10 @@ function (
           "configMap": {
             "name": "fluentd-config",
             "items": [
-              "key": "kubernetes.conf",
-              "path": "kubernetes.conf"
+              {
+                "key": "kubernetes.conf",
+                "path": "kubernetes.conf"
+              }
             ]
           }
         },
@@ -110,8 +112,10 @@ function (
           "configMap": {
             "name": "fluentd-config",
             "items": [
-              "key": "index_template.json",
-              "path": "index_template.json"
+              {
+                "key": "index_template.json",
+                "path": "index_template.json"
+              }
             ]
           }
         }
