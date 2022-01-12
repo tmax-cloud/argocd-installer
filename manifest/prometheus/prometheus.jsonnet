@@ -8,9 +8,7 @@ function (
 	node_exporter_version="",
 	prometheus_adapter_version="",
 	prometheus_pvc="",
-	prometheus_version="",
-	
-	
+	prometheus_version=""
 )
 
 [
