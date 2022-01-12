@@ -18,7 +18,7 @@ function (
       "serviceAccount": "fluentd",
       "serviceAccountName": "fluentd",
       "tolerations": [
-        "operator": "Exists"
+        "operator": Exists
       ],
       "containers": [
         {
