@@ -12,9 +12,9 @@ traefik:
     - "--serverstransport.insecureskipverify=true"
     - "--serverstransport.rootcas=/run/secrets/tmaxcloud/ca.crt, /run/secrets/kubernetes.io/serviceaccount/ca.crt"
     - "--entrypoints.websecure.http.middlewares=cors-header@file"
-  deployment:
-    imagePullSecrets:
-      - name: regcred
+#  deployment:
+#    imagePullSecrets:
+#      - name: regcred
   volumes:
     - name: gateway-config
       mountPath: "/gateway-config"
