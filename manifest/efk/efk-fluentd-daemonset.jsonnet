@@ -53,7 +53,7 @@ function (
                   "value": "http",
                  },
                 {
-                  "name": "FLUENT_SYSTEMD_CONF",
+                  "name": "FLUENTD_SYSTEMD_CONF",
                   "value": "disable",
                 },
                 {
