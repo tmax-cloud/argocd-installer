@@ -1,5 +1,7 @@
 function (
-     kibana_svc_type="LoadBalancer"
+     kibana_svc_type="LoadBalancer",
+     custom_clusterissuer="ck-selfsigned-clusterissuer",
+     custom_domain_name="none"
 )
 
 local svcType = if kibana_svc_type == "Ingress" then "ClusterIP" else kibana_svc_type;
