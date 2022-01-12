@@ -9,7 +9,7 @@ function (
     hyperauth_realm="tmax",
     custom_domain_name="domain_name",
     encryption_key="AgXa7xRcoClDEU0ZDSH4X0XhL5Qy2Z2j",
-    custom_clusterissuer="tmaxcloud-issuer"
+    custom_clusterissuer="ck-selfsigned-clusterissuer"
 )
 
 [

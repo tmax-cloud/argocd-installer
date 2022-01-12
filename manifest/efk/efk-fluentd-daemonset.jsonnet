@@ -1,7 +1,6 @@
 function (
     fluentd_image_repo="fluent/fluentd-kubernetes-daemonset",
-    fluentd_image_tag="v1.4.2-debian-elasticsearch-1.1",
-    custom_clusterissuer="tmaxcloud-issuer"
+    fluentd_image_tag="v1.4.2-debian-elasticsearch-1.1"
 )
 
 [
