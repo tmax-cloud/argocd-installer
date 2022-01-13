@@ -1,5 +1,5 @@
 function (
-    target_registry = "quay.io/kubernetes-service-catalog"
+    quay_registry = "quay.io"
 )
 
 [
@@ -50,7 +50,7 @@ function (
         "containers": [
           {
             "name": "controller-manager",
-            "image": std.join("", [target_registry, "/service-catalog:v0.3.0"]),
+            "image": std.join("", [quay_registry, "/kubernetes-service-catalog/service-catalog:v0.3.0"]),
             "imagePullPolicy": "Always",
             "resources": {
               "requests": {
@@ -175,7 +175,7 @@ function (
         "containers": [
           {
             "name": "svr",
-            "image": std.join("", [target_registry, "/service-catalog:v0.3.0"]),
+            "image": std.join("", [quay_registry, "/kubernetes-service-catalog/service-catalog:v0.3.0"]),
             "imagePullPolicy": "Always",
             "resources": {
               "requests": {
