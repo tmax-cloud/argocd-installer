@@ -1,5 +1,5 @@
 function(
-    quay_registry: "quay.io"
+    quay_registry="quay.io"
 )
 
 [
