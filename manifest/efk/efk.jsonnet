@@ -1,22 +1,22 @@
 function (
-    es_image_repo="docker.elastic.co/elasticsearch/elasticsearch",
-    es_image_tag="7.2.0",
-    busybox_image_repo="busybox",
-    busybox_image_tag="1.32.0",
+    es_image_repo="docker.elastic.co",
+    es_image_tag="elasticsearch/elasticsearch:7.2.0",
+    busybox_image_repo="docker.io",
+    busybox_image_tag="busybox:1.32.0",
     es_volume_size="50Gi",
-    kibana_image_repo="docker.elastic.co/kibana/kibana",
-    kibana_image_tag="7.2.0",
+    kibana_image_repo="docker.elastic.co",
+    kibana_image_tag="kibana/kibana:7.2.0",
     kibana_svc_type="ClusterIP",
-    gatekeeper_image_repo="quay.io/keycloak/keycloak-gatekeeper",
-    gatekeeper_image_tag="10.0.0",
+    gatekeeper_image_repo="quay.io",
+    gatekeeper_image_tag="keycloak/keycloak-gatekeeper:10.0.0",
     kibana_client_id="kibana",
     kibana_client_secret="23077707-908e-4633-956d-5adcaed4caa7",
     hyperauth_url="172.23.4.105",
     hyperauth_realm="tmax",
     custom_domain_name="domain_name",
     encryption_key="AgXa7xRcoClDEU0ZDSH4X0XhL5Qy2Z2j",
-    fluentd_image_repo="fluent/fluentd-kubernetes-daemonset",
-    fluentd_image_tag="v1.4.2-debian-elasticsearch-1.1",
+    fluentd_image_repo="docker.io",
+    fluentd_image_tag="fluent/fluentd-kubernetes-daemonset:v1.4.2-debian-elasticsearch-1.1",
     custom_clusterissuer="tmaxcloud-issuer"
 )
 
@@ -47,7 +47,7 @@ function (
           "containers": [
             {
               "name": "elasticsearch",
-              "image": std.join("", [es_image_repo, ":", es_image_tag]),
+              "image": std.join("", [es_image_repo, "/", es_image_tag]),
               "securityContext": {
                 "allowPrivilegeEscalation": true,
                 "privileged": true
@@ -111,7 +111,7 @@ function (
           "initContainers": [
             {
               "name": "fix-permissions",
-              "image": std.join("", [busybox_image_repo, ":", busybox_image_tag]),
+              "image": std.join("", [busybox_image_repo, "/", busybox_image_tag]),
               "command": [
                 "sh",
                 "-c",
@@ -129,7 +129,7 @@ function (
             },
             {
               "name": "increase-vm-max-map",
-              "image": std.join("", [busybox_image_repo, ":", busybox_image_tag]),
+              "image": std.join("", [busybox_image_repo, "/", busybox_image_tag]),
               "command": [
                 "sysctl", 
                 "-w", 
@@ -141,7 +141,7 @@ function (
             },
             {
               "name": "increase-fd-ulimit",
-              "image": std.join("", [busybox_image_repo, ":", busybox_image_tag]),
+              "image": std.join("", [busybox_image_repo, "/", busybox_image_tag]),
               "command": [
                 "sh", 
                 "-c", 
@@ -217,7 +217,7 @@ function (
           "containers": if hyperauth_url != "" then [
             {
               "name": "gatekeeper",
-              "image": std.join("", [gatekeeper_image_repo, ":", gatekeeper_image_tag]),
+              "image": std.join("", [gatekeeper_image_repo, "/", gatekeeper_image_tag]),
               "imagePullPolicy": "Always",
               "args": [
                 std.join("", ["--client-id=", kibana_client_id]),
@@ -256,7 +256,7 @@ function (
             },
             {
               "name": "kibana",
-              "image": std.join("",[kibana_image_repo, ":", kibana_image_tag]),
+              "image": std.join("",[kibana_image_repo, "/", kibana_image_tag]),
               "resources": {
                 "limits": {
                   "cpu": "500m",
@@ -289,7 +289,7 @@ function (
           ] else [
             {
               "name": "kibana",
-              "image": std.join("",[kibana_image_repo, ":", kibana_image_tag]),
+              "image": std.join("",[kibana_image_repo, "/", kibana_image_tag]),
               "resources": {
                 "limits": {
                   "cpu": "500m",
@@ -427,7 +427,7 @@ function (
           "containers": [
             {
               "name": "fluentd",
-              "image": std.join("",[fluentd_image_repo, ":", fluentd_image_tag]),
+              "image": std.join("",[fluentd_image_repo, "/", fluentd_image_tag]),
               "env": [
                 {
                   "name": "FLUENT_ELASTICSEARCH_HOST",

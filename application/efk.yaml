@@ -15,25 +15,25 @@ spec:
       jsonnet:
         tlas:
           - name: es_image_repo
-            value: docker.io/tmaxcloudck/elasticsearch
+            value: tmaxcloudck
           - name: es_image_tag
-            value: 7.2.1
+            value: elasticsearch:7.2.1
           - name: busybox_image_repo
-            value: busybox
+            value: docker.io
           - name: busybox_image_tag
-            value: 1.32.0
+            value: busybox:1.32.0
           - name: es_volume_size
             value: 50Gi
           - name: kibana_image_repo
-            value: docker.elastic.co/kibana/kibana
+            value: docker.elastic.co
           - name: kibana_image_tag
-            value: 7.2.0
+            value: kibana/kibana:7.2.0
           - name: kibana_svc_type
             value: LoadBalancer # if either hyperauth_url is None or kibana ingress unavailable, change to LoadBalancer
           - name: gatekeeper_image_repo
-            value: quay.io/keycloak/keycloak-gatekeeper
+            value: quay.io
           - name: gatekeeper_image_tag
-            value: 10.0.0
+            value: keycloak/keycloak-gatekeeper:10.0.0
           - name: kibana_client_id
             value: kibana
           - name: kibana_client_secret
@@ -45,7 +45,7 @@ spec:
           - name: custom_domain_name
             value: . # user custom domain name
           - name: fluentd_image_repo
-            value: fluent/fluentd-kubernetes-daemonset
+            value: docker.io
           - name: fluentd_image_tag
-            value: v1.4.2-debian-elasticsearch-1.1
+            value: fluent/fluentd-kubernetes-daemonset:v1.4.2-debian-elasticsearch-1.1
   project: default
