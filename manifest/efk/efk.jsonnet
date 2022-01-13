@@ -332,52 +332,6 @@ function (
     }
   },
   {
-    "apiVersion": "networking.k8s.io/v1",
-    "kind": "Ingress",
-    "metadata": {
-      "name": "kibana",
-      "namespace": "kube-logging",
-      "labels": {
-        "ingress.tmaxcloud.org/name": "kibana"
-      },
-      "annotations": {
-        "traefik.ingress.kubernetes.io/router.entrypoints": "websecure",
-        "cert-manager.io/cluster-issuer": custom_clusterissuer
-      }
-    },
-    "spec": {
-      "ingressClassName": "tmax-cloud",
-      "rules": [
-        {
-          "host": std.join("", ["kibana.", custom_domain_name]),
-          "http": {
-            "paths": [
-              {
-                "backend": {
-                  "service": {
-                    "name": "kibana",
-                    "port": {
-                      "number": 443
-                    }
-                  }
-                },
-                "path": "/",
-                "pathType": "Prefix"
-              }
-            ]
-          }
-        }
-      ],
-      "tls": [
-        {
-          "hosts": [
-            std.join("", ["kibana.", custom_domain_name])
-          ]
-        }
-      ]
-    }
-  },
-  {
     "apiVersion": "cert-manager.io/v1",
     "kind": "Certificate",
     "metadata": {
