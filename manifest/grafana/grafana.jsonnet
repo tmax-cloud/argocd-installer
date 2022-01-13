@@ -1,10 +1,11 @@
 function (
-    domain="",
+    	domain="",
 	client_id="grafana",
 	client_secret="",
 	keycloak_addr="",
 	grafana_pvc="10Gi",
-	grafana_version="6.4.3"
+	grafana_version="6.4.3",
+	grafana_image_repo="grafana/grafana"
 )
 
 [
@@ -16,7 +17,7 @@ function (
 		"namespace": "monitoring"
 	  },
 	  "data": {
-		"grafana.ini": std.join("[server]\ndomain =", domain,"\nhttp_port = 3000\nroot_url = https://%(domain)s/api/grafana/\nserve_from_sub_path = true\n[security]\nallow_embedding = true\n[auth]\ndisable_login_form = true\n[auth.generic_oauth]\nname = OAuth\nenabled = true\nallow_sign_up = true\nclient_id =", client_id,"\nclient_secret =", client_secret,"\nscopes = openid profile email\nemail_attribute_name = email:primary\nemail_attribute_path = email\nrole_attribute_path = \nauth_url = https://",keycloak_addr,"/auth/realms/tmax/protocol/openid-connect/auth\ntoken_url = https://",keycloak_addr,"/auth/realms/tmax/protocol/openid-connect/token\napi_url = https://",keycloak_addr,"/auth/realms/tmax/protocol/openid-connect/userinfo\nallowed_domains = \nteam_ids =\nallowed_organizations =\nsend_client_credentials_via_post = false\ntls_skip_verify_insecure = true\n[auth.anonymous]\nenabled = true\n[users]\ndefault_theme = light\n")
+		"grafana.ini": std.join("",["[server]\ndomain =", domain,"\nhttp_port = 3000\nroot_url = https://%(domain)s/api/grafana/\nserve_from_sub_path = true\n[security]\nallow_embedding = true\n[auth]\ndisable_login_form = true\n[auth.generic_oauth]\nname = OAuth\nenabled = true\nallow_sign_up = true\nclient_id =", client_id,"\nclient_secret =", client_secret,"\nscopes = openid profile email\nemail_attribute_name = email:primary\nemail_attribute_path = email\nrole_attribute_path = \nauth_url = https://",keycloak_addr,"/auth/realms/tmax/protocol/openid-connect/auth\ntoken_url = https://",keycloak_addr,"/auth/realms/tmax/protocol/openid-connect/token\napi_url = https://",keycloak_addr,"/auth/realms/tmax/protocol/openid-connect/userinfo\nallowed_domains = \nteam_ids =\nallowed_organizations =\nsend_client_credentials_via_post = false\ntls_skip_verify_insecure = true\n[auth.anonymous]\nenabled = true\n[users]\ndefault_theme = light\n"])
 	  }
 	},
 	{
@@ -137,7 +138,7 @@ function (
 				  }
 				],
 				"terminationMessagePolicy": "File",
-				"image": "grafana/grafana": grafana_version
+				"image": std.join("",[grafana_image_repo,":", grafana_version])
 			  }
 			],
 			"serviceAccount": "grafana",

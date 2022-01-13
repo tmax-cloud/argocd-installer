@@ -29,7 +29,7 @@ spec:
           - name: kibana_image_tag
             value: 7.2.0
           - name: kibana_svc_type
-            value: LoadBalancer # if kibana ingress available, change to ClusterIP 
+            value: ClusterIP # if either hyperauth_url is None or kibana ingress unavailable, change to LoadBalancer
           - name: gatekeeper_image_repo
             value: quay.io/keycloak/keycloak-gatekeeper
           - name: gatekeeper_image_tag
@@ -37,9 +37,9 @@ spec:
           - name: kibana_client_id
             value: kibana
           - name: kibana_client_secret
-            value: 23077707-908e-4633-956d-5adcaed4caa7 # hyperauth kibana client_secret copy
+            value: . # hyperauth kibana client_secret copy
           - name: hyperauth_url
-            value: 172.23.4.105 # hyperauth url
+            value: # if hyperauth url is None, kibana will deploy without gatekeeper
           - name: hyperauth_realm
             value: tmax
           - name: custom_domain_name
