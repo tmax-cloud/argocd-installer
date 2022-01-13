@@ -1,8 +1,8 @@
 function (
     tmax_registry = "tmaxcloudck",
-    template_operator_version = 0.2.6,
-    cluster_tsb_version = 0.1.3,
-    tsb_version = 0.1.3
+    template_operator_version = "0.2.6",
+    cluster_tsb_version = "0.1.3",
+    tsb_version = "0.1.3"
 )
 
 
