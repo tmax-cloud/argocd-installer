@@ -1,6 +1,6 @@
 function (
 	coreos_image_repo="quay.io/coreos",
-	prometheus_image_repo=""quay.io/prometheus",
+	prometheus_image_repo="quay.io/prometheus",
     	configmap_reload_version="v0.0.1",
 	configmap_reloader_version="v0.34.0",
 	prometheus_operator_version="v0.34.0",
