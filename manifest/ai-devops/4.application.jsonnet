@@ -396,7 +396,7 @@ function (
         "app.kubernetes.io/name": "kubeflow"
         },
         "name": "application-controller-service-account",
-        "namespace": "ai_devops_namespace"
+        "namespace": ai_devops_namespace
     }
     },
     {
@@ -457,7 +457,7 @@ function (
         {
         "kind": "ServiceAccount",
         "name": "application-controller-service-account",
-        "namespace": "ai_devops_namespace"
+        "namespace": ai_devops_namespace
         }
     ]
     },
@@ -473,7 +473,7 @@ function (
         "app.kubernetes.io/name": "kubeflow"
         },
         "name": "application-controller-parameters",
-        "namespace": "ai_devops_namespace"
+        "namespace": ai_devops_namespace
     }
     },
     {
@@ -485,7 +485,7 @@ function (
         "app.kubernetes.io/name": "kubeflow"
         },
         "name": "application-controller-service",
-        "namespace": "ai_devops_namespace"
+        "namespace": ai_devops_namespace
     },
     "spec": {
         "ports": [
@@ -508,7 +508,7 @@ function (
         "app.kubernetes.io/name": "kubeflow"
         },
         "name": "application-controller-stateful-set",
-        "namespace": "ai_devops_namespace"
+        "namespace": ai_devops_namespace
     },
     "spec": {
         "selector": {
