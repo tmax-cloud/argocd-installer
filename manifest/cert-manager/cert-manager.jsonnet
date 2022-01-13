@@ -18,7 +18,7 @@ function(
             }
         },
         "spec": {
-            "replicas": "1",
+            "replicas": 1,
             "selector": {
                 "matchLabels": {
                     "app.kubernetes.io/name": "cainjector",
@@ -39,7 +39,7 @@ function(
                 "spec": {
                     "serviceAccountName": "cert-manager-cainjector",
                     "securityContext": {
-                        "runAsNonRoot": "true"
+                        "runAsNonRoot": true
                     },
                     "containers":  [
                         { 
@@ -158,7 +158,7 @@ function(
             }
         },
         "spec": {
-            "replicas": "1",
+            "replicas": 1,
             "selector": {
                 "matchLabels": {
                     "app.kubernetes.io/name": "webhook",
@@ -179,7 +179,7 @@ function(
                 "spec": {
                     "serviceAccountName": "cert-manager-webhook",
                     "securityContext": {
-                        "runAsNonRoot": "true"
+                        "runAsNonRoot": true
                     },
                     "containers":  [
                         { 
@@ -203,26 +203,26 @@ function(
                             "livenessProbe": {
                                 "httpGet": {
                                     "path": "/livez",
-                                    "port": "6080",
+                                    "port": 6080,
                                     "scheme": "HTTP"
                                 },
-                                "initialDelaySeconds": "60",
-                                "periodSeconds": "10",
-                                "timeoutSeconds": "1",
-                                "successThreshold": "1",
-                                "failureThreshold": "3"
+                                "initialDelaySeconds": 60,
+                                "periodSeconds": 10,
+                                "timeoutSeconds": 1,
+                                "successThreshold": 1,
+                                "failureThreshold": 3
                             },
                             "readinessProbe": {
                                 "httpGet": {
                                     "path": "/healthz",
-                                    "port": "6080",
+                                    "port": 6080,
                                     "scheme": "HTTP"
                                 },
-                                "initialDelaySeconds": "5",
-                                "periodSeconds": "5",
-                                "timeoutSeconds": "1",
-                                "successThreshold": "1",
-                                "failureThreshold": "3"
+                                "initialDelaySeconds": 5,
+                                "periodSeconds": 5,
+                                "timeoutSeconds": 1,
+                                "successThreshold": 1,
+                                "failureThreshold": 3
                             },
                             "env": [
                               { 
