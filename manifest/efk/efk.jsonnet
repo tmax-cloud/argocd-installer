@@ -354,7 +354,7 @@ function (
         if hyperauth_url == "" then {
           "port": 5601,
           "name": kibana
-        } else if kibana_svc_type == "ClusterIP" {
+        } else if kibana_svc_type == "ClusterIP" then {
           "port": 443,
           "targetPort": 3000
         } else {
