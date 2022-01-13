@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: grafana
+  namespace: argocd
+spec:
+  destination:
+    namespace: monitoring
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: manifest/grafana
+    repoURL: 'https://github.com/tmax-cloud/argocd-installer'
+    targetRevision: main
+    directory:
+      jsonnet:
+        tlas:
+          - name: domain
+            value: 
+          - name: client_id
+            value: 
+          - name: client_secret
+            value: v0.0.1
+          - name: keycloak_addr
+            value: v0.34.0
+          - name: grafana_pvc
+            value: 10Gi
+          - name: grafana_version
+            value: 6.4.3
+          - name: grafana_image_repo
+            value: grafana/grafana
+  project: default

@@ -18,3 +18,31 @@
 - Module application 경로
     - application/ 하위에 (모듈명).yaml로 저장
     - form/ 하위 파일 참조
+
+- Application별 공통화 변수
+    ```
+    function(
+        target_registry: "tmaxcloudck"
+    )
+
+    [
+        {
+            "apiVersion": "v1",
+            "kind": "Deployment",
+            ...
+            "spec": {
+                "template": {
+                    "spec": {
+                        "containers": {
+                            "image": std.join("", [target_registry, "/image_name:image_tag"])
+                            ...
+                        }
+                        ...
+                    }
+                }
+                ...
+            }
+        }
+        ...
+    ]
+    ```

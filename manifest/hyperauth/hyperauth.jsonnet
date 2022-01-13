@@ -1,7 +1,5 @@
 function (
-    hyperauth_image_repo="tmaxcloudck",
-    hyperauth_image_name="hyperauth",
-    hyperauth_image_tag="latest",
+    target_registry="tmaxcloudck",
     hyperauth_svc_type="Ingress",
     hyperauth_external_dns="hyperauth.172.22.6.18.nip.io",
     hyperauth_external_ip="172.22.6.8"
@@ -104,7 +102,7 @@ local svcType = if hyperauth_svc_type == "Ingress" then "ClusterIP" else hyperau
           "containers": [
             {
               "name": "hyperauth",
-              "image": std.join("", [hyperauth_image_repo, "/", hyperauth_image_name, ":", hyperauth_image_tag]),
+              "image": std.join("", [target_registry, "/hyperauth:latest"]),
               "args": [
                 "-c standalone-ha.xml",
                 "-Dkeycloak.profile.feature.upload_scripts=enabled",
@@ -276,19 +274,16 @@ local svcType = if hyperauth_svc_type == "Ingress" then "ClusterIP" else hyperau
       ] else [
         "tmax-cloud"
       ],
+      "ipAddresses": if hyperauth_svc_type == "LoadBalancer" then [
+        hyperauth_external_ip,
+        "tmax-cloud"
+      ] else [],
       "issuerRef": {
         "kind": "ClusterIssuer",
         "group": "cert-manager.io",
         "name": "tmaxcloud-issuer"
       }
-    } + (
-      if hyperauth_svc_type == "LoadBalancer" then {
-        "ipAddresses": [
-          hyperauth_external_ip,
-          "tmax-cloud"
-        ]
-      }
-    ),
+    }
   },
   if hyperauth_svc_type == "Ingress" then {
     "apiVersion": "networking.k8s.io/v1",
