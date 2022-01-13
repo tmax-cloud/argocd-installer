@@ -529,4 +529,5 @@ function (
 		"version": prometheus_version
 	  }
 	}
+	
 ]
