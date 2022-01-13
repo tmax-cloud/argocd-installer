@@ -302,7 +302,7 @@ function(
           "containers": [
             {
               "name": "webhook",
-              "image": std.join("", [gcr_registry,"gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/webhook:v0.26.0@sha256:79cf8b670ab008d605362641443648d9ac0ff247f1f943bb4d5209716a9b49fa"]),
+              "image": std.join("", [gcr_registry,"/tekton-releases/github.com/tektoncd/pipeline/cmd/webhook:v0.26.0@sha256:79cf8b670ab008d605362641443648d9ac0ff247f1f943bb4d5209716a9b49fa"]),
               "resources": {
                 "requests": {
                   "cpu": "100m",
