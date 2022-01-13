@@ -8,7 +8,6 @@ function(
     CUSTOM_DOMAIN_NAME="custom-domain",
     CUSTOM_CLUSTER_ISSUER="tmaxcloud-issuer",
     REDIRECT_URL="jaeger.domain"
-    quay.io/
 )
 
 [
