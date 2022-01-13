@@ -214,8 +214,8 @@ function (
               }
             }
           ],
-          "containers": [
-           if hyperauth_url != "" then {
+          "containers": if hyperauth_url != "" then [
+            {
               "name": "gatekeeper",
               "image": std.join("", [gatekeeper_image_repo, ":", gatekeeper_image_tag]),
               "imagePullPolicy": "Always",
@@ -253,7 +253,40 @@ function (
                   "readOnly": true
                 }
               ]
-            } else "",
+            },
+            {
+              "name": "kibana",
+              "image": std.join("",[kibana_image_repo, ":", kibana_image_tag]),
+              "resources": {
+                "limits": {
+                  "cpu": "500m",
+                  "memory": "1000Mi"
+                },
+                "requests": {
+                  "cpu": "500m",
+                  "memory": "1000Mi"
+                }
+              },
+              "env": [
+                {
+                  "name": "ELASTICSEARCH_URL",
+                  "value": "http://elasticsearch.kube-logging.svc.cluster.local:9200"
+                }
+              ],
+              "ports": [
+                {
+                  "containerPort": 5601
+                }
+              ],
+              "volumeMounts": [
+                {
+                  "mountPath": "/usr/share/kibana/config/kibana.yml",
+                  "name": "config",
+                  "subPath": "kibana.yml"
+                }
+              ]
+            }
+          ] else [
             {
               "name": "kibana",
               "image": std.join("",[kibana_image_repo, ":", kibana_image_tag]),
