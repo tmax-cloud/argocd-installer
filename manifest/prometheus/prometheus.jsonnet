@@ -48,7 +48,7 @@ function (
 				"args": [
 				  "--kubelet-service=kube-system/kubelet",
 				  "--logtostderr=true",
-				  std.join("--config-reloader-image=",coreos_image_repo,"/configmap-reload:",configmap_reload_version),
+				  std.join("","--config-reloader-image=",[coreos_image_repo,"/configmap-reload:",configmap_reload_version]),
 				  std.join("--prometheus-config-reloader=",coreos_image_repo,"/prometheus-config-reloader:",configmap_reloader_version)
 				],
 				"image": std.join(coreos_image_repo,"/prometheus-operator:", prometheus_operator_version),
