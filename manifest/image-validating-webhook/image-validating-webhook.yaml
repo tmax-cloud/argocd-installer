@@ -293,29 +293,6 @@ data:
     hyperauth
     gitlab-system
 ---
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: image-validation-admission
-  namespace: registry-system
-  labels:
-    name: image-validation-admission
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: image-validation-admission
-  template:
-    metadata:
-      labels:
-        app: image-validation-admission
-    spec:
-      containers:
-        - name: webhook
-          image: tmaxcloudck/image-validation-webhook:v5.0.3
-          imagePullPolicy: Always
-      serviceAccountName: image-validation-webhook
----
 apiVersion: v1
 kind: Service
 metadata:
