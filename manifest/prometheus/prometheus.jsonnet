@@ -1,5 +1,5 @@
 function (
-    configmap_reload_version="v0.0.1",
+    	configmap_reload_version="v0.0.1",
 	configmap_reloader_version="v0.34.0",
 	prometheus_operator_version="v0.34.0",
 	alertmanager_version="",
