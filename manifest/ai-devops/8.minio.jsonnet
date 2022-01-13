@@ -83,8 +83,7 @@ function (
         "name": "minio-pvc",
         "namespace": ai_devops_namespace
     },
-    "spec": {
-        "storageClassName": "nfs",
+    "spec": {        
         "accessModes": [
         "ReadWriteOnce"
         ],

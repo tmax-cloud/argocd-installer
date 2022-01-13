@@ -1,9 +1,10 @@
-function (
-    CUSTOM_DOMAIN_NAME="domain_name",
-    HYPERAUTH_DOMAIN="hyerpauth_domain",
-    REDIRECT_URL="redirect_url"
-
+function(
+    target_registry="tmaxcloudck",
+    HYPERAUTH_DOMAIN="hyperauth.domain",
+    CUSTOM_DOMAIN_NAME="custom-domain",
+    CUSTOM_CLUSTER_ISSUER="tmaxcloud-issuer"
 )
+
 
 
 [
@@ -273,19 +274,19 @@ function (
     }
   },
   {
-    apiVersion: 'v1',
-    kind: 'ConfigMap',
-    metadata: {
-      name: 'kiali',
-      namespace: 'istio-system',
-      labels: {
-        app: 'kiali',
-        release: 'istio',
-      },
+    "apiVersion": "v1",
+    "kind": "ConfigMap",
+    "metadata": {
+      "name": "kiali",
+      "namespace": "istio-system",
+      "labels": {
+        "app": "kiali",
+        "release": "istio"
+      }
     },
-    data: {
-      'config.yaml': "istio_component_namespaces:\n  grafana: monitoring\n  tracing: istio-system\n  pilot: istio-system\n  prometheus: monitoring\nistio_namespace: istio-system\nauth:\n  strategy: \"openid\"\n  openid:\n    client_id: \"kiali\"\n    issuer_url: \"https://HYPERAUTH_DOMAIN/auth/realms/tmax\"\n    authorization_endpoint: \"https://HYPERAUTH_DOMAIN/auth/realms/tmax/protocol/openid-connect/auth\"\ndeployment:\n  accessible_namespaces: ['**']\nlogin_token:\n  signing_key: \"wl5oStULbP\"\nserver:\n  port: 20001\n  web_root: /api/kiali\nexternal_services:\n  istio:\n    url_service_version: http://istio-pilot.istio-system:8080/version\n  tracing:\n    url:\n    in_cluster_url: http://tracing/api/jaeger\n  grafana:\n    url:\n    in_cluster_url: http://grafana.monitoring:3000\n  prometheus:\n    url: http://prometheus-k8s.monitoring:9090\n",
-    },
+    "data": {
+      "config.yaml": std.join("", ["istio_component_namespaces:\n  grafana: monitoring\n  tracing: istio-system\n  pilot: istio-system\n  prometheus: monitoring\nistio_namespace: istio-system\nauth:\n  strategy: openid\n  openid:\n    client_id: kiali\n    issuer_url: https://",HYPERAUTH_DOMAIN,"/auth/realms/tmax\n    authorization_endpoint: https://",HYPERAUTH_DOMAIN,"/auth/realms/tmax/protocol/openid-connect/auth\ndeployment:\n  accessible_namespaces: ['**']\nlogin_token:\n  signing_key: wl5oStULbP\nserver:\n  port: 20001\n  web_root: /api/kiali\nexternal_services:\n  istio:\n    url_service_version: http://istio-pilot.istio-system:8080/version\n  tracing:\n    url:\n    in_cluster_url: http://tracing/api/jaeger\n  grafana:\n    url:\n    in_cluster_url: http://grafana.monitoring:3000\n  prometheus:\n    url: http://prometheus-k8s.monitoring:9090\n"])
+    }
   },
   {
     "apiVersion": "apps/v1",
@@ -503,6 +504,33 @@ function (
       }
     }
   },
+  {
+     "apiVersion": "cert-manager.io/v1",
+     "kind": "Certificate",
+     "metadata": {
+       "name": "kiali-cert",
+       "namespace": "istio-system"
+     },
+     "spec": {
+       "secretName": "kiali-secret",
+       "isCA": false,
+       "usages": [
+         "digital signature",
+         "key encipherment",
+         "server auth",
+         "client auth"
+       ],
+       "dnsNames": [
+           "tmax-cloud",
+           "kiali.istio-system.svc"
+       ],
+       "issuerRef": {
+         "kind": "ClusterIssuer",
+         "group": "cert-manager.io",
+         "name": CUSTOM_CLUSTER_ISSUER
+       }
+     }
+   },
   {
     "apiVersion": "networking.k8s.io/v1",
     "kind": "Ingress",
