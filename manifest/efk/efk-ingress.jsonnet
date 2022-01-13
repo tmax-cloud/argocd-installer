@@ -25,7 +25,7 @@ if kibana_svc_type == "ClusterIP" then [
     "apiVersion": "networking.k8s.io/v1",
     "kind": "Ingress",
     "metadata": {
-      "name": "kibana-1",
+      "name": "kibana",
       "namespace": "kube-logging",
       "labels": {
         "ingress.tmaxcloud.org/name": "kibana"
