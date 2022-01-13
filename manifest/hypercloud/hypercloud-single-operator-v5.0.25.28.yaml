@@ -584,7 +584,6 @@ metadata:
   name: hypercloud-single-operator-validating-webhook-configuration
 webhooks:
 - clientConfig:
-    caBundle: Cg==
     service:
       name: hypercloud-single-operator-webhook-service
       namespace: hypercloud5-system
@@ -603,7 +602,6 @@ webhooks:
     - namespaceclaims
     - namespaceclaims/status
 - clientConfig:
-    caBundle: Cg==
     service:
       name: hypercloud-single-operator-webhook-service
       namespace: hypercloud5-system
@@ -622,7 +620,6 @@ webhooks:
     - resourcequotaclaims
     - resourcequotaclaims/status
 - clientConfig:
-    caBundle: Cg==
     service:
       name: hypercloud-single-operator-webhook-service
       namespace: hypercloud5-system
