@@ -1,4 +1,5 @@
 function (
+    target_registry = "tmaxcloudck",
     template_operator_version = "0.2.6",
     cluster_tsb_version = "0.1.3",
     tsb_version = "0.1.3"
@@ -36,7 +37,7 @@ function (
             "args": [
               "--enable-leader-election"
             ],
-            "image": "docker.io/tmaxcloudck/template-operator:"+template_operator_version,
+            "image": std.join("", [target_registry, "/template-operator:", template_operator_version]),
             "imagePullPolicy": "Always",
             "name": "manager"
           }
@@ -73,7 +74,7 @@ function (
         "serviceAccountName": "cluster-tsb-sa",
         "containers": [
           {
-            "image": "docker.io/tmaxcloudck/cluster-tsb:"+cluster_tsb_version,
+            "image": std.join("", [target_registry, "/cluster-tsb:", cluster_tsb_version]),
             "name": "cluster-tsb",
             "imagePullPolicy": "Always"
           }
@@ -109,7 +110,7 @@ function (
         "serviceAccountName": "tsb-sa",
         "containers": [
           {
-            "image": "docker.io/tmaxcloudck/tsb:"+tsb_version,
+            "image": std.join("", [target_registry, "/tsb:", tsb_version]),
             "name": "tsb",
             "imagePullPolicy": "Always"
           }
