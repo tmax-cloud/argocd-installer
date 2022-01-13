@@ -99,7 +99,7 @@ function(
                         "app.kubernetes.io/component": "controller",
                         "app.kubernetes.io/version": "v1.5.4"
                     },
-                    "annotation": {
+                    "annotations": {
                         "prometheus.io/path": "/metrics",
                         "prometheus.io/scrape": "true",
                         "prometheus.io/port": "9402"
@@ -108,7 +108,7 @@ function(
                 "spec": {
                     "serviceAccountName": "cert-manager",
                     "securityContext": {
-                        "runAsNonRoot": "true"
+                        "runAsNonRoot": true
                     },
                     "containers":  [
                         { 
@@ -122,7 +122,7 @@ function(
                             ],
                             "ports" : [
                                 {
-                                    "containerPort": "9402",
+                                    "containerPort": 9402,
                                     "protocol" : "TCP"
                                 }
                             ],
