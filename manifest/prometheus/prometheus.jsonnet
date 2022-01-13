@@ -46,8 +46,8 @@ function (
 				"args": [
 				  "--kubelet-service=kube-system/kubelet",
 				  "--logtostderr=true",
-				  "--config-reloader-image=quay.io/coreos/configmap-reload": configmap_reload_version,
-				  "--prometheus-config-reloader=quay.io/coreos/prometheus-config-reloader":configmap_reloader_version
+				  "--config-reloader-image=quay.io/coreos/configmap-reload:": configmap_reload_version,
+				  "--prometheus-config-reloader=quay.io/coreos/prometheus-config-reloader:":configmap_reloader_version
 				],
 				"image": "quay.io/coreos/prometheus-operator": prometheus_operator_version,
 				"name": "prometheus-operator",
