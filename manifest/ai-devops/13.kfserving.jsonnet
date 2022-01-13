@@ -22002,7 +22002,7 @@ function (
   "kind": "ConfigMap",
   "metadata": {
     "name": "inferenceservice-config",
-    "namespace": "kfserving-system"
+    "namespace": ai_devops_namespace
   }
 },
 {
