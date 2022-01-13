@@ -1,8 +1,8 @@
 function (
     CUSTOM_DOMAIN_NAME="domain_name",
-    HYPERAUTH_DOMAIN="hyerpauth_domain"
+    HYPERAUTH_DOMAIN="hyerpauth_domain",
     REDIRECT_URL="redirect_url"
-    
+
 )
 
 
