@@ -20,29 +20,37 @@
     - form/ 하위 파일 참조
 
 - Application별 공통화 변수
-    ```
-    function(
-        target_registry: "tmaxcloudck"
-    )
+    - 이미지 레포마다 변수화를 해서 추가를 해주셔야합니다.  
+        ex) image: gcr.io/kubebuilder/kube-rbac-proxy:v0.5.0  
+            > 변수 선언  
+            >> gcr_registry: "gcr.io"  
+            > json image key value  
+            >> "image": std.join("", [gcr_registry, "/kubebuilder/kube-rbac-proxy:v0.5.0"])
 
-    [
-        {
-            "apiVersion": "v1",
-            "kind": "Deployment",
-            ...
-            "spec": {
-                "template": {
-                    "spec": {
-                        "containers": {
-                            "image": std.join("", [target_registry, "/image_name:image_tag"])
+    - 예시
+        ```
+        function(
+            tmax_registry: "tmaxcloudck"
+        )
+
+        [
+            {
+                "apiVersion": "v1",
+                "kind": "Deployment",
+                ...
+                "spec": {
+                    "template": {
+                        "spec": {
+                            "containers": {
+                                "image": std.join("", [tmax_registry, "/image_name:image_tag"])
+                                ...
+                            }
                             ...
                         }
-                        ...
                     }
+                    ...
                 }
-                ...
             }
-        }
-        ...
-    ]
-    ```
+            ...
+        ]
+        ```
