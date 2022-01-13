@@ -535,5 +535,5 @@ function (
         }
       ]
     }
-  }else {}
+  }else {},
 ]
