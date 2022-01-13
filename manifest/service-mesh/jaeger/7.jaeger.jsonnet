@@ -1,7 +1,5 @@
 function(
     target_registry="tmaxcloudck",
-    EFK_ES_SVC_NAME="elasticsearch",
-    EFK_NAMESPACE="kube-logging",
     JAEGER_VERSION="1.14",
     JAEGER_SECRET="jaeger_secret",
     HYPERAUTH_DOMAIN="hyperauth.domain",
@@ -132,11 +130,11 @@ function(
       },
       "data": {
         "span-storage-type": "elasticsearch",
-        "collector": std.join("",["es:\n  server-urls: http://",EFK_ES_SVC_NAME,".",EFK_NAMESPACE,".svc.cluster.local:9200\ncollector:\n  zipkin:\n    http-port: 9411\n")],
-        "query": std.join("", ["es:\n  server-urls: http://",EFK_ES_SVC_NAME,".",EFK_NAMESPACE,".svc.cluster.local:9200\n")],
+        "collector": "es:\n  server-urls: http://elasticsearch.kube-logging.svc.cluster.local:9200\ncollector:\n  zipkin:\n    http-port: 9411\n",
+        "query": "es:\n  server-urls: http://elasticsearch.kube-logging.svc.cluster.local:9200\n",
         "agent": "collector:\n  host-port: \"jaeger-collector:14267\"\n"
       }
-    },
+    }
     {
       "apiVersion": "apps/v1",
       "kind": "Deployment",
