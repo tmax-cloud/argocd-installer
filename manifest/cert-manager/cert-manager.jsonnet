@@ -82,7 +82,7 @@ function(
             }
         },
         "spec": {
-            "replicas": "1",
+            "replicas": 1,
             "selector": {
                 "matchLabels": {
                     "app.kubernetes.io/name": "cert-manager",
