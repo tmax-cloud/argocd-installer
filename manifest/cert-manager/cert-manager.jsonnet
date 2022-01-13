@@ -197,7 +197,7 @@ function(
                                 {   
                                     "name": "https",
                                     "protocol" : "TCP",
-                                    "containerPort": "10250"
+                                    "containerPort": 10250
                                 }
                             ],
                             "livenessProbe": {
