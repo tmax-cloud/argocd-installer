@@ -39,4 +39,14 @@
     ```
     - 위의 예시에서 tmax_registry, gcr_registry는 본인이 원하는대로 명명하시면 되고, 필요한 이미지 레지스트리 수만큼 선언하시면 됩니다.
 ---
+- Deployment.spec.template.spec.containers.image 는 다음과 같이 작성합니다.
+    ```
+    ...
+    "image": std.join("", [tmax_registry, "/hypercloud-multi-operator:latest"])
+    ...
+    "image": std.join("", [gcr_registry, "/kubebuilder/kube-rbac-proxy:v0.5.0"])
+    ..
+    ```
+    - 이미지경로및 이미지 이름과 태그도 변수화하셔도 됩니다.
+---
 - 자세한 예는 [hypercloud/hypercloud.jsonnet](manifest/hypercloud/hypercloud.jsonnet) 예시를 참조바랍니다.
