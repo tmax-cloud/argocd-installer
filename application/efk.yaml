@@ -37,9 +37,9 @@ spec:
           - name: kibana_client_id
             value: kibana
           - name: kibana_client_secret
-            value: 23077707-908e-4633-956d-5adcaed4caa7 # hyperauth kibana client_secret copy
+            value: . # hyperauth kibana client_secret copy
           - name: hyperauth_url
-            value: 172.23.4.105 # hyperauth url
+            value: . # hyperauth url
           - name: hyperauth_realm
             value: tmax
           - name: custom_domain_name
