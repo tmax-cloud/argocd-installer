@@ -3,10 +3,12 @@ function(
     JAEGER_VERSION="1.14",
     JAEGER_SECRET="jaeger_secret",
     HYPERAUTH_DOMAIN="hyperauth.domain",
+    target_registry2="tmaxcloudck",
     GATEKEER_VERSION="10.0.0",
     CUSTOM_DOMAIN_NAME="custom-domain",
     CUSTOM_CLUSTER_ISSUER="tmaxcloud-issuer",
     REDIRECT_URL="jaeger.domain"
+    quay.io/
 )
 
 [
@@ -343,7 +345,7 @@ function(
             "containers": [
               {
                 "name": "gatekeeper",
-                "image": std.join("", [target_registry, "/keycloak/keycloak-gatekeeper:",GATEKEER_VERSION]),
+                "image": std.join("", [target_registry2, "/keycloak/keycloak-gatekeeper:",GATEKEER_VERSION]),
                 "imagePullPolicy": "Always",
                 "args": [
                   "--client-id=jaeger",
