@@ -1,7 +1,5 @@
 function (
-    hypercloud_image_repo="tmaxcloudck",
-    hypercloud_image_name="hypercloud-api-server",
-    hypercloud_image_tag="latest",
+    target_registry="tmaxcloudck",
     hypercloud_hpcd_mode="multi",
     hypercloud_kafka_enabled="\"true\"",
     hyperauth_url="hyperauth.172.22.6.18.nip.io"
@@ -60,7 +58,7 @@ function (
             "containers": [
             {
                 "name": "hypercloud5-api-server",
-                "image": std.join("", [hypercloud_image_repo, "/", hypercloud_image_name, ":", hypercloud_image_tag]),
+                "image": std.join("", [target_registry, "/hypercloud-api-server:latest"]),
                 "imagePullPolicy": "IfNotPresent",
                 "env": [
                     {
