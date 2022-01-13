@@ -6,8 +6,6 @@ function (
     hypercloud_kafka_enabled="\"true\""
 )
 
-local svcType = if hyperauth_svc_type == "Ingress" then "ClusterIP" else hyperauth_svc_type;
-
 [ 
   {
     "apiVersion": "v1",
