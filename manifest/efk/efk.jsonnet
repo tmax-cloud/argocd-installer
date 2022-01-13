@@ -253,7 +253,7 @@ function (
                   "readOnly": true
                 }
               ]
-            } else {},
+            } else "",
             {
               "name": "kibana",
               "image": std.join("",[kibana_image_repo, ":", kibana_image_tag]),
