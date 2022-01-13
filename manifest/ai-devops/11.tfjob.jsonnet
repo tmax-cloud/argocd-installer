@@ -14145,7 +14145,7 @@ function (
                     }
                 }
                 ],
-                "image": std.join("", [kubeflow_public_image_repo, "/tf-operator:vmaster-gda226016"]),
+                "image": std.join("", [kubeflow_public_image_repo, "/tf_operator:vmaster-gda226016"]),
                 "name": "tf-job-operator"
             }
             ],
