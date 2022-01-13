@@ -23,14 +23,14 @@
     - 이미지 레포마다 변수화를 해서 추가를 해주셔야합니다.  
         ex) image: gcr.io/kubebuilder/kube-rbac-proxy:v0.5.0  
             > 변수 선언  
-            >> gcr_registry: "gcr.io"  
+            >> gcr_registry="gcr.io"  
             > json image key value  
             >> "image": std.join("", [gcr_registry, "/kubebuilder/kube-rbac-proxy:v0.5.0"])
 
     - 예시
         ```
         function(
-            tmax_registry: "tmaxcloudck"
+            tmax_registry="tmaxcloudck"
         )
 
         [
