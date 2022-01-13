@@ -214,7 +214,7 @@ function (
               }
             }
           ],
-          "containers": [
+          "containers": if hyperauth_url != "" then [
             {
               "name": "gatekeeper",
               "image": std.join("", [gatekeeper_image_repo, ":", gatekeeper_image_tag]),
@@ -286,6 +286,39 @@ function (
                 }
               ]
             }
+          ] else [
+            {
+              "name": "kibana",
+              "image": std.join("",[kibana_image_repo, ":", kibana_image_tag]),
+              "resources": {
+                "limits": {
+                  "cpu": "500m",
+                  "memory": "1000Mi"
+                },
+                "requests": {
+                  "cpu": "500m",
+                  "memory": "1000Mi"
+                }
+              },
+              "env": [
+                {
+                  "name": "ELASTICSEARCH_URL",
+                  "value": "http://elasticsearch.kube-logging.svc.cluster.local:9200"
+                }
+              ],
+              "ports": [
+                {
+                  "containerPort": 5601
+                }
+              ],
+              "volumeMounts": [
+                {
+                  "mountPath": "/usr/share/kibana/config/kibana.yml",
+                  "name": "config",
+                  "subPath": "kibana.yml"
+                }
+              ]
+            }
           ]
         }
       }
@@ -318,7 +351,10 @@ function (
     "spec": {
       "type": kibana_svc_type,
       "ports": [
-        if kibana_svc_type == "ClusterIP" then {
+        if hyperauth_url == "" then {
+          "port": 5601,
+          "name": "kibana"
+        } else if kibana_svc_type == "ClusterIP" then {
           "port": 443,
           "targetPort": 3000
         } else {
