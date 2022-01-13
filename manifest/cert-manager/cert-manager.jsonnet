@@ -15,7 +15,8 @@ function(
                 "app.kubernetes.io/instance": "cert-manager",
                 "app.kubernetes.io/component": "cainjector",
                 "app.kubernetes.io/version": "v1.5.4"
-            },
+            }
+        },
         "spec": {
             "replicas": "1",
             "selector": {
@@ -78,7 +79,8 @@ function(
                 "app.kubernetes.io/instance": "cert-manager",
                 "app.kubernetes.io/component": "controller",
                 "app.kubernetes.io/version": "v1.5.4"
-            },
+            }
+        },
         "spec": {
             "replicas": "1",
             "selector": {
@@ -153,7 +155,8 @@ function(
                 "app.kubernetes.io/instance": "cert-manager",
                 "app.kubernetes.io/component": "webhook",
                 "app.kubernetes.io/version": "v1.5.4"
-            },
+            }
+        },
         "spec": {
             "replicas": "1",
             "selector": {
