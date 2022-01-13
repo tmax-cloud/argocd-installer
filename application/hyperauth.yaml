@@ -15,12 +15,8 @@ spec:
     directory:
       jsonnet:
         tlas:
-          - name: hyperauth_image_repo
+          - name: target_registry
             value: tmaxcloudck
-          - name: hyperauth_image_name
-            value: hyperauth
-          - name: hyperauth_image_tag
-            value: latest
           - name: hyperauth_svc_type
             value: Ingress
           - name: hyperauth_external_dns
