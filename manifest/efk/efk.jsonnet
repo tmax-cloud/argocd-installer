@@ -351,7 +351,10 @@ function (
     "spec": {
       "type": kibana_svc_type,
       "ports": [
-        if kibana_svc_type == "ClusterIP" then {
+        if hyperauth_url == "" then {
+          "port": 5601,
+          "name": kibana
+        } else if kibana_svc_type == "ClusterIP" {
           "port": 443,
           "targetPort": 3000
         } else {
