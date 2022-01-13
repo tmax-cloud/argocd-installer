@@ -1,12 +1,6 @@
 function(
     target_registry="tmaxcloudck",
-    ISTIO_VERSION= "1.5.1",
-    EFK_ES_SVC_NAME="elasticsearch",
-    EFK_NAMESPACE="kube-logging",
-    JAEGER_VERSION="1.14",
-    JAEGER_SECRET="jaeger_secret",
     HYPERAUTH_DOMAIN="hyperauth.domain",
-    GATEKEER_VERSION="10.0.0",
     CUSTOM_DOMAIN_NAME="custom-domain",
     CUSTOM_CLUSTER_ISSUER="tmaxcloud-issuer"
 )

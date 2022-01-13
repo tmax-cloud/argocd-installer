@@ -1,6 +1,5 @@
 function(
     target_registry="tmaxcloudck",
-    ISTIO_VERSION= "1.5.1",
     EFK_ES_SVC_NAME="elasticsearch",
     EFK_NAMESPACE="kube-logging",
     JAEGER_VERSION="1.14",
