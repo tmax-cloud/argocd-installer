@@ -134,7 +134,7 @@ function(
         "query": "es:\n  server-urls: http://elasticsearch.kube-logging.svc.cluster.local:9200\n",
         "agent": "collector:\n  host-port: \"jaeger-collector:14267\"\n"
       }
-    }
+    },
     {
       "apiVersion": "apps/v1",
       "kind": "Deployment",
