@@ -215,7 +215,7 @@ function (
             }
           ],
           "containers": [
-            {
+           if hyperauth_url != "" then {
               "name": "gatekeeper",
               "image": std.join("", [gatekeeper_image_repo, ":", gatekeeper_image_tag]),
               "imagePullPolicy": "Always",
@@ -253,7 +253,7 @@ function (
                   "readOnly": true
                 }
               ]
-            },
+            } else {},
             {
               "name": "kibana",
               "image": std.join("",[kibana_image_repo, ":", kibana_image_tag]),
