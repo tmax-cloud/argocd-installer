@@ -28,4 +28,6 @@ spec:
             value: 6.4.3
           - name: grafana_image_repo
             value: grafana/grafana
+          - name: ingress_domain
+            value: ""
   project: default
