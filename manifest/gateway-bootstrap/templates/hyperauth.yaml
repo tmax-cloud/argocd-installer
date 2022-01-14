@@ -31,7 +31,6 @@ spec:
           {{- end }}
   project: default
 ---
----
 apiVersion: batch/v1
 kind: Job
 metadata:
