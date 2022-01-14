@@ -20,7 +20,7 @@ function (
     custom_clusterissuer="tmaxcloud-issuer"
 )
 
-if kibana_svc_type == "ClusterIP" then [ 
+if custom_domain_name == "" then [ 
   {
     "apiVersion": "networking.k8s.io/v1",
     "kind": "Ingress",
@@ -46,8 +46,10 @@ if kibana_svc_type == "ClusterIP" then [
                 "backend": {
                   "service": {
                     "name": "kibana",
-                    "port": {
-                      "number": 443
+                    "port": if hyperauth_url == "" then {
+                      "number": 5601
+                    } else {
+                      "number" : 443
                     }
                   }
                 },

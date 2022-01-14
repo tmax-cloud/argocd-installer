@@ -164,7 +164,6 @@ function (
           },
           "spec": {
             "accessModes": [ "ReadWriteOnce" ],
-            "storageClassName": "nfs",
             "resources": {
               "requests": {
                 "storage": es_volume_size
@@ -351,15 +350,15 @@ function (
     "spec": {
       "type": kibana_svc_type,
       "ports": [
-        if hyperauth_url == "" then {
+        if hyperauth_url == "" and kibana_svc_type == "LoadBalancer"  then {
           "port": 5601,
           "name": "kibana"
-        } else if kibana_svc_type == "ClusterIP" then {
-          "port": 443,
-          "targetPort": 3000
-        } else {
+        } else if kibana_svc_type == "LoadBalancer"  then {
           "port": 3000,
           "name": "gatekeeper"
+        } else {
+          "port": 443,
+          "targetPort": 3000
         }
       ],
       "selector": {
