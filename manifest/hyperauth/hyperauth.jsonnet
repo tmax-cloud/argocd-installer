@@ -9,40 +9,6 @@ local svcType = if hyperauth_svc_type == "Ingress" then "ClusterIP" else hyperau
 
 [ 
   {
-    "apiVersion": "v1",
-    "kind": "Service",
-    "metadata": {
-      "name": "hyperauth",
-      "namespace": "hyperauth",
-      "labels": {
-        "app": "keycloak"
-      },
-      "annotations": {
-        "traefik.ingress.kubernetes.io/service.sticky.cookie": "true",
-        "traefik.ingress.kubernetes.io/service.sticky.cookie.name": "hyperauth",
-        "traefik.ingress.kubernetes.io/service.sticky.cookie.secure": "true"
-      }
-    },
-    "spec": {
-      "ports": [
-        {
-          "name": "http",
-          "port": 8080,
-          "targetPort": 8080
-        },
-        {
-          "name": "https",
-          "port": 443,
-          "targetPort": 8443
-        }
-      ],
-      "selector": {
-        "app": "hyperauth"
-      },
-      "type": svcType
-    }
-  },
-  {
     "apiVersion": "apps/v1",
     "kind": "Deployment",
     "metadata": {
