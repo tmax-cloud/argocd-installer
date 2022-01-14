@@ -3,7 +3,7 @@ spec:
     server: https://kubernetes.default.svc
   source:
     repoURL: https://github.com/tmax-cloud/gateway-helm-chart
-    targetRevision: HEAD
+    targetRevision: main
 
 modules:
   certManager:
