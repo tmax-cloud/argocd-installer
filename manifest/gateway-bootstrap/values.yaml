@@ -7,15 +7,15 @@ spec:
 
 modules:
   certManager:
-    enabled: false
+    enabled: true
     source:
       path: manifest/api-gateway/cert-manager
   gateway:
-    enalbed: false
+    enalbed: true
     source:
       path: manifest/api-gateway/gateway
   hyperauth:
-    enabled: true
+    enabled: false
     source:
       path: manifest/hyperauth
     configs:
@@ -23,11 +23,11 @@ modules:
       hyperauth_svc_type: Ingress
       hyperauth_external_dns: hyperauth.tmaxcloud.local
   jwtDecodeAuth:
-    enabled: false
+    enabled: true
     source:
       path: manifest/api-gateway/jwt-decode-auth
   console:
-    enabled: false
+    enabled: true
     source:
       path: manifest/api-gateway/console
 
