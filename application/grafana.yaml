@@ -15,9 +15,9 @@ spec:
       jsonnet:
         tlas:
           - name: domain
-            value: 
+            value: ""
           - name: client_id
-            value: 
+            value: ""
           - name: client_secret
             value: v0.0.1
           - name: keycloak_addr
