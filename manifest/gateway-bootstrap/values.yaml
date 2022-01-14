@@ -2,7 +2,7 @@ spec:
   destination:
     server: https://kubernetes.default.svc
   source:
-    repoURL: https://github.com/tmax-cloud/gateway-helm-chart
+    repoURL: https://github.com/tmax-cloud/argocd-installer
     targetRevision: main
 
 modules:
