@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hypercloud5-api-server-service
+  namespace: hypercloud5-system
+spec:
+  ports:
+  - port: 443
+    targetPort: https
+    name: https
+  selector:
+    hypercloud5: api-server
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: smtp-secret
+  namespace: hypercloud5-system
+type: Opaque
+data:
+  SMTP_USERNAME: bm8tcmVwbHktdGNAdG1heC5jby5rcg==
+  SMTP_PASSWORD: IUB0Y2Ruc2R1ZHhsYTEx
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: token-secret
+  namespace: hypercloud5-system
+type: Opaque
+data:
+  ACCESS_TOKEN: dG1heEAxMw==
