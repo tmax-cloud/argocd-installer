@@ -1,13 +1,11 @@
 function (
-    es_image_repo="docker.elastic.co",
-    es_image_tag="elasticsearch/elasticsearch:7.2.0",
-    busybox_image_repo="docker.io",
+    is_offline="false",
+    private_registry="registry.hypercloud.org",
+    es_image_tag="elasticsearch/elasticsearch:7.2.1",
     busybox_image_tag="busybox:1.32.0",
     es_volume_size="50Gi",
-    kibana_image_repo="docker.elastic.co",
     kibana_image_tag="kibana/kibana:7.2.0",
     kibana_svc_type="ClusterIP",
-    gatekeeper_image_repo="quay.io",
     gatekeeper_image_tag="keycloak/keycloak-gatekeeper:10.0.0",
     kibana_client_id="kibana",
     kibana_client_secret="23077707-908e-4633-956d-5adcaed4caa7",
@@ -15,10 +13,15 @@ function (
     hyperauth_realm="tmax",
     custom_domain_name="domain_name",
     encryption_key="AgXa7xRcoClDEU0ZDSH4X0XhL5Qy2Z2j",
-    fluentd_image_repo="docker.io",
     fluentd_image_tag="fluent/fluentd-kubernetes-daemonset:v1.4.2-debian-elasticsearch-1.1",
     custom_clusterissuer="tmaxcloud-issuer"
 )
+
+local es_registry = if is_offline == "false" then "tmaxcloudck" else private_registry;
+local busybox_registry = if is_offline == "false" then "docker.io" else private_registry;
+local kibana_registry = if is_offline == "false" then "docker.elastic.co" else private_registry;
+local gatekeeper_registry = if is_offline == "false" then "quay.io" else private_registry;
+local fluentd_registry = if is_offline == "false" then "docker.io" else private_registry;
 
 [
   {
@@ -47,7 +50,7 @@ function (
           "containers": [
             {
               "name": "elasticsearch",
-              "image": std.join("", [es_image_repo, "/", es_image_tag]),
+              "image": std.join("", [es_registry, "/", es_image_tag]),
               "securityContext": {
                 "allowPrivilegeEscalation": true,
                 "privileged": true
@@ -111,7 +114,7 @@ function (
           "initContainers": [
             {
               "name": "fix-permissions",
-              "image": std.join("", [busybox_image_repo, "/", busybox_image_tag]),
+              "image": std.join("", [busybox_registry, "/", busybox_image_tag]),
               "command": [
                 "sh",
                 "-c",
@@ -129,7 +132,7 @@ function (
             },
             {
               "name": "increase-vm-max-map",
-              "image": std.join("", [busybox_image_repo, "/", busybox_image_tag]),
+              "image": std.join("", [busybox_registry, "/", busybox_image_tag]),
               "command": [
                 "sysctl", 
                 "-w", 
@@ -141,7 +144,7 @@ function (
             },
             {
               "name": "increase-fd-ulimit",
-              "image": std.join("", [busybox_image_repo, "/", busybox_image_tag]),
+              "image": std.join("", [busybox_registry, "/", busybox_image_tag]),
               "command": [
                 "sh", 
                 "-c", 
@@ -216,7 +219,7 @@ function (
           "containers": if hyperauth_url != "" then [
             {
               "name": "gatekeeper",
-              "image": std.join("", [gatekeeper_image_repo, "/", gatekeeper_image_tag]),
+              "image": std.join("", [gatekeeper_registry, "/", gatekeeper_image_tag]),
               "imagePullPolicy": "Always",
               "args": [
                 std.join("", ["--client-id=", kibana_client_id]),
@@ -255,7 +258,7 @@ function (
             },
             {
               "name": "kibana",
-              "image": std.join("",[kibana_image_repo, "/", kibana_image_tag]),
+              "image": std.join("",[kibana_registry, "/", kibana_image_tag]),
               "resources": {
                 "limits": {
                   "cpu": "500m",
@@ -288,7 +291,7 @@ function (
           ] else [
             {
               "name": "kibana",
-              "image": std.join("",[kibana_image_repo, "/", kibana_image_tag]),
+              "image": std.join("",[kibana_registry, "/", kibana_image_tag]),
               "resources": {
                 "limits": {
                   "cpu": "500m",
@@ -426,7 +429,7 @@ function (
           "containers": [
             {
               "name": "fluentd",
-              "image": std.join("",[fluentd_image_repo, "/", fluentd_image_tag]),
+              "image": std.join("",[fluentd_registry, "/", fluentd_image_tag]),
               "env": [
                 {
                   "name": "FLUENT_ELASTICSEARCH_HOST",
