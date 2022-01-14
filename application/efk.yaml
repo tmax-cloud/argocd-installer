@@ -37,13 +37,13 @@ spec:
           - name: kibana_client_id
             value: kibana
           - name: kibana_client_secret
-            value: # hyperauth kibana client_secret copy
+            value: "" # hyperauth kibana client_secret copy
           - name: hyperauth_url
-            value: # if hyperauth url is None, kibana will deploy without gatekeeper
+            value: "" # if hyperauth url is None, kibana will deploy without gatekeeper
           - name: hyperauth_realm
             value: tmax
           - name: custom_domain_name
-            value: # user custom domain name, if not ingress unavailable
+            value: "" # user custom domain name, if not ingress unavailable
           - name: fluentd_image_repo
             value: docker.io
           - name: fluentd_image_tag
