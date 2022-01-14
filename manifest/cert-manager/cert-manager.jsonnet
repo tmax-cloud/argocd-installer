@@ -1,6 +1,9 @@
-function(
-    quay_registry="quay.io"
+function (
+    is_offline=false
+    private_registry="registry.tmaxcloud.org"
 )
+
+local quay_registry = if is_offline == false then "quay.io" else private_registry;
 
 [
     {
