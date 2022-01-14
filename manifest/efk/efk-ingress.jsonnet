@@ -1,13 +1,11 @@
 function (
-    es_image_repo="docker.elastic.co",
-    es_image_tag="elasticsearch/elasticsearch:7.2.0",
-    busybox_image_repo="docker.io",
+    is_offline="false",
+    private_registry="registry.hypercloud.org",
+    es_image_tag="elasticsearch/elasticsearch:7.2.1",
     busybox_image_tag="busybox:1.32.0",
     es_volume_size="50Gi",
-    kibana_image_repo="docker.elastic.co",
     kibana_image_tag="kibana/kibana:7.2.0",
     kibana_svc_type="ClusterIP",
-    gatekeeper_image_repo="quay.io",
     gatekeeper_image_tag="keycloak/keycloak-gatekeeper:10.0.0",
     kibana_client_id="kibana",
     kibana_client_secret="23077707-908e-4633-956d-5adcaed4caa7",
@@ -15,7 +13,6 @@ function (
     hyperauth_realm="tmax",
     custom_domain_name="domain_name",
     encryption_key="AgXa7xRcoClDEU0ZDSH4X0XhL5Qy2Z2j",
-    fluentd_image_repo="docker.io",
     fluentd_image_tag="fluent/fluentd-kubernetes-daemonset:v1.4.2-debian-elasticsearch-1.1",
     custom_clusterissuer="tmaxcloud-issuer"
 )
