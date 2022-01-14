@@ -5,7 +5,8 @@ function (
 	keycloak_addr="",
 	grafana_pvc="10Gi",
 	grafana_version="6.4.3",
-	grafana_image_repo="grafana/grafana"
+	grafana_image_repo="grafana/grafana",
+	ingress_domain=""
 )
 
 [
