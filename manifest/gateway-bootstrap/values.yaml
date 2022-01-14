@@ -15,7 +15,7 @@ modules:
     source:
       path: manifest/api-gateway/gateway
   hyperauth:
-    enabled: false
+    enabled: true
     source:
       path: manifest/hyperauth
     configs:
