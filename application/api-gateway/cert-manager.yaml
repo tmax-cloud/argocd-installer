@@ -10,6 +10,9 @@ spec:
     path: manifest/api-gateway/cert-manager
     repoURL: 'https://github.com/tmax-cloud/argocd-installer.git'
     targetRevision: HEAD
+    helm:
+      valueFiles:
+        - values.yaml
   project: default
   syncPolicy:
     syncOptions:

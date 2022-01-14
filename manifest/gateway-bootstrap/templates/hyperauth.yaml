@@ -51,8 +51,10 @@ spec:
         app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
         app.kubernetes.io/instance: "hyperauth-sync-wave"
     spec:
+      {{- with .Values.modules.hyperauth.job.imagePullSecrets }}
       imagePullSecrets:
-        - name: regcred
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
       restartPolicy: Never
       containers:
         - name: post-install-job

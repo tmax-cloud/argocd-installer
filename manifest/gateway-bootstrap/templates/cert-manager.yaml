@@ -16,6 +16,11 @@ spec:
     path: {{ .Values.modules.certManager.source.path }}
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
+    {{- with .Values.modules.certManager.source.helm.parameters }}
+    helm:
+      parameters:
+      {{- toYaml . | nindent 8 }}
+    {{- end }}
   project: default
   syncPolicy:
     syncOptions:
@@ -46,8 +51,10 @@ spec:
         app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
         app.kubernetes.io/instance: "cert-manager-sync-wave"
     spec:
+      {{- with .Values.modules.certManager.job.imagePullSecrets }}
       imagePullSecrets:
-        - name: regcred
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
       restartPolicy: Never
       containers:
         - name: post-install-job
