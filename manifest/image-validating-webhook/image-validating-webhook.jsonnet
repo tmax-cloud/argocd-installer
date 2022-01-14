@@ -1,6 +1,9 @@
 function(
-    tmax_registry = "tmaxcloudck"
+    is_offline=false,
+    private_registry="registry.tmaxcloud.org"
 )
+
+local tmax_registry = if is_offline == false then "tmaxcloudck" else private_registry;
 
 [
   {
