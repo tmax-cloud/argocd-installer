@@ -23,7 +23,7 @@
 - 모듈 Manifest에서 모두 공통으로 선언해주어야 하는 변수는 두개입니다.
     ```
     function (
-        is_offline=false
+        is_offline="false"
         private_registry="registry.tmaxcloud.org"
     )
     ```
@@ -34,8 +34,8 @@
 ---
 - 이미지 레포별 변수는 로컬로 추가해서 샤용합니다(해당 매니페스트에서만 사용되므로 이름이 모두 통일되거나 할 필요가 없습니다.)
     ```
-    local tmax_registry = if is_offline == false then "tmaxcloudck" else private_registry;
-    local gcr_registry = if is_offline == false then "gcr.io" else private_registry;
+    local tmax_registry = if is_offline == "false" then "tmaxcloudck" else private_registry;
+    local gcr_registry = if is_offline == "false" then "gcr.io" else private_registry;
     ```
     - 위의 예시에서 tmax_registry, gcr_registry는 본인이 원하는대로 명명하시면 되고, 필요한 이미지 레지스트리 수만큼 선언하시면 됩니다.
 ---
