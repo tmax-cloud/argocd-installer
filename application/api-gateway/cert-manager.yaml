@@ -17,7 +17,5 @@ spec:
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
-    automated:
-      allowEmpty: true
     retry:
       limit: 3
