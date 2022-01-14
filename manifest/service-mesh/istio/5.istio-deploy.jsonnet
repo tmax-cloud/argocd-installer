@@ -1,7 +1,11 @@
 function(
-    target_registry="tmaxcloudck",
+    is_offline="false",
+    private_registry="registry.tmaxcloud.org",
     ISTIO_VERSION= "1.5.1",
 )
+local tmax_registry = if is_offline == "false" then "tmaxcloudck" else private_registry;
+
+
 
 [
     {
@@ -191,7 +195,7 @@ function(
                     }
                   }
                 ],
-                "image": std.join("", [target_registry, "/istio/pilot:",ISTIO_VERSION]),
+                "image": std.join("", [tmax_registry, "/istio/pilot:",ISTIO_VERSION]),
                 "imagePullPolicy": "IfNotPresent",
                 "name": "discovery",
                 "ports": [
@@ -558,7 +562,7 @@ function(
                     "value": "Kubernetes"
                   }
                 ],
-                "image": std.join("", [target_registry, "/istio/proxyv2:",ISTIO_VERSION]),
+                "image": std.join("", [tmax_registry, "/istio/proxyv2:",ISTIO_VERSION]),
                 "imagePullPolicy": "IfNotPresent",
                 "name": "istio-proxy",
                 "ports": [

@@ -1,10 +1,13 @@
 function(
-    target_registry="tmaxcloudck",
+    is_offline="false",
+    private_registry="registry.tmaxcloud.org",
+    KIALI_VERSION="v1.21",
     HYPERAUTH_DOMAIN="hyperauth.domain",
     CUSTOM_DOMAIN_NAME="custom-domain",
     CUSTOM_CLUSTER_ISSUER="tmaxcloud-issuer"
 )
 
+local tmax_registry = if is_offline == "false" then "tmaxcloudck" else private_registry;
 
 
 [
@@ -406,7 +409,7 @@ function(
                   }
                 }
               ],
-              "image": "quay.io/kiali/kiali:v1.21",
+              "image": std.join("", [tmax_registry, "/kiali/kiali:",KIALI_VERSION]),
               "imagePullPolicy": "IfNotPresent",
               "livenessProbe": {
                 "httpGet": {

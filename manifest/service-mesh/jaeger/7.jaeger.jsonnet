@@ -1,14 +1,18 @@
 function(
-    target_registry="tmaxcloudck",
+    is_offline="false",
+    private_registry="registry.tmaxcloud.org",
     JAEGER_VERSION="1.14",
     JAEGER_SECRET="jaeger_secret",
     HYPERAUTH_DOMAIN="hyperauth.domain",
-    target_registry2="tmaxcloudck",
     GATEKEER_VERSION="10.0.0",
     CUSTOM_DOMAIN_NAME="custom-domain",
     CUSTOM_CLUSTER_ISSUER="tmaxcloud-issuer",
     REDIRECT_URL="jaeger.domain"
 )
+
+local tmax_registry = if is_offline == "false" then "tmaxcloudck" else private_registry;
+
+
 
 [
     {
@@ -174,7 +178,7 @@ function(
             "serviceAccountName": "jaeger-service-account",
             "containers": [
               {
-                "image": std.join("", [target_registry, "/jaegertracing/jaeger-collector:",JAEGER_VERSION]),
+                "image": std.join("", [tmax_registry, "/jaegertracing/jaeger-collector:",JAEGER_VERSION]),
                 "name": "jaeger-collector",
                 "args": [
                   "--config-file=/conf/collector.yaml"
@@ -344,7 +348,7 @@ function(
             "containers": [
               {
                 "name": "gatekeeper",
-                "image": std.join("", [target_registry2, "/keycloak/keycloak-gatekeeper:",GATEKEER_VERSION]),
+                "image": std.join("", [tmax_registry2, "/keycloak/keycloak-gatekeeper:",GATEKEER_VERSION]),
                 "imagePullPolicy": "Always",
                 "args": [
                   "--client-id=jaeger",
@@ -397,7 +401,7 @@ function(
                     "value": "/api/jaeger"
                   }
                 ],
-                "image": std.join("", [target_registry, "/jaegertracing/jaeger-query:",JAEGER_VERSION]),
+                "image": std.join("", [tmax_registry, "/jaegertracing/jaeger-query:",JAEGER_VERSION]),
                 "imagePullPolicy": "IfNotPresent",
                 "name": "jaeger-query",
                 "ports": [
@@ -595,7 +599,7 @@ function(
           "spec": {
             "containers": [
               {
-                "image": std.join("", [target_registry, "/jaegertracing/jaeger-agent:",JAEGER_VERSION]),
+                "image": std.join("", [tmax_registry, "/jaegertracing/jaeger-agent:",JAEGER_VERSION]),
                 "name": "jaeger-agent",
                 "args": [
                   "--config-file=/conf/agent.yaml"
