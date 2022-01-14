@@ -1,0 +1,33 @@
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: https://github.com/tmax-cloud/gateway-helm-chart
+    targetRevision: HEAD
+
+modules:
+  certManager:
+    enabled: false
+    source:
+      path: manifest/api-gateway/cert-manager
+  gateway:
+    enalbed: false
+    source:
+      path: manifest/api-gateway/gateway
+  hyperauth:
+    enabled: true
+    source:
+      path: manifest/hyperauth
+    configs:
+      target_registry: tmaxcloudck
+      hyperauth_svc_type: Ingress
+      hyperauth_external_dns: hyperauth.tmaxcloud.local
+  jwtDecodeAuth:
+    enabled: false
+    source:
+      path: manifest/api-gateway/jwt-decode-auth
+  console:
+    enabled: false
+    source:
+      path: manifest/api-gateway/console
+
