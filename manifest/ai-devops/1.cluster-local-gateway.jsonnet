@@ -422,7 +422,7 @@ function (
                 }
                 ],
                 "image": std.join("", [istio_image_repo, "/proxyv2:1.3.1"]),
-                "imagePullPolicy": "ifNotPresent",
+                "imagePullPolicy": "IfNotPresent",
                 "name": "istio-proxy",
                 "ports": [
                 {
