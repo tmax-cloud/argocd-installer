@@ -350,10 +350,10 @@ function (
     "spec": {
       "type": kibana_svc_type,
       "ports": [
-        if hyperauth_url == "" and kibana_svc_type == "LoadBalancer"  then {
+        if hyperauth_url == "" then {
           "port": 5601,
           "name": "kibana"
-        } else if kibana_svc_type == "LoadBalancer"  then {
+        } else if custom_domain_name == ""  then {
           "port": 3000,
           "name": "gatekeeper"
         } else {
