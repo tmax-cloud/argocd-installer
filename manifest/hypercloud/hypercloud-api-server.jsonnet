@@ -268,7 +268,7 @@ local gcr_registry = if is_offline == false then "gcr.io" else private_registry;
                                 "--logtostderr=true",
                                 "--v=10"
                             ],
-                            "image": std.join("", [gcr_regitry, "/kubebuilder/kube-rbac-proxy:v0.5.0"]),
+                            "image": std.join("", [gcr_registry, "/kubebuilder/kube-rbac-proxy:v0.5.0"]),
                             "name": "kube-rbac-proxy",
                             "ports": [
                                 {
@@ -399,7 +399,7 @@ local gcr_registry = if is_offline == false then "gcr.io" else private_registry;
                                 "--logtostderr=true",
                                 "--v=10"
                             ],
-                            "image": std.join("", [gcr_regitry, "/kubebuilder/kube-rbac-proxy:v0.5.0"]),
+                            "image": std.join("", [gcr_registry, "/kubebuilder/kube-rbac-proxy:v0.5.0"]),
                             "name": "kube-rbac-proxy",
                             "ports": [
                                 {
