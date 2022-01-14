@@ -34,7 +34,7 @@
 ---
 - 이미지 레포별 변수는 로컬로 추가해서 샤용합니다(해당 매니페스트에서만 사용되므로 이름이 모두 통일되거나 할 필요가 없습니다.)
     ```
-    local tmax_registry = if is_offline == "false" then "tmaxcloudck" else private_registry;
+    local docker_registry = if is_offline == "false" then "docker.io" else private_registry;
     local gcr_registry = if is_offline == "false" then "gcr.io" else private_registry;
     ```
     - 위의 예시에서 tmax_registry, gcr_registry는 본인이 원하는대로 명명하시면 되고, 필요한 이미지 레지스트리 수만큼 선언하시면 됩니다.
@@ -42,7 +42,7 @@
 - Deployment.spec.template.spec.containers.image 는 다음과 같이 작성합니다.
     ```
     ...
-    "image": std.join("", [tmax_registry, "/hypercloud-multi-operator:latest"])
+    "image": std.join("", [docker_registry, "/tmaxcloudck/hypercloud-multi-operator:latest"])
     ...
     "image": std.join("", [gcr_registry, "/kubebuilder/kube-rbac-proxy:v0.5.0"])
     ..
