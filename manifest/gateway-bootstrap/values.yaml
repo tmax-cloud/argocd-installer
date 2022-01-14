@@ -15,13 +15,13 @@ modules:
     source:
       path: manifest/api-gateway/gateway
   hyperauth:
-    enabled: false
+    enabled: true
     source:
       path: manifest/hyperauth
     configs:
       target_registry: tmaxcloudck
       hyperauth_svc_type: Ingress
-      hyperauth_external_dns: hyperauth.tmaxcloud.local
+      hyperauth_external_dns: hyperauth.a8e9df7fb87ba4e81b4a38e06187c6c1-820671877.eu-central-1.elb.amazonaws.com.nip.io
   jwtDecodeAuth:
     enabled: true
     source:

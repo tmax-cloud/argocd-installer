@@ -1,6 +1,9 @@
 function (
-    quay_registry = "quay.io"
+    is_offline = false,
+    private_registry="registry.tmaxcloud.org"
 )
+
+local quay_registry = if is_offline == false then "quay.io/kubernetes-service-catalog" else private_registry;
 
 [
   {
@@ -50,7 +53,7 @@ function (
         "containers": [
           {
             "name": "controller-manager",
-            "image": std.join("", [quay_registry, "/kubernetes-service-catalog/service-catalog:v0.3.0"]),
+            "image": std.join("", [quay_registry, "/service-catalog:v0.3.0"]),
             "imagePullPolicy": "Always",
             "resources": {
               "requests": {
@@ -175,7 +178,7 @@ function (
         "containers": [
           {
             "name": "svr",
-            "image": std.join("", [quay_registry, "/kubernetes-service-catalog/service-catalog:v0.3.0"]),
+            "image": std.join("", [quay_registry, "/service-catalog:v0.3.0"]),
             "imagePullPolicy": "Always",
             "resources": {
               "requests": {

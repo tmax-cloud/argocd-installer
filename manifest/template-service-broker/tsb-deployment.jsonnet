@@ -1,10 +1,12 @@
 function (
-    tmax_registry = "tmaxcloudck",
+    is_offline = false,
+    private_registry="registry.tmaxcloud.org",
     template_operator_version = "0.2.6",
     cluster_tsb_version = "0.1.3",
     tsb_version = "0.1.3"
 )
 
+local tmax_registry = if is_offline == false then "tmaxcloudck" else private_registry;
 
 [
   {
