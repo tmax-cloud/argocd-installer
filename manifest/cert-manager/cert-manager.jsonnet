@@ -1,5 +1,5 @@
 function (
-    is_offline=false
+    is_offline=false,
     private_registry="registry.tmaxcloud.org"
 )
 
