@@ -15,9 +15,9 @@ spec:
       jsonnet:
         tlas:
           - name: domain
-            value: 
+            value: ""
           - name: client_id
-            value: 
+            value: ""
           - name: client_secret
             value: v0.0.1
           - name: keycloak_addr
@@ -28,4 +28,6 @@ spec:
             value: 6.4.3
           - name: grafana_image_repo
             value: grafana/grafana
+          - name: ingress_domain
+            value: ""
   project: default

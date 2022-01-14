@@ -1,0 +1,72 @@
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: https://github.com/tmax-cloud/argocd-installer
+    targetRevision: main
+
+modules:
+
+  certManager:
+    enabled: true
+    source:
+      path: manifest/api-gateway/cert-manager
+      helm:
+        parameters: []
+    job:
+      imagePullSecrets: []
+#      imagePullSecrets:
+#        - name: regcred
+
+  gateway:
+    enalbed: true
+    source:
+      path: manifest/api-gateway/gateway
+      helm:
+        parameters: []
+    job:
+      imagePullSecrets: []
+#      imagePullSecrets:
+#        - name: regcred
+
+  hyperauth:
+    enabled: false
+    source:
+      path: manifest/hyperauth
+    configs:
+      target_registry: tmaxcloudck
+      hyperauth_svc_type: Ingress
+      hyperauth_external_dns: hyperauth.a8e9df7fb87ba4e81b4a38e06187c6c1-820671877.eu-central-1.elb.amazonaws.com.nip.io
+    job:
+      imagePullSecrets: []
+
+  jwtDecodeAuth:
+    enabled: true
+    source:
+      path: manifest/api-gateway/jwt-decode-auth
+      helm:
+#        parameters: []
+        parameters:
+          - name: hyperauth.address
+            value: hyperauth.tmaxcloud.org
+          - name: hyperauth.realm
+            value: tmax
+    job:
+      imagePullSecrets: []
+#      imagePullSecrets:
+#        - name: regcred
+
+  console:
+    enabled: true
+    source:
+      path: manifest/api-gateway/console
+      helm:
+#        parameters: []
+        paramethers:
+          - name: console.auth.hyperauth
+            value: hyperauth.tmaxcloud.org
+    job:
+      imagePullSecrets: []
+#      imagePullSecrets:
+#        - name: regcred
+

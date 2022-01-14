@@ -1,13 +1,13 @@
 function (
-    is_offline=false,
+    is_offline="false",
     private_registry="registry.hypercloud.org",
     hypercloud_hpcd_mode="multi",
     hypercloud_kafka_enabled="\"true\"",
     hyperauth_url="hyperauth.172.22.6.18.nip.io"
 )
 
-local tmax_registry = if is_offline == false then "tmaxcloudck" else private_registry;
-local gcr_registry = if is_offline == false then "gcr.io" else private_registry;
+local tmax_registry = if is_offline == "false" then "tmaxcloudck" else private_registry;
+local gcr_registry = if is_offline == "false" then "gcr.io" else private_registry;
 
 [
     {
@@ -41,7 +41,7 @@ local gcr_registry = if is_offline == false then "gcr.io" else private_registry;
                     "containers": [
                         {
                             "name": "hypercloud5-api-server",
-                            "image": std.join("", [tmax_registry, "/hypercloud-api-server:latest"]),
+                            "image": std.join("", [tmax_registry, "/hypercloud-api-server:b5.0.26.6"]),
                             "imagePullPolicy": "IfNotPresent",
                             "env": [
                                 {
@@ -225,7 +225,7 @@ local gcr_registry = if is_offline == false then "gcr.io" else private_registry;
                             "command": [
                                 "/manager"
                             ],
-                            "image": std.join("", [tmax_registry, "/hypercloud-single-operator:latest"]),
+                            "image": std.join("", [tmax_registry, "/hypercloud-single-operator:b5.0.25.16"]),
                             "name": "manager",
                             "ports": [
                                 {
@@ -268,7 +268,7 @@ local gcr_registry = if is_offline == false then "gcr.io" else private_registry;
                                 "--logtostderr=true",
                                 "--v=10"
                             ],
-                            "image": std.join("", [gcr_regitry, "/kubebuilder/kube-rbac-proxy:v0.5.0"]),
+                            "image": std.join("", [gcr_registry, "/kubebuilder/kube-rbac-proxy:v0.5.0"]),
                             "name": "kube-rbac-proxy",
                             "ports": [
                                 {
@@ -360,7 +360,7 @@ local gcr_registry = if is_offline == false then "gcr.io" else private_registry;
                                     "value": "Asia/Seoul"
                                 }
                             ],
-                            "image": std.join("", [tmax_registry, "/hypercloud-multi-operator:latest"]),
+                            "image": std.join("", [tmax_registry, "/hypercloud-multi-operator:b5.0.25.19"]),
                             "name": "manager",
                             "ports": [
                                 {
@@ -399,7 +399,7 @@ local gcr_registry = if is_offline == false then "gcr.io" else private_registry;
                                 "--logtostderr=true",
                                 "--v=10"
                             ],
-                            "image": std.join("", [gcr_regitry, "/kubebuilder/kube-rbac-proxy:v0.5.0"]),
+                            "image": std.join("", [gcr_registry, "/kubebuilder/kube-rbac-proxy:v0.5.0"]),
                             "name": "kube-rbac-proxy",
                             "ports": [
                                 {

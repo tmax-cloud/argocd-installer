@@ -1,6 +1,9 @@
 function(
-  gcr_registry = "gcr.io"
+    is_offline=false,
+    private_registry="registry.tmaxcloud.org"
 )
+
+local gcr_registry = if is_offline == false then "gcr.io" else private_registry;
 
 [
   {

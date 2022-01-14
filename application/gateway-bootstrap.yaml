@@ -1,0 +1,14 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gateway-bootstrap
+spec:
+  destination:
+    name: ''
+    namespace: argocd
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: manifest/gateway-bootstrap
+    repoURL: 'https://github.com/tmax-cloud/argocd-installer'
+    targetRevision: main
+  project: default

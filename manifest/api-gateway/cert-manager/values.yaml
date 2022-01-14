@@ -15,5 +15,6 @@ cert-manager:
 global:
   createCA: true
   sleepyTime: 120
-imagePullSecrets:
-  - name: regcred
+imagePullSecrets: []
+#imagePullSecrets:
+#  - name: regcred

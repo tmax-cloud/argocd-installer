@@ -1,0 +1,64 @@
+{{- if .Values.modules.hyperauth.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: hyperauth
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  destination:
+    name: ''
+    namespace: hyperauth
+    server: {{ .Values.spec.destination.server }}
+  source:
+    path: {{ .Values.modules.hyperauth.source.path }}
+    repoURL: {{ .Values.spec.source.repoURL }}
+    targetRevision: {{ .Values.spec.source.targetRevision }}
+    directory:
+      jsonnet:
+        tlas:
+          {{- with .Values.modules.hyperauth.configs }}
+          - name: target_registry
+            value: {{ .target_registry }}
+          - name: hyperauth_svc_type
+            value: {{ .hyperauth_svc_type }}
+          - name: hyperauth_external_dns
+            value: >-
+              {{ .hyperauth_external_dns }}
+          {{- end }}
+  project: default
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hyperauth-sync-wave
+  namespace: argocd
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/instance: "hyperauth-sync-wave"
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded, BeforeHookCreation
+spec:
+  template:
+    metadata:
+      name: "{{ .Release.Name }}"
+      labels:
+        app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+        app.kubernetes.io/instance: "hyperauth-sync-wave"
+    spec:
+      {{- with .Values.modules.hyperauth.job.imagePullSecrets }}
+      imagePullSecrets:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Never
+      containers:
+        - name: post-install-job
+          image: "alpine:3.3"
+          command: ["/bin/sleep","300"]
+          imagePullPolicy: IfNotPresent
+{{- end }}
