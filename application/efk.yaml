@@ -27,19 +27,19 @@ spec:
           - name: kibana_image_tag
             value: kibana/kibana:7.2.0
           - name: kibana_svc_type
-            value: ClusterIP # if either hyperauth_url is None or kibana ingress unavailable, change to LoadBalancer
+            value: ClusterIP
           - name: gatekeeper_image_tag
             value: keycloak/keycloak-gatekeeper:10.0.0
           - name: kibana_client_id
             value: kibana
           - name: kibana_client_secret
-            value: # hyperauth kibana client_secret copy
+            value:
           - name: hyperauth_url
-            value: # if hyperauth url is None, kibana will deploy without gatekeeper
+            value:
           - name: hyperauth_realm
             value: tmax
           - name: custom_domain_name
-            value: # user custom domain name, if not ingress unavailable
+            value:
           - name: fluentd_image_tag
             value: fluent/fluentd-kubernetes-daemonset:v1.4.2-debian-elasticsearch-1.1
   project: default
