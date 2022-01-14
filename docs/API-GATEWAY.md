@@ -20,7 +20,29 @@ Api-gateway consist of a total of 4 charts.
 With the command `helm version`, make sure that you have:
 - Helm v3 [installed](https://helm.sh/docs/using_helm/#installing-helm)
 
-### Deploying Api-Gateway
+### Deploying Api-Gateway (Using argocd)
+1. install cert-manager (optional)
+- configure cert-manager values to /manifest/api-gateway/cert-manager/values.yaml 
+```shell
+kubectl apply -f /application/api-gateway/cert-manager.yaml
+````
+2. install gateway
+- configure gateway values to /manifest/api-gateway/gateway/values.yaml
+```shell
+kubectl apply -f /application/api-gateway/gateway.yaml
+````
+3. install jwt-decode-auth
+- configure jwt-decode-auth values to /manifest/api-gateway/jwt-decode-auth/values.yaml
+```shell
+kubectl apply -f /application/api-gateway/jwt-decode-auth.yaml
+````
+4. install console
+- configure console values to /manifest/api-gateway/console/values.yaml
+```shell
+kubectl apply -f /application/api-gateway/console.yaml
+````
+
+### Deploying Api-Gateway (using helm - self install)
 1. Deploying cert-manager
 ```shell
 cd cert-manager
