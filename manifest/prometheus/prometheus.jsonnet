@@ -1,7 +1,9 @@
 function (
+	is_offline="false",
+	private_registry="172.22.6.2:5000",
 	coreos_image_repo="quay.io/coreos",
 	prometheus_image_repo="quay.io/prometheus",
-    	configmap_reload_version="v0.0.1",
+	configmap_reload_version="v0.0.1",
 	configmap_reloader_version="v0.34.0",
 	prometheus_operator_version="v0.34.0",
 	alertmanager_version="v0.20.0",
@@ -12,6 +14,8 @@ function (
 	prometheus_pvc="10Gi",
 	prometheus_version="v2.11.0"
 )
+
+local target_registry = if is_offline == "flase" then "" else private_registry + "/";
 
 [
 	{
@@ -48,10 +52,33 @@ function (
 				"args": [
 				  "--kubelet-service=kube-system/kubelet",
 				  "--logtostderr=true",
-				  std.join("",["--config-reloader-image=",coreos_image_repo,"/configmap-reload:",configmap_reload_version]),
-				  std.join("",["--prometheus-config-reloader=",coreos_image_repo,"/prometheus-config-reloader:",configmap_reloader_version])
+				  std.join("",
+				  	[
+						"--config-reloader-image=",
+						target_registry,
+						coreos_image_repo,
+						"/configmap-reload:",
+						configmap_reload_version
+					]
+				  ),
+				  std.join("",
+				  	[
+					  "--prometheus-config-reloader=",
+					  target_registry,
+					  coreos_image_repo,
+					  "/prometheus-config-reloader:",
+					  configmap_reloader_version
+					]
+				  )
 				],
-				"image": std.join("",[coreos_image_repo,"/prometheus-operator:", prometheus_operator_version]),
+				"image": std.join("",
+					[
+						target_registry,
+						coreos_image_repo,
+						"/prometheus-operator:",
+						prometheus_operator_version
+					]
+				),
 				"name": "prometheus-operator",
 				"ports": [
 				  {
@@ -97,7 +124,14 @@ function (
 		"namespace": "monitoring"
 	  },
 	  "spec": {
-		"image": std.join("",[prometheus_image_repo,"/alertmanager:", alertmanager_version]),
+		"image": std.join("",
+			[
+				target_registry,
+				prometheus_image_repo,
+				"/alertmanager:",
+				alertmanager_version
+			]
+		),
 		"resources": {
 		  "requests": {
 			"memory": "200Mi",
@@ -149,7 +183,14 @@ function (
 				  "--tls-cipher-suites=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
 				  "--upstream=http://127.0.0.1:8081/"
 				],
-				"image": std.join("",[coreos_image_repo,"/kube-rbac-proxy:",kube_rbac_proxy_version]),
+				"image": std.join("",
+					[
+						target_registry,
+						coreos_image_repo,
+						"/kube-rbac-proxy:",
+						kube_rbac_proxy_version
+					]
+				),
 				"name": "kube-rbac-proxy-main",
 				"ports": [
 				  {
@@ -175,7 +216,14 @@ function (
 				  "--tls-cipher-suites=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
 				  "--upstream=http://127.0.0.1:8082/"
 				],
-				"image": std.join("",[coreos_image_repo,"/kube-rbac-proxy:", kube_rbac_proxy_version]),
+				"image": std.join("",
+					[
+						target_registry,
+						coreos_image_repo,
+						"/kube-rbac-proxy:",
+						kube_rbac_proxy_version
+					]
+				),
 				"name": "kube-rbac-proxy-self",
 				"ports": [
 				  {
@@ -201,7 +249,14 @@ function (
 				  "--telemetry-host=127.0.0.1",
 				  "--telemetry-port=8082"
 				],
-				"image": std.join("",[coreos_image_repo,"/kube-state-metrics:", kube_state_metrics_version]),
+				"image": std.join("",
+					[
+						target_registry,
+						coreos_image_repo,
+						"/kube-state-metrics:",
+						kube_state_metrics_version
+					]
+				),
 				"name": "kube-state-metrics",
 				"resources": {
 				  "limits": {
@@ -260,7 +315,14 @@ function (
 				  "--collector.filesystem.ignored-mount-points=^/(dev|proc|sys|var/lib/docker/.+)($|/)",
 				  "--collector.filesystem.ignored-fs-types=^(autofs|binfmt_misc|cgroup|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|mqueue|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|sysfs|tracefs)$"
 				],
-				"image": std.join("",[prometheus_image_repo,"/node-exporter:",node_exporter_version]),
+				"image": std.join("",
+					[
+						target_registry,
+						prometheus_image_repo,
+						"/node-exporter:",
+						node_exporter_version
+					]
+				),
 				"name": "node-exporter",
 				"resources": {
 				  "limits": {
@@ -308,7 +370,14 @@ function (
 					}
 				  }
 				],
-				"image": std.join("",[coreos_image_repo,"/kube-rbac-proxy:",kube_rbac_proxy_version]),
+				"image": std.join("",
+					[
+						target_registry,
+						coreos_image_repo,
+						"/kube-rbac-proxy:",
+						kube_rbac_proxy_version
+					]
+				),
 				"name": "kube-rbac-proxy",
 				"ports": [
 				  {
@@ -405,7 +474,14 @@ function (
 				  "--prometheus-url=http://prometheus-k8s.monitoring.svc:9090/",
 				  "--secure-port=6443"
 				],
-				"image": std.join("",[coreos_image_repo,"/k8s-prometheus-adapter-amd64:", prometheus_adapter_version]),
+				"image": std.join("",
+					[
+						target_registry,
+						coreos_image_repo,
+						"/k8s-prometheus-adapter-amd64:",
+						prometheus_adapter_version
+					]
+				),
 				"name": "prometheus-adapter",
 				"ports": [
 				  {
@@ -499,7 +575,14 @@ function (
 			}
 		  ]
 		},
-		"image": std.join("",[prometheus_image_repo,"/prometheus:", prometheus_version]),
+		"image": std.join("",
+			[
+				target_registry,
+				prometheus_image_repo,
+				"/prometheus:",
+				prometheus_version
+			]
+		),
 		"nodeSelector": {
 		  "kubernetes.io/os": "linux"
 		},
@@ -529,5 +612,4 @@ function (
 		"version": prometheus_version
 	  }
 	}
-	
 ]
