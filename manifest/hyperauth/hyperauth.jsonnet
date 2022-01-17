@@ -1,11 +1,13 @@
 function (
-    target_registry="tmaxcloudck",
+    is_offline="false",
+    private_registry="172.22.6.2:5000",
     hyperauth_svc_type="Ingress",
     hyperauth_external_dns="hyperauth.172.22.6.18.nip.io",
     hyperauth_external_ip="172.22.6.8"
 )
 
 local svcType = if hyperauth_svc_type == "Ingress" then "ClusterIP" else hyperauth_svc_type;
+local target_registry = if is_offline == "flase" then "" else private_registry + "/";
 
 [ 
   {
@@ -68,7 +70,7 @@ local svcType = if hyperauth_svc_type == "Ingress" then "ClusterIP" else hyperau
           "containers": [
             {
               "name": "hyperauth",
-              "image": std.join("", [target_registry, "/hyperauth:latest"]),
+              "image": std.join("", [target_registry, "hyperauth:latest"]),
               "args": [
                 "-c standalone-ha.xml",
                 "-Dkeycloak.profile.feature.upload_scripts=enabled",
