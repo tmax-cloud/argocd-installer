@@ -301,7 +301,6 @@ webhooks:
         namespace: registry-system
         port: 443
         path: "/validate"
-      caBundle: ""
     sideEffects: None
     rules:
       - operations: ["CREATE"]

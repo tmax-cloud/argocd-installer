@@ -1,5 +1,7 @@
 function (
-    	domain="",
+	is_offline="false",
+    private_registry="172.22.6.2:5000",
+    domain="",
 	client_id="grafana",
 	client_secret="",
 	keycloak_addr="",
@@ -8,6 +10,8 @@ function (
 	grafana_image_repo="grafana/grafana",
 	ingress_domain=""
 )
+
+local target_registry = if is_offline == "flase" then "" else private_registry + "/";
 
 [
 	{
@@ -18,7 +22,41 @@ function (
 		"namespace": "monitoring"
 	  },
 	  "data": {
-		"grafana.ini": std.join("",["[server]\ndomain =", domain,"\nhttp_port = 3000\nroot_url = https://%(domain)s/api/grafana/\nserve_from_sub_path = true\n[security]\nallow_embedding = true\n[auth]\ndisable_login_form = true\n[auth.generic_oauth]\nname = OAuth\nenabled = true\nallow_sign_up = true\nclient_id =", client_id,"\nclient_secret =", client_secret,"\nscopes = openid profile email\nemail_attribute_name = email:primary\nemail_attribute_path = email\nrole_attribute_path = \nauth_url = https://",keycloak_addr,"/auth/realms/tmax/protocol/openid-connect/auth\ntoken_url = https://",keycloak_addr,"/auth/realms/tmax/protocol/openid-connect/token\napi_url = https://",keycloak_addr,"/auth/realms/tmax/protocol/openid-connect/userinfo\nallowed_domains = \nteam_ids =\nallowed_organizations =\nsend_client_credentials_via_post = false\ntls_skip_verify_insecure = true\n[auth.anonymous]\nenabled = true\n[users]\ndefault_theme = light\n"])
+		"grafana.ini": std.join("",
+			[
+				"[server]\n",
+				"domain =", domain, "\n",
+				"http_port = 3000\n",
+				"root_url = https://%(domain)s/api/grafana/\n",
+				"serve_from_sub_path = true\n",
+				"[security]\n",
+				"allow_embedding = true\n",
+				"[auth]\n",
+				"disable_login_form = true\n",
+				"[auth.generic_oauth]\n",
+				"name = OAuth\n",
+				"enabled = true\n",
+				"allow_sign_up = true\n",
+				"client_id =", client_id, "\n",
+				"client_secret =", client_secret, "\n",
+				"scopes = openid profile email\n",
+				"email_attribute_name = email:primary\n",
+				"email_attribute_path = email\n",
+				"role_attribute_path = \n",
+				"auth_url = https://", keycloak_addr, "/auth/realms/tmax/protocol/openid-connect/auth\n",
+				"token_url = https://", keycloak_addr, "/auth/realms/tmax/protocol/openid-connect/token\n",
+				"api_url = https://", keycloak_addr, "/auth/realms/tmax/protocol/openid-connect/userinfo\n",
+				"allowed_domains = \n",
+				"team_ids =\n",
+				"allowed_organizations =\n",
+				"send_client_credentials_via_post = false\n",
+				"tls_skip_verify_insecure = true\n",
+				"[auth.anonymous]\n",
+				"enabled = true\n",
+				"[users]\n",
+				"default_theme = light\n"
+			]
+		)
 	  }
 	},
 	{
@@ -32,7 +70,6 @@ function (
 		}
 	  },
 	  "spec": {
-		"storageClassName": "csi-cephfs-sc",
 		"accessModes": [
 		  "ReadWriteOnce"
 		],
@@ -139,7 +176,14 @@ function (
 				  }
 				],
 				"terminationMessagePolicy": "File",
-				"image": std.join("",[grafana_image_repo,":", grafana_version])
+				"image": std.join("",
+					[
+						target_registry,
+						grafana_image_repo,
+						":",
+						grafana_version
+					]
+				)
 			  }
 			],
 			"serviceAccount": "grafana",
@@ -217,7 +261,7 @@ function (
 	    "ingressClassName": "tmax-cloud",
 	    "rules": [
 	      {
-		"host": std.join("",["grafana.",ingress_domain]),
+		"host": std.join("", ["grafana.", ingress_domain]),
 		"http": {
 		  "paths": [
 		    {
@@ -238,9 +282,9 @@ function (
 	    ],
 	    "tls": [
 	      {
-		"hosts": [
-		  std.join("",["grafana.",ingress_domain])
-		]
+			"hosts": [
+			std.join("", ["grafana.", ingress_domain])
+			]
 	      }
 	    ]
 	  }

@@ -1,13 +1,108 @@
 function (
-    target_registry="tmaxcloudck",
+    is_offline="false",
+    private_registry="172.22.6.2:5000",
     hyperauth_svc_type="Ingress",
     hyperauth_external_dns="hyperauth.172.22.6.18.nip.io",
     hyperauth_external_ip="172.22.6.8"
 )
 
 local svcType = if hyperauth_svc_type == "Ingress" then "ClusterIP" else hyperauth_svc_type;
+local target_registry = if is_offline == "flase" then "" else private_registry + "/";
 
-[ 
+[
+  {
+  "apiVersion": "apps/v1",
+  "kind": "Deployment",
+  "metadata": {
+    "name": "postgresql",
+    "namespace": "hyperauth",
+    "labels": {
+      "app": "postgresql"
+    }
+  },
+  "spec": {
+    "replicas": 1,
+    "selector": {
+      "matchLabels": {
+        "app": "postgresql"
+      }
+    },
+    "strategy": {
+      "type": "Recreate"
+    },
+    "template": {
+      "metadata": {
+        "labels": {
+          "app": "postgresql",
+          "tier": "postgreSQL"
+        }
+      },
+      "spec": {
+        "serviceAccount": "hyperauth-admin",
+        "containers": [
+          {
+            "image": std.join("", [target_registry, "docker.io/postgres:9.6.2-alpine"]),
+            "name": "postgresql",
+            "env": [
+              {
+                "name": "POSTGRES_USER",
+                "value": "keycloak"
+              },
+              {
+                "name": "POSTGRES_DB",
+                "value": "keycloak"
+              },
+              {
+                "name": "POSTGRES_PASSWORD",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "name": "passwords",
+                    "key": "DB_PASSWORD"
+                  }
+                }
+              },
+              {
+                "name": "TZ",
+                "value": "Asia/Seoul"
+              }
+            ],
+            "resources": {
+              "limits": {
+                "cpu": "1",
+                "memory": "5Gi"
+              },
+              "requests": {
+                "cpu": "1",
+                "memory": "5Gi"
+              }
+            },
+            "ports": [
+              {
+                "containerPort": 5432,
+                "name": "postgresql"
+              }
+            ],
+            "volumeMounts": [
+              {
+                "name": "postgresql",
+                "mountPath": "/var/lib/postgresql/data",
+                "subPath": "postgres"
+              }
+            ]
+          }
+        ],
+        "volumes": [
+          {
+            "name": "postgresql",
+            "persistentVolumeClaim": {
+              "claimName": "postgres-pvc"
+            }
+          }
+        ]
+      }
+    }
+  }
+}, 
   {
     "apiVersion": "apps/v1",
     "kind": "Deployment",
@@ -68,7 +163,7 @@ local svcType = if hyperauth_svc_type == "Ingress" then "ClusterIP" else hyperau
           "containers": [
             {
               "name": "hyperauth",
-              "image": std.join("", [target_registry, "/hyperauth:latest"]),
+              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hyperauth:latest"]),
               "args": [
                 "-c standalone-ha.xml",
                 "-Dkeycloak.profile.feature.upload_scripts=enabled",

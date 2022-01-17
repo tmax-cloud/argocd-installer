@@ -8,6 +8,7 @@ spec:
     name: ''
     namespace: hyperauth
     server: 'https://kubernetes.default.svc'
+  project: default
   source:
     path: manifest/hyperauth
     repoURL: 'https://github.com/tmax-cloud/argocd-installer'
@@ -15,11 +16,14 @@ spec:
     directory:
       jsonnet:
         tlas:
-          - name: target_registry
-            value: tmaxcloudck
+          - name: is_offline
+            value: "false"
+          - name: private_registry
+            value: 172.22.6.2:5000
           - name: hyperauth_svc_type
             value: Ingress
           - name: hyperauth_external_dns
-            value: >-
-              hyperauth.a8e9df7fb87ba4e81b4a38e06187c6c1-820671877.eu-central-1.elb.amazonaws.com.nip.io
-  project: default
+            value: hyperauth.tmaxcloud.org
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
