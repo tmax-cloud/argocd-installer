@@ -141,31 +141,31 @@ local target_registry = if is_offline == "flase" then "" else private_registry +
               },
               {
                 "name": "STRIMZI_DEFAULT_TOPIC_OPERATOR_IMAGE",
-                "value": std.join("", [private_registry, "quay.io/strimzi/operator:0.26.0"])
+                "value": std.join("", [target_registry, "quay.io/strimzi/operator:0.26.0"])
               },
               {
                 "name": "STRIMZI_DEFAULT_USER_OPERATOR_IMAGE",
-                "value": std.join("", [private_registry, "quay.io/strimzi/operator:0.26.0"])
+                "value": std.join("", [target_registry, "quay.io/strimzi/operator:0.26.0"])
               },
               {
                 "name": "STRIMZI_DEFAULT_KAFKA_INIT_IMAGE",
-                "value": std.join("", [private_registry, "quay.io/strimzi/operator:0.26.0"])
+                "value": std.join("", [target_registry, "quay.io/strimzi/operator:0.26.0"])
               },
               {
                 "name": "STRIMZI_DEFAULT_KAFKA_BRIDGE_IMAGE",
-                "value": std.join("", [private_registry, "quay.io/strimzi/kafka-bridge:0.20.3"])
+                "value": std.join("", [target_registry, "quay.io/strimzi/kafka-bridge:0.20.3"])
               },
               {
                 "name": "STRIMZI_DEFAULT_JMXTRANS_IMAGE",
-                "value": std.join("", [private_registry, "quay.io/strimzi/jmxtrans:0.26.0"])
+                "value": std.join("", [target_registry, "quay.io/strimzi/jmxtrans:0.26.0"])
               },
               {
                 "name": "STRIMZI_DEFAULT_KANIKO_EXECUTOR_IMAGE",
-                "value": std.join("", [private_registry, "quay.io/strimzi/kaniko-executor:0.26.0"])
+                "value": std.join("", [target_registry, "quay.io/strimzi/kaniko-executor:0.26.0"])
               },
               {
                 "name": "STRIMZI_DEFAULT_MAVEN_BUILDER",
-                "value": std.join("", [private_registry, "quay.io/strimzi/maven-builder:0.26.0"])
+                "value": std.join("", [target_registry, "quay.io/strimzi/maven-builder:0.26.0"])
               },
               {
                 "name": "STRIMZI_OPERATOR_NAMESPACE",
