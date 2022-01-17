@@ -85,63 +85,87 @@ local target_registry = if is_offline == "flase" then "" else private_registry +
               },
               {
                 "name": "STRIMZI_DEFAULT_TLS_SIDECAR_ENTITY_OPERATOR_IMAGE",
-                "value": "quay.io/strimzi/kafka:0.26.0-kafka-3.0.0"
+                "value": std.join("", [target_registry, "quay.io/strimzi/kafka:0.26.0-kafka-3.0.0"])
               },
               {
                 "name": "STRIMZI_DEFAULT_KAFKA_EXPORTER_IMAGE",
-                "value": "quay.io/strimzi/kafka:0.26.0-kafka-3.0.0"
+                "value": std.join("", [target_registry, "quay.io/strimzi/kafka:0.26.0-kafka-3.0.0"])
               },
               {
                 "name": "STRIMZI_DEFAULT_CRUISE_CONTROL_IMAGE",
-                "value": "quay.io/strimzi/kafka:0.26.0-kafka-3.0.0"
+                "value": std.join("", [target_registry, "quay.io/strimzi/kafka:0.26.0-kafka-3.0.0"])
               },
               {
                 "name": "STRIMZI_DEFAULT_TLS_SIDECAR_CRUISE_CONTROL_IMAGE",
-                "value": "quay.io/strimzi/kafka:0.26.0-kafka-3.0.0"
+                "value": std.join("", [target_registry, "quay.io/strimzi/kafka:0.26.0-kafka-3.0.0"])
               },
               {
                 "name": "STRIMZI_KAFKA_IMAGES",
-                "value": "2.8.0=quay.io/strimzi/kafka:0.26.0-kafka-2.8.0\n2.8.1=quay.io/strimzi/kafka:0.26.0-kafka-2.8.1\n3.0.0=quay.io/strimzi/kafka:0.26.0-kafka-3.0.0\n"
+                "value": std.join("",
+                  [
+                    "2.8.0=", target_registry, "quay.io/strimzi/kafka:0.26.0-kafka-2.8.0\n", 
+                    "2.8.1=", target_registry, "quay.io/strimzi/kafka:0.26.0-kafka-2.8.1\n",
+                    "3.0.0=", target_registry, "quay.io/strimzi/kafka:0.26.0-kafka-3.0.0\n"
+                  ]
+                )
               },
               {
                 "name": "STRIMZI_KAFKA_CONNECT_IMAGES",
-                "value": "2.8.0=quay.io/strimzi/kafka:0.26.0-kafka-2.8.0\n2.8.1=quay.io/strimzi/kafka:0.26.0-kafka-2.8.1\n3.0.0=quay.io/strimzi/kafka:0.26.0-kafka-3.0.0\n"
+                "value": std.join("",
+                  [
+                    "2.8.0=", target_registry, "quay.io/strimzi/kafka:0.26.0-kafka-2.8.0\n", 
+                    "2.8.1=", target_registry, "quay.io/strimzi/kafka:0.26.0-kafka-2.8.1\n",
+                    "3.0.0=", target_registry, "quay.io/strimzi/kafka:0.26.0-kafka-3.0.0\n"
+                  ]
+                )
               },
               {
                 "name": "STRIMZI_KAFKA_MIRROR_MAKER_IMAGES",
-                "value": "2.8.0=quay.io/strimzi/kafka:0.26.0-kafka-2.8.0\n2.8.1=quay.io/strimzi/kafka:0.26.0-kafka-2.8.1\n3.0.0=quay.io/strimzi/kafka:0.26.0-kafka-3.0.0\n"
+                "value": std.join("",
+                  [
+                    "2.8.0=", target_registry, "quay.io/strimzi/kafka:0.26.0-kafka-2.8.0\n", 
+                    "2.8.1=", target_registry, "quay.io/strimzi/kafka:0.26.0-kafka-2.8.1\n",
+                    "3.0.0=", target_registry, "quay.io/strimzi/kafka:0.26.0-kafka-3.0.0\n"
+                  ]
+                )
               },
               {
                 "name": "STRIMZI_KAFKA_MIRROR_MAKER_2_IMAGES",
-                "value": "2.8.0=quay.io/strimzi/kafka:0.26.0-kafka-2.8.0\n2.8.1=quay.io/strimzi/kafka:0.26.0-kafka-2.8.1\n3.0.0=quay.io/strimzi/kafka:0.26.0-kafka-3.0.0\n"
+                "value": std.join("",
+                  [
+                    "2.8.0=", target_registry, "quay.io/strimzi/kafka:0.26.0-kafka-2.8.0\n", 
+                    "2.8.1=", target_registry, "quay.io/strimzi/kafka:0.26.0-kafka-2.8.1\n",
+                    "3.0.0=", target_registry, "quay.io/strimzi/kafka:0.26.0-kafka-3.0.0\n"
+                  ]
+                )
               },
               {
                 "name": "STRIMZI_DEFAULT_TOPIC_OPERATOR_IMAGE",
-                "value": "quay.io/strimzi/operator:0.26.0"
+                "value": std.join("", [private_registry, "quay.io/strimzi/operator:0.26.0"])
               },
               {
                 "name": "STRIMZI_DEFAULT_USER_OPERATOR_IMAGE",
-                "value": "quay.io/strimzi/operator:0.26.0"
+                "value": std.join("", [private_registry, "quay.io/strimzi/operator:0.26.0"])
               },
               {
                 "name": "STRIMZI_DEFAULT_KAFKA_INIT_IMAGE",
-                "value": "quay.io/strimzi/operator:0.26.0"
+                "value": std.join("", [private_registry, "quay.io/strimzi/operator:0.26.0"])
               },
               {
                 "name": "STRIMZI_DEFAULT_KAFKA_BRIDGE_IMAGE",
-                "value": "quay.io/strimzi/kafka-bridge:0.20.3"
+                "value": std.join("", [private_registry, "quay.io/strimzi/kafka-bridge:0.20.3"])
               },
               {
                 "name": "STRIMZI_DEFAULT_JMXTRANS_IMAGE",
-                "value": "quay.io/strimzi/jmxtrans:0.26.0"
+                "value": std.join("", [private_registry, "quay.io/strimzi/jmxtrans:0.26.0"])
               },
               {
                 "name": "STRIMZI_DEFAULT_KANIKO_EXECUTOR_IMAGE",
-                "value": "quay.io/strimzi/kaniko-executor:0.26.0"
+                "value": std.join("", [private_registry, "quay.io/strimzi/kaniko-executor:0.26.0"])
               },
               {
                 "name": "STRIMZI_DEFAULT_MAVEN_BUILDER",
-                "value": "quay.io/strimzi/maven-builder:0.26.0"
+                "value": std.join("", [private_registry, "quay.io/strimzi/maven-builder:0.26.0"])
               },
               {
                 "name": "STRIMZI_OPERATOR_NAMESPACE",
