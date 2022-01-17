@@ -13,6 +13,104 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "apiVersion": "apps/v1",
         "kind": "Deployment",
         "metadata": {
+            "name": "postgres",
+            "namespace": "hypercloud5-system"
+        },
+        "spec": {
+            "selector": {
+                "matchLabels": {
+                    "app": "postgres"
+                }
+            },
+            "replicas": 1,
+            "template": {
+                "metadata": {
+                    "labels": {
+                        "app": "postgres"
+                    }
+                },
+                "spec": {
+                    "containers": [
+                        {
+                            "name": "postgres",
+                            "image": std.join("", [target_registry, "docker.io/tmaxcloudck/postgres-cron:b5.0.0.1"]),
+                            "imagePullPolicy": "IfNotPresent",
+                            "ports": [
+                                {
+                                    "containerPort": 5432
+                                }
+                            ],
+                            "env": [
+                                {
+                                    "name": "TZ",
+                                    "value": "Asia/Seoul"
+                                },
+                                {
+                                    "name": "POSTGRES_USER",
+                                    "value": "postgres"
+                                },
+                                {
+                                    "name": "POSTGRES_PASSWORD",
+                                    "valueFrom": {
+                                        "secretKeyRef": {
+                                            "name": "postgres-secret",
+                                            "key": "POSTGRES_PASSWORD"
+                                        }
+                                    }
+                                }
+                            ],
+                            "resources": {
+                                "limits": {
+                                    "cpu": "500m",
+                                    "memory": "500Mi"
+                                },
+                                "requests": {
+                                    "cpu": "300m",
+                                    "memory": "100Mi"
+                                }
+                            },
+                            "volumeMounts": [
+                                {
+                                    "mountPath": "/var/lib/postgresql/data",
+                                    "name": "data",
+                                    "subPath": "postgres"
+                                },
+                                {
+                                    "mountPath": "/docker-entrypoint-initdb.d",
+                                    "name": "initdbsql"
+                                }
+                            ]
+                        }
+                    ],
+                    "serviceAccountName": "hypercloud5-admin",
+                    "volumes": [
+                        {
+                            "name": "data",
+                            "persistentVolumeClaim": {
+                                "claimName": "postgres-data"
+                            }
+                        },
+                        {
+                            "name": "initdbsql",
+                            "configMap": {
+                                "name": "postgres-init-config",
+                                "items": [
+                                    {
+                                        "key": "INIT_DB_SQL",
+                                        "path": "init-db.sql"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    {
+        "apiVersion": "apps/v1",
+        "kind": "Deployment",
+        "metadata": {
             "name": "hypercloud5-api-server",
             "namespace": "hypercloud5-system",
             "labels": {
@@ -188,7 +286,196 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "namespace": "hypercloud5-system"
         },
         "data": {
-            "version.config": std.join("", ["modules:\n- name: Kubernetes\n  namespace:\n  selector:\n    matchLabels:\n      statusLabel:\n      - component=kube-apiserver\n      versionLabel:\n      - component=kube-apiserver\n  readinessProbe:\n\n  versionProbe:\n\n- name: HyperCloud API Server\n  namespace: hypercloud5-system\n  selector:\n    matchLabels:\n      statusLabel:\n      - hypercloud5=api-server\n      versionLabel:\n      - hypercloud5=api-server\n  readinessProbe:\n\n  versionProbe:          \n\n- name: HyperCloud Single Operator\n  namespace: hypercloud5-system\n  selector:\n    matchLabels:\n      statusLabel:\n      - hypercloud=single-operator\n      versionLabel:\n      - hypercloud=single-operator\n  readinessProbe:\n\n  versionProbe:\n    container: manager\n\n- name: HyperCloud Multi Operator\n  namespace: hypercloud5-system\n  selector:\n    matchLabels:\n      statusLabel:\n      - hypercloud=multi-operator\n      versionLabel:\n      - hypercloud=multi-operator\n  readinessProbe:\n\n  versionProbe:\n    container: manager\n  \n- name: HyperCloud Console\n  namespace: api-gateway-system\n  selector:\n    matchLabels:\n      statusLabel:\n      - app.kubernetes.io/name=console\n      versionLabel:\n      - app.kubernetes.io/name=console\n  readinessProbe:\n\n  versionProbe:\n   container: console\n\n- name: HyperAuth\n  namespace:\n  selector:\n    matchLabels:\n      statusLabel:\n      versionLabel:\n  readinessProbe:\n    httpGet:\n      path: ",hyperauth_url, "\n  \n- name: Calico\n  namespace: kube-system\n  selector:\n    matchLabels:\n      statusLabel:\n      - k8s-app=calico-node\n      versionLabel:\n      - k8s-app=calico-node\n  readinessProbe:\n\n  versionProbe:\n\n- name: MetalLB\n  namespace: metallb-system\n  selector:\n    matchLabels:\n      statusLabel:\n      - app=metallb\n      versionLabel:\n      - app=metallb\n  readinessProbe:\n\n  versionProbe:\n\n- name: API gateway\n  namespace: api-gateway-system\n  selector:\n    matchLabels:\n      statusLabel:\n      - app.kubernetes.io/name=traefik\n      versionLabel:\n      - app.kubernetes.io/name=traefik\n  readinessProbe:\n\n  versionProbe:\n    container: traefik\n\n- name: Prometheus\n  namespace: monitoring\n  selector:\n    matchLabels:\n      statusLabel:\n      - app=prometheus\n      versionLabel:\n      - app=prometheus\n  readinessProbe:\n    httpGet:\n      path: /-/ready\n      port: 9090\n      scheme: HTTP\n  versionProbe:\n    container: prometheus\n\n- name: Tekton\n  namespace: tekton-pipelines\n  selector:\n    matchLabels:\n      statusLabel:\n      - app=tekton-pipelines-controller\n      versionLabel:\n      - app=tekton-pipelines-controller\n  readinessProbe:\n\n  versionProbe:\n\n- name: Catalog-Controller\n  namespace: catalog\n  selector:\n    matchLabels:\n      statusLabel:\n      - app=catalog-catalog-controller-manager\n      versionLabel:\n      - app=catalog-catalog-controller-manager\n  readinessProbe:\n    httpGet:\n      path: /healthz/ready\n      port: 8444\n      scheme: HTTPS\n  versionProbe:\n\n- name: ClusterTemplateServiceBroker\n  namespace: cluster-tsb-ns\n  selector:\n    matchLabels:\n      statusLabel:\n      - app=cluster-template-service-broker\n      versionLabel:\n      - app=cluster-template-service-broker\n  readinessProbe:\n\n  versionProbe:\n\n- name: CAPI\n  namespace: capi-system\n  selector:\n    matchLabels:\n      statusLabel:\n      - cluster.x-k8s.io/provider=cluster-api\n      versionLabel:\n      - cluster.x-k8s.io/provider=cluster-api\n  readinessProbe:\n\n  versionProbe:\n    container: manager\n\n- name: KubeFed\n  namespace: kube-federation-system\n  selector:\n    matchLabels:\n      statusLabel:\n      - kubefed-control-plane=controller-manager\n      versionLabel:\n      - kubefed-control-plane=controller-manager\n  readinessProbe:\n\n  versionProbe:\n\n- name: Grafana\n  namespace: monitoring\n  selector:\n    matchLabels:\n      statusLabel:\n      - app=grafana\n      versionLabel:\n      - app=grafana\n  readinessProbe:\n    httpGet:\n      path: /api/health\n      port: 3000\n  versionProbe:\n\n- name: Kibana\n  namespace: kube-logging\n  selector:\n    matchLabels:\n      statusLabel:\n      - app=kibana\n      versionLabel:\n      - app=kibana\n  readinessProbe:\n\n  versionProbe:\n"])
+            "version.config": std.join("",
+                [
+                    "modules:\n",
+                    "- name: Kubernetes\n",
+                    "  namespace:\n",
+                    "  selector:\n",
+                    "    matchLabels:\n",
+                    "      statusLabel:\n",
+                    "      - component=kube-apiserver\n",
+                    "      versionLabel:\n",
+                    "      - component=kube-apiserver\n",
+                    "  readinessProbe:\n\n",
+                    "  versionProbe:\n\n",
+                    "- name: HyperCloud API Server\n",
+                    "  namespace: hypercloud5-system\n",
+                    "  selector:\n",
+                    "    matchLabels:\n",
+                    "      statusLabel:\n",
+                    "      - hypercloud5=api-server\n",
+                    "      versionLabel:\n",
+                    "      - hypercloud5=api-server\n",
+                    "  readinessProbe:\n\n",
+                    "  versionProbe:          \n\n",
+                    "- name: HyperCloud Single Operator\n",
+                    "  namespace: hypercloud5-system\n",
+                    "  selector:\n",
+                    "    matchLabels:\n",
+                    "      statusLabel:\n",
+                    "      - hypercloud=single-operator\n",
+                    "      versionLabel:\n",
+                    "      - hypercloud=single-operator\n",
+                    "  readinessProbe:\n\n",
+                    "  versionProbe:\n",
+                    "    container: manager\n\n",
+                    "- name: HyperCloud Multi Operator\n",
+                    "  namespace: hypercloud5-system\n",
+                    "  selector:\n",
+                    "    matchLabels:\n",
+                    "      statusLabel:\n",
+                    "      - hypercloud=multi-operator\n",
+                    "      versionLabel:\n",
+                    "      - hypercloud=multi-operator\n",
+                    "  readinessProbe:\n\n",
+                    "  versionProbe:\n",
+                    "    container: manager\n\n",
+                    "- name: HyperCloud Console\n",
+                    "  namespace: api-gateway-system\n",
+                    "  selector:\n",
+                    "    matchLabels:\n",
+                    "      statusLabel:\n",
+                    "      - app.kubernetes.io/name=console\n",
+                    "      versionLabel:\n",
+                    "      - app.kubernetes.io/name=console\n",
+                    "  readinessProbe:\n\n",
+                    "  versionProbe:\n",
+                    "   container: console\n\n",
+                    "- name: HyperAuth\n",
+                    "  namespace:\n",
+                    "  selector:\n",
+                    "    matchLabels:\n",
+                    "      statusLabel:\n",
+                    "      versionLabel:\n",
+                    "  readinessProbe:\n",
+                    "    httpGet:\n",
+                    "      path: ", hyperauth_url, "\n\n",
+                    "- name: Calico\n",
+                    "  namespace: kube-system\n",
+                    "  selector:\n",
+                    "    matchLabels:\n",
+                    "      statusLabel:\n",
+                    "      - k8s-app=calico-node\n",
+                    "      versionLabel:\n",
+                    "      - k8s-app=calico-node\n",
+                    "  readinessProbe:\n\n",
+                    "  versionProbe:\n\n",
+                    "- name: MetalLB\n",
+                    "  namespace: metallb-system\n",
+                    "  selector:\n",
+                    "    matchLabels:\n",
+                    "      statusLabel:\n",
+                    "      - app=metallb\n",
+                    "      versionLabel:\n",
+                    "      - app=metallb\n",
+                    "  readinessProbe:\n\n",
+                    "  versionProbe:\n\n",
+                    "- name: API gateway\n",
+                    "  namespace: api-gateway-system\n",
+                    "  selector:\n",
+                    "    matchLabels:\n",
+                    "      statusLabel:\n",
+                    "      - app.kubernetes.io/name=traefik\n",
+                    "      versionLabel:\n",
+                    "      - app.kubernetes.io/name=traefik\n",
+                    "  readinessProbe:\n\n",
+                    "  versionProbe:\n",
+                    "    container: traefik\n\n",
+                    "- name: Prometheus\n",
+                    "  namespace: monitoring\n",
+                    "  selector:\n",
+                    "    matchLabels:\n",
+                    "      statusLabel:\n",
+                    "      - app=prometheus\n",
+                    "      versionLabel:\n",
+                    "      - app=prometheus\n",
+                    "  readinessProbe:\n",
+                    "    httpGet:\n",
+                    "      path: /-/ready\n",
+                    "      port: 9090\n",
+                    "      scheme: HTTP\n",
+                    "  versionProbe:\n",
+                    "    container: prometheus\n\n",
+                    "- name: Tekton\n",
+                    "  namespace: tekton-pipelines\n",
+                    "  selector:\n",
+                    "    matchLabels:\n",
+                    "      statusLabel:\n",
+                    "      - app=tekton-pipelines-controller\n",
+                    "      versionLabel:\n",
+                    "      - app=tekton-pipelines-controller\n",
+                    "  readinessProbe:\n\n",
+                    "  versionProbe:\n\n",
+                    "- name: Catalog-Controller\n",
+                    "  namespace: catalog\n",
+                    "  selector:\n",
+                    "    matchLabels:\n",
+                    "      statusLabel:\n",
+                    "      - app=catalog-catalog-controller-manager\n",
+                    "      versionLabel:\n",
+                    "      - app=catalog-catalog-controller-manager\n",
+                    "  readinessProbe:\n",
+                    "    httpGet:\n",
+                    "      path: /healthz/ready\n",
+                    "      port: 8444\n",
+                    "      scheme: HTTPS\n",
+                    "  versionProbe:\n\n",
+                    "- name: ClusterTemplateServiceBroker\n",
+                    "  namespace: cluster-tsb-ns\n",
+                    "  selector:\n",
+                    "    matchLabels:\n",
+                    "      statusLabel:\n",
+                    "      - app=cluster-template-service-broker\n",
+                    "      versionLabel:\n",
+                    "      - app=cluster-template-service-broker\n",
+                    "  readinessProbe:\n\n",
+                    "  versionProbe:\n\n",
+                    "- name: CAPI\n",
+                    "  namespace: capi-system\n",
+                    "  selector:\n",
+                    "    matchLabels:\n",
+                    "      statusLabel:\n",
+                    "      - cluster.x-k8s.io/provider=cluster-api\n",
+                    "      versionLabel:\n",
+                    "      - cluster.x-k8s.io/provider=cluster-api\n",
+                    "  readinessProbe:\n\n",
+                    "  versionProbe:\n",
+                    "    container: manager\n\n",
+                    "- name: KubeFed\n",
+                    "  namespace: kube-federation-system\n",
+                    "  selector:\n",
+                    "    matchLabels:\n",
+                    "      statusLabel:\n",
+                    "      - kubefed-control-plane=controller-manager\n",
+                    "      versionLabel:\n",
+                    "      - kubefed-control-plane=controller-manager\n",
+                    "  readinessProbe:\n\n",
+                    "  versionProbe:\n\n",
+                    "- name: Grafana\n",
+                    "  namespace: monitoring\n",
+                    "  selector:\n",
+                    "    matchLabels:\n",
+                    "      statusLabel:\n",
+                    "      - app=grafana\n",
+                    "      versionLabel:\n",
+                    "      - app=grafana\n",
+                    "  readinessProbe:\n",
+                    "    httpGet:\n",
+                    "      path: /api/health\n",
+                    "      port: 3000\n",
+                    "  versionProbe:\n\n",
+                    "- name: Kibana\n",
+                    "  namespace: kube-logging\n",
+                    "  selector:\n    matchLabels:\n",
+                    "      statusLabel:\n",
+                    "      - app=kibana\n",
+                    "      versionLabel:\n",
+                    "      - app=kibana\n",
+                    "  readinessProbe:\n\n",
+                    "  versionProbe:\n"
+                ]
+            )
         }
     },
     {
