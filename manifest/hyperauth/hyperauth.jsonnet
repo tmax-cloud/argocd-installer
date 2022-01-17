@@ -70,7 +70,7 @@ local target_registry = if is_offline == "flase" then "" else private_registry +
           "containers": [
             {
               "name": "hyperauth",
-              "image": std.join("", [target_registry, "hyperauth:latest"]),
+              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hyperauth:latest"]),
               "args": [
                 "-c standalone-ha.xml",
                 "-Dkeycloak.profile.feature.upload_scripts=enabled",
