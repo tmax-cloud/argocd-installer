@@ -50,7 +50,7 @@ local target_registry = if is_offline == "flase" then "" else private_registry +
         "containers": [
           {
             "name": "strimzi-cluster-operator",
-            "image": std.join("", [target_registry, "strimzi/operator:0.26.0"]),
+            "image": std.join("", [target_registry, "quay.io/strimzi/operator:0.26.0"]),
             "ports": [
               {
                 "containerPort": 8080,
