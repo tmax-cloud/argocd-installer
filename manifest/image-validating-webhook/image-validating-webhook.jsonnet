@@ -1,9 +1,9 @@
 function(
-    is_offline=false,
+    is_offline="false",
     private_registry="registry.tmaxcloud.org"
 )
 
-local tmax_registry = if is_offline == false then "tmaxcloudck" else private_registry;
+local target_registry = if is_offline == "false" then "" else private_registry + "/";
 
 [
   {
@@ -33,7 +33,7 @@ local tmax_registry = if is_offline == false then "tmaxcloudck" else private_reg
           "containers": [
             {
               "name": "webhook",
-              "image": std.join("",[tmax_registry,"/image-validation-webhook:v5.0.3"]),
+              "image": std.join("",[target_registry,"docker.io/tmaxcloudck/image-validation-webhook:v5.0.3"]),
               "imagePullPolicy": "Always"
             }
           ],
