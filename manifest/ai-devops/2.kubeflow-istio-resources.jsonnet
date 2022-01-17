@@ -6,6 +6,7 @@ function (
     knative_namespace="knative-serving",     
 )
 
+local gatewaySelector = "ingressgateway";
 
 [
     {
