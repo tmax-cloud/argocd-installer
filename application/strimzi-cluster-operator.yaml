@@ -9,7 +9,18 @@ spec:
     namespace: kafka
     server: 'https://kubernetes.default.svc'
   source:
+    directory:
+      jsonnet:
+        tlas:
+          - name: is_offline
+            value: "false"
+          - name: private_registry
+            value: 172.22.6.2:5000
     path: manifest/strimzi-kafka-cluster-oprerator
     repoURL: 'https://github.com/tmax-cloud/argocd-installer'
     targetRevision: main
   project: default
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+
