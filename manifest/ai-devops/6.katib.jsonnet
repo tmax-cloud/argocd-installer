@@ -3,7 +3,9 @@ function (
     private_registry="172.22.6.2:5000",
     ai_devops_namespace="kubeflow",
     istio_namespace="istio-system",
-    knative_namespace="knative-serving",     
+    knative_namespace="knative-serving",
+    custom_domain_name="tmaxcloud.org",
+    notebook_svc_type="Ingress"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
