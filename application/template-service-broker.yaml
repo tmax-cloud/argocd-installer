@@ -12,6 +12,10 @@ spec:
     directory:
       jsonnet:
         tlas:
+        - name: is_offline
+          value: "false"
+        - name: private_registry
+          value: registry.tmaxcloud.org
         - name: template_operator_version
           value: 0.2.6
         - name: cluster_tsb_version

@@ -1,12 +1,12 @@
 function (
-    is_offline = false,
+    is_offline = "false",
     private_registry="registry.tmaxcloud.org",
     template_operator_version = "0.2.6",
     cluster_tsb_version = "0.1.3",
     tsb_version = "0.1.3"
 )
 
-local tmax_registry = if is_offline == false then "tmaxcloudck" else private_registry;
+local target_registry = if is_offline == false then "" else private_registry + "/";
 
 [
   {
@@ -39,7 +39,7 @@ local tmax_registry = if is_offline == false then "tmaxcloudck" else private_reg
             "args": [
               "--enable-leader-election"
             ],
-            "image": std.join("", [tmax_registry, "/template-operator:", template_operator_version]),
+            "image": std.join("", [target_registry, "docker.io/tmaxcloudck/template-operator:", template_operator_version]),
             "imagePullPolicy": "Always",
             "name": "manager"
           }
@@ -76,7 +76,7 @@ local tmax_registry = if is_offline == false then "tmaxcloudck" else private_reg
         "serviceAccountName": "cluster-tsb-sa",
         "containers": [
           {
-            "image": std.join("", [tmax_registry, "/cluster-tsb:", cluster_tsb_version]),
+            "image": std.join("", [target_registry, "docker.io/tmaxcloudck/cluster-tsb:", cluster_tsb_version]),
             "name": "cluster-tsb",
             "imagePullPolicy": "Always"
           }
@@ -112,7 +112,7 @@ local tmax_registry = if is_offline == false then "tmaxcloudck" else private_reg
         "serviceAccountName": "tsb-sa",
         "containers": [
           {
-            "image": std.join("", [tmax_registry, "/tsb:", tsb_version]),
+            "image": std.join("", [target_registry, "docker.io/tmaxcloudck/tsb:", tsb_version]),
             "name": "tsb",
             "imagePullPolicy": "Always"
           }
