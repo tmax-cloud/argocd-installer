@@ -9,6 +9,13 @@ spec:
     server: https://kubernetes.default.svc
   project: default
   source:
+    directory:
+      jsonnet:
+        tlas:
+          - name: is_offline
+            value: "false"
+          - name: private_registry
+            value: registry.tmaxcloud.org
     path: manifest/tekton-pipeline
     repoURL: https://github.com/tmax-cloud/argocd-installer
     targetRevision: main

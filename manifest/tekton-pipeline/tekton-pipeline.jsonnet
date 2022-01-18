@@ -1,9 +1,9 @@
 function(
-    is_offline=false,
+    is_offline="false",
     private_registry="registry.tmaxcloud.org"
 )
 
-local gcr_registry = if is_offline == false then "gcr.io" else private_registry;
+local gcr_registry = if is_offline == false then "" else private_registry + "/";
 
 [
   {
@@ -72,26 +72,26 @@ local gcr_registry = if is_offline == false then "gcr.io" else private_registry;
           "containers": [
             {
               "name": "tekton-pipelines-controller",
-              "image": std.join("", [gcr_registry,"/tekton-releases/github.com/tektoncd/pipeline/cmd/controller:v0.26.0"]),
+              "image": std.join("", [gcr_registry,"gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/controller:v0.26.0"]),
               "args": [
                 "-version",
                 "v0.26.0",
                 "-kubeconfig-writer-image",
-                std.join("", [gcr_registry,"/tekton-releases/github.com/tektoncd/pipeline/cmd/kubeconfigwriter:v0.26.0"]),
+                std.join("", [gcr_registry,"gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/kubeconfigwriter:v0.26.0"]),
                 "-git-image",
-                std.join("", [gcr_registry,"/tekton-releases/github.com/tektoncd/pipeline/cmd/git-init:v0.26.0"]),
+                std.join("", [gcr_registry,"gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/git-init:v0.26.0"]),
                 "-entrypoint-image",
-                std.join("", [gcr_registry,"/tekton-releases/github.com/tektoncd/pipeline/cmd/entrypoint:v0.26.0"]),
+                std.join("", [gcr_registry,"gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/entrypoint:v0.26.0"]),
                 "-nop-image",
-                std.join("", [gcr_registry,"/tekton-releases/github.com/tektoncd/pipeline/cmd/nop:v0.26.0"]),
+                std.join("", [gcr_registry,"gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/nop:v0.26.0"]),
                 "-imagedigest-exporter-image",
-                std.join("", [gcr_registry,"/tekton-releases/github.com/tektoncd/pipeline/cmd/imagedigestexporter:v0.26.0"]),
+                std.join("", [gcr_registry,"gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/imagedigestexporter:v0.26.0"]),
                 "-pr-image",
-                std.join("", [gcr_registry,"/tekton-releases/github.com/tektoncd/pipeline/cmd/pullrequest-init:v0.26.0"]),
+                std.join("", [gcr_registry,"gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/pullrequest-init:v0.26.0"]),
                 "-gsutil-image",
-                std.join("", [gcr_registry,"/google.com/cloudsdktool/cloud-sdk:302.0.0-slim"]),
+                std.join("", [gcr_registry,"gcr.io/google.com/cloudsdktool/cloud-sdk:302.0.0-slim"]),
                 "-shell-image",
-                std.join("", [gcr_registry,"/distroless/base:debug"])
+                std.join("", [gcr_registry,"gcr.io/distroless/base:debug"])
               ],
               "volumeMounts": [
                 {
@@ -305,7 +305,7 @@ local gcr_registry = if is_offline == false then "gcr.io" else private_registry;
           "containers": [
             {
               "name": "webhook",
-              "image": std.join("", [gcr_registry,"/tekton-releases/github.com/tektoncd/pipeline/cmd/webhook:v0.26.0"]),
+              "image": std.join("", [gcr_registry,"gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/webhook:v0.26.0"]),
               "resources": {
                 "requests": {
                   "cpu": "100m",
