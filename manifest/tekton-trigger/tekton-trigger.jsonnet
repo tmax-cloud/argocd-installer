@@ -52,13 +52,13 @@ local gcr_registry = if is_offline == false then "gcr.io" else private_registry;
           "containers": [
             {
               "name": "tekton-triggers-controller",
-              "image": std.join("", [gcr_registry,"/tekton-releases/github.com/tektoncd/triggers/cmd/controller:v0.15.0@sha256:f844b0fdf4f47898f11b4050a65aa5a621cfa92cc1090fc514b54b058a90c491"]),
+              "image": std.join("", [gcr_registry,"/tekton-releases/github.com/tektoncd/triggers/cmd/controller:v0.15.0"]),
               "args": [
                 "-logtostderr",
                 "-stderrthreshold",
                 "INFO",
                 "-el-image",
-                std.join("", [gcr_registry,"/tekton-releases/github.com/tektoncd/triggers/cmd/eventlistenersink:v0.15.0@sha256:7289cbad13d15cdc2dd9cf96f03018b1dce7e0e348cfe7465bb116b226e8c386"]),
+                std.join("", [gcr_registry,"/tekton-releases/github.com/tektoncd/triggers/cmd/eventlistenersink:v0.15.0"]),
                 "-el-port",
                 "8080",
                 "-el-readtimeout",
@@ -156,7 +156,7 @@ local gcr_registry = if is_offline == false then "gcr.io" else private_registry;
           "containers": [
             {
               "name": "webhook",
-              "image": std.join("", [gcr_registry,"/tekton-releases/github.com/tektoncd/triggers/cmd/webhook:v0.15.0@sha256:f81a92eaa2d8b359db597239ac70bfcfef4d50da2294ea0de2322226e72a1eae"]),
+              "image": std.join("", [gcr_registry,"/tekton-releases/github.com/tektoncd/triggers/cmd/webhook:v0.15.0"]),
               "env": [
                 {
                   "name": "SYSTEM_NAMESPACE",
@@ -250,7 +250,7 @@ local gcr_registry = if is_offline == false then "gcr.io" else private_registry;
           "containers": [
             {
               "name": "tekton-triggers-core-interceptors",
-              "image": std.join("",[gcr_registry,"/tekton-releases/github.com/tektoncd/triggers/cmd/interceptors:v0.15.0@sha256:1d12af37ddc4b0f63f7897b4cb3732dd0ae4dc2bf725be5ba0c821c1405c947c"]),
+              "image": std.join("",[gcr_registry,"/tekton-releases/github.com/tektoncd/triggers/cmd/interceptors:v0.15.0"]),
               "args": [
                 "-logtostderr",
                 "-stderrthreshold",

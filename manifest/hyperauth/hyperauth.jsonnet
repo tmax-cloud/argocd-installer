@@ -331,6 +331,7 @@ local target_registry = if is_offline == "flase" then "" else private_registry +
       ],
       "dnsNames": if hyperauth_svc_type == "Ingress" then [
         hyperauth_external_dns,
+        "tmax-cloud"
       ] else [
         "tmax-cloud"
       ],

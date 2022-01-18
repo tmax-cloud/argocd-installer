@@ -17,7 +17,7 @@ spec:
           - name: is_offline
             value: "false"
           - name: private_registry
-            value:
+            value: registry.tmaxcloud.org
           - name: es_image_tag
             value: docker.io/tmaxcloudck/elasticsearch:7.2.1
           - name: busybox_image_tag
