@@ -11,22 +11,22 @@ argocd에서 EFK 배포를 하기 위해서는 application/efk.yaml의 top-level
   value: "private_registry for image pull"
   
 - name: es_image_tag
-  value: "ElasticSearch image tag"
+  value: "ElasticSearch image"
   
 - name: busybox_image_tag
-  value: "Busybox image tag"
+  value: "Busybox image"
   
 - name: es_volume_size
   value: "Volume size for ElasticSearch"
   
 - name: kibana_image_tag
-  value: "Kibana image tag"
+  value: "Kibana image"
   
 - name: kibana_svc_type
   value: "type of service object, if ingress is unavailable use LoadBalancer, else ClusterIP "
   
 - name: gatekeeper_image_tag
-  value: "Gatekeeper image tag"
+  value: "Gatekeeper image"
   
 - name: kibana_client_id
   value: "Hyperauth client id for EFK Kibana"
@@ -44,7 +44,7 @@ argocd에서 EFK 배포를 하기 위해서는 application/efk.yaml의 top-level
   value: "custom domain name for ingress"
   
 - name: fluentd_image_tag
-  value: "Fluentd image tag"
+  value: "Fluentd image"
 ```
 
 ### 예시
@@ -53,19 +53,19 @@ argocd에서 EFK 배포를 하기 위해서는 application/efk.yaml의 top-level
 - name: is_offline
   value: false
 - name: private_registry
-  value: registry.hypercloud.org
+  value: 172.22.6.2:5000
 - name: es_image_tag
-  value: elasticsearch:7.2.1
+  value: docker.io/tmaxcloudck/elasticsearch:7.2.1
 - name: busybox_image_tag
-  value: busybox:1.32.0
+  value: docker.io/busybox:1.32.0
 - name: es_volume_size
   value: 50Gi
 - name: kibana_image_tag
-  value: kibana/kibana:7.2.0
+  value: docker.io/kibana/kibana:7.2.0
 - name: kibana_svc_type
   value: ClusterIP
 - name: gatekeeper_image_tag
-  value: keycloak/keycloak-gatekeeper:10.0.0
+  value: quay.io/keycloak/keycloak-gatekeeper:10.0.0
 - name: kibana_client_id
   value: kibana
 - name: kibana_client_secret
@@ -77,5 +77,5 @@ argocd에서 EFK 배포를 하기 위해서는 application/efk.yaml의 top-level
 - name: custom_domain_name
   value: tmaxcloud.org
 - name: fluentd_image_tag
-  value: fluent/fluentd-kubernetes-daemonset:v1.4.2-debian-elasticsearch-1.1
+  value: docker.io/fluent/fluentd-kubernetes-daemonset:v1.4.2-debian-elasticsearch-1.1
 ```

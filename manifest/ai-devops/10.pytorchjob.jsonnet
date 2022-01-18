@@ -1,32 +1,14 @@
 function (
+    is_offline="false",
+    private_registry="172.22.6.2:5000",
     ai_devops_namespace="kubeflow",
     istio_namespace="istio-system",
-    knative_namespace="knative-serving", 
-    tmaxcloud_image_repo="docker.io/tmaxcloudck",
-    istio_image_repo="docker.io/istio",
-    gatewaySelector="ingressgateway",
-    kubeflow_public_image_repo="gcr.io/kubeflow-images-public",
-    katib_image_repo="docker.io/kubeflowkatib",
-    katib_image_tag="v0.12.0",
-    katib_object_image_tag="v0.11.0",
-    mysql_deploy_image_repo="mysql",
-    mysql_deploy_image_tag="8.0.27",
-    argo_image_repo="docker.io/argoproj",
-    argo_image_tag="v2.12.10",
-    minio_image_repo="gcr.io/ml-pipeline/minio",
-    minio_image_tag="RELEASE.2019-08-14T20-37-41Z-license-compliance",
-    notebook_svc_type="Ingress",
+    knative_namespace="knative-serving",
     custom_domain_name="tmaxcloud.org",
-    knative_serving_image_repo="gcr.io/knative-releases/knative.dev/serving/cmd",
-    knative_istio_image_repo="gcr.io/knative-releases/knative.dev/net-istio/cmd",
-    knative_serving_image_tag="v0.14.3",
-    knative_istio_image_tag="v0.14.1",
-    kfserving_image_tag="v0.5.1",
-    kfserving_gcr_image_repo="gcr.io/kfserving",
-    kfserving_docker_image_repo="docker.io/kfserving",
-    kube_rbac_proxy_image_repo="gcr.io/kubebuilder/kube-rbac-proxy",
-    kube_rbac_proxy_image_tag="v0.4.0"    
+    notebook_svc_type="Ingress"
 )
+
+local target_registry = if is_offline == "false" then "" else private_registry + "/";
 [    
     {
     "apiVersion": "apiextensions.k8s.io/v1beta1",
@@ -7255,7 +7237,7 @@ function (
                     }
                 }
                 ],
-                "image": std.join("", [kubeflow_public_image_repo, "/pytorch-operator:vmaster-g518f9c76"]),
+                "image": std.join("", [target_registry, "gcr.io/kubeflow-images-public/pytorch-operator:vmaster-g518f9c76"]),
                 "name": "pytorch-operator"
             }
             ],
