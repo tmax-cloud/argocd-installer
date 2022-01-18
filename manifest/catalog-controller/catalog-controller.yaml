@@ -1025,7 +1025,6 @@ metadata:
     argocd.argoproj.io/hook: PreSync
 spec:
   secretName: catalog-webhook-cert 
-  isCA: false
   usages:
     - digital signature
     - key encipherment
