@@ -16,8 +16,10 @@ spec:
     directory:
       jsonnet:
         tlas:
-          - name: target_registry
-            value: tmaxcloudck
+          - name: is_offline
+            value: "false"
+          - name: private_registry
+            value: registry.tmaxcloud.org
           - name: hypercloud_hpcd_mode
             value: multi
           - name: hypercloud_kafka_enabled

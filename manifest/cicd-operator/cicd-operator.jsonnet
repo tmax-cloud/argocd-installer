@@ -1,9 +1,11 @@
 function(
-    is_offline=false,
-    private_registry="registry.tmaxcloud.org"
+    is_offline = "false",
+    private_registry = "registry.tmaxcloud.org",
+    custom_domain = "tmaxcloud.org"
 )
 
-local tmax_registry = if is_offline == false then "tmaxcloudck" else private_registry;
+local target_registry = if is_offline == false then "" else private_registry + "/";
+local cicd_domain = std.join("", ["cicd-webhook.", custom_domain]);
 
 [
   {
@@ -36,7 +38,7 @@ local tmax_registry = if is_offline == false then "tmaxcloudck" else private_reg
               "command": [
                 "/controller"
               ],
-              "image": std.join("", [tmax_registry, "/cicd-operator:v0.4.2"]),
+              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/cicd-operator:v0.4.2"]),
               "imagePullPolicy": "Always",
               "name": "manager",
               "resources": {
@@ -106,7 +108,7 @@ local tmax_registry = if is_offline == false then "tmaxcloudck" else private_reg
               "command": [
                 "/blocker"
               ],
-              "image": std.join("", [tmax_registry, "/cicd-blocker:v0.4.2"]),
+              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/cicd-blocker:v0.4.2"]),
               "imagePullPolicy": "Always",
               "name": "manager",
               "resources": {
@@ -144,6 +146,65 @@ local tmax_registry = if is_offline == false then "tmaxcloudck" else private_reg
           "terminationGracePeriodSeconds": 10
         }
       }
+    }
+  },
+  {
+    "apiVersion": "v1",
+    "kind": "ConfigMap",
+    "metadata": {
+      "name": "cicd-config",
+      "namespace": "cicd-system",
+      "labels": {
+        "cicd.tmax.io/part-of": "controller"
+      }
+    },
+    "data": {
+      "maxPipelineRun": "5",
+      "externalHostName": "",
+      "reportRedirectUriTemplate": "",
+      "enableMail": "false",
+      "smtpHost": "",
+      "smtpUserSecret": "",
+      "collectPeriod": "120",
+      "integrationJobTTL": "120",
+      "exposeMode": "Ingress",
+      "ingressClass": "",
+      "ingressHost": cicd_domain,
+      "gitImage": "docker.io/alpine/git:1.0.30"
+    }
+  },
+  {
+    "apiVersion": "networking.k8s.io/v1",
+    "kind": "Ingress",
+    "metadata": {
+      "name": "cicd-webhook",
+      "namespace": "cicd-system",
+      "labels": {
+        "cicd.tmax.io/part-of": "controller"
+      }
+    },
+    "spec": {
+      "rules": [
+        {
+          "host": cicd_domain,
+          "http": {
+            "paths": [
+              {
+                "pathType": "Prefix",
+                "path": "/",
+                "backend": {
+                  "service": {
+                    "name": "cicd-webhook",
+                    "port": {
+                      "number": 24335
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
     }
   }
 ]

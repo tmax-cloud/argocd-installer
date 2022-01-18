@@ -21,47 +21,6 @@ spec:
     - name: api
       port: 34335
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: cicd-webhook
-  namespace: cicd-system
-  labels:
-    cicd.tmax.io/part-of: controller
-spec:
-  rules:
-    - host: waiting.for.loadbalancer
-      http:
-        paths:
-          - pathType: Prefix
-            path: /
-            backend:
-              service:
-                name: cicd-webhook
-                port:
-                  number: 24335
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: cicd-config
-  namespace: cicd-system
-  labels:
-    cicd.tmax.io/part-of: controller
-data:
-  maxPipelineRun: "5"
-  externalHostName: ""
-  reportRedirectUriTemplate: ""
-  enableMail: "false"
-  smtpHost: ""
-  smtpUserSecret: ""
-  collectPeriod: "120"
-  integrationJobTTL: "120"
-  exposeMode: "Ingress"
-  ingressClass: ""
-  ingressHost: ""
-  gitImage: "docker.io/alpine/git:1.0.30"
----
 apiVersion: v1
 kind: ConfigMap
 metadata:

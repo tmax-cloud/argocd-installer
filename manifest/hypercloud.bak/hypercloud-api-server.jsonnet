@@ -1,10 +1,112 @@
 function (
-    params = import 'params.libsonnet'
+    is_offline="false",
+    private_registry="registry.hypercloud.org",
+    hypercloud_hpcd_mode="multi",
+    hypercloud_kafka_enabled="\"true\"",
+    hyperauth_url="hyperauth.172.22.6.18.nip.io"
 )
 
-local target_registry = if params.is_offline == "false" then "" else params.private_registry + "/";
+local target_registry = if is_offline == "false" then "" else private_registry + "/";
 
 [
+    {
+        "apiVersion": "apps/v1",
+        "kind": "Deployment",
+        "metadata": {
+            "name": "postgres",
+            "namespace": "hypercloud5-system"
+        },
+        "spec": {
+            "selector": {
+                "matchLabels": {
+                    "app": "postgres"
+                }
+            },
+            "replicas": 1,
+            "template": {
+                "metadata": {
+                    "labels": {
+                        "app": "postgres"
+                    }
+                },
+                "spec": {
+                    "containers": [
+                        {
+                            "name": "postgres",
+                            "image": std.join("", [target_registry, "docker.io/tmaxcloudck/postgres-cron:b5.0.0.1"]),
+                            "imagePullPolicy": "IfNotPresent",
+                            "ports": [
+                                {
+                                    "containerPort": 5432
+                                }
+                            ],
+                            "env": [
+                                {
+                                    "name": "TZ",
+                                    "value": "Asia/Seoul"
+                                },
+                                {
+                                    "name": "POSTGRES_USER",
+                                    "value": "postgres"
+                                },
+                                {
+                                    "name": "POSTGRES_PASSWORD",
+                                    "valueFrom": {
+                                        "secretKeyRef": {
+                                            "name": "postgres-secret",
+                                            "key": "POSTGRES_PASSWORD"
+                                        }
+                                    }
+                                }
+                            ],
+                            "resources": {
+                                "limits": {
+                                    "cpu": "500m",
+                                    "memory": "500Mi"
+                                },
+                                "requests": {
+                                    "cpu": "300m",
+                                    "memory": "100Mi"
+                                }
+                            },
+                            "volumeMounts": [
+                                {
+                                    "mountPath": "/var/lib/postgresql/data",
+                                    "name": "data",
+                                    "subPath": "postgres"
+                                },
+                                {
+                                    "mountPath": "/docker-entrypoint-initdb.d",
+                                    "name": "initdbsql"
+                                }
+                            ]
+                        }
+                    ],
+                    "serviceAccountName": "hypercloud5-admin",
+                    "volumes": [
+                        {
+                            "name": "data",
+                            "persistentVolumeClaim": {
+                                "claimName": "postgres-data"
+                            }
+                        },
+                        {
+                            "name": "initdbsql",
+                            "configMap": {
+                                "name": "postgres-init-config",
+                                "items": [
+                                    {
+                                        "key": "INIT_DB_SQL",
+                                        "path": "init-db.sql"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    },
     {
         "apiVersion": "apps/v1",
         "kind": "Deployment",
@@ -45,7 +147,7 @@ local target_registry = if params.is_offline == "false" then "" else params.priv
                                 },
                                 {
                                     "name": "HC_MODE",
-                                    "value": params.hypercloud_hpcd_mode
+                                    "value": hypercloud_hpcd_mode
                                 },
                                 {
                                     "name": "INVITATION_TOKEN_EXPIRED_DATE",
@@ -61,7 +163,7 @@ local target_registry = if params.is_offline == "false" then "" else params.priv
                                 },
                                 {
                                     "name": "KAFKA_ENABLED",
-                                    "value": params.hypercloud_kafka_enabled
+                                    "value": hypercloud_kafka_enabled
                                 },
                                 {
                                     "name": "KAFKA_GROUP_ID",
@@ -248,7 +350,7 @@ local target_registry = if params.is_offline == "false" then "" else params.priv
                     "      versionLabel:\n",
                     "  readinessProbe:\n",
                     "    httpGet:\n",
-                    "      path: ", params.hyperauth_url, "\n\n",
+                    "      path: ", hyperauth_url, "\n\n",
                     "- name: Calico\n",
                     "  namespace: kube-system\n",
                     "  selector:\n",
@@ -374,6 +476,262 @@ local target_registry = if params.is_offline == "false" then "" else params.priv
                     "  versionProbe:\n"
                 ]
             )
+        }
+    },
+    {
+        "apiVersion": "apps/v1",
+        "kind": "Deployment",
+        "metadata": {
+            "labels": {
+                "hypercloud": "single-operator"
+            },
+            "name": "hypercloud-single-operator-controller-manager",
+            "namespace": "hypercloud5-system"
+        },
+        "spec": {
+            "replicas": 1,
+            "selector": {
+                "matchLabels": {
+                    "hypercloud": "single-operator"
+                }
+            },
+            "template": {
+                "metadata": {
+                    "labels": {
+                        "hypercloud": "single-operator"
+                    }
+                },
+                "spec": {
+                    "containers": [
+                        {
+                            "args": [
+                                "--metrics-addr=127.0.0.1:8080",
+                                "--enable-leader-election"
+                            ],
+                            "command": [
+                                "/manager"
+                            ],
+                            "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-single-operator:b5.0.25.16"]),
+                            "name": "manager",
+                            "ports": [
+                                {
+                                    "containerPort": 9443,
+                                    "name": "webhook-server",
+                                    "protocol": "TCP"
+                                }
+                            ],
+                            "resources": {
+                                "limits": {
+                                    "cpu": "200m",
+                                    "memory": "100Mi"
+                                },
+                                "requests": {
+                                    "cpu": "100m",
+                                    "memory": "20Mi"
+                                }
+                            },
+                            "volumeMounts": [
+                                {
+                                    "mountPath": "/tmp/k8s-webhook-server/serving-certs",
+                                    "name": "cert",
+                                    "readOnly": true
+                                },
+                                {
+                                    "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                                    "name": "hypercloud-single-operator-service-account-token",
+                                    "readOnly": true
+                                },
+                                {
+                                    "mountPath": "/logs",
+                                    "name": "operator-log-mnt"
+                                }
+                            ]
+                        },
+                        {
+                            "args": [
+                                "--secure-listen-address=0.0.0.0:8443",
+                                "--upstream=http://127.0.0.1:8080/",
+                                "--logtostderr=true",
+                                "--v=10"
+                            ],
+                            "image": std.join("", [target_registry, "gcr.io/kubebuilder/kube-rbac-proxy:v0.5.0"]),
+                            "name": "kube-rbac-proxy",
+                            "ports": [
+                                {
+                                    "containerPort": 8443,
+                                    "name": "https"
+                                }
+                            ],
+                            "resources": {
+                                "limits": {
+                                    "cpu": "100m",
+                                    "memory": "30Mi"
+                                },
+                                "requests": {
+                                    "cpu": "100m",
+                                    "memory": "20Mi"
+                                }
+                            }
+                        }
+                    ],
+                    "dnsPolicy": "ClusterFirstWithHostNet",
+                    "serviceAccountName": "hypercloud-single-operator-service-account",
+                    "terminationGracePeriodSeconds": 10,
+                    "tolerations": [
+                        {
+                            "effect": "NoSchedule",
+                            "key": "node-role.kubernetes.io/master",
+                            "operator": "Equal"
+                        }
+                    ],
+                    "volumes": [
+                        {
+                            "name": "cert",
+                            "secret": {
+                                "defaultMode": 420,
+                                "secretName": "hypercloud-single-operator-webhook-server-cert"
+                            }
+                        },
+                        {
+                            "name": "hypercloud-single-operator-service-account-token",
+                            "secret": {
+                                "defaultMode": 420,
+                                "secretName": "hypercloud-single-operator-service-account-token"
+                            }
+                        },
+                        {
+                            "name": "operator-log-mnt"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    {
+        "apiVersion": "apps/v1",
+        "kind": "Deployment",
+        "metadata": {
+            "labels": {
+                "hypercloud": "multi-operator"
+            },
+            "name": "hypercloud-multi-operator-controller-manager",
+            "namespace": "hypercloud5-system"
+        },
+        "spec": {
+            "replicas": 1,
+            "selector": {
+                "matchLabels": {
+                    "hypercloud": "multi-operator"
+                }
+            },
+            "template": {
+                "metadata": {
+                    "labels": {
+                        "hypercloud": "multi-operator"
+                    }
+                },
+                "spec": {
+                    "containers": [
+                        {
+                            "args": [
+                                "--metrics-addr=127.0.0.1:8080",
+                                "--enable-leader-election"
+                            ],
+                            "command": [
+                                "/manager"
+                            ],
+                            "env": [
+                                {
+                                    "name": "TZ",
+                                    "value": "Asia/Seoul"
+                                }
+                            ],
+                            "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-multi-operator:b5.0.25.19"]),
+                            "name": "manager",
+                            "ports": [
+                                {
+                                    "containerPort": 9443,
+                                    "name": "webhook-server",
+                                    "protocol": "TCP"
+                                }
+                            ],
+                            "resources": {
+                                "limits": {
+                                    "cpu": "100m",
+                                    "memory": "50Mi"
+                                },
+                                "requests": {
+                                    "cpu": "100m",
+                                    "memory": "20Mi"
+                                }
+                            },
+                            "volumeMounts": [
+                                {
+                                    "mountPath": "/tmp/k8s-webhook-server/serving-certs",
+                                    "name": "cert",
+                                    "readOnly": true
+                                },
+                                {
+                                    "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                                    "name": "hypercloud-multi-operator-controller-manager-token",
+                                    "readOnly": true
+                                }
+                            ]
+                        },
+                        {
+                            "args": [
+                                "--secure-listen-address=0.0.0.0:8443",
+                                "--upstream=http://127.0.0.1:8080/",
+                                "--logtostderr=true",
+                                "--v=10"
+                            ],
+                            "image": std.join("", [target_registry, "gcr.io/kubebuilder/kube-rbac-proxy:v0.5.0"]),
+                            "name": "kube-rbac-proxy",
+                            "ports": [
+                                {
+                                    "containerPort": 8443,
+                                    "name": "https"
+                                }
+                            ],
+                            "resources": {
+                                "limits": {
+                                    "cpu": "100m",
+                                    "memory": "30Mi"
+                                },
+                                "requests": {
+                                    "cpu": "100m",
+                                    "memory": "20Mi"
+                                }
+                            },
+                            "volumeMounts": [
+                                {
+                                    "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                                    "name": "hypercloud-multi-operator-controller-manager-token",
+                                    "readOnly": true
+                                }
+                            ]
+                        }
+                    ],
+                    "serviceAccountName": "hypercloud-multi-operator-controller-manager",
+                    "terminationGracePeriodSeconds": 10,
+                    "volumes": [
+                        {
+                            "name": "cert",
+                            "secret": {
+                                "defaultMode": 420,
+                                "secretName": "hypercloud-multi-operator-webhook-server-cert"
+                            }
+                        },
+                        {
+                            "name": "hypercloud-multi-operator-controller-manager-token",
+                            "secret": {
+                                "defaultMode": 420,
+                                "secretName": "hypercloud-multi-operator-controller-manager-token"
+                            }
+                        }
+                    ]
+                }
+            }
         }
     }
 ]
