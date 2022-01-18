@@ -15,7 +15,7 @@ spec:
       jsonnet:
         tlas:
           - name: is_offline
-            value: false
+            value: "false"
           - name: private_registry
             value: registry.hypercloud.org
           - name: es_image_tag
@@ -33,13 +33,13 @@ spec:
           - name: kibana_client_id
             value: kibana
           - name: kibana_client_secret
-            value:
+            value: ""
           - name: hyperauth_url
-            value:
+            value: ""
           - name: hyperauth_realm
             value: tmax
           - name: custom_domain_name
-            value:
+            value: ""
           - name: fluentd_image_tag
             value: fluent/fluentd-kubernetes-daemonset:v1.4.2-debian-elasticsearch-1.1
   project: default
