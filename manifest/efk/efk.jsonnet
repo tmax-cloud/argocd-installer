@@ -1,27 +1,27 @@
 function (
     is_offline="false",
-    private_registry="registry.hypercloud.org",
-    es_image_tag="elasticsearch/elasticsearch:7.2.1",
-    busybox_image_tag="busybox:1.32.0",
+    private_registry="172.22.6.2:5000",
+    es_image_tag="docker.io/tmaxcloudck/elasticsearch/elasticsearch:7.2.1",
+    busybox_image_tag="docker.io/busybox:1.32.0",
     es_volume_size="50Gi",
-    kibana_image_tag="kibana/kibana:7.2.0",
+    kibana_image_tag="docker.elastic.co/kibana/kibana:7.2.0",
     kibana_svc_type="ClusterIP",
-    gatekeeper_image_tag="keycloak/keycloak-gatekeeper:10.0.0",
+    gatekeeper_image_tag="quay.io/keycloak/keycloak-gatekeeper:10.0.0",
     kibana_client_id="kibana",
     kibana_client_secret="23077707-908e-4633-956d-5adcaed4caa7",
     hyperauth_url="172.23.4.105",
     hyperauth_realm="tmax",
     custom_domain_name="domain_name",
     encryption_key="AgXa7xRcoClDEU0ZDSH4X0XhL5Qy2Z2j",
-    fluentd_image_tag="fluent/fluentd-kubernetes-daemonset:v1.4.2-debian-elasticsearch-1.1",
+    fluentd_image_tag="docker.io/fluent/fluentd-kubernetes-daemonset:v1.4.2-debian-elasticsearch-1.1",
     custom_clusterissuer="tmaxcloud-issuer"
 )
 
-local es_registry = if is_offline == "false" then "tmaxcloudck" else private_registry;
-local busybox_registry = if is_offline == "false" then "docker.io" else private_registry;
-local kibana_registry = if is_offline == "false" then "docker.elastic.co" else private_registry;
-local gatekeeper_registry = if is_offline == "false" then "quay.io" else private_registry;
-local fluentd_registry = if is_offline == "false" then "docker.io" else private_registry;
+local es_registry = if is_offline == "false" then "" else private_registry + "/";
+local busybox_registry = if is_offline == "false" then "" else private_registry + "/";
+local kibana_registry = if is_offline == "false" then "" else private_registry + "/";
+local gatekeeper_registry = if is_offline == "false" then "" else private_registry + "/";
+local fluentd_registry = if is_offline == "false" then "" else private_registry + "/";
 
 [
   {
@@ -50,7 +50,7 @@ local fluentd_registry = if is_offline == "false" then "docker.io" else private_
           "containers": [
             {
               "name": "elasticsearch",
-              "image": std.join("", [es_registry, "/", es_image_tag]),
+              "image": std.join("", [es_registry, es_image_tag]),
               "securityContext": {
                 "allowPrivilegeEscalation": true,
                 "privileged": true
@@ -114,7 +114,7 @@ local fluentd_registry = if is_offline == "false" then "docker.io" else private_
           "initContainers": [
             {
               "name": "fix-permissions",
-              "image": std.join("", [busybox_registry, "/", busybox_image_tag]),
+              "image": std.join("", [busybox_registry, busybox_image_tag]),
               "command": [
                 "sh",
                 "-c",
@@ -132,7 +132,7 @@ local fluentd_registry = if is_offline == "false" then "docker.io" else private_
             },
             {
               "name": "increase-vm-max-map",
-              "image": std.join("", [busybox_registry, "/", busybox_image_tag]),
+              "image": std.join("", [busybox_registry, busybox_image_tag]),
               "command": [
                 "sysctl", 
                 "-w", 
@@ -144,7 +144,7 @@ local fluentd_registry = if is_offline == "false" then "docker.io" else private_
             },
             {
               "name": "increase-fd-ulimit",
-              "image": std.join("", [busybox_registry, "/", busybox_image_tag]),
+              "image": std.join("", [busybox_registry, busybox_image_tag]),
               "command": [
                 "sh", 
                 "-c", 
@@ -219,7 +219,7 @@ local fluentd_registry = if is_offline == "false" then "docker.io" else private_
           "containers": if hyperauth_url != "" then [
             {
               "name": "gatekeeper",
-              "image": std.join("", [gatekeeper_registry, "/", gatekeeper_image_tag]),
+              "image": std.join("", [gatekeeper_registry, gatekeeper_image_tag]),
               "imagePullPolicy": "Always",
               "args": [
                 std.join("", ["--client-id=", kibana_client_id]),
@@ -258,7 +258,7 @@ local fluentd_registry = if is_offline == "false" then "docker.io" else private_
             },
             {
               "name": "kibana",
-              "image": std.join("",[kibana_registry, "/", kibana_image_tag]),
+              "image": std.join("",[kibana_registry, kibana_image_tag]),
               "resources": {
                 "limits": {
                   "cpu": "500m",
@@ -291,7 +291,7 @@ local fluentd_registry = if is_offline == "false" then "docker.io" else private_
           ] else [
             {
               "name": "kibana",
-              "image": std.join("",[kibana_registry, "/", kibana_image_tag]),
+              "image": std.join("",[kibana_registry, kibana_image_tag]),
               "resources": {
                 "limits": {
                   "cpu": "500m",
@@ -429,7 +429,7 @@ local fluentd_registry = if is_offline == "false" then "docker.io" else private_
           "containers": [
             {
               "name": "fluentd",
-              "image": std.join("",[fluentd_registry, "/", fluentd_image_tag]),
+              "image": std.join("",[fluentd_registry, fluentd_image_tag]),
               "env": [
                 {
                   "name": "FLUENT_ELASTICSEARCH_HOST",
