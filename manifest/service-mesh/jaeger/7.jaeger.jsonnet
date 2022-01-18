@@ -10,9 +10,7 @@ function(
     REDIRECT_URL="jaeger.domain"
 )
 
-local tmax_registry = if is_offline == "false" then "tmaxcloudck" else private_registry;
-local quay_registry = if is_offline == "false" then "quay.io" else private_registry;
-local docker_registry = if is_offline == "false" then "docker.io" else private_registry;
+local target_registry = if is_offline == "false" then "" else private_registry + "/";
 
 [
     {
@@ -178,7 +176,7 @@ local docker_registry = if is_offline == "false" then "docker.io" else private_r
             "serviceAccountName": "jaeger-service-account",
             "containers": [
               {
-                "image": std.join("", [docker_registry, "/jaegertracing/jaeger-collector:",JAEGER_VERSION]),
+                "image": std.join("", [target_registry, "docker.io/jaegertracing/jaeger-collector:",JAEGER_VERSION]),
                 "name": "jaeger-collector",
                 "args": [
                   "--config-file=/conf/collector.yaml"
@@ -348,7 +346,7 @@ local docker_registry = if is_offline == "false" then "docker.io" else private_r
             "containers": [
               {
                 "name": "gatekeeper",
-                "image": std.join("", [quay_registry, "/keycloak/keycloak-gatekeeper:",GATEKEER_VERSION]),
+                "image": std.join("", [target_registry, "quay.io/keycloak/keycloak-gatekeeper:",GATEKEER_VERSION]),
                 "imagePullPolicy": "Always",
                 "args": [
                   "--client-id=jaeger",
@@ -401,7 +399,7 @@ local docker_registry = if is_offline == "false" then "docker.io" else private_r
                     "value": "/api/jaeger"
                   }
                 ],
-                "image": std.join("", [docker_registry, "/jaegertracing/jaeger-query:",JAEGER_VERSION]),
+                "image": std.join("", [target_registry, "docker.io/jaegertracing/jaeger-query:",JAEGER_VERSION]),
                 "imagePullPolicy": "IfNotPresent",
                 "name": "jaeger-query",
                 "ports": [
@@ -500,7 +498,6 @@ local docker_registry = if is_offline == "false" then "docker.io" else private_r
        },
        "spec": {
          "secretName": "jaeger-secret",
-         "isCA": false,
          "usages": [
            "digital signature",
            "key encipherment",
@@ -599,7 +596,7 @@ local docker_registry = if is_offline == "false" then "docker.io" else private_r
           "spec": {
             "containers": [
               {
-                "image": std.join("", [docker_registry, "/jaegertracing/jaeger-agent:",JAEGER_VERSION]),
+                "image": std.join("", [target_registry, "docker.io/jaegertracing/jaeger-agent:",JAEGER_VERSION]),
                 "name": "jaeger-agent",
                 "args": [
                   "--config-file=/conf/agent.yaml"
