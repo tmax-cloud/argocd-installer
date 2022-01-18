@@ -342,7 +342,7 @@ local target_registry = if is_offline == "flase" then "" else private_registry +
     } + (
       if hyperauth_svc_type == "LoadBalancer" then {
         "ipAddresses": [
-          hyperauth_external_ip,
+          hyperauth_external_ip
         ]
       } else {}
     ),
