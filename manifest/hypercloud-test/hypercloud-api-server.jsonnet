@@ -1,12 +1,8 @@
 function (
-    is_offline="false",
-    private_registry="registry.hypercloud.org",
-    hypercloud_hpcd_mode="multi",
-    hypercloud_kafka_enabled="\"true\"",
-    hyperauth_url="hyperauth.172.22.6.18.nip.io"
+    params = import 'params.libsonnet'
 )
 
-local target_registry = if is_offline == "false" then "" else private_registry + "/";
+local target_registry = if params.is_offline == "false" then "" else params.private_registry + "/";
 
 [
     {
@@ -49,7 +45,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                                 },
                                 {
                                     "name": "HC_MODE",
-                                    "value": hypercloud_hpcd_mode
+                                    "value": params.hypercloud_hpcd_mode
                                 },
                                 {
                                     "name": "INVITATION_TOKEN_EXPIRED_DATE",
@@ -65,7 +61,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                                 },
                                 {
                                     "name": "KAFKA_ENABLED",
-                                    "value": hypercloud_kafka_enabled
+                                    "value": params.hypercloud_kafka_enabled
                                 },
                                 {
                                     "name": "KAFKA_GROUP_ID",
@@ -252,7 +248,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "      versionLabel:\n",
                     "  readinessProbe:\n",
                     "    httpGet:\n",
-                    "      path: ", hyperauth_url, "\n\n",
+                    "      path: ", params.hyperauth_url, "\n\n",
                     "- name: Calico\n",
                     "  namespace: kube-system\n",
                     "  selector:\n",
