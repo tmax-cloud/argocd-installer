@@ -70,9 +70,14 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
-nodeSelector: {}
+#nodeSelector: {}
+nodeSelector:
+  node-role.kubernetes.io/master: ""
 
-tolerations: []
+#tolerations: []
+tolerations:
+  - key: "node-role.kubernetes.io/master"
+    operator: Exists
 
 affinity:
   podAffinity:
@@ -81,7 +86,7 @@ affinity:
           topologyKey: kubernetes.io/hostname
           labelSelector:
             matchExpressions:
-              - key: app.kubernetes.io/name
+              - key: app
                 operator: In
                 values:
                   - traefik

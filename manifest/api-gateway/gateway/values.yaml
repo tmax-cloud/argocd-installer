@@ -13,6 +13,8 @@ traefik:
     - "--serverstransport.rootcas=/run/secrets/tmaxcloud/ca.crt, /run/secrets/kubernetes.io/serviceaccount/ca.crt"
     - "--entrypoints.websecure.http.middlewares=cors-header@file"
   deployment:
+    podLabels:
+      app: traefik
     imagePullSecrets: []
 #    imagePullSecrets:
 #      - name: regcred
@@ -31,6 +33,12 @@ traefik:
     annotations:
       service.beta.kubernetes.io/aws-load-balancer-type: nlb
       service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+  resources: {}
+  nodeSelector:
+    node-role.kubernetes.io/master: ""
+  tolerations:
+    - key: "node-role.kubernetes.io/master"
+      operator: Exists
 
 tls:
   acme:
