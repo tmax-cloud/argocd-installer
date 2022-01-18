@@ -378,7 +378,6 @@ local fluentd_registry = if is_offline == "false" then "" else private_registry 
     },
     "spec": {
       "secretName": "kibana-secret",
-      "isCA": false,
       "usages": [
         "digital signature",
         "key encipherment",
