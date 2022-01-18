@@ -7,118 +7,117 @@ function(
     CUSTOM_CLUSTER_ISSUER="tmaxcloud-issuer"
 )
 
-local tmax_registry = if is_offline == "false" then "tmaxcloudck" else private_registry;
-
+local target_registry = if is_offline == "false" then "" else private_registry + "/";
 
 [
-{
-  "apiVersion": "rbac.authorization.k8s.io/v1",
-  "kind": "ClusterRole",
-  "metadata": {
-    "name": "kiali",
-    "labels": {
-      "app": "kiali",
-      "release": "istio"
-    }
+  {
+    "apiVersion": "rbac.authorization.k8s.io/v1",
+    "kind": "ClusterRole",
+    "metadata": {
+      "name": "kiali",
+      "labels": {
+        "app": "kiali",
+        "release": "istio"
+      }
+    },
+    "rules": [
+      {
+        "apiGroups": [
+          ""
+        ],
+        "resources": [
+          "configmaps",
+          "endpoints",
+          "namespaces",
+          "nodes",
+          "pods",
+          "pods/log",
+          "replicationcontrollers",
+          "services"
+        ],
+        "verbs": [
+          "get",
+          "list",
+          "watch"
+        ]
+      },
+      {
+        "apiGroups": [
+          "extensions",
+          "apps"
+        ],
+        "resources": [
+          "deployments",
+          "replicasets",
+          "statefulsets"
+        ],
+        "verbs": [
+          "get",
+          "list",
+          "watch"
+        ]
+      },
+      {
+        "apiGroups": [
+          "autoscaling"
+        ],
+        "resources": [
+          "horizontalpodautoscalers"
+        ],
+        "verbs": [
+          "get",
+          "list",
+          "watch"
+        ]
+      },
+      {
+        "apiGroups": [
+          "batch"
+        ],
+        "resources": [
+          "cronjobs",
+          "jobs"
+        ],
+        "verbs": [
+          "get",
+          "list",
+          "watch"
+        ]
+      },
+      {
+        "apiGroups": [
+          "config.istio.io",
+          "networking.istio.io",
+          "authentication.istio.io",
+          "rbac.istio.io",
+          "security.istio.io"
+        ],
+        "resources": [
+          "*"
+        ],
+        "verbs": [
+          "create",
+          "delete",
+          "get",
+          "list",
+          "patch",
+          "watch"
+        ]
+      },
+      {
+        "apiGroups": [
+          "monitoring.kiali.io"
+        ],
+        "resources": [
+          "monitoringdashboards"
+        ],
+        "verbs": [
+          "get",
+          "list"
+        ]
+      }
+    ]
   },
-  "rules": [
-    {
-      "apiGroups": [
-        ""
-      ],
-      "resources": [
-        "configmaps",
-        "endpoints",
-        "namespaces",
-        "nodes",
-        "pods",
-        "pods/log",
-        "replicationcontrollers",
-        "services"
-      ],
-      "verbs": [
-        "get",
-        "list",
-        "watch"
-      ]
-    },
-    {
-      "apiGroups": [
-        "extensions",
-        "apps"
-      ],
-      "resources": [
-        "deployments",
-        "replicasets",
-        "statefulsets"
-      ],
-      "verbs": [
-        "get",
-        "list",
-        "watch"
-      ]
-    },
-    {
-      "apiGroups": [
-        "autoscaling"
-      ],
-      "resources": [
-        "horizontalpodautoscalers"
-      ],
-      "verbs": [
-        "get",
-        "list",
-        "watch"
-      ]
-    },
-    {
-      "apiGroups": [
-        "batch"
-      ],
-      "resources": [
-        "cronjobs",
-        "jobs"
-      ],
-      "verbs": [
-        "get",
-        "list",
-        "watch"
-      ]
-    },
-    {
-      "apiGroups": [
-        "config.istio.io",
-        "networking.istio.io",
-        "authentication.istio.io",
-        "rbac.istio.io",
-        "security.istio.io"
-      ],
-      "resources": [
-        "*"
-      ],
-      "verbs": [
-        "create",
-        "delete",
-        "get",
-        "list",
-        "patch",
-        "watch"
-      ]
-    },
-    {
-      "apiGroups": [
-        "monitoring.kiali.io"
-      ],
-      "resources": [
-        "monitoringdashboards"
-      ],
-      "verbs": [
-        "get",
-        "list"
-      ]
-    }
-  ]
-},
   {
     "apiVersion": "rbac.authorization.k8s.io/v1",
     "kind": "ClusterRole",
@@ -409,7 +408,7 @@ local tmax_registry = if is_offline == "false" then "tmaxcloudck" else private_r
                   }
                 }
               ],
-              "image": std.join("", [tmax_registry, "/kiali/kiali:",KIALI_VERSION]),
+              "image": std.join("", [target_registry, "quay.io/kiali/kiali:", KIALI_VERSION]),
               "imagePullPolicy": "IfNotPresent",
               "livenessProbe": {
                 "httpGet": {
@@ -516,7 +515,6 @@ local tmax_registry = if is_offline == "false" then "tmaxcloudck" else private_r
      },
      "spec": {
        "secretName": "kiali-secret",
-       "isCA": false,
        "usages": [
          "digital signature",
          "key encipherment",
