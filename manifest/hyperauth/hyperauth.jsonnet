@@ -331,20 +331,21 @@ local target_registry = if is_offline == "flase" then "" else private_registry +
       ],
       "dnsNames": if hyperauth_svc_type == "Ingress" then [
         hyperauth_external_dns,
-        "tmax-cloud"
       ] else [
         "tmax-cloud"
       ],
-      "ipAddresses": if hyperauth_svc_type == "LoadBalancer" then [
-        hyperauth_external_ip,
-        "tmax-cloud"
-      ] else [],
       "issuerRef": {
         "kind": "ClusterIssuer",
         "group": "cert-manager.io",
         "name": "tmaxcloud-issuer"
       }
-    }
+    } + (
+      if hyperauth_svc_type == "LoadBalancer" then {
+        "ipAddresses": [
+          hyperauth_external_ip,
+        ]
+      } else {}
+    ),
   },
   if hyperauth_svc_type == "Ingress" then {
     "apiVersion": "networking.k8s.io/v1",
