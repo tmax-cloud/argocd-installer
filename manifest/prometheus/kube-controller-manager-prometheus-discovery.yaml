@@ -4,7 +4,7 @@ metadata:
   name: kube-controller-manager-prometheus-discovery
   namespace: kube-system
   labels:
-    k8s-app: kube-controller-manager
+    component: kube-controller-manager
 spec:
   ports:
     - name: http-metrics
@@ -12,7 +12,7 @@ spec:
       port: 10252
       targetPort: 10252
   selector:
-    k8s-app: kube-controller-manager
+    component: kube-controller-manager
   clusterIP: None
   type: ClusterIP
   sessionAffinity: None
