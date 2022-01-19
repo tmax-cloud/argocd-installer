@@ -4,7 +4,7 @@ metadata:
   name: etcd
   namespace: kube-system
   labels:
-    k8s-app: etcd
+    component: etcd
 spec:
   ports:
     - name: http
@@ -12,7 +12,7 @@ spec:
       port: 2381
       targetPort: 2381
   selector:
-    k8s-app: etcd
+    component: etcd
   clusterIP: None
   type: ClusterIP
   sessionAffinity: None
