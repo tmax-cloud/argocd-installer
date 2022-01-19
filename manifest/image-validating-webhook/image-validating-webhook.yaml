@@ -8,8 +8,6 @@ kind: Certificate
 metadata:
   name: image-validation-webhook-cert
   namespace: registry-system
-  annotations:
-    argocd.argoproj.io/hook: PreSync
 spec:
   secretName: image-validation-webhook-cert
   isCA: false
