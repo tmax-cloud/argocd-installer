@@ -26,7 +26,7 @@
     - {{ argocd ns }} 부분을 해당 환경의 argocd 네임스페이스로 치환
 ---
 3. resource 배포(application sync)
-    - application sync 순서는 [docs/install-order.md](install-oerder.md)를 참조
+    - application sync 순서는 [docs/install-order.md](install-order.md)를 참조
     - 순서에 맞춰서 모듈을 sync
     - sync 방식은 아래와 같음
     1) argocd server에 접속후 로그인
