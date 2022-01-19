@@ -1,7 +1,7 @@
 # Guide for Users
 ### ArgoCD를 이용한 resource 배포
 1. prerequsites
-    - argocd
+    - argocd([Install guide link](https://github.com/tmax-cloud/install-argocd))
 ---
 1. application 변수 셋팅
     - 테스트할 환경에서 바라볼 git repo url, branch,  network_disabled(true/false), private_registry를 설정
