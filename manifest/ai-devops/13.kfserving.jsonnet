@@ -22465,7 +22465,6 @@ local kfserving_image_tag = "v0.5.1";
   "webhooks": [
     {
       "clientConfig": {
-        "caBundle": "Cg==",
         "service": {
           "name": "kfserving-webhook-server-service",
           "namespace": ai_devops_namespace,
@@ -22494,7 +22493,6 @@ local kfserving_image_tag = "v0.5.1";
     },
     {
       "clientConfig": {
-        "caBundle": "Cg==",
         "service": {
           "name": "kfserving-webhook-server-service",
           "namespace": ai_devops_namespace,
@@ -22523,7 +22521,6 @@ local kfserving_image_tag = "v0.5.1";
     },
     {
       "clientConfig": {
-        "caBundle": "Cg==",
         "service": {
           "name": "kfserving-webhook-server-service",
           "namespace": ai_devops_namespace,
@@ -22586,7 +22583,6 @@ local kfserving_image_tag = "v0.5.1";
   "webhooks": [
     {
       "clientConfig": {
-        "caBundle": "Cg==",
         "service": {
           "name": "kfserving-webhook-server-service",
           "namespace": ai_devops_namespace,
@@ -22615,7 +22611,6 @@ local kfserving_image_tag = "v0.5.1";
     },
     {
       "clientConfig": {
-        "caBundle": "Cg==",
         "service": {
           "name": "kfserving-webhook-server-service",
           "namespace": ai_devops_namespace,
@@ -22662,7 +22657,6 @@ local kfserving_image_tag = "v0.5.1";
   "webhooks": [
     {
       "clientConfig": {
-        "caBundle": "Cg==",
         "service": {
           "name": "kfserving-webhook-server-service",
           "namespace": ai_devops_namespace,

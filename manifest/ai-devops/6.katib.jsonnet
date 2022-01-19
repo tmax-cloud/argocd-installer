@@ -1459,7 +1459,6 @@ local katib_object_image_tag = "v0.11.0";
           "v1beta1"
         ],
         "clientConfig": {
-          "caBundle": "Cg==",
           "service": {
             "name": "katib-controller",
             "namespace": ai_devops_namespace,
@@ -1492,7 +1491,6 @@ local katib_object_image_tag = "v0.11.0";
           "v1beta1"
         ],
         "clientConfig": {
-          "caBundle": "Cg==",
           "service": {
             "name": "katib-controller",
             "namespace": ai_devops_namespace,
@@ -1538,7 +1536,6 @@ local katib_object_image_tag = "v0.11.0";
           "v1beta1"
         ],
         "clientConfig": {
-          "caBundle": "Cg==",
           "service": {
             "name": "katib-controller",
             "namespace": ai_devops_namespace,
