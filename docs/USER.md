@@ -31,21 +31,21 @@
     - sync 방식은 아래와 같음
     1) argocd server에 접속후 로그인
         - argocd server 주소는 다음과 같이 알 수 있음
-        ```
-        $ kubectl get svc -n {{ argocd ns }} argocd-server
-        ```
-        ![img](figure/1_main.png)
+            ```
+            $ kubectl get svc -n {{ argocd ns }} argocd-server
+            ```
+            ![img](../figure/1_main.png)
     
     2) application sync
         - sync하고자 하는 application을 찾아서 sync 버튼을 클릭  
-        ![img](figure/2_app.png)
+        ![img](../figure/2_app.png)
 
         - option 및 sync target을 설정하고 synchronize 버튼 클릭
-        ![img](figure/3_sync.png)
+        ![img](../figure/3_sync.png)
 
     3) sync status 확인
         - sync status(health check, sync check)를 확인
-        ![img](figure/4_synced.png)
+        ![img](../figure/4_synced.png)
 
         - app card를 누르면 리소스별 status 체크 가능
-        ![img](figure/5_details.png)
+        ![img](../figure/5_details.png)
