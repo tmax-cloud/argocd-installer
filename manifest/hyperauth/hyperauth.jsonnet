@@ -388,10 +388,9 @@ local target_registry = if is_offline == "flase" then "" else private_registry +
         {
           "hosts": [
             hyperauth_external_dns
-          ],
-          "secretName": "hyperauth-https-secret"
+          ]
         }
       ]
     }
-  }else {}
+  } else {}
 ]
