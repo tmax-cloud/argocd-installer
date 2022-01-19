@@ -6,7 +6,7 @@
 5. efk
 6. prometheus
 7. grafana
-8. service-mesh
+8. service-mesh(istio, jaeger, kiali)
 9. cluster-api
 10. cluster-api-provider-aws
 11. cluster-api-provider-vsphere
