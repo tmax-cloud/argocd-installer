@@ -12,9 +12,9 @@ spec:
       jsonnet:
         tlas:
         - name: is_offline
-          value: false
+          value: "false"
         - name: private_registry
-          value: 172.22.6.2:5000
+          value: registry.tmaxcloud.org
         - name: ai_devops_namespace
           value: kubeflow
         - name: istio_namespace
