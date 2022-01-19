@@ -2,7 +2,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   labels:
-    k8s-app: kube-controller-manager
+    component: kube-controller-manager
   name: kube-controller-manager
   namespace: monitoring
 spec:
@@ -15,4 +15,4 @@ spec:
     - kube-system
   selector:
     matchLabels:
-      k8s-app: kube-controller-manager
+      component: kube-controller-manager
