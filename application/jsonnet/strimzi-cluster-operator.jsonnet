@@ -1,4 +1,5 @@
 function (
+  #params = import 'params.libsonnet'
   repo_url = "https://github.com/tmax-cloud/argocd-installer",
   is_offline = "false",
   private_registry = "172.22.6.2:5000"
