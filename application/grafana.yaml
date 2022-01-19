@@ -23,9 +23,9 @@ spec:
           - name: client_id
             value: ""
           - name: client_secret
-            value: v0.0.1
+            value: ""
           - name: keycloak_addr
-            value: v0.34.0
+            value: ""
           - name: grafana_pvc
             value: 10Gi
           - name: grafana_version
