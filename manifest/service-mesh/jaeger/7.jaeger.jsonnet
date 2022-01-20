@@ -2,7 +2,7 @@ function(
     is_offline="false",
     private_registry="registry.tmaxcloud.org",
     JAEGER_VERSION="1.14",
-    JAEGER_SECRET="jaeger_secret",
+    tmax_client_secret="tmax_client_secret",
     HYPERAUTH_DOMAIN="hyperauth.domain",
     GATEKEER_VERSION="10.0.0",
     CUSTOM_DOMAIN_NAME="custom-domain",
@@ -350,7 +350,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "imagePullPolicy": "Always",
                 "args": [
                   "--client-id=jaeger",
-                  std.join("", ["--client-secret=", JAEGER_SECRET]),
+                  std.join("", ["--client-secret=", tmax_client_secret]),
                   "--listen=:3000",
                   "--upstream-url=http://127.0.0.1:16686",
                   std.join("", ["--discovery-url=https://", HYPERAUTH_DOMAIN, "/auth/realms/tmax"]),
