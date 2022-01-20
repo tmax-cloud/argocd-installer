@@ -8,12 +8,12 @@ argocd에서 grafana 배포를 하기 위해서는 application/grafana.yaml의 t
   value: "false"
 - name: private_registry
   value: "" 
-- name: domain --> grafana ingress주소
-  value: ""
+- name: domain 
+  value: ""--> grafana ingress주소
 - name: client_id
   value: "grafana"
-- name: keycloak_addr --> hyperauth 주소
-  value: ""
+- name: keycloak_addr
+  value: "" --> hyperauth 주소
 - name: grafana_pvc
   value: "" --> grafana pvc 용량
 - name: grafana_version
