@@ -22,6 +22,8 @@ spec:
             value: ""
           - name: client_id
             value: "grafana"
+          - name: tmax_client_secret
+            value: tmax_client_secret
           - name: keycloak_addr
             value: ""
           - name: grafana_pvc
