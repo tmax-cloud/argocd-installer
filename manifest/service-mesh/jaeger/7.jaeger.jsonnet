@@ -354,10 +354,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                   "--listen=:3000",
                   "--upstream-url=http://127.0.0.1:16686",
                   std.join("", ["--discovery-url=https://", HYPERAUTH_DOMAIN, "/auth/realms/tmax"]),
-                  "--secure-cookie=true",
+                  "--secure-cookie=false",
                   "--skip-openid-provider-tls-verify=true",
-                  "--enable-self-signed-tls",
+                  "--enable-self-signed-tls=false",
+                  "--tls-cert=/etc/secrets/tls.crt",
+                  "--tls-private-key=/etc/secrets/tls.key",
+                  "--tls-ca-certificate=/etc/secrets/ca.crt",
                   "--skip-upstream-tls-verify=true",
+                  "--upstream-keepalives=false",
                   "--enable-default-deny=true",
                   "--enable-refresh-tokens=true",
                   "--enable-metrics=true",
@@ -377,6 +381,11 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                   {
                     "name": "gatekeeper-files",
                     "mountPath": "/html"
+                  },
+                  {
+                    "name": "secret",
+                    "mountPath": "/etc/secrets",
+                    "readOnly": true
                   }
                 ]
               },
@@ -437,6 +446,12 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "terminationGracePeriodSeconds": 30,
             "volumes": [
               {
+                "name": "secret",
+                "secret": {
+                  "secretName": "jaeger-secret"
+                },
+              },
+              {
                 "name": "gatekeeper-files",
                 "configMap": {
                   "name": "gatekeeper-files"
@@ -464,7 +479,9 @@ local target_registry = if is_offline == "false" then "" else private_registry +
       "apiVersion": "v1",
       "kind": "Service",
       "metadata": {
-        "annotations": null,
+        "annotations": {
+           "traefik.ingress.kubernetes.io/service.serverstransport": "tmaxcloud@file"
+        },
         "labels": {
           "app": "jaeger",
           "app.kubernetes.io/component": "query",
