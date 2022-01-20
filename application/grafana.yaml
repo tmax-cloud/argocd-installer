@@ -17,8 +17,6 @@ spec:
           - name: is_offline
             value: "false"
           - name: private_registry
-            value: registry.tmaxcloud.org
-          - name: domain
             value: ""
           - name: client_id
             value: "grafana"
