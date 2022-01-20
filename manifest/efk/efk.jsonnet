@@ -223,7 +223,7 @@ local fluentd_registry = if is_offline == "false" then "" else private_registry 
               "imagePullPolicy": "Always",
               "args": [
                 std.join("", ["--client-id=", kibana_client_id]),
-                std.join("", ["--client-secret=", kibana_client_secret]),
+                std.join("", ["--client-secret=", tmax_client_secret]),
                 "--listen=:3000",
                 "--upstream-url=http://127.0.0.1:5601",
                 std.join("", ["--discovery-url=https://", hyperauth_url, "/auth/realms/", hyperauth_realm]),
