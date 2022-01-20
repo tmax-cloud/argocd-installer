@@ -32,8 +32,8 @@ spec:
             value: quay.io/keycloak/keycloak-gatekeeper:10.0.0
           - name: kibana_client_id
             value: kibana
-          - name: kibana_client_secret
-            value: ""
+          - name: tmax_client_secret
+            value: tmax_client_secret
           - name: hyperauth_url
             value: ""
           - name: hyperauth_realm
