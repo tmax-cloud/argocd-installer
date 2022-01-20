@@ -12,6 +12,8 @@ argocd에서 grafana 배포를 하기 위해서는 application/grafana.yaml의 t
   value: ""--> grafana ingress주소
 - name: client_id
   value: "grafana"
+- name: tmax_client_secret
+  value: tmax_client_secret
 - name: keycloak_addr
   value: "" --> hyperauth 주소
 - name: grafana_pvc
@@ -35,6 +37,8 @@ argocd에서 grafana 배포를 하기 위해서는 application/grafana.yaml의 t
   value: "grafana.tmaxcloud.org"
 - name: client_id
   value: "grafana"
+- name: tmax_client_secret
+  value: tmax_client_secret
 - name: keycloak_addr
   value: "hyperauth.tmaxcloud.org"
 - name: grafana_pvc
