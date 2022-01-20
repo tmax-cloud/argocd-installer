@@ -345,7 +345,8 @@ local fluentd_registry = if is_offline == "false" then "" else private_registry 
        "namespace": "kube-logging",
        "labels": {
           "app": "kibana"
-        "annotations": {
+       },
+       "annotations": {
           "traefik.ingress.kubernetes.io/service.serverstransport": "tmaxcloud@file"
        }
     },
