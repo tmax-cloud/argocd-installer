@@ -8,7 +8,7 @@ function (
     kibana_svc_type="ClusterIP",
     gatekeeper_image_tag="quay.io/keycloak/keycloak-gatekeeper:10.0.0",
     kibana_client_id="kibana",
-    kibana_client_secret="tmax_client_secret",
+    tmax_client_secret="tmax_client_secret",
     hyperauth_url="172.23.4.105",
     hyperauth_realm="tmax",
     custom_domain_name="domain_name",
