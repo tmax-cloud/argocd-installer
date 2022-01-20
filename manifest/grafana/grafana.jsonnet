@@ -1,7 +1,6 @@
 function (
 	is_offline="false",
     	private_registry="172.22.6.2:5000",
-   	domain="",
 	client_id="grafana",
 	tmax_client_secret="tmax_client_secret",
 	keycloak_addr="",
@@ -25,7 +24,7 @@ local target_registry = if is_offline == "flase" then "" else private_registry +
 		"grafana.ini": std.join("",
 			[
 				"[server]\n",
-				"domain =", domain, "\n",
+				"domain = grafana.",ingress_domain, "\n",
 				"http_port = 3000\n",
 				"root_url = https://%(domain)s/api/grafana/\n",
 				"serve_from_sub_path = true\n",
