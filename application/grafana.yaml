@@ -21,8 +21,8 @@ spec:
           - name: domain
             value: ""
           - name: client_id
-            value: ""
-          - name: client_secret
+            value: "grafana"
+          - name: tmax_client_secret
             value: ""
           - name: keycloak_addr
             value: ""
