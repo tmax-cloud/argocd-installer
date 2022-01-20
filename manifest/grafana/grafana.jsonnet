@@ -3,7 +3,7 @@ function (
     	private_registry="172.22.6.2:5000",
    	domain="",
 	client_id="grafana",
-	tmax_client_secret="",
+	tmax_client_secret="tmax_client_secret",
 	keycloak_addr="",
 	grafana_pvc="10Gi",
 	grafana_version="6.4.3",
