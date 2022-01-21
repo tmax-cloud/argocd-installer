@@ -9,7 +9,7 @@ global:
   registiry:
     is_offline: false
     private_registry: 172.22.6.2:5000
-  domain: tmaxcloud.local.test
+  domain: tmaxcloud.local.test.check
   hyperauth:
     address: hyperauth.tmaxcloud.org
     realm: tmax
@@ -28,7 +28,7 @@ global:
         hostedZoneID: Z07854445SLZAKEQ0V9P
       environment: staging
     selfsigned:
-      commonName: tmaxcloud.local.test
+      commonName: tmaxcloud.local.test.check
 
 modules:
 
@@ -55,7 +55,7 @@ modules:
 #        - name: regcred
 
   jwtDecodeAuth:
-    enabled: true
+    enabled: false
     source:
       path: manifest/api-gateway/jwt-decode-auth
       helm:
@@ -66,7 +66,7 @@ modules:
 #        - name: regcred
 
   console:
-    enabled: true
+    enabled: false
     source:
       path: manifest/api-gateway/console
       helm:
