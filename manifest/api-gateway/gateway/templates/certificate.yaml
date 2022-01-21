@@ -44,9 +44,9 @@ spec:
     - client auth
   dnsNames:
     - "tmax-cloud"
-    {{- range $domain := .Values.tls.acme.domains }}
-    - {{ $domain | quote}}
-    - {{ printf "*.%s" $domain | quote }}
+    {{- range .Values.tls.acme.domains }}
+    - {{ . | quote}}
+    - {{ printf "*.%s" . | quote }}
     {{- end }}
   issuerRef:
     kind: ClusterIssuer
