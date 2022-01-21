@@ -10,7 +10,6 @@ metadata:
   namespace: registry-system
 spec:
   secretName: image-validation-webhook-cert
-  isCA: false
   usages:
     - digital signature
     - key encipherment
