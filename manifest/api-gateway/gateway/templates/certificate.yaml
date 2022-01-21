@@ -41,9 +41,9 @@ spec:
     - server auth
     - client auth
   dnsNames:
-    - "tmax-cloud"
     - {{ .Values.tls.acme.domain | quote}}
     - {{ printf "*.%s" .Values.tls.acme.domain | quote }}
+    - "tmax-cloud"
   issuerRef:
     kind: ClusterIssuer
     group: cert-manager.io

@@ -9,7 +9,7 @@ global:
   registiry:
     is_offline: false
     private_registry: 172.22.6.2:5000
-  domain: tmaxcloud.local.test.check
+  domain: "tmaxcloud.local.test.check"
   hyperauth:
     address: hyperauth.tmaxcloud.org
     realm: tmax
