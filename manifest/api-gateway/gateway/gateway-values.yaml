@@ -8,8 +8,6 @@ tags:
 traefik:
   fullnameOverride: "gateway"
   additionalArguments:
-    # Only use dev environment
-    - "--serverstransport.insecureskipverify=true"
     - "--serverstransport.rootcas=/run/secrets/tmaxcloud/ca.crt, /run/secrets/kubernetes.io/serviceaccount/ca.crt"
     - "--entrypoints.websecure.http.middlewares=cors-header@file"
   image:
@@ -60,12 +58,11 @@ tls:
       type: route53
       accessKeyID: AKIA5D7L5Q3I7VQCJETF
       accessKeySecret: 19G1ETeGgjwW6+LDEFDFDVDVDFFDVD
-    domains:
-      - tmaxcloud.org
-    environment: staging
+      hostedZoneID: Z07854445SLZAKEQ0V9P
+    domains: []
+    environment: production
   selfsigned:
     createTLS: true
     useDefaultTLS: true
     commonName: tmaxcloud.local
-    domains:
-      - tmaxcloud.local
+    domains: []

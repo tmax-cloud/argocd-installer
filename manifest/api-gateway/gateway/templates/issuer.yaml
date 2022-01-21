@@ -24,10 +24,13 @@ spec:
     {{- if eq .dns.type "route53" }}
           route53:
             region: ap-northeast-2
+            {{- if .dns.hostedZoneID }}
+            hostedZoneID: {{ .dns.hostedZoneID }}
+            {{- end }}
             accessKeyID: {{ .dns.accessKeyID }}
             secretAccessKeySecretRef:
               name: route53-secret
-              key: secret-access-key
+              key: secret_access_key
         selector:
           dnsZones:
           {{- range .domains }}
@@ -64,10 +67,13 @@ spec:
     {{- if eq .dns.type "route53" }}
           route53:
             region: ap-northeast-2
+            {{- if .dns.hostedZoneID }}
+            hostedZoneID: {{ .dns.hostedZoneID }}
+            {{- end }}
             accessKeyID: {{ .dns.accessKeyID }}
             secretAccessKeySecretRef:
               name: route53-secret
-              key: secret-access-key
+              key: secret_access_key
         selector:
           dnsZones:
           {{- range .domains }}

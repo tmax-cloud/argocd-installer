@@ -30,8 +30,6 @@ spec:
         {{- end }}
   project: default
   syncPolicy:
-    automated:
-      allowEmpty: true
     retry:
       limit: 3
 ---

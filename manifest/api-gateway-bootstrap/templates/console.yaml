@@ -29,15 +29,13 @@ spec:
         - name: console.mcMode
           value: {{ .Values.global.console.mcMode | default true | quote }}
         - name: ingressroute.domain.name
-          value: {{ .Values.global.console.domain | default "tmaxcloud.org" }}
+          value: {{ .Values.global.domain | default "tmaxcloud.org" }}
         {{- if .Values.global.registiry.is_offline }}
         - name: image.repository
           value: {{ .Values.global.registiry.private_registry }}/docker.io/tmaxcloudck/hypercloud-console
         {{- end }}
   project: default
   syncPolicy:
-    automated:
-      allowEmpty: true
     retry:
       limit: 3
 {{- end }}

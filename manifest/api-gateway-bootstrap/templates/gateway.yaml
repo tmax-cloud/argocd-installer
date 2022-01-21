@@ -19,8 +19,23 @@ spec:
     helm:
       valueFiles:
         - {{ .Values.modules.gateway.source.helm.valueFiles }}
-      {{- if .Values.global.registiry.is_offline }}
       parameters:
+      {{- if .Values.global.tls.acme.enabled }}
+        - name: tls.acme.email
+          value: {{ .Values.global.tls.acme.email }}
+        - name: tls.acme.dns.accessKeyID
+          value: {{ .Values.global.tls.acme.dns.accessKeyID }}
+        - name: tls.acme.dns.accessKeySecret
+          value: {{ .Values.global.tls.acme.dns.accessKeySecret }}
+        - name: tls.acme.dns.hostedZoneID
+          value: {{ .Values.global.tls.acme.dns.hostedZoneID }}
+        - name: tls.acme.domains[0]
+          value: {{ .Values.global.domain }}
+      {{- else }}
+        - name: tls.selfsigned.commonName
+          value: {{ .Values.global.domain }}
+      {{- end }}
+      {{- if .Values.global.registiry.is_offline }}
         - name: traefik.image.name
           value: {{ .Values.global.registiry.private_registry }}/docker.io/library/traefik
       {{- end }}
@@ -28,8 +43,6 @@ spec:
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
-    automated:
-      allowEmpty: true
     retry:
       limit: 3
 ---
