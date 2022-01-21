@@ -23,10 +23,10 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-{{/*  annotations:*/}}
-{{/*    "helm.sh/hook": post-install,post-upgrade*/}}
-{{/*    "helm.sh/hook-weight": "15"*/}}
-{{/*    "helm.sh/hook-delete-policy": before-hook-creation*/}}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "15"
+    "helm.sh/hook-delete-policy": before-hook-creation
   name: selfsigned-crt
 spec:
   secretName: selfsigned-crt-secret
@@ -41,9 +41,9 @@ spec:
     - server auth
     - client auth
   dnsNames:
-    - {{ .Values.tls.acme.domain | quote }}
-    - {{ printf "*.%s" .Values.tls.acme.domain | quote }}
     - "tmax-cloud"
+    - {{ .Values.tls.selfsigned.domain | quote }}
+    - {{ printf "*.%s" .Values.tls.selfsigned.domain | quote }}
   issuerRef:
     kind: ClusterIssuer
     group: cert-manager.io
