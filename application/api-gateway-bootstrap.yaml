@@ -11,4 +11,9 @@ spec:
     path: manifest/api-gateway-bootstrap
     repoURL: 'https://github.com/tmax-cloud/argocd-installer'
     targetRevision: main
+  syncPolicy:
+    automated:
+      prune: true
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
   project: default
