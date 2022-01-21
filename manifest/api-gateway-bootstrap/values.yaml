@@ -20,7 +20,7 @@ global:
 modules:
 
   certManager:
-    enabled: true
+    enabled: false
     source:
       path: manifest/api-gateway/cert-manager
       helm:
