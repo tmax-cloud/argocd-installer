@@ -35,7 +35,7 @@ spec:
         - name: tls.selfsigned.commonName
           value: {{ .Values.global.domain }}
         - name: tls.selfsigned.domains
-          value: {{ .Values.global.domain }}
+          value: "[{{ .Values.global.domain }}]"
       {{- end }}
       {{- if .Values.global.registiry.is_offline }}
         - name: traefik.image.name
