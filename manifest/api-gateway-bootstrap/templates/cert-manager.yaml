@@ -21,8 +21,11 @@ spec:
         - {{ .Values.modules.certManager.source.helm.valueFiles }}
   project: default
   syncPolicy:
+    automated:
+      prune: true
     syncOptions:
       - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true
     retry:
       limit: 3
 

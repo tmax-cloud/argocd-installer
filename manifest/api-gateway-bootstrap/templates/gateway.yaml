@@ -52,8 +52,11 @@ spec:
       {{- end }}
   project: default
   syncPolicy:
+    automated:
+      prune: true
     syncOptions:
       - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true
     retry:
       limit: 3
 ---
@@ -89,6 +92,6 @@ spec:
           {{- else }}
           image: "alpine:3.3"
           {{- end }}
-          command: ["/bin/sleep","30"]
+          command: ["/bin/sleep","120"]
           imagePullPolicy: IfNotPresent
 {{- end }}

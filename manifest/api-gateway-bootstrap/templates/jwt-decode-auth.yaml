@@ -30,8 +30,12 @@ spec:
         {{- end }}
   project: default
   syncPolicy:
+    automated:
+      prune: true
     retry:
       limit: 3
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
 ---
 apiVersion: batch/v1
 kind: Job
