@@ -129,7 +129,7 @@ metadata:
   namespace: hyperauth
 data:
   tmax-realm.json: |
-    {
+{
   "id": "tmax",
   "realm": "tmax",
   "notBefore": 1618199421,
@@ -791,7 +791,7 @@ data:
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "**********",
+      "secret": "tmax_client_secret",
       "defaultRoles": [
         "manage-account",
         "view-profile"
@@ -864,7 +864,7 @@ data:
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "**********",
+      "secret": "tmax_client_secret",
       "redirectUris": [
         "/realms/tmax/account/*"
       ],
@@ -930,7 +930,7 @@ data:
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "**********",
+      "secret": "tmax_client_secret",
       "redirectUris": [],
       "webOrigins": [],
       "notBefore": 0,
@@ -979,7 +979,7 @@ data:
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "**********",
+      "secret": "tmax_client_secret",
       "redirectUris": [],
       "webOrigins": [],
       "notBefore": 0,
@@ -1027,7 +1027,7 @@ data:
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "**********",
+      "secret": "tmax_client_secret",
       "redirectUris": [
         "",
         "*"
@@ -1097,7 +1097,7 @@ data:
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "**********",
+      "secret": "tmax_client_secret",
       "redirectUris": [
         "https://grafana.cklcloud.org/api/grafana/login/generic_oauth/*",
         "*"
@@ -1169,7 +1169,7 @@ data:
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "**********",
+      "secret": "tmax_client_secret",
       "redirectUris": [
         "*"
       ],
@@ -1268,7 +1268,7 @@ data:
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "**********",
+      "secret": "tmax_client_secret",
       "redirectUris": [
         "https://hyperregistry.ckcloud.org/c/oidc/callback"
       ],
@@ -1336,7 +1336,7 @@ data:
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "**********",
+      "secret": "tmax_client_secret",
       "redirectUris": [
         "*"
       ],
@@ -1420,7 +1420,7 @@ data:
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "**********",
+      "secret": "tmax_client_secret",
       "redirectUris": [
         "",
         "*"
@@ -1493,7 +1493,7 @@ data:
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "**********",
+      "secret": "tmax_client_secret",
       "redirectUris": [
         "*"
       ],
@@ -1574,7 +1574,7 @@ data:
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "**********",
+      "secret": "tmax_client_secret",
       "redirectUris": [],
       "webOrigins": [],
       "notBefore": 0,
@@ -1625,7 +1625,7 @@ data:
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "**********",
+      "secret": "tmax_client_secret",
       "redirectUris": [
         "*",
         "/admin/tmax/console/*"
