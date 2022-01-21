@@ -59,11 +59,8 @@ tls:
       accessKeyID: AKIA5D7L5Q3I7VQCJETF
       accessKeySecret: 19G1ETeGgjwW6+LDEFDFDVDVDFFDVD
       hostedZoneID: Z07854445SLZAKEQ0V9P
-    domains: []
     environment: production
+    domain: tmaxcloud.local
   selfsigned:
-    createTLS: true
-    useDefaultTLS: true
-    commonName: tmaxcloud.local
-    domains:
-      - check
+    enabled: true
+    domain: tmaxcloud.local

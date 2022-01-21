@@ -28,7 +28,7 @@ global:
         hostedZoneID: Z07854445SLZAKEQ0V9P
       environment: staging
     selfsigned:
-      commonName: tmaxcloud.local.test.check
+      enabled: true
 
 modules:
 

@@ -42,19 +42,15 @@ traefik:
 
 tls:
   acme:
-    enabled: true
+    enabled: false
     email: email
     dns:
       type: route53
       accessKeyID: accesskey
       accessKeySecret: secretkey
       hostedZoneID: Z07854445SLZAKEQ0V9P
-    domains:
-      - tmaxcloud.org
     environment: staging
+    domain: tmaxcloud.local
   selfsigned:
-    createTLS: false
-    useDefaultTLS: true
-    commonName: tmaxcloud.local
-    domains:
-      - tmaxcloud.local
+    enabled: true
+    domain: tmaxcloud.local
