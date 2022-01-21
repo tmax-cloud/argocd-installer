@@ -31,7 +31,7 @@ argocd에서 EFK 배포를 하기 위해서는 application/efk.yaml의 top-level
 - name: kibana_client_id
   value: "Hyperauth client id for EFK Kibana"
   
-- name: kibana_client_secret
+- name: tmax_client_secret
   value: "Hyperauth client secret for EFK Kibana"
   
 - name: hyperauth_url
@@ -68,8 +68,8 @@ argocd에서 EFK 배포를 하기 위해서는 application/efk.yaml의 top-level
   value: quay.io/keycloak/keycloak-gatekeeper:10.0.0
 - name: kibana_client_id
   value: kibana
-- name: kibana_client_secret
-  value: **********
+- name: tmax_client_secret
+  value: tmax_client_secret
 - name: hyperauth_url
   value: hyperauth.tmaxcloud.org
 - name: hyperauth_realm

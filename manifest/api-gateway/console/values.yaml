@@ -12,7 +12,7 @@ console:
     hyperauth: hyperauth.ckcloud.org
     realm: tmax
     clientid: hypercloud5
-  mcMode: false
+  mcMode: true
 
 image:
   repository: docker.io/tmaxcloudck/hypercloud-console

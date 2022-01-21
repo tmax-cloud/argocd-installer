@@ -17,11 +17,11 @@ spec:
           - name: is_offline
             value: "false"
           - name: private_registry
-            value: registry.tmaxcloud.org
-          - name: domain
             value: ""
           - name: client_id
             value: "grafana"
+          - name: tmax_client_secret
+            value: tmax_client_secret
           - name: keycloak_addr
             value: ""
           - name: grafana_pvc

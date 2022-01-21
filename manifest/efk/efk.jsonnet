@@ -8,7 +8,7 @@ function (
     kibana_svc_type="ClusterIP",
     gatekeeper_image_tag="quay.io/keycloak/keycloak-gatekeeper:10.0.0",
     kibana_client_id="kibana",
-    kibana_client_secret="23077707-908e-4633-956d-5adcaed4caa7",
+    tmax_client_secret="tmax_client_secret",
     hyperauth_url="172.23.4.105",
     hyperauth_realm="tmax",
     custom_domain_name="domain_name",
@@ -223,7 +223,7 @@ local fluentd_registry = if is_offline == "false" then "" else private_registry 
               "imagePullPolicy": "Always",
               "args": [
                 std.join("", ["--client-id=", kibana_client_id]),
-                std.join("", ["--client-secret=", kibana_client_secret]),
+                std.join("", ["--client-secret=", tmax_client_secret]),
                 "--listen=:3000",
                 "--upstream-url=http://127.0.0.1:5601",
                 std.join("", ["--discovery-url=https://", hyperauth_url, "/auth/realms/", hyperauth_realm]),
