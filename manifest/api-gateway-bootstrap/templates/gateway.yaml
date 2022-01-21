@@ -1,26 +1,29 @@
-{{- if .Values.modules.certManager.enabled }}
+{{- if .Values.modules.gateway.enalbed }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cert-manager
+  name: gateway
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
   annotations:
-    argocd.argoproj.io/sync-wave: "-1"
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   destination:
-    namespace: cert-manager
+    namespace: api-gateway-system
     server: {{ .Values.spec.destination.server }}
   source:
-    path: {{ .Values.modules.certManager.source.path }}
+    path: {{ .Values.modules.gateway.source.path }}
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
-    {{- with .Values.modules.certManager.source.helm.parameters }}
     helm:
+      valueFiles:
+        - {{ .Values.modules.gateway.source.helm.valueFiles }}
+      {{- if .Values.global.registiry.is_offline }}
       parameters:
-      {{- toYaml . | nindent 8 }}
-    {{- end }}
+        - name: traefik.image.name
+          value: {{ .Values.global.registiry.private_registry }}/docker.io/library/traefik
+      {{- end }}
   project: default
   syncPolicy:
     syncOptions:
@@ -29,19 +32,18 @@ spec:
       allowEmpty: true
     retry:
       limit: 3
-
 ---
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "cert-manager-sync-wave"
+  name: gateway-sync-wave
   namespace: argocd
   labels:
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
-    app.kubernetes.io/instance: "cert-manager-sync-wave"
+    app.kubernetes.io/instance: "gateway-sync-wave"
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
   annotations:
-    argocd.argoproj.io/sync-wave: "-1"
+    argocd.argoproj.io/sync-wave: "0"
     argocd.argoproj.io/hook-delete-policy: HookSucceeded, BeforeHookCreation
 spec:
   template:
@@ -49,16 +51,20 @@ spec:
       name: "{{ .Release.Name }}"
       labels:
         app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
-        app.kubernetes.io/instance: "cert-manager-sync-wave"
+        app.kubernetes.io/instance: "gateway-sync-wave"
     spec:
-      {{- with .Values.modules.certManager.job.imagePullSecrets }}
+      {{- with .Values.modules.gateway.job.imagePullSecrets }}
       imagePullSecrets:
       {{- toYaml . | nindent 8 }}
       {{- end }}
       restartPolicy: Never
       containers:
         - name: post-install-job
+          {{- if .Values.global.registiry.is_offline }}
+          image: "{{ .Values.global.registiry.private_registry }}/docker.io/library/alpine:3.3"
+          {{- else }}
           image: "alpine:3.3"
-          command: ["/bin/sleep","300"]
+          {{- end }}
+          command: ["/bin/sleep","30"]
           imagePullPolicy: IfNotPresent
 {{- end }}

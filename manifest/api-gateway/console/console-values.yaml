@@ -1,0 +1,105 @@
+# Default values for console.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+nameOverride: "console"
+fullnameOverride: "console"
+
+console:
+  auth:
+    hyperauth: hyperauth.tmaxcloud.org
+    realm: tmax
+    clientid: hypercloud5
+  mcMode: true
+
+service:
+  type: ClusterIP
+  port: 31303
+
+ingressroute:
+  enabled: true
+  domain:
+    enabled: true
+    ## need domain name
+    name: tmaxcloud.org
+  ip:
+    enabled: false
+
+image:
+  repository: docker.io/tmaxcloudck/hypercloud-console
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "5.0.45.0"
+#imagePullSecrets: []
+imagePullSecrets:
+  - name: regcred
+
+nodeSelector:
+  node-role.kubernetes.io/master: ""
+
+#tolerations: []
+tolerations:
+  - key: "node-role.kubernetes.io/master"
+    operator: Exists
+
+affinity:
+  podAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - podAffinityTerm:
+          topologyKey: kubernetes.io/hostname
+          labelSelector:
+            matchExpressions:
+              - key: app
+                operator: In
+                values:
+                  - traefik
+        weight: 100
+
+replicaCount: 1
+
+resources:
+  {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+#   memory: 128Mi
+
+podAnnotations: {}
+podSecurityContext:
+  {}
+  # fsGroup: 2000
+securityContext:
+  {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+ingress:
+  enabled: false
+  className: ""
+  annotations:
+    {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80

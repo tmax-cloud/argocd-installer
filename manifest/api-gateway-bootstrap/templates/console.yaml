@@ -1,0 +1,43 @@
+{{- if .Values.modules.console.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: console
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  destination:
+    namespace: api-gateway-system
+    server: {{ .Values.spec.destination.server }}
+  source:
+    path: {{ .Values.modules.console.source.path }}
+    repoURL: {{ .Values.spec.source.repoURL }}
+    targetRevision: {{ .Values.spec.source.targetRevision }}
+    helm:
+      valueFiles:
+        - {{ .Values.modules.console.source.helm.valueFiles }}
+      parameters:
+        - name: console.auth.hyperauth
+          value: {{ .Values.global.hyperauth.address | default "hyperauth.org"}}
+        - name: console.auth.realm
+          value: {{ .Values.global.hyperauth.realm | default "tmax" }}
+        - name: console.auth.clientid
+          value: {{ .Values.global.hyperauth.clientid | default "hypercloud5" }}
+        - name: console.mcMode
+          value: {{ .Values.global.console.mcMode | default true | quote }}
+        - name: ingressroute.domain.name
+          value: {{ .Values.global.console.domain | default "tmaxcloud.org" }}
+        {{- if .Values.global.registiry.is_offline }}
+        - name: image.repository
+          value: {{ .Values.global.registiry.private_registry }}/docker.io/tmaxcloudck/hypercloud-console
+        {{- end }}
+  project: default
+  syncPolicy:
+    automated:
+      allowEmpty: true
+    retry:
+      limit: 3
+{{- end }}
