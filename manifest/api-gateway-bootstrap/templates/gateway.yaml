@@ -34,7 +34,7 @@ spec:
       {{- else }}
         - name: tls.selfsigned.commonName
           value: {{ .Values.global.domain }}
-        - name: tls.selfsigned.domains[0]
+        - name: tls.selfsigned.domains
           value: {{ .Values.global.domain }}
       {{- end }}
       {{- if .Values.global.registiry.is_offline }}
