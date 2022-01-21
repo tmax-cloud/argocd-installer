@@ -36,6 +36,8 @@ spec:
           value: {{ .Values.global.domain }}
         - name: tls.selfsigned.domains[0]
           value: {{ .Values.global.domain | quote }}
+        - name: tls.selfsigned.domains[1]
+          value: {{ .Values.global.domain | quote }}
       {{- end }}
       {{- if .Values.global.registiry.is_offline }}
         - name: traefik.image.name
