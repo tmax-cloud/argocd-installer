@@ -33,7 +33,7 @@ global:
 modules:
 
   certManager:
-    enabled: false
+    enabled: true
     source:
       path: manifest/api-gateway/cert-manager
       helm:
@@ -44,7 +44,7 @@ modules:
 #        - name: regcred
 
   gateway:
-    enalbed: false
+    enalbed: true
     source:
       path: manifest/api-gateway/gateway
       helm:
@@ -55,7 +55,7 @@ modules:
 #        - name: regcred
 
   jwtDecodeAuth:
-    enabled: false
+    enabled: true
     source:
       path: manifest/api-gateway/jwt-decode-auth
       helm:
@@ -66,7 +66,7 @@ modules:
 #        - name: regcred
 
   console:
-    enabled: false
+    enabled: true
     source:
       path: manifest/api-gateway/console
       helm:
