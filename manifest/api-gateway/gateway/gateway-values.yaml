@@ -60,7 +60,7 @@ tls:
       accessKeySecret: 19G1ETeGgjwW6+LDEFDFDVDVDFFDVD
       hostedZoneID: Z07854445SLZAKEQ0V9P
     environment: production
-    domain: tmaxcloud.local
+    domain: tmaxcloud.test
   selfsigned:
     enabled: true
-    domain: tmaxcloud.local
+    domain: tmaxcloud.test

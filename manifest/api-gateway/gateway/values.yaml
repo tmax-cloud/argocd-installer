@@ -50,7 +50,7 @@ tls:
       accessKeySecret: secretkey
       hostedZoneID: Z07854445SLZAKEQ0V9P
     environment: staging
-    domain: tmaxcloud.local
+    domain: tmaxcloud.test
   selfsigned:
     enabled: true
-    domain: tmaxcloud.local
+    domain: tmaxcloud.test
