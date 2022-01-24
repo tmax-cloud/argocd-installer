@@ -41,6 +41,7 @@ traefik:
       operator: Exists
 
 tls:
+  domain: tmaxcloud.test
   acme:
     enabled: false
     email: email
@@ -50,7 +51,7 @@ tls:
       accessKeySecret: secretkey
       hostedZoneID: Z07854445SLZAKEQ0V9P
     environment: staging
-    domain: tmaxcloud.test
+#    domain: tmaxcloud.test
   selfsigned:
     enabled: true
-    domain: tmaxcloud.test
+#    domain: tmaxcloud.test

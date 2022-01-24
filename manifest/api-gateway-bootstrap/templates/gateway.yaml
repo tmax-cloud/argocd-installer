@@ -29,14 +29,12 @@ spec:
           value: {{ .Values.global.tls.acme.dns.accessKeySecret }}
         - name: tls.acme.dns.hostedZoneID
           value: {{ .Values.global.tls.acme.dns.hostedZoneID }}
-        - name: tls.acme.domain
+        - name: tls.domain
           value: {{ .Values.global.domain }}
         - name: tls.selfsigned.enabled
           value: "false"
       {{- else if .Values.global.tls.selfsigned.enabled }}
-        - name: tls.selfsigned.commonName
-          value: {{ .Values.global.domain }}
-        - name: tls.selfsigned.domain
+        - name: tls.domain
           value: {{ .Values.global.domain }}
         - name: tls.acme.enabled
           value: "false"

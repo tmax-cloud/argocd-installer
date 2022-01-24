@@ -31,10 +31,10 @@ spec:
             secretAccessKeySecretRef:
               name: route53-secret
               key: secret_access_key
-        selector:
-          dnsZones:
-            - {{ .domain | quote}}
-            - {{ printf "*.%s" .domain | quote }}
+{{/*        selector:*/}}
+{{/*          dnsZones:*/}}
+{{/*            - {{ .domain | quote}}*/}}
+{{/*            - {{ printf "*.%s" .domain | quote }}*/}}
     {{- end }}
   {{- end }}
 {{- end }}
@@ -72,10 +72,10 @@ spec:
             secretAccessKeySecretRef:
               name: route53-secret
               key: secret_access_key
-        selector:
-          dnsZones:
-            - {{ .domain | quote}}
-            - {{ printf "*.%s" .domain | quote }}
+{{/*        selector:*/}}
+{{/*          dnsZones:*/}}
+{{/*            - {{ .domain | quote}}*/}}
+{{/*            - {{ printf "*.%s" .domain | quote }}*/}}
     {{- end }}
   {{- end }}
 {{- end }}

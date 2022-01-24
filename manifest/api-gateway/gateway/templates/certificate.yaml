@@ -11,8 +11,8 @@ metadata:
 spec:
   secretName: {{ .Values.tls.acme.dns.type }}-acme-crt-secret
   dnsNames:
-    - {{ .Values.tls.acme.domain | quote}}
-    - {{ printf "*.%s" .Values.tls.acme.domain | quote }}
+    - {{ .Values.tls.domain | quote}}
+    - {{ printf "*.%s" .Values.tls.domain | quote }}
   issuerRef:
     name: {{ printf "%s-letsencrypt-%s" .Values.tls.acme.dns.type .Values.tls.acme.environment }}
     kind: Issuer
@@ -30,7 +30,7 @@ metadata:
   name: selfsigned-crt
 spec:
   secretName: selfsigned-crt-secret
-  commonName: {{ .Values.tls.selfsigned.domain }}
+  commonName: {{ .Values.tls.domain }}
   subject:
     organizations:
       - "tmax-cloud"
@@ -42,8 +42,8 @@ spec:
     - client auth
   dnsNames:
     - "tmax-cloud"
-    - {{ .Values.tls.selfsigned.domain | quote }}
-    - {{ printf "*.%s" .Values.tls.selfsigned.domain | quote }}
+    - {{ .Values.tls.domain | quote }}
+    - {{ printf "*.%s" .Values.tls.domain | quote }}
   issuerRef:
     kind: ClusterIssuer
     group: cert-manager.io
