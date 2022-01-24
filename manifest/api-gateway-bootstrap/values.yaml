@@ -5,6 +5,31 @@ spec:
     repoURL: https://github.com/tmax-cloud/argocd-installer
     targetRevision: main
 
+global:
+  registiry:
+    is_offline: false
+    private_registry: 172.22.6.2:5000
+  domain: tmaxcloud.local
+  hyperauth:
+    address: hyperauth.tmaxcloud.org
+    realm: tmax
+    clientid: hypercloud5
+  console:
+    mcMode: true
+  tls:
+    selfsigned:
+      enabled: true
+    # acme로 할 경우, domain에 입력한 주소를 가지고 있어야함
+    acme:
+      enabled: false
+      email: test@tmax.co.kr
+      dns:
+        type: route53
+        accessKeyID: accesskey
+        accessKeySecret: secretkey
+        hostedZoneID: Z07854445SLZAKEQ0V9P
+      environment: production
+
 modules:
 
   certManager:
@@ -12,7 +37,7 @@ modules:
     source:
       path: manifest/api-gateway/cert-manager
       helm:
-        parameters: []
+        valueFiles: cert-manager-values.yaml
     job:
       imagePullSecrets: []
 #      imagePullSecrets:
@@ -23,34 +48,18 @@ modules:
     source:
       path: manifest/api-gateway/gateway
       helm:
-        parameters: []
+        valueFiles: gateway-values.yaml
     job:
       imagePullSecrets: []
 #      imagePullSecrets:
 #        - name: regcred
-
-  hyperauth:
-    enabled: false
-    source:
-      path: manifest/hyperauth
-    configs:
-      target_registry: tmaxcloudck
-      hyperauth_svc_type: Ingress
-      hyperauth_external_dns: hyperauth.a8e9df7fb87ba4e81b4a38e06187c6c1-820671877.eu-central-1.elb.amazonaws.com.nip.io
-    job:
-      imagePullSecrets: []
 
   jwtDecodeAuth:
     enabled: true
     source:
       path: manifest/api-gateway/jwt-decode-auth
       helm:
-#        parameters: []
-        parameters:
-          - name: hyperauth.address
-            value: hyperauth.tmaxcloud.org
-          - name: hyperauth.realm
-            value: tmax
+        valueFiles: jwt-decode-auth-values.yaml
     job:
       imagePullSecrets: []
 #      imagePullSecrets:
@@ -61,10 +70,7 @@ modules:
     source:
       path: manifest/api-gateway/console
       helm:
-#        parameters: []
-        paramethers:
-          - name: console.auth.hyperauth
-            value: hyperauth.tmaxcloud.org
+        valueFiles: console-values.yaml
     job:
       imagePullSecrets: []
 #      imagePullSecrets:

@@ -16,17 +16,45 @@ spec:
     path: {{ .Values.modules.gateway.source.path }}
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
-    {{- with .Values.modules.gateway.source.helm.parameters }}
     helm:
+      valueFiles:
+        - {{ .Values.modules.gateway.source.helm.valueFiles }}
       parameters:
-      {{- toYaml . | nindent 8 }}
-    {{- end }}
+      {{- if .Values.global.tls.acme.enabled }}
+        - name: tls.acme.email
+          value: {{ .Values.global.tls.acme.email }}
+        - name: tls.acme.dns.accessKeyID
+          value: {{ .Values.global.tls.acme.dns.accessKeyID }}
+        - name: tls.acme.dns.accessKeySecret
+          value: {{ .Values.global.tls.acme.dns.accessKeySecret }}
+        - name: tls.acme.dns.hostedZoneID
+          value: {{ .Values.global.tls.acme.dns.hostedZoneID }}
+        - name: tls.domain
+          value: {{ .Values.global.domain }}
+        - name: tls.selfsigned.enabled
+          value: "false"
+      {{- else if .Values.global.tls.selfsigned.enabled }}
+        - name: tls.domain
+          value: {{ .Values.global.domain }}
+        - name: tls.acme.enabled
+          value: "false"
+      {{- else }}
+        - name: tls.selfsigned.enabled
+          value: "false"
+        - name: tls.acme.enabled
+          value: "false"
+      {{- end }}
+      {{- if .Values.global.registiry.is_offline }}
+        - name: traefik.image.name
+          value: {{ .Values.global.registiry.private_registry }}/docker.io/library/traefik
+      {{- end }}
   project: default
   syncPolicy:
+    automated:
+      prune: true
     syncOptions:
       - CreateNamespace=true
-    automated:
-      allowEmpty: true
+      - ApplyOutOfSyncOnly=true
     retry:
       limit: 3
 ---
@@ -57,7 +85,11 @@ spec:
       restartPolicy: Never
       containers:
         - name: post-install-job
+          {{- if .Values.global.registiry.is_offline }}
+          image: "{{ .Values.global.registiry.private_registry }}/docker.io/library/alpine:3.3"
+          {{- else }}
           image: "alpine:3.3"
-          command: ["/bin/sleep","30"]
+          {{- end }}
+          command: ["/bin/sleep","120"]
           imagePullPolicy: IfNotPresent
 {{- end }}

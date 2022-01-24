@@ -11,16 +11,14 @@ metadata:
 spec:
   secretName: {{ .Values.tls.acme.dns.type }}-acme-crt-secret
   dnsNames:
-{{- range .Values.tls.acme.domains }}
-    - {{ . | quote}}
-    - {{ printf "*.%s" . | quote }}
-{{- end }}
+    - {{ .Values.tls.domain | quote}}
+    - {{ printf "*.%s" .Values.tls.domain | quote }}
   issuerRef:
     name: {{ printf "%s-letsencrypt-%s" .Values.tls.acme.dns.type .Values.tls.acme.environment }}
     kind: Issuer
 {{- end }}
 
-{{- if .Values.tls.selfsigned.createTLS }}
+{{- if .Values.tls.selfsigned.enabled }}
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -28,11 +26,11 @@ metadata:
   annotations:
     "helm.sh/hook": post-install,post-upgrade
     "helm.sh/hook-weight": "15"
-{{/*    "helm.sh/hook-delete-policy": before-hook-creation*/}}
+    "helm.sh/hook-delete-policy": before-hook-creation
   name: selfsigned-crt
 spec:
   secretName: selfsigned-crt-secret
-  commonName: {{ .Values.tls.selfsigned.commonName }}
+  commonName: {{ .Values.tls.domain }}
   subject:
     organizations:
       - "tmax-cloud"
@@ -44,10 +42,8 @@ spec:
     - client auth
   dnsNames:
     - "tmax-cloud"
-    {{- range .Values.tls.acme.domains }}
-    - {{ . | quote}}
-    - {{ printf "*.%s" . | quote }}
-    {{- end }}
+    - {{ .Values.tls.domain | quote }}
+    - {{ printf "*.%s" .Values.tls.domain | quote }}
   issuerRef:
     kind: ClusterIssuer
     group: cert-manager.io

@@ -8,16 +8,15 @@ tags:
 traefik:
   fullnameOverride: "gateway"
   additionalArguments:
-    # Only use dev environment
-    - "--serverstransport.insecureskipverify=true"
     - "--serverstransport.rootcas=/run/secrets/tmaxcloud/ca.crt, /run/secrets/kubernetes.io/serviceaccount/ca.crt"
     - "--entrypoints.websecure.http.middlewares=cors-header@file"
+  image:
+    name: traefik
   deployment:
     podLabels:
       app: traefik
-    imagePullSecrets: []
-#    imagePullSecrets:
-#      - name: regcred
+    imagePullSecrets:
+      - name: regcred
   volumes:
     - name: gateway-config
       mountPath: "/gateway-config"
@@ -33,6 +32,17 @@ traefik:
     annotations:
       service.beta.kubernetes.io/aws-load-balancer-type: nlb
       service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+## When using NodePort service
+#    type: NodePort
+#  ports:
+#    k8s:
+#      nodePort: 31643
+#    web:
+#      nodePort: 31080
+#    websecure:
+#      nodePort: 31433
+#    traefik:
+#      nodePort: 31900
   resources: {}
   nodeSelector:
     node-role.kubernetes.io/master: ""
@@ -44,14 +54,12 @@ tls:
   domain: tmaxcloud.test
   acme:
     enabled: false
-    email: email
+    email: yjs890403@gmail.com
     dns:
       type: route53
-      accessKeyID: accesskey
-      accessKeySecret: secretkey
+      accessKeyID: AKIA5D7L5Q3I7VQCJETF
+      accessKeySecret: 19G1ETeGgjwW6+LDEFDFDVDVDFFDVD
       hostedZoneID: Z07854445SLZAKEQ0V9P
-    environment: staging
-#    domain: tmaxcloud.test
+    environment: production
   selfsigned:
     enabled: true
-#    domain: tmaxcloud.test

@@ -13,7 +13,7 @@ spec:
     secretName: {{ .Values.tls.acme.dns.type }}-acme-crt-secret
 {{- end }}
 
-{{- if .Values.tls.selfsigned.useDefaultTLS }}
+{{- if .Values.tls.selfsigned.enabled }}
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: TLSStore

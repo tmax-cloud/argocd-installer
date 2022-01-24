@@ -16,17 +16,26 @@ spec:
     path: {{ .Values.modules.jwtDecodeAuth.source.path }}
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
-    {{- with .Values.modules.jwtDecodeAuth.source.helm.parameters }}
     helm:
+      valueFiles:
+        - {{ .Values.modules.jwtDecodeAuth.source.helm.valueFiles }}
       parameters:
-      {{- toYaml . | nindent 8 }}
-    {{- end }}
+        - name: hyperauth.address
+          value: {{ .Values.global.hyperauth.address | default "hyperauth.org"}}
+        - name: hyperauth.realm
+          value: {{ .Values.global.hyperauth.realm | default "tmax" }}
+        {{- if .Values.global.registiry.is_offline }}
+        - name: image.repository
+          value: {{ .Values.global.registiry.private_registry }}/docker.io/tmaxcloudck/jwt-decode
+        {{- end }}
   project: default
   syncPolicy:
     automated:
-      allowEmpty: true
+      prune: true
     retry:
       limit: 3
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
 ---
 apiVersion: batch/v1
 kind: Job
@@ -55,7 +64,11 @@ spec:
       restartPolicy: Never
       containers:
         - name: post-install-job
+          {{- if .Values.global.registiry.is_offline }}
+          image: "{{ .Values.global.registiry.private_registry }}/docker.io/library/alpine:3.3"
+          {{- else }}
           image: "alpine:3.3"
+          {{- end }}
           command: ["/bin/sleep","30"]
           imagePullPolicy: IfNotPresent
 {{- end }}

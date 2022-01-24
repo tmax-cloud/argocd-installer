@@ -35,6 +35,10 @@ data:
               - "*"
             accessControlAllowHeaders:
               - "*"
+            accessControlAllowOriginList:
+              - "https://console.{{ .Values.tls.domain }}"
+            accessControlAllowOriginListRegex:
+              - "([a-z]+)\\.{{ (split "." .Values.tls.domain)._0 }}\\.{{ (split "." .Values.tls.domain)._1 }}"
             accessControlMaxAge: 100
             addVaryHeader: true
         hypercloud-stripprefix:
