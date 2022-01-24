@@ -1,8 +1,9 @@
 function (
-  repo_url = "https://github.com/tmax-cloud/argocd-installer",
-  is_offline = "false",
-  private_registry = "172.22.6.2:5000"
+  params = import 'params.libsonnet'
 )
+
+local repo_url_protocol = if std.substr(params.repo_url, 0, 5) == "https" then params.repo_url else "https://" + params.repo_url;
+local target_repo = if params.repo_provider == "gitlab" then repo_url_protocol + ".git" else repo_url_protocol;
 
 {
   "apiVersion": "argoproj.io/v1alpha1",
@@ -14,8 +15,15 @@ function (
   "spec": {
     "destination": {
       "namespace": "default",
-      "server": "https://kubernetes.default.svc"
-    },
+    } + (
+      if params.cluster_name != "" then {
+        "name": params.cluster_name
+      } else {}
+    ) + (
+      if params.cluster_server != "" then {
+        "server": params.cluster_server
+      } else {}
+    ),
     "project": "default",
     "source": {
       "directory": {
@@ -23,26 +31,26 @@ function (
           "tlas": [
             {
               "name": "is_offline",
-              "value": is_offline
+              "value": params.network_disabled
             },
             {
               "name": "private_registry",
-              "value": private_registry
+              "value": params.private_registry
             },
             {
               "name": "username",
-              "value": "user"
+              "value": params.vsphere_username
             },
             {
               "name": "password",
-              "value": "pwd"
+              "value": params.vsphere_password
             }
           ]
         },
       },
       "path": "manifest/cluster-api-provider-vsphere",
-      "repoURL": repo_url,
-      "targetRevision": "main"
+      "repoURL": params.repo_url,
+      "targetRevision": params.branch
     }
   }
 }

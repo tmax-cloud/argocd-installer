@@ -20,7 +20,4 @@ spec:
     path: manifest/strimzi-kafka-cluster-oprerator
     repoURL: 'https://github.com/tmax-cloud/argocd-installer'
     targetRevision: main
-  syncPolicy:
-    syncOptions:
-    - CreateNamespace=true
 

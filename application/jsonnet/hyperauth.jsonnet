@@ -9,7 +9,7 @@ local target_repo = if params.repo_provider == "gitlab" then repo_url_protocol +
   "apiVersion": "argoproj.io/v1alpha1",
   "kind": "Application",
   "metadata": {
-    "name": "strimzi-kafka-cluster-oprerator",
+    "name": "hyperauth",
     "namespace": "argocd"
   },
   "spec": {
@@ -39,7 +39,7 @@ local target_repo = if params.repo_provider == "gitlab" then repo_url_protocol +
           ],
         },
       },
-      "path": "manifest/strimzi-kafka-cluster-oprerator",
+      "path": "manifest/hyerauth",
       "repoURL": target_repo,
       "targetRevision": params.branch
     },
