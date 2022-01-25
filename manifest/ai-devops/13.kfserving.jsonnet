@@ -22393,7 +22393,7 @@ local kfserving_image_tag = "v0.5.1";
   }
 },
 {
-  "apiVersion": "cert-manager.io/v1alpha2",
+  "apiVersion": "cert-manager.io/v1",
   "kind": "Certificate",
   "metadata": {
     "labels": {
@@ -22418,7 +22418,7 @@ local kfserving_image_tag = "v0.5.1";
   }
 },
 {
-  "apiVersion": "cert-manager.io/v1alpha2",
+  "apiVersion": "cert-manager.io/v1",
   "kind": "Issuer",
   "metadata": {
     "labels": {
