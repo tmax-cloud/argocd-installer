@@ -6,7 +6,7 @@ metadata:
   namespace: argocd
 spec:
   destination:
-    namespace: {{ module ns }}
+    namespace: hyperauth
     {{- if eq .Values.spec.destination.type "name" }}
     name: {{ .Values.spec.destination.clusterInfo }}
     {{- else if eq .Values.spec.destination.type "server" }}

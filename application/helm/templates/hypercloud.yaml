@@ -1,11 +1,12 @@
-{{- if and .Values.modules.capi.enabled .Values.modules.capi.providers.vsphere.enabled }}
+{{- if .Values.modules.hyperCloud.enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cluster-api-provider-vsphere
+  name: hypercloud
   namespace: argocd
 spec:
   destination:
+    namespace: hypercloud5-system
     {{- if eq .Values.spec.destination.type "name" }}
     name: {{ .Values.spec.destination.clusterInfo }}
     {{- else if eq .Values.spec.destination.type "server" }}
@@ -20,11 +21,13 @@ spec:
             value: {{ .Values.global.network.disabled }}
           - name: private_registry
             value: {{ .Values.global.privateRegistry }}
-          - name: username
-            value: {{ .Values.modules.capi.providers.vsphere.credentials.username }}
-          - name: password
-            value: {{ .Values.modules.capi.providers.vsphere.credentials.password }}
-    path: manifest/cluster-api-provider-vsphere
+          - name: hypercloud_hpcd_mode
+            value: {{ .Values.modules.hyperCloud.mode }}
+          - name: hypercloud_kafka_enabled
+            value: {{ .Values.modules.hyperCloud.kafka.enabled }}
+          - name: hyperauth_url
+            value: {{ .Values.global.keycloak.domain }}
+    path: manifest/hypercloud
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
 {{- end }}

@@ -1,11 +1,12 @@
-{{- if and .Values.modules.capi.enabled .Values.modules.capi.providers.vsphere.enabled }}
+{{- if .Values.modules.jaeger.enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cluster-api-provider-vsphere
+  name: jaeger
   namespace: argocd
 spec:
   destination:
+    namespace: istio-system
     {{- if eq .Values.spec.destination.type "name" }}
     name: {{ .Values.spec.destination.clusterInfo }}
     {{- else if eq .Values.spec.destination.type "server" }}
@@ -20,11 +21,13 @@ spec:
             value: {{ .Values.global.network.disabled }}
           - name: private_registry
             value: {{ .Values.global.privateRegistry }}
-          - name: username
-            value: {{ .Values.modules.capi.providers.vsphere.credentials.username }}
-          - name: password
-            value: {{ .Values.modules.capi.providers.vsphere.credentials.password }}
-    path: manifest/cluster-api-provider-vsphere
+          - name: tmax_client_secret
+            value: {{ .Values.global.keycloak.tmaxClientSecret }}
+          - name: HYPERAUTH_DOMAIN
+            value: {{ .Values.global.keycloak.domain }}
+          - name: CUSTOM_DOMAIN_NAME
+            value: {{ .Values.global.domain }}
+    path: manifest/service-mesh/jaeger
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
 {{- end }}

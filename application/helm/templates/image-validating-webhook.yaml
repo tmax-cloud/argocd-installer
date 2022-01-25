@@ -1,11 +1,12 @@
-{{- if and .Values.modules.capi.enabled .Values.modules.capi.providers.aws.enabled }}
+{{- if .Values.modules.imageValidatingWebhook.enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cluster-api-provider-aws
+  name: image-validating-webhook
   namespace: argocd
 spec:
   destination:
+    namespace: registry-system
     {{- if eq .Values.spec.destination.type "name" }}
     name: {{ .Values.spec.destination.clusterInfo }}
     {{- else if eq .Values.spec.destination.type "server" }}
@@ -13,16 +14,7 @@ spec:
     {{- end }}
   project: {{ .Values.spec.project }}
   source:
-    directory:
-      jsonnet:
-        tlas:
-          - name: is_offline
-            value: {{ .Values.global.network.disabled }}
-          - name: private_registry
-            value: {{ .Values.global.privateRegistry }}
-          - name: credentials
-            value : {{ .Values.modules.capi.providers.aws.credentials }}
-    path: manifest/cluster-api-provider-aws
+    path: manifest/image-validating-webhook
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
 {{- end }}

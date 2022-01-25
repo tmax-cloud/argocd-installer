@@ -1,4 +1,4 @@
-{{- if .Values.modules.clusterApi.enabled }}
+{{- if .Values.modules.capi.enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
