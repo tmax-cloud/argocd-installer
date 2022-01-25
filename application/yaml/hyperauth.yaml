@@ -24,6 +24,3 @@ spec:
             value: Ingress
           - name: hyperauth_external_dns
             value: hyperauth.tmaxcloud.org
-  syncPolicy:
-    syncOptions:
-    - CreateNamespace=true

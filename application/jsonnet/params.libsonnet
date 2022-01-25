@@ -23,7 +23,7 @@
     hyperauth_svc_type: "Ingress",
 
     ## Efk variables
-    es_image_tag:         "docker.io/tmaxcloudck/elasticsearch:7.2.1",
+    es_image_tag:         "7.2.1",
     busybox_image_tag:    "docker.io/busybox:1.32.0",
     es_volume_size:       "50Gi",
     kibana_image_tag:     "docker.elastic.co/kibana/kibana:7.2.0",

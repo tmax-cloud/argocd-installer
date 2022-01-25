@@ -1,0 +1,64 @@
+spec:
+  destination:
+    # description: select between 'name' or 'server'
+    type: server
+    clusterInfo: https://kubernetes.default.svc
+  source:
+    repoURL: https://github.com/tmax-cloud/argocd-installer
+    targetRevision: HEAD
+  project: default
+
+global:
+  network:
+    disabled: "true"
+  privateRegistry: 172.22.6.2:5000
+  domain: ckcloud.org
+  keycloak:
+    domain: hyperauth.ckcloud.org
+    tmaxClientSecret: tmax_client_secret
+    realm: tmax
+    clientid: hypercloud5
+
+modules:
+  ### gateway-bootstrap
+  gatewayBootstrap:
+    enabled: true
+  ### strimzi-kafka-operator
+  strimziKafka:
+    enabled: true
+  ### hyperauth
+  hyperAuth:
+    enabled: true
+    svcType: Ingress
+  ### efk
+  efk:
+    enabled: true
+    es:
+      imageTag: 7.2.1
+      volumeSize: 50Gi
+    busyBoxImageTag: 1.32.0
+    kibana:
+      ImageTag: 7.2.0
+      svcType: ClusterIP
+    gatekeeperImageTag: 10.0.0
+    fluentdImageTag: v1.4.2-debian-elasticsearch-1.1
+  clusterApi:
+    enabled: true
+    providers:
+      aws:
+        enabled: true
+        credentials: ""
+      vsphere:
+        enabled: true
+        credentials: 
+          username: ""
+          password: ""
+  aiDevops:
+    enabled: false
+    namespace: "kubeflow"
+    knativeNamespace: "knative-serving"
+    notebookSvcType: "Ingress"
+  job:
+      imagePullSecrets: []
+#      imagePullSecrets:
+#        - name: regcred
