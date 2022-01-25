@@ -16,6 +16,10 @@ spec:
           value: "false"
         - name: private_registry
           value: registry.tmaxcloud.org
+        - name: HYPERAUTH_DOMAIN
+          value: "hyperauth.domain"
+        - name: CUSTOM_DOMAIN_NAME
+          value: "custom-domain"
     path: manifest/service-mesh/kiali
     repoURL: https://github.com/tmax-cloud/argocd-installer
     targetRevision: main

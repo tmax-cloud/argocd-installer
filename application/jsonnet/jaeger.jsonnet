@@ -9,12 +9,12 @@ local target_repo = if params.repo_provider == "gitlab" then repo_url_protocol +
   "apiVersion": "argoproj.io/v1alpha1",
   "kind": "Application",
   "metadata": {
-    "name": "cluster-api-provider-aws",
+    "name": "Jaeger",
     "namespace": "argocd"
   },
   "spec": {
     "destination": {
-      "namespace": "capa-system",
+      "namespace": "istio-system",
     } + (
       if params.cluster_info_type == "name" then {
         "name": params.cluster_info
@@ -34,10 +34,22 @@ local target_repo = if params.repo_provider == "gitlab" then repo_url_protocol +
               "name": "private_registry",
               "value": params.private_registry
             },
+            {
+              "name": "tmax_client_secret",
+              "value": params.keycloak_client_secret
+            },
+            {
+              "name": "HYPERAUTH_DOMAIN",
+              "value": params.keycloak_domain
+            },
+            {
+              "name": "CUSTOM_DOMAIN_NAME",
+              "value": params.domain
+            },
           ],
         },
       },
-      "path": "manifest/cluster-api-provider-aws",
+      "path": "manifest/service-mesh/jaeger",
       "repoURL": target_repo,
       "targetRevision": params.branch
     },

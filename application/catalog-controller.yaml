@@ -19,6 +19,3 @@ spec:
     path: manifest/catalog-controller
     repoURL: https://github.com/tmax-cloud/argocd-installer
     targetRevision: main
-  syncPolicy:
-    syncOptions:
-    - CreateNamespace=true

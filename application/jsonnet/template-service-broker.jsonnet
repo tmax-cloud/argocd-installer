@@ -9,12 +9,12 @@ local target_repo = if params.repo_provider == "gitlab" then repo_url_protocol +
   "apiVersion": "argoproj.io/v1alpha1",
   "kind": "Application",
   "metadata": {
-    "name": "cluster-api-provider-aws",
+    "name": "template-service-broker",
     "namespace": "argocd"
   },
   "spec": {
     "destination": {
-      "namespace": "capa-system",
+      "namespace": "template",
     } + (
       if params.cluster_info_type == "name" then {
         "name": params.cluster_info
@@ -34,10 +34,22 @@ local target_repo = if params.repo_provider == "gitlab" then repo_url_protocol +
               "name": "private_registry",
               "value": params.private_registry
             },
+            {
+              "name": "template_operator_version",
+              "value": params.template_operator_version
+            },
+            {
+              "name": "cluster_tsb_version",
+              "value": params.cluster_tsb_version
+            },
+            {
+              "name": "tsb_version",
+              "value": params.tsb_version
+            }
           ],
         },
       },
-      "path": "manifest/cluster-api-provider-aws",
+      "path": "manifest/template-service-broker",
       "repoURL": target_repo,
       "targetRevision": params.branch
     },

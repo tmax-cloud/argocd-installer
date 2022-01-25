@@ -9,12 +9,12 @@ local target_repo = if params.repo_provider == "gitlab" then repo_url_protocol +
   "apiVersion": "argoproj.io/v1alpha1",
   "kind": "Application",
   "metadata": {
-    "name": "cluster-api-provider-aws",
+    "name": "ai-devops",
     "namespace": "argocd"
   },
   "spec": {
     "destination": {
-      "namespace": "capa-system",
+      "namespace": params.ai_devops_namespace,
     } + (
       if params.cluster_info_type == "name" then {
         "name": params.cluster_info
@@ -34,10 +34,26 @@ local target_repo = if params.repo_provider == "gitlab" then repo_url_protocol +
               "name": "private_registry",
               "value": params.private_registry
             },
+            {
+              "name": "ai_devops_namespace",
+              "value": params.ai_devops_namespace
+            },
+            {
+              "name": "knative_namespace",
+              "value": params.knative_namespace
+            },
+            {
+              "name": "custom_domain_name",
+              "value": params.domain
+            },
+            {
+              "name": "notebook_svc_type",
+              "value": params.notebook_svc_type
+            }
           ],
         },
       },
-      "path": "manifest/cluster-api-provider-aws",
+      "path": "manifest/ai-devops",
       "repoURL": target_repo,
       "targetRevision": params.branch
     },
