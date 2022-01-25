@@ -9,16 +9,6 @@ spec:
     server: https://kubernetes.default.svc
   project: default
   source:
-    directory:
-      jsonnet:
-        tlas:
-#        - code: true
-#          name: params
-#          value: import params.libsonnet
-        - name: is_offline
-          value: "false"
-        - name: private_registry
-          value: registry.tmaxcloud.org
     path: application/jsonnet
     repoURL: https://github.com/tmax-cloud/argocd-installer
-    targetRevision: main
+    targetRevision: shkim/appofapp
