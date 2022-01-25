@@ -59,7 +59,7 @@
 
     ## Cluster-api variables
     capi_provider_aws_enabled:     "true",
-    capi_provider_vsphere_enabled: "true",
+    capi_provider_vsphere_enabled: "false",
 
     ## Cluster-api-aws variables
     # description: 아래 형식에 맞추어 파일을 생성한후 base64 encoding하여 나온값을 입력
