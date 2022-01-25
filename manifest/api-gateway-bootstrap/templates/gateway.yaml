@@ -21,6 +21,8 @@ spec:
         - {{ .Values.modules.gateway.source.helm.valueFiles }}
       parameters:
       {{- if .Values.global.tls.acme.enabled }}
+        - name: tls.acme.enabled
+          value: "true"
         - name: tls.acme.email
           value: {{ .Values.global.tls.acme.email }}
         - name: tls.acme.dns.accessKeyID
@@ -34,6 +36,8 @@ spec:
         - name: tls.selfsigned.enabled
           value: "false"
       {{- else if .Values.global.tls.selfsigned.enabled }}
+        - name: tls.selfsigned.enabled
+          value: "true"
         - name: tls.domain
           value: {{ .Values.global.domain }}
         - name: tls.acme.enabled
