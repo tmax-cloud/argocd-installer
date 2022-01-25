@@ -45,8 +45,44 @@ local target_repo = if params.repo_provider == "gitlab" then repo_url_protocol +
       }
     }
   },
-  if params.capi_provider_aws_enabled == "ture"
+  if params.capi_provider_aws_enabled == "ture" then
   {
-    "test": "Test"
-  } else {}
+    "apiVersion": "argoproj.io/v1alpha1",
+    "kind": "Application",
+    "metadata": {
+      "name": "cluster-api-provider-aws",
+      "namespace": "argocd"
+    },
+    "spec": {
+      "destination": {
+        "namespace": "capa-system",
+      } + (
+        if params.cluster_info_type == "name" then {
+          "name": params.cluster_info
+        } else if params.cluster_info_type == "server" then {
+          "server": params.cluster_info
+        }
+      ),
+      "source": {
+        "directory": {
+          "jsonnet": {
+            "tlas": [
+              {
+                "name": "is_offline",
+                "value": params.network_disabled
+              },
+              {
+                "name": "private_registry",
+                "value": params.private_registry
+              },
+            ],
+          },
+        },
+        "path": "manifest/cluster-api-provider-aws",
+        "repoURL": target_repo,
+        "targetRevision": params.branch
+      },
+      "project": params.project
+    }
+  }
 ]
