@@ -36,18 +36,22 @@ modules:
         environment: testproduction
     certManager:
       enabled: true
-      syncWaitTime: 300
+      # default 300
+      syncWaitTime: 5
     console:
       enabled: true
       multiCluster:
         enabled: true
-      syncWaitTime: 0
+      # default 0
+      syncWaitTime: 5
     gateway:
       enabled: true
-      syncWaitTime: 120
+      # default 120
+      syncWaitTime: 5
     jwtDecodeAuth:
       enabled: true
-      syncWaitTime: 30
+      # default 30
+      syncWaitTime: 5
 
   ### strimzi-kafka-operator
   strimziKafka:
