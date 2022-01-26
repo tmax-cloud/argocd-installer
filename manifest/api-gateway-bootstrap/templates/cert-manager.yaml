@@ -62,6 +62,6 @@ spec:
           {{- else }}
           image: "alpine:3.3"
           {{- end }}
-          command: ["/bin/sleep","{{ .Values.modules.certManager.successWait }}"]
+          command: ["/bin/sleep","{{ .Values.modules.certManager.syncWaitTime }}"]
           imagePullPolicy: IfNotPresent
 {{- end }}

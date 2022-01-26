@@ -43,11 +43,11 @@ spec:
           value: {{ .Values.modules.gatewayBootstrap.tls.selfsigned.enabled }}
         - name: modules.certManager.enabled
           value: {{ .Values.modules.gatewayBootstrap.certManager.enabled }}
-        - name: modules.certManager.successWait
+        - name: modules.certManager.syncWaitTime
           value: "{{ .Values.modules.gatewayBootstrap.certManager.syncWaitTime }}"
         - name: modules.console.enabled
           value: {{ .Values.modules.gatewayBootstrap.console.enabled }}
-        - name: modules.console.enabled
+        - name: modules.console.syncWaitTime
           value: "{{ .Values.modules.gatewayBootstrap.console.syncWaitTime }}"
         - name: modules.gateway.enabled
           value: "{{ .Values.modules.gatewayBootstrap.gateway.enabled }}"

@@ -69,6 +69,6 @@ spec:
           {{- else }}
           image: "alpine:3.3"
           {{- end }}
-          command: ["/bin/sleep","30"]
+          command: ["/bin/sleep","{{ .Values.modules.jwtDecodeAuth.syncWaitTime }}"]
           imagePullPolicy: IfNotPresent
 {{- end }}
