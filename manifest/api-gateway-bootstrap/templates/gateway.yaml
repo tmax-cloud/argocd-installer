@@ -90,6 +90,6 @@ spec:
           {{- else }}
           image: "alpine:3.3"
           {{- end }}
-          command: ["/bin/sleep","120"]
+          command: ["/bin/sleep",{{ .Values.modules.gateway.syncWaitTime }}]
           imagePullPolicy: IfNotPresent
 {{- end }}

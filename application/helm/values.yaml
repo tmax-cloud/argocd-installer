@@ -41,6 +41,7 @@ modules:
       enabled: "\"false\""
       multiCluster:
         enabled: true
+      syncWaitTime: 5
     gateway:
       enabled: true
       syncWaitTime: 5

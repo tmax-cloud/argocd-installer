@@ -43,20 +43,26 @@ spec:
           value: {{ .Values.modules.gatewayBootstrap.tls.selfsigned.enabled }}
         - name: modules.certManager.enabled
           value: {{ .Values.modules.gatewayBootstrap.certManager.enabled }}
+        - name: modules.certManager.successWait
+          value: "{{ .Values.modules.gatewayBootstrap.certManager.syncWaitTime }}"
         - name: modules.console.enabled
           value: {{ .Values.modules.gatewayBootstrap.console.enabled }}
+        - name: modules.console.enabled
+          value: "{{ .Values.modules.gatewayBootstrap.console.syncWaitTime }}"
         - name: modules.gateway.enabled
-          value: "{{ .Values.modules.gatewayBootstrap.certManager.enabled }}"
+          value: "{{ .Values.modules.gatewayBootstrap.gateway.enabled }}"
+        - name: modules.gateway.syncWaitTime
+          value: "{{ .Values.modules.gatewayBootstrap.gateway.syncWaitTime }}"
         - name: modules.jwtDecodeAuth.enabled
           value: {{ .Values.modules.gatewayBootstrap.jwtDecodeAuth.enabled }}
+        - name: modules.jwtDecodeAuth.syncWaitTime
+          value: "{{ .Values.modules.gatewayBootstrap.jwtDecodeAuth.syncWaitTime }}"
         - name: spec.destination.server
           value: {{ .Values.spec.destination.clusterInfo }}
         - name: spec.source.repoURL
           value: {{ .Values.spec.source.repoURL }}
         - name: spec.source.targetRevision
           value: {{ .Values.spec.source.targetRevision }}
-        - name: modules.certManager.successWait
-          value: "{{ .Values.modules.gatewayBootstrap.certManager.successWait }}"
     path: manifest/api-gateway-bootstrap
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
