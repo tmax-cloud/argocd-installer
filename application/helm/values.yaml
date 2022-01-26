@@ -110,12 +110,13 @@ modules:
     providers:
       aws:
         enabled: true
-        credentials: ""
+        # description: ...
+        credentials: "credential"
       vsphere:
         enabled: true
         credentials: 
-          username: ""
-          password: ""
+          username: "user"
+          password: "password"
   
   ### template service broker
   tsb:
@@ -140,7 +141,7 @@ modules:
     # description: 'single' or 'multi'
     mode: multi
     kafka:
-      enabled: "true"
+      enabled: "\"true\""
 
   ### tekton pipeline
   tektonPipeline:

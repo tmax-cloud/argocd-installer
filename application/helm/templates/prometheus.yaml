@@ -30,7 +30,7 @@ spec:
           - name: alertmanager_version
             value: {{ .Values.modules.prometheus.versions.alertManager }}
           - name: kube_rbac_proxy_version
-            value: {{ .Values.modules.prometheus.versions.kubeRbacProsy }}
+            value: {{ .Values.modules.prometheus.versions.kubeRbacProxy }}
           - name: kube_state_metrics_version
             value: {{ .Values.modules.prometheus.versions.kubeStateMetrics }}
           - name: node_exporter_version
