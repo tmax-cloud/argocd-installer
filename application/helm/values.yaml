@@ -10,7 +10,7 @@ spec:
 
 global:
   network:
-    disabled: "false"
+    disabled: "\"false\""
     is_offline: \"false\"
   privateRegistry: 172.22.6.2:5000
   domain: test.domain
