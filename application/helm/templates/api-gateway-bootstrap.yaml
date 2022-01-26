@@ -22,7 +22,7 @@ spec:
         - name: global.hyperauth.address
           value: {{ .Values.global.keycloak.domain }}
         - name: global.registiry.is_offline
-          value: {{ .Values.global.network.disabled }}
+          value: {{ .Values.global.network.is_offline }}
         - name: global.registiry.private_registry
           value: {{ .Values.global.privateRegistry }}
         - name: global.tls.acme.dns.accessKeyID
