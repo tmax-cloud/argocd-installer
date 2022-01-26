@@ -7,6 +7,8 @@ files=($(ls application/*.yaml))
 for file in "${files[@]}"; do
     yq e --inplace '.spec.source.repoURL = "'"$1"'"' "$file"
     yq e --inplace '.spec.source.targetRevision = "'"$2"'"' "$file"
-    yq e --inplace '.spec.source.directory.jsonnet.tlas[0].value = "'"$3"'"' "$file"
-    yq e --inplace '.spec.source.directory.jsonnet.tlas[1].value = "'"$4"'"' "$file"
+    if [[ ! $(yq e '.spec.source.directory.jsonnet.tlas' "$file") == null ]]; then
+        yq e --inplace '.spec.source.directory.jsonnet.tlas[0].value = "'"$3"'"' "$file"
+        yq e --inplace '.spec.source.directory.jsonnet.tlas[1].value = "'"$4"'"' "$file"
+    fi
 done
