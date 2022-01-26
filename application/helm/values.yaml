@@ -26,7 +26,7 @@ modules:
         enabled: "true"
       # acme로 할 경우, domain에 입력한 주소를 가지고 있어야함
       acme:
-        enabled: "false"
+        enabled: \"false\"
         email: testtest@tmax.co.kr
         dns:
           type: testroute53
