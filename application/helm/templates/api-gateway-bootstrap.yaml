@@ -13,6 +13,12 @@ spec:
     {{- end }}
   project: {{ .Values.spec.project }}
   source:
+    helm:
+      parameters:
+        - name: global.hyperauth.address
+          value: {{ .Values.global.keycloak.domain }}
+        - name: global.registiry.private_registry
+          value: {{ .Values.global.privateRegistry }}
     path: manifest/api-gateway-bootstrap
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}

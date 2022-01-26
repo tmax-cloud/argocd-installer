@@ -9,6 +9,6 @@ spec:
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: application/jsonnet
+    path: application/helm
     repoURL: https://github.com/tmax-cloud/argocd-installer
     targetRevision: shkim/appofapp

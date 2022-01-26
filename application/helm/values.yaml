@@ -5,19 +5,17 @@ spec:
     clusterInfo: https://kubernetes.default.svc
   source:
     repoURL: https://github.com/tmax-cloud/argocd-installer
-    targetRevision: HEAD
+    targetRevision: shkim/appofapp
   project: default
 
 global:
   network:
-    disabled: "true"
+    disabled: "false"
   privateRegistry: 172.22.6.2:5000
-  domain: ckcloud.org
+  domain: test.domain
   keycloak:
-    domain: hyperauth.ckcloud.org
+    domain: hyperauth.test.domain
     tmaxClientSecret: tmax_client_secret
-    realm: tmax
-    clientid: hypercloud5
 
 modules:
   ### gateway-bootstrap

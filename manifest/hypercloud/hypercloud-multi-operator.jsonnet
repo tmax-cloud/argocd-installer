@@ -11,17 +11,6 @@ local domain = std.strReplace(hyperauth_url, "hyperauth.", "");
 
 [
     {
-        "apiVersion": "v1",
-        "kind": "ConfigMap",
-        "metadata": {
-            "name": "dns-config",
-            "namespace": "hypercloud5-system"
-        },
-        "data": {
-            "hypercloud_dns": domain
-        },
-    },
-    {
         "apiVersion": "apps/v1",
         "kind": "Deployment",
         "metadata": {
@@ -58,7 +47,11 @@ local domain = std.strReplace(hyperauth_url, "hyperauth.", "");
                                 {
                                     "name": "TZ",
                                     "value": "Asia/Seoul"
-                                }
+                                },
+                                {
+                                    "name": "HC_DOMAIN",
+                                    "value": domain
+                                },
                             ],
                             "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-multi-operator:b5.0.26.0"]),
                             "name": "manager",
