@@ -32,7 +32,7 @@ spec:
         - name: image.repository
           value: {{ .Values.global.registiry.private_registry }}/docker.io/tmaxcloudck/jwt-decode
         {{- end }}
-  project: default
+  project: {{ .Values.spec.project }}
   syncPolicy:
     automated:
       prune: true

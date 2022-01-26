@@ -23,7 +23,7 @@ spec:
     helm:
       valueFiles:
         - {{ .Values.modules.certManager.source.helm.valueFiles }}
-  project: default
+  project: {{ .Values.spec.project }}
   syncPolicy:
     automated:
       prune: true

@@ -65,6 +65,8 @@ spec:
           value: {{ .Values.spec.source.repoURL }}
         - name: spec.source.targetRevision
           value: {{ .Values.spec.source.targetRevision }}
+        - name: spec.project
+          values: {{ .Values.spec.project }}
     path: manifest/api-gateway-bootstrap
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
