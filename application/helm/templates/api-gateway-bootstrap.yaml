@@ -57,7 +57,9 @@ spec:
           value: "{{ .Values.modules.gatewayBootstrap.jwtDecodeAuth.enabled }}"
         - name: modules.jwtDecodeAuth.syncWaitTime
           value: "{{ .Values.modules.gatewayBootstrap.jwtDecodeAuth.syncWaitTime }}"
-        - name: spec.destination.server
+        - name: spec.destination.type
+          value: {{ .Values.spec.destination.type }}
+        - name: spec.destination.clusterInfo
           value: {{ .Values.spec.destination.clusterInfo }}
         - name: spec.source.repoURL
           value: {{ .Values.spec.source.repoURL }}

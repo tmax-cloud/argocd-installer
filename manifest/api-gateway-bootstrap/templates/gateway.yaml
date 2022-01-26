@@ -11,7 +11,11 @@ metadata:
 spec:
   destination:
     namespace: api-gateway-system
-    server: {{ .Values.spec.destination.server }}
+    {{- if eq .Values.spec.destination.type "name" }}
+    name: {{ .Values.spec.destination.clusterInfo }}
+    {{- else if eq .Values.spec.destination.type "server" }}
+    server: {{ .Values.spec.destination.clusterInfo }}
+    {{- end }}
   source:
     path: {{ .Values.modules.gateway.source.path }}
     repoURL: {{ .Values.spec.source.repoURL }}

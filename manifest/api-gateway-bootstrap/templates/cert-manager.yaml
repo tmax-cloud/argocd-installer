@@ -10,8 +10,12 @@ metadata:
     argocd.argoproj.io/sync-wave: "-1"
 spec:
   destination:
+    {{- if eq .Values.spec.destination.type "name" }}
+    name: {{ .Values.spec.destination.clusterInfo }}
+    {{- else if eq .Values.spec.destination.type "server" }}
+    server: {{ .Values.spec.destination.clusterInfo }}
+    {{- end }}
     namespace: cert-manager
-    server: {{ .Values.spec.destination.server }}
   source:
     path: {{ .Values.modules.certManager.source.path }}
     repoURL: {{ .Values.spec.source.repoURL }}
