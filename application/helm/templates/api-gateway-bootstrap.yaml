@@ -50,7 +50,7 @@ spec:
         - name: modules.jwtDecodeAuth.enabled
           value: {{ .Values.modules.gatewayBootstrap.jwtDecodeAuth.enabled }}
         - name: spec.destination.server
-          value: {{ .Values.spec.destination.server }}
+          value: {{ .Values.spec.destination.clusterInfo }}
         - name: spec.source.repoURL
           value: {{ .Values.spec.source.repoURL }}
         - name: spec.source.targetRevision
