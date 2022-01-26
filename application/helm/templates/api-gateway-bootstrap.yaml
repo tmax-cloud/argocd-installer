@@ -46,7 +46,7 @@ spec:
         - name: modules.certManager.syncWaitTime
           value: "{{ .Values.modules.gatewayBootstrap.certManager.syncWaitTime }}"
         - name: modules.console.enabled
-          value: {{ .Values.modules.gatewayBootstrap.console.enabled }}
+          value: "{{ .Values.modules.gatewayBootstrap.console.enabled }}"
         - name: modules.console.syncWaitTime
           value: "{{ .Values.modules.gatewayBootstrap.console.syncWaitTime }}"
         - name: modules.gateway.enabled
