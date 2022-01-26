@@ -44,7 +44,7 @@ modules:
 #        - name: regcred
 
   gateway:
-    enalbed: true
+    enabled: true
     source:
       path: manifest/api-gateway/gateway
       helm:

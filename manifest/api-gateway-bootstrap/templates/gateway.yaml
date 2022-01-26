@@ -1,4 +1,4 @@
-{{- if .Values.modules.gateway.enalbed }}
+{{- if .Values.modules.gateway.enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
