@@ -21,6 +21,29 @@ modules:
   ### gateway-bootstrap
   gatewayBootstrap:
     enabled: true
+    tls:
+      selfsigned:
+        enabled: true
+      # acme로 할 경우, domain에 입력한 주소를 가지고 있어야함
+      acme:
+        enabled: false
+        email: test@tmax.co.kr
+        dns:
+          type: route53
+          accessKeyID: accesskey
+          accessKeySecret: secretkey
+          hostedZoneID: Z07854445SLZAKEQ0V9P
+        environment: production
+    certManager:
+      enabled: true
+    console:
+      enabled: true
+      multiCluster:
+        enabled: true
+    gateway:
+      enabled: true
+    jwtDecodeAuth:
+      enabled: true
 
   ### strimzi-kafka-operator
   strimziKafka:

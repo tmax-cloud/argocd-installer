@@ -15,10 +15,46 @@ spec:
   source:
     helm:
       parameters:
+        - name: global.console.mcMode
+          value: {{ .Values.modules.gatewayBootstrap.console.multiCluster.enabled }}
+        - name: global.domain
+          value: {{ .Values.global.domain }}
         - name: global.hyperauth.address
           value: {{ .Values.global.keycloak.domain }}
+        - name: global.registiry.is_offline
+          value: {{ .Values.global.network.disabled }}
         - name: global.registiry.private_registry
           value: {{ .Values.global.privateRegistry }}
+        - name: global.tls.acme.dns.accessKeyID
+          value: {{ .Values.modules.gatewayBootstrap.tls.acme.dns.accessKeyID }}
+        - name: global.tls.acme.dns.accessKeySecret
+          value: {{ .Values.modules.gatewayBootstrap.tls.acme.dns.accessKeySecret }}
+        - name: global.tls.acme.dns.hostedZoneID
+          value: {{ .Values.modules.gatewayBootstrap.tls.acme.dns.hostedZoneID }}
+        - name: global.tls.acme.dns.type
+          value: {{ .Values.modules.gatewayBootstrap.tls.acme.dns.type }}
+        - name: global.tls.acme.email
+          value: {{ .Values.modules.gatewayBootstrap.tls.acme.email }}
+        - name: global.tls.acme.enabled
+          value: {{ .Values.modules.gatewayBootstrap.tls.acme.enabled }}
+        - name: global.tls.acme.environment
+          value: {{ .Values.modules.gatewayBootstrap.tls.acme.environment }}
+        - name: global.tls.selfsigned.enabled
+          value: {{ .Values.modules.gatewayBootstrap.tls.selfsigned.enabled }}
+        - name: modules.certManager.enabled
+          value: {{ .Values.moduels.gatewayBootstrap.certManager.enabled }}
+        - name: modules.console.enabled
+          value: {{ .Values.moduels.gatewayBootstrap.console.enabled }}
+        - name: modules.gateway.enalbed
+          value: {{ .Values.moduels.gatewayBootstrap.certManager.enabled }}
+        - name: modules.jwtDecodeAuth.enabled
+          value: {{ .Values.moduels.gatewayBootstrap.jwtDecodeAuth.enabled }}
+        - name: spec.destination.server
+          value: {{ .Values.spec.destination.server }}
+        - name: spec.source.repoURL
+          value: {{ .Values.spec.source.repoURL }}
+        - name: spec.source.targetRevision
+          value: {{ .Values.spec.source.targetRevision }}
     path: manifest/api-gateway-bootstrap
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
