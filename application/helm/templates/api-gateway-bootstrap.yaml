@@ -36,13 +36,13 @@ spec:
         - name: global.tls.acme.email
           value: {{ .Values.modules.gatewayBootstrap.tls.acme.email }}
         - name: global.tls.acme.enabled
-          value: {{ .Values.modules.gatewayBootstrap.tls.acme.enabled }}
+          value: "{{ .Values.modules.gatewayBootstrap.tls.acme.enabled }}"
         - name: global.tls.acme.environment
           value: {{ .Values.modules.gatewayBootstrap.tls.acme.environment }}
         - name: global.tls.selfsigned.enabled
-          value: {{ .Values.modules.gatewayBootstrap.tls.selfsigned.enabled }}
+          value: "{{ .Values.modules.gatewayBootstrap.tls.selfsigned.enabled }}"
         - name: modules.certManager.enabled
-          value: {{ .Values.modules.gatewayBootstrap.certManager.enabled }}
+          value: "{{ .Values.modules.gatewayBootstrap.certManager.enabled }}"
         - name: modules.certManager.syncWaitTime
           value: "{{ .Values.modules.gatewayBootstrap.certManager.syncWaitTime }}"
         - name: modules.console.enabled
@@ -54,7 +54,7 @@ spec:
         - name: modules.gateway.syncWaitTime
           value: "{{ .Values.modules.gatewayBootstrap.gateway.syncWaitTime }}"
         - name: modules.jwtDecodeAuth.enabled
-          value: {{ .Values.modules.gatewayBootstrap.jwtDecodeAuth.enabled }}
+          value: "{{ .Values.modules.gatewayBootstrap.jwtDecodeAuth.enabled }}"
         - name: modules.jwtDecodeAuth.syncWaitTime
           value: "{{ .Values.modules.gatewayBootstrap.jwtDecodeAuth.syncWaitTime }}"
         - name: spec.destination.server

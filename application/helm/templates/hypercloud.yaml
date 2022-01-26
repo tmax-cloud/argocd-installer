@@ -18,13 +18,13 @@ spec:
       jsonnet:
         tlas:
           - name: is_offline
-            value: {{ .Values.global.network.disabled }}
+            value: "{{ .Values.global.network.disabled }}"
           - name: private_registry
             value: {{ .Values.global.privateRegistry }}
           - name: hypercloud_hpcd_mode
             value: {{ .Values.modules.hyperCloud.mode }}
           - name: hypercloud_kafka_enabled
-            value: {{ .Values.modules.hyperCloud.kafka.enabled }}
+            value: "{{ .Values.modules.hyperCloud.kafka.enabled }}"
           - name: hyperauth_url
             value: {{ .Values.global.keycloak.domain }}
     path: manifest/hypercloud
