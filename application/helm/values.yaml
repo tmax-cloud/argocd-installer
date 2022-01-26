@@ -11,7 +11,6 @@ spec:
 global:
   network:
     disabled: "\"false\""
-    is_offline: \"false\"
   privateRegistry: 172.22.6.2:5000
   domain: test.domain
   keycloak:
@@ -24,10 +23,10 @@ modules:
     enabled: true
     tls:
       selfsigned:
-        enabled: \"true\"
+        enabled: "\"true\""
       # acme로 할 경우, domain에 입력한 주소를 가지고 있어야함
       acme:
-        enabled: \"false\"
+        enabled: "\"false\""
         email: testtest@tmax.co.kr
         dns:
           type: testroute53
@@ -36,15 +35,15 @@ modules:
           hostedZoneID: testZ07854445SLZAKEQ0V9P
         environment: testproduction
     certManager:
-      enabled: \"true\"
+      enabled: "\"true\""
     console:
-      enabled: \"true\"
+      enabled: "\"true\""
       multiCluster:
-        enabled: \"true\"
+        enabled: "\"true\""
     gateway:
-      enabled: \"true\"
+      enabled: "\"true\""
     jwtDecodeAuth:
-      enabled: \"true\"
+      enabled: "\"true\""
 
   ### strimzi-kafka-operator
   strimziKafka:

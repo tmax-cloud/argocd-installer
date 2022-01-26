@@ -7,7 +7,7 @@ function (
 )
 
 local svcType = if hyperauth_svc_type == "Ingress" then "ClusterIP" else hyperauth_svc_type;
-local target_registry = if is_offline == "flase" then "" else private_registry + "/";
+local target_registry = if is_offline == "false" then "" else private_registry + "/";
 
 [
   {
