@@ -42,13 +42,13 @@ spec:
         - name: global.tls.selfsigned.enabled
           value: {{ .Values.modules.gatewayBootstrap.tls.selfsigned.enabled }}
         - name: modules.certManager.enabled
-          value: {{ .Values.moduels.gatewayBootstrap.certManager.enabled }}
+          value: {{ .Values.modules.gatewayBootstrap.certManager.enabled }}
         - name: modules.console.enabled
-          value: {{ .Values.moduels.gatewayBootstrap.console.enabled }}
+          value: {{ .Values.modules.gatewayBootstrap.console.enabled }}
         - name: modules.gateway.enalbed
-          value: {{ .Values.moduels.gatewayBootstrap.certManager.enabled }}
+          value: {{ .Values.modules.gatewayBootstrap.certManager.enabled }}
         - name: modules.jwtDecodeAuth.enabled
-          value: {{ .Values.moduels.gatewayBootstrap.jwtDecodeAuth.enabled }}
+          value: {{ .Values.modules.gatewayBootstrap.jwtDecodeAuth.enabled }}
         - name: spec.destination.server
           value: {{ .Values.spec.destination.server }}
         - name: spec.source.repoURL
