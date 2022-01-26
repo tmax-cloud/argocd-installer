@@ -27,13 +27,13 @@ modules:
       # acme로 할 경우, domain에 입력한 주소를 가지고 있어야함
       acme:
         enabled: false
-        email: test@tmax.co.kr
+        email: testtest@tmax.co.kr
         dns:
-          type: route53
-          accessKeyID: accesskey
-          accessKeySecret: secretkey
-          hostedZoneID: Z07854445SLZAKEQ0V9P
-        environment: production
+          type: testroute53
+          accessKeyID: testaccesskey
+          accessKeySecret: testsecretkey
+          hostedZoneID: testZ07854445SLZAKEQ0V9P
+        environment: testproduction
     certManager:
       enabled: true
     console:
