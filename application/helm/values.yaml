@@ -36,10 +36,11 @@ modules:
         environment: testproduction
     certManager:
       enabled: "\"true\""
+      successWait: 5
     console:
-      enabled: "\"true\""
+      enabled: "\"false\""
       multiCluster:
-        enabled: "\"true\""
+        enabled: true
     gateway:
       enabled: "\"true\""
     jwtDecodeAuth:

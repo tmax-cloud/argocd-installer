@@ -16,7 +16,7 @@ spec:
     helm:
       parameters:
         - name: global.console.mcMode
-          value: {{ .Values.modules.gatewayBootstrap.console.multiCluster.enabled }}
+          value: "{{ .Values.modules.gatewayBootstrap.console.multiCluster.enabled }}"
         - name: global.domain
           value: {{ .Values.global.domain }}
         - name: global.hyperauth.address
@@ -55,6 +55,8 @@ spec:
           value: {{ .Values.spec.source.repoURL }}
         - name: spec.source.targetRevision
           value: {{ .Values.spec.source.targetRevision }}
+        - name: modules.certManager.successWait
+          value: "{{ .Values.modules.gatewayBootstrap.certManager.successWait }}"
     path: manifest/api-gateway-bootstrap
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
