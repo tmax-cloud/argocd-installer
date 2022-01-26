@@ -43,7 +43,7 @@ modules:
         enabled: true
       syncWaitTime: 5
     gateway:
-      enabled: true
+      enabled: false
       syncWaitTime: 5
     jwtDecodeAuth:
       enabled: "\"true\""
