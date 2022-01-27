@@ -53,7 +53,7 @@ local domain = std.strReplace(hyperauth_url, "hyperauth.", "");
                                     "value": domain
                                 },
                             ],
-                            "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-multi-operator:b5.0.26.0"]),
+                            "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-multi-operator:b5.0.26.1"]),
                             "name": "manager",
                             "ports": [
                                 {
