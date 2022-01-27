@@ -14,6 +14,10 @@ spec:
     directory:
       jsonnet:
         tlas:
+          - name: is_offline
+            value: "true"
+          - name: private_registry
+            value: 172.22.6.22:5000
           - name: coreos_image_repo
             value: quay.io/coreos
           - name: prometheus_image_repo

@@ -12,6 +12,10 @@ spec:
     directory:
       jsonnet:
         tlas:
+        - name: is_offline
+          value: "true"
+        - name: private_registry
+          value: 172.22.6.22:5000
         - name: credentials
           value: Y3JlZGVudGlhbAo=
     path: manifest/cluster-api-provider-aws
