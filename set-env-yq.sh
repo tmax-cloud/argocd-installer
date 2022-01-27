@@ -11,4 +11,10 @@ for file in "${files[@]}"; do
         yq e --inplace '.spec.source.directory.jsonnet.tlas[0].value = "'"$3"'"' "$file"
         yq e --inplace '.spec.source.directory.jsonnet.tlas[1].value = "'"$4"'"' "$file"
     fi
+    if [[ ! $(yq e '.spec.source.helm.parameters' "$file") == null ]]; then
+        yq e --inplace '.spec.source.helm.parameters[0].value = "'"$1"'"' "$file"
+        yq e --inplace '.spec.source.helm.parameters[1].value = "'"$2"'"' "$file"
+        yq e --inplace '.spec.source.helm.parameters[2].value = "'"$3"'"' "$file"
+        yq e --inplace '.spec.source.helm.parameters[3].value = "'"$4"'"' "$file"
+    fi
 done
