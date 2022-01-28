@@ -19,6 +19,11 @@ spec:
     helm:
       valueFiles:
         - {{ .Values.modules.certManager.source.helm.valueFiles }}
+      parameters:
+      {{- if .Values.global.registiry.is_offline }}
+      - name: rootCA.image.repository
+        value: "{{ .Values.global.registiry.private_registry }}/docker.io/library/alpine:3.3"
+      {{- end }}
   project: default
   syncPolicy:
     automated:
