@@ -1,9 +1,12 @@
 spec:
   destination:
-    server: https://kubernetes.default.svc
+    # description: select between 'name' or 'server'
+    type: server
+    clusterInfo: https://kubernetes.default.svc
   source:
     repoURL: https://github.com/tmax-cloud/argocd-installer
     targetRevision: main
+  project: default
 
 global:
   registiry:
@@ -44,7 +47,7 @@ modules:
 #        - name: regcred
 
   gateway:
-    enalbed: true
+    enabled: true
     source:
       path: manifest/api-gateway/gateway
       helm:

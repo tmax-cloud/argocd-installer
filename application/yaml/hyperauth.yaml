@@ -1,16 +1,16 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: hypercloud
+  name: hyperauth
   namespace: argocd
 spec:
   destination:
     name: ''
-    namespace: hypercloud5-system
+    namespace: hyperauth
     server: 'https://kubernetes.default.svc'
   project: default
   source:
-    path: manifest/hypercloud
+    path: manifest/hyperauth
     repoURL: 'https://github.com/tmax-cloud/argocd-installer'
     targetRevision: main
     directory:
@@ -19,13 +19,8 @@ spec:
           - name: is_offline
             value: "false"
           - name: private_registry
-            value: registry.tmaxcloud.org
-          - name: hypercloud_hpcd_mode
-            value: multi
-          - name: hypercloud_kafka_enabled
-            value: 'true'
-          - name: hyperauth_url
-            value: hyperauth.172.22.6.18.nip.io
-  syncPolicy:
-    syncOptions:
-    - CreateNamespace=true
+            value: 172.22.6.2:5000
+          - name: hyperauth_svc_type
+            value: Ingress
+          - name: hyperauth_external_dns
+            value: hyperauth.tmaxcloud.org

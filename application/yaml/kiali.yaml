@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: istio
+  name: kiali
   namespace: argocd
 spec:
   destination:
@@ -16,9 +16,10 @@ spec:
           value: "false"
         - name: private_registry
           value: registry.tmaxcloud.org
-    path: manifest/service-mesh/jaeger
+        - name: HYPERAUTH_DOMAIN
+          value: "hyperauth.domain"
+        - name: CUSTOM_DOMAIN_NAME
+          value: "custom-domain"
+    path: manifest/service-mesh/kiali
     repoURL: https://github.com/tmax-cloud/argocd-installer
     targetRevision: main
-  syncPolicy:
-    syncOptions:
-    - CreateNamespace=true

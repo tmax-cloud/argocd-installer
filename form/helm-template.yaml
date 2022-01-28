@@ -1,0 +1,27 @@
+| {{- if .Values.modules.clusterApi.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: | module name
+  namespace: argocd
+spec:
+  destination:
+    namespace: | module ns
+    {{- if eq .Values.spec.destination.type "name" }}
+    name: {{ .Values.spec.destination.clusterInfo }}
+    {{- else if eq .Values.spec.destination.type "server" }}
+    server: {{ .Values.spec.destination.clusterInfo }}
+    {{- end }}
+  project: {{ .Values.spec.project }}
+  source:
+    directory:
+      jsonnet:
+        tlas:
+          - name: is_offline
+            value: {{ .Values.global.network.disabled }}
+          - name: private_registry
+            value: {{ .Values.global.privateRegistry }}
+    path: | module path
+    repoURL: {{ .Values.spec.source.repoURL }}
+    targetRevision: {{ .Values.spec.source.targetRevision }}
+{{- end }}

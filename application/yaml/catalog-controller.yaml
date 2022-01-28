@@ -1,11 +1,11 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cicd-operator
+  name: catalog-controller
   namespace: argocd
 spec:
   destination:
-    namespace: cicd-system
+    namespace: catalog
     server: https://kubernetes.default.svc
   project: default
   source:
@@ -16,11 +16,6 @@ spec:
             value: "false"
           - name: private_registry
             value: registry.tmaxcloud.org
-          - name: custom_domain
-            value: tmaxcloud.org
-    path: manifest/cicd-operator
+    path: manifest/catalog-controller
     repoURL: https://github.com/tmax-cloud/argocd-installer
     targetRevision: main
-  syncPolicy:
-    syncOptions:
-    - CreateNamespace=true

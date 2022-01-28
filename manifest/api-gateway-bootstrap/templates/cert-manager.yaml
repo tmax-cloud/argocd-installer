@@ -10,8 +10,12 @@ metadata:
     argocd.argoproj.io/sync-wave: "-1"
 spec:
   destination:
+    {{- if eq .Values.spec.destination.type "name" }}
+    name: {{ .Values.spec.destination.clusterInfo }}
+    {{- else if eq .Values.spec.destination.type "server" }}
+    server: {{ .Values.spec.destination.clusterInfo }}
+    {{- end }}
     namespace: cert-manager
-    server: {{ .Values.spec.destination.server }}
   source:
     path: {{ .Values.modules.certManager.source.path }}
     repoURL: {{ .Values.spec.source.repoURL }}
@@ -19,7 +23,12 @@ spec:
     helm:
       valueFiles:
         - {{ .Values.modules.certManager.source.helm.valueFiles }}
-  project: default
+      parameters:
+      {{- if .Values.global.registiry.is_offline }}
+      - name: rootCA.image.repository
+        value: "{{ .Values.global.registiry.private_registry }}/docker.io/library/alpine:3.3"
+      {{- end }}
+  project: {{ .Values.spec.project }}
   syncPolicy:
     automated:
       prune: true
@@ -62,6 +71,6 @@ spec:
           {{- else }}
           image: "alpine:3.3"
           {{- end }}
-          command: ["/bin/sleep","300"]
+          command: ["/bin/sleep","{{ .Values.modules.certManager.syncWaitTime }}"]
           imagePullPolicy: IfNotPresent
 {{- end }}

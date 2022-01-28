@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gateway
+spec:
+  destination:
+    namespace: api-gateway-system
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: manifest/api-gateway/gateway
+    repoURL: 'https://github.com/tmax-cloud/argocd-installer.git'
+    targetRevision: HEAD
+    helm:
+      valueFiles:
+        - values.yaml
+  project: default
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    retry:
+      limit: 3

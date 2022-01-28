@@ -1,4 +1,4 @@
-{{- if .Values.global.createCA }}
+{{- if .Values.rootCA.enabled }}
 ---
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
