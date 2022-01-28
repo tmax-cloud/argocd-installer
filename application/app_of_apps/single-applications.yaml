@@ -1,7 +1,9 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: {{ cluster name }}-applications
+  labels:
+    cluster: single
+  name: single-applications
   namespace: argocd
 spec:
   destination:
