@@ -9,6 +9,7 @@ newFile="$path"/"$3""-applications.yaml"
 appName="$3""-applications"
 
 cp -f "$path"/single-applications.yaml "$newFile"
+yq e --inplace '.metadata.labels.cluster = "'"$3"'"' "$newFile"
 yq e --inplace '.metadata.name = "'"$appName"'"' "$newFile"
 yq e --inplace '.spec.source.repoURL = "'"$1"'"' "$newFile"
 yq e --inplace '.spec.source.targetRevision = "'"$2"'"' "$newFile"
