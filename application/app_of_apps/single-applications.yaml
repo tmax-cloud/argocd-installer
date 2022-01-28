@@ -8,6 +8,9 @@ spec:
     namespace: argocd
   project: default
   source:
+    helm:
+      valueFiles:
+        - single-values.yaml
     path: application/helm
-    repoURL: https://github.com/tmax-cloud/argocd-installer
+    repoURL: https://gitlab.ckcloud.org/root/argocd-installer.git
     targetRevision: shkim/appofapp
