@@ -26,7 +26,11 @@
         ```
     - {{ argocd ns }} 부분을 해당 환경의 argocd 네임스페이스로 치환
 ---
-3. resource 배포(application sync)
+3. install configuration 수정
+    - application/helm/values.yaml에 있는 설정값을 수정하여 push
+    - argocd applicaton 화면에서 refresh 버튼을 클릭
+---
+4. resource 배포(application sync)
     - application sync 순서는 [docs/install-order.md](install-order.md)를 참조
     - 순서에 맞춰서 모듈을 sync
     - sync 방식은 아래와 같음
