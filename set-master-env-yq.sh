@@ -4,5 +4,5 @@ if [[ ! $# -eq 2 ]]; then
     exit -1
 fi
 
-yq e --inpllace '.spec.source.repoURL = "'"$1"'"' application/app_of_apps/master-applications.yaml
-yq e --inpllace '.spec.source.targetRevision = "'"$2"'"' application/app_of_apps/master-applications.yaml
+yq e --inplace '.spec.source.repoURL = "'"$1"'"' application/app_of_apps/master-applications.yaml
+yq e --inplace '.spec.source.targetRevision = "'"$2"'"' application/app_of_apps/master-applications.yaml
