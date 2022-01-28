@@ -6,7 +6,7 @@ metadata:
 spec:
   destination:
     namespace: argocd
-    name: {{ cluster name }}
+    server: https://kubernetes.default.svc
   project: default
   source:
     helm:

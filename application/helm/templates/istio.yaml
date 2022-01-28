@@ -2,7 +2,13 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
+  labels:
+    cluster: {{ .Values.spec.destination.clusterInfo }}
+  {{- if or (eq .Values.spec.destination.clusterInfo https://kubernetes.default.svc) (eq .Values.spec.destination.clusterInfo in-cluster) }}
   name: istio
+  {{- else }}
+  name: {{ .Values.spec.destination.clusterInfo }}-istio
+  {{- end }}
   namespace: argocd
 spec:
   destination:

@@ -2,7 +2,13 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
+  labels:
+    cluster: {{ .Values.spec.destination.clusterInfo }}
+  {{- if or (eq .Values.spec.destination.clusterInfo https://kubernetes.default.svc) (eq .Values.spec.destination.clusterInfo in-cluster) }}
   name: gateway-bootstrap
+  {{- else }}
+  name: {{ .Values.spec.destination.clusterInfo }}-gateway-bootstrap
+  {{- end }}
   namespace: argocd
 spec:
   destination:
@@ -66,7 +72,7 @@ spec:
         - name: spec.source.targetRevision
           value: {{ .Values.spec.source.targetRevision }}
         - name: spec.project
-          values: {{ .Values.spec.project }}
+          value: {{ .Values.spec.project }}
     path: manifest/api-gateway-bootstrap
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}

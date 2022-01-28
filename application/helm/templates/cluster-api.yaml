@@ -2,7 +2,13 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cluster-api
+  labels:
+    cluster: {{ .Values.spec.destination.clusterInfo }}
+  {{- if or (eq .Values.spec.destination.clusterInfo https://kubernetes.default.svc) (eq .Values.spec.destination.clusterInfo in-cluster) }}
+  name: cluster-api-provider
+  {{- else }}
+  name: {{ .Values.spec.destination.clusterInfo }}-cluster-api-provider
+  {{- end }}
   namespace: argocd
 spec:
   destination:
