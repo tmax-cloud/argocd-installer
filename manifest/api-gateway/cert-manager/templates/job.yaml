@@ -1,4 +1,4 @@
-{{- if .Values.global.createCA }}
+{{- if .Values.rootCA.enabled }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -24,14 +24,14 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name | quote }}
         helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     spec:
-      {{- with .Values.imagePullSecrets }}
+      {{- with .Values.rootCA.image.imagePullSecrets }}
       imagePullSecrets:
       {{- toYaml . | nindent 8 }}
       {{- end }}
       restartPolicy: Never
       containers:
         - name: post-install-job
-          image: "alpine:3.3"
-          command: ["/bin/sleep","{{ default "20" .Values.global.sleepyTime }}"]
+          image:  {{ .Values.rootCA.image.repository | default "alpine:3.3" }}
+          command: ["/bin/sleep","{{ .Values.rootCA.waitTime | default "100"}}"]
           imagePullPolicy: IfNotPresent
 {{- end }}

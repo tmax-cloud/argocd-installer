@@ -42,14 +42,17 @@ cert-manager:
 #        cpu: 100m
 #        memory: 128Mi
 
+rootCA:
+  enabled: true
+  waitTime: 120
+  image:
+    repository: docker.io/library/alpine:3.3
+    imagePullSecrets: []
+    ## kubectl create secret docker-registry regcred --docker-username=tmaxcloudck --docker-password=$PASSWD -n cert-manager
+    #  imagePullSecrets:
+    #    - name: regcred
 
-tmax:
-  createCA: true
-  sleepyTime: 180
 ## kubectl create ns cert-manager
-## kubectl create secret docker-registry regcred --docker-username=tmaxcloudck --docker-password=$PASSWD -n cert-manager
-#  imagePullSecrets:
-#    - name: regcred
 #  resources: {}
 #  resources:
 #   limits:
