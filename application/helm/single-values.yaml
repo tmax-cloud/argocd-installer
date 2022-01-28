@@ -2,20 +2,11 @@ spec:
   destination:
     # description: select between 'name' or 'server'
     type: name
-    clusterInfo: aws-cluster
-  source:
-    repoURL: https://gitlab.ckcloud.org/root/argocd-installer.git
-    targetRevision: master
+    clusterInfo: cluster_name
   project: default
 
 global:
-  network:
-    disabled: false
-  privateRegistry: 172.22.6.2:5000
-  domain: test.domain
-  keycloak:
-    domain: hyperauth.test.domain
-    tmaxClientSecret: tmax_client_secret
+  privateRegistry: testregistry.com
 
 modules:
   ### gateway-bootstrap
@@ -95,7 +86,7 @@ modules:
 
   ### grafana
   grafana:
-    enabled: true
+    enabled: false
     pvcSize: 10Gi
     version: 6.4.3
     imageRepo: grafana/grafana

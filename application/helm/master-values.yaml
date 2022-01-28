@@ -1,21 +1,11 @@
 spec:
   destination:
-    # description: select between 'name' or 'server'
     type: server
     clusterInfo: https://kubernetes.default.svc
-  source:
-    repoURL: https://github.com/tmax-cloud/argocd-installer
-    targetRevision: shkim/appofapp
   project: default
 
 global:
-  network:
-    disabled: false
-  privateRegistry: 172.22.6.2:5000
-  domain: test.domain
-  keycloak:
-    domain: hyperauth.test.domain
-    tmaxClientSecret: tmax_client_secret
+  privateRegistry: testregistry.com
 
 modules:
   ### gateway-bootstrap

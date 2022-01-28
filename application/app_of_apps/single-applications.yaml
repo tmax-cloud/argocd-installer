@@ -1,18 +1,23 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: single-applications
+  name: {{ cluster name }}-applications
   namespace: argocd
 spec:
   destination:
     namespace: argocd
-    # name:
-    # server:
+    name: {{ cluster name }}
   project: default
   source:
     helm:
       valueFiles:
+        - shared-values.yaml
         - single-values.yaml
+      parameters:
+        - name: spec.destination.name
+          value: cluster_name
+        - name: global.privateRegistry
+          value: testregistry.com
     path: application/helm
-    repoURL: https://gitlab.ckcloud.org/root/argocd-installer.git
+    repoURL: https://github.com/tmax-cloud/argocd-installer
     targetRevision: HEAD

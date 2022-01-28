@@ -11,6 +11,7 @@ spec:
   source:
     helm:
       valueFiles:
+        - shared-values.yaml
         - single-values.yaml
     path: application/helm
     repoURL: https://github.com/tmax-cloud/argocd-installer

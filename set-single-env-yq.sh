@@ -4,7 +4,12 @@ if [[ ! $# -eq 3 ]]; then
     exit -1
 fi
 
-yq e --inplace '.metadata.name = '"$3"'-applications' application/app_of_apps/single-applications.yaml
-yq e --inplace '.spec.source.repoURL = "'"$1"'"' application/app_of_apps/single-applications.yaml
-yq e --inplace '.spec.source.targetRevision = "'"$2"'"' application/app_of_apps/single-applications.yaml
-yq e --inplace '.spec.destination.name = "'"$3"'"' application/app_of_apps/single-applications.yaml
+path="application/app_of_apps"
+newFile="$path"/"$3""-applications.yaml"
+appName="$3""-applications"
+
+cp -f "$path"/single-applications.yaml "$newFile"
+yq e --inplace '.metadata.name = "'"$appName"'"' "$newFile"
+yq e --inplace '.spec.source.repoURL = "'"$1"'"' "$newFile"
+yq e --inplace '.spec.source.targetRevision = "'"$2"'"' "$newFile"
+yq e --inplace '.spec.destination.name = "'"$3"'"' "$newFile"
