@@ -1,11 +1,13 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: applications
+  name: single-applications
   namespace: argocd
 spec:
   destination:
     namespace: argocd
+    # name:
+    # server:
   project: default
   source:
     helm:
@@ -13,4 +15,4 @@ spec:
         - single-values.yaml
     path: application/helm
     repoURL: https://gitlab.ckcloud.org/root/argocd-installer.git
-    targetRevision: shkim/appofapp
+    targetRevision: HEAD
