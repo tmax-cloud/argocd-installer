@@ -6,7 +6,6 @@ spec:
     repoURL: https://github.com/tmax-cloud/argocd-installer
     # description: target branch or release name
     targetRevision: master
-
 global:
   network:
     disabled: false
