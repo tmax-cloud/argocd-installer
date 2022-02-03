@@ -3,6 +3,8 @@ spec:
     # description: select between 'name' or 'server'
     type: name
     clusterInfo: cluster_name
+    label: single
+    prefix: cluster_name-
   project: default
 
 global:
