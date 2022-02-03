@@ -3,7 +3,11 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   labels:
+    {{- if or (eq .Values.spec.destination.clusterInfo "https://kubernetes.default.svc") (eq .Values.spec.destination.clusterInfo "in-cluster") }}
+    cluster: master
+    {{- else }}
     cluster: {{ .Values.spec.destination.clusterInfo }}
+    {{- end }}
   {{- if or (eq .Values.spec.destination.clusterInfo "https://kubernetes.default.svc") (eq .Values.spec.destination.clusterInfo "in-cluster") }}
   name: gateway-bootstrap
   {{- else }}
