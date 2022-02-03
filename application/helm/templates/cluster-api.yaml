@@ -5,9 +5,9 @@ metadata:
   labels:
     cluster: {{ .Values.spec.destination.label }}
   {{- if eq .Values.spec.destination.label "master" }}
-  name: cluster-api-provider
+  name: cluster-api
   {{- else }}
-  name: {{ .Values.spec.destination.clusterInfo }}-cluster-api-provider
+  name: {{ .Values.spec.destination.clusterInfo }}-cluster-api
   {{- end }}
   namespace: argocd
 spec:

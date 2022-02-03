@@ -2,7 +2,13 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
+  labels:
+    cluster: {{ .Values.spec.destination.label }}
+  {{- if eq .Values.spec.destination.label "master" }}
   name: cert-manager
+  {{- else }}
+  name: {{ .Values.spec.destination.label }}-cert-manager
+  {{- end }}
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
