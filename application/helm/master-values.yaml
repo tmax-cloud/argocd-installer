@@ -3,7 +3,6 @@ spec:
     type: server
     clusterInfo: https://kubernetes.default.svc
     label: master
-    prefix: ""
   project: default
 
 global:

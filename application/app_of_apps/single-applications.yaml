@@ -16,7 +16,9 @@ spec:
         - shared-values.yaml
         - single-values.yaml
       parameters:
-        - name: spec.destination.name
+        - name: spec.destination.clusterInfo
+          value: cluster_name
+        - name: spec.destination.label
           value: cluster_name
         - name: global.privateRegistry
           value: testregistry.com
