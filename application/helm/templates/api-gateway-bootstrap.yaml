@@ -5,11 +5,6 @@ metadata:
   labels:
     cluster: {{ .Values.spec.destination.label }}
   name: {{ .Values.spec.destination.prefix }}-gateway-bootstrap
-  #{{- if eq .Values.spec.destination.clusterLabel "master" }}
-  #name: gateway-bootstrap
-  #{{- else }}
-  #name: {{ .Values.spec.destination.clusterInfo }}-gateway-bootstrap
-  #{{- end }}
   namespace: argocd
 spec:
   destination:
