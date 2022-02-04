@@ -12,4 +12,5 @@ global:
   domain: testdomain.com
   keycloak:
     domain: testauth.testdomain.com
+    # Do not change value of tmaxClientSecret!
     tmaxClientSecret: tmax_client_secret

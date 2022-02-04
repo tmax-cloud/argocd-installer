@@ -4,11 +4,20 @@
     - argocd([Install guide link](https://github.com/tmax-cloud/install-argocd))
 ---
 ## Master cluster
-1. application 변수 셋팅
+1. cluster configuration
+    - cluster에 필요한 정보(registry domain, hyperclou domain등)를 셋팅한다.
+    - 수정해야 하는 파일은 아래와 같다.
+        ```
+        $ application/helm/shared-values.yaml
+        $ application/helm/master-values.yaml
+        ```
+    - git에 push한다.
+---
+2. application 변수 셋팅
     - 테스트할 환경에서 바라볼 git repo url, branch를 설정
         - yq가 사용 가능한 경우
             ```
-            $ ./set-env-yq.sh {{ git repo url }} {{ branch }}
+            $ ./set-master-env-yq.sh {{ git repo url }} {{ branch }}
             ```
         - yq가 사용 불가능한 경우
             - vi 등의 text editor를 통해 직접 수정
@@ -19,16 +28,12 @@
     - gitlab의 경우 git repo url 마지막에 .git을 추가해주어야함  
     ex) https://gitlab.com/root/argocd-installer.git
 ---
-2. application 등록
+3. application 등록
     - 테스트할 환경에 application을 등록
         ```
         $ kubectl -n {{ argocd ns }} apply -f application/app_of_apps/master-applications.yaml
         ```
     - {{ argocd ns }} 부분을 해당 환경의 argocd 네임스페이스로 치환
----
-3. install configuration 수정
-    - application/helm/values.yaml에 있는 설정값을 수정하여 push
-    - argocd applicaton 화면에서 refresh 버튼을 클릭
 ---
 4. resource 배포(application sync)
     - application sync 순서는 [docs/install-order.md](install-order.md)를 참조
@@ -54,3 +59,39 @@
 
         - app card를 누르면 리소스별 status 체크 가능
         ![img](../figure/5_details.png)
+---
+## Single cluster
+1. cluster configuration
+    - cluster에 필요한 정보(registry domain, hyperclou domain등)를 셋팅한다.
+    - 수정해야 하는 파일은 아래와 같다.
+        ```
+        $ application/helm/shared-values.yaml
+        $ application/helm/single-values.yaml
+        ```
+    - git에 push한다.
+---
+2. application 변수 셋팅
+    - 테스트할 환경에서 바라볼 git repo url, branch를 설정
+        - yq가 사용 가능한 경우
+            ```
+            $ ./set-master-env-yq.sh {{ git repo url }} {{ branch }} {{ cluster name }}
+            ```
+        - yq가 사용 불가능한 경우
+            - vi 등의 text editor를 통해 직접 수정
+            - example with vi
+                ```
+                $ vi application/app_of_apps/single-applications
+                ```
+    - gitlab의 경우 git repo url 마지막에 .git을 추가해주어야함  
+    ex) https://gitlab.com/root/argocd-installer.git
+---
+3. application 등록
+    - 테스트할 환경에 application을 등록
+        ```
+        $ kubectl -n {{ argocd ns }} apply -f application/app_of_apps/{{ cluster name }}-applications.yaml
+        ```
+    - {{ argocd ns }} 부분을 해당 환경의 argocd 네임스페이스로 치환
+    - {{ cluster name }} 부분을 target cluster 이름으로 치환
+---
+4. resource 배포(application sync)
+    - 마스터와 동일
