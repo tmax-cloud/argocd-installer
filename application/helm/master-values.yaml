@@ -23,26 +23,26 @@ modules:
           type: route53
           accessKeyID: accesskey
           accessKeySecret: secretkey
-          hostedZoneID: Z07854445SLZAKEQ0V9P
+          hostedZoneID: hostedzoneid
         environment: production
     certManager:
       enabled: true
       # default 300
-      syncWaitTime: 5
+      syncWaitTime: 300
     console:
       enabled: true
       multiCluster:
         enabled: true
       # default 0
-      syncWaitTime: 5
+      syncWaitTime: 0
     gateway:
       enabled: true
       # default 120
-      syncWaitTime: 5
+      syncWaitTime: 120
     jwtDecodeAuth:
       enabled: true
       # default 30
-      syncWaitTime: 5
+      syncWaitTime: 30
 
   ### strimzi-kafka-operator
   strimziKafka:
