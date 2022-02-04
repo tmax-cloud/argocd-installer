@@ -2,7 +2,13 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
+  labels:
+    cluster: {{ .Values.spec.destination.label }}
+  {{- if eq .Values.spec.destination.label "master" }}
   name: strimzi-kafka-cluster-oprerator
+  {{- else }}
+  name: {{ .Values.spec.destination.clusterInfo }}-strimzi-kafka-cluster-oprerator
+  {{- end }}
   namespace: argocd
 spec:
   destination:

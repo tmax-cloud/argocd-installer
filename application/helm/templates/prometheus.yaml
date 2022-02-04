@@ -2,7 +2,13 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
+  labels:
+    cluster: {{ .Values.spec.destination.label }}
+  {{- if eq .Values.spec.destination.label "master" }}
   name: prometheus
+  {{- else }}
+  name: {{ .Values.spec.destination.clusterInfo }}-prometheus
+  {{- end }}
   namespace: argocd
 spec:
   destination:

@@ -1179,6 +1179,7 @@ metadata:
   labels:
     app: template-service-broker
   name: template-service-broker
+  namespace: tsb-ns
 spec:
   selector:
     app: template-service-broker

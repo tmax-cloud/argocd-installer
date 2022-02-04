@@ -1,13 +1,27 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: applications
+  labels:
+    cluster: single
+  name: single-applications
   namespace: argocd
 spec:
   destination:
     namespace: argocd
+    server: https://kubernetes.default.svc
   project: default
   source:
+    helm:
+      valueFiles:
+        - shared-values.yaml
+        - single-values.yaml
+      parameters:
+        - name: spec.destination.clusterInfo
+          value: cluster_name
+        - name: spec.destination.label
+          value: cluster_name
+        - name: global.privateRegistry
+          value: testregistry.com
     path: application/helm
     repoURL: https://github.com/tmax-cloud/argocd-installer
-    targetRevision: shkim/appofapp
+    targetRevision: HEAD

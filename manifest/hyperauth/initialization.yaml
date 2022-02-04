@@ -132,7 +132,7 @@ data:
     {
       "id": "tmax",
       "realm": "tmax",
-      "notBefore": 1618199421,
+      "notBefore": 1642749441,
       "revokeRefreshToken": true,
       "refreshTokenMaxReuse": 2,
       "accessTokenLifespan": 3600,
@@ -466,6 +466,7 @@ data:
           ],
           "hyperregistry": [],
           "security-admin-console": [],
+          "argocd": [],
           "account-console": [],
           "broker": [
             {
@@ -604,13 +605,20 @@ data:
       },
       "groups": [
         {
+          "id": "a396e6f3-8e55-4d64-ac00-83d70f492db8",
+          "name": "argocd-admin",
+          "path": "/argocd-admin",
+          "attributes": {},
+          "realmRoles": [],
+          "clientRoles": {},
+          "subGroups": []
+        },
+        {
           "id": "93709e84-82aa-4ee4-ba7f-4c667522dcb2",
           "name": "hypercloud5",
           "path": "/hypercloud5",
           "attributes": {},
           "realmRoles": [
-            "hyperauth tmax realm all role",
-            "hyperauth tmax realm user all role",
             "all_access",
             "uma_authorization",
             "offline_access",
@@ -702,7 +710,7 @@ data:
             "lastUpdatedDate" : 1642582495175
           } ],
           "notBefore" : 0,
-          "groups" : [ "/hypercloud5" ]
+          "groups" : [ "/hypercloud5", "/argocd-admin" ]
         }, 
         {
           "id": "3fc4854d-a416-48fc-bd54-dfa6f92be66a",
@@ -963,6 +971,89 @@ data:
             "profile",
             "roles",
             "email"
+          ],
+          "optionalClientScopes": [
+            "address",
+            "phone",
+            "offline_access",
+            "microprofile-jwt"
+          ]
+        },
+        {
+          "id": "61a9cae7-0f45-4e02-af51-5f6a317ee31a",
+          "clientId": "argocd",
+          "rootUrl": "",
+          "adminUrl": "",
+          "surrogateAuthRequired": false,
+          "enabled": true,
+          "alwaysDisplayInConsole": false,
+          "clientAuthenticatorType": "client-secret",
+          "secret": "tmax_client_secret",
+          "redirectUris": [
+            "*"
+          ],
+          "webOrigins": [
+            ""
+          ],
+          "notBefore": 0,
+          "bearerOnly": false,
+          "consentRequired": false,
+          "standardFlowEnabled": true,
+          "implicitFlowEnabled": false,
+          "directAccessGrantsEnabled": true,
+          "serviceAccountsEnabled": false,
+          "publicClient": false,
+          "frontchannelLogout": false,
+          "protocol": "openid-connect",
+          "attributes": {
+            "saml.assertion.signature": "false",
+            "saml.multivalued.roles": "false",
+            "saml.force.post.binding": "false",
+            "saml.encrypt": "false",
+            "saml.server.signature": "false",
+            "saml.server.signature.keyinfo.ext": "false",
+            "exclude.session.state.from.auth.response": "false",
+            "saml_force_name_id_format": "false",
+            "saml.client.signature": "false",
+            "tls.client.certificate.bound.access.tokens": "false",
+            "saml.authnstatement": "false",
+            "display.on.consent.screen": "false",
+            "saml.onetimeuse.condition": "false"
+          },
+          "authenticationFlowBindingOverrides": {},
+          "fullScopeAllowed": true,
+          "nodeReRegistrationTimeout": -1,
+          "protocolMappers": [
+            {
+              "id": "4dc12c61-e5f9-483b-9959-b30fe9d5767a",
+              "name": "docker-v2-allow-all-mapper",
+              "protocol": "docker-v2",
+              "protocolMapper": "docker-v2-allow-all-mapper",
+              "consentRequired": false,
+              "config": {}
+            },
+            {
+              "id": "e62cc48e-b52b-471e-8a96-7fa8ee160d98",
+              "name": "argocd",
+              "protocol": "openid-connect",
+              "protocolMapper": "oidc-audience-mapper",
+              "consentRequired": false,
+              "config": {
+                "included.client.audience": "argocd",
+                "id.token.claim": "false",
+                "access.token.claim": "true"
+              }
+            }
+          ],
+          "defaultClientScopes": [
+            "web-origins",
+            "role_list",
+            "user_name",
+            "profile",
+            "roles",
+            "groups",
+            "email",
+            "group"
           ],
           "optionalClientScopes": [
             "address",
@@ -1696,6 +1787,31 @@ data:
       ],
       "clientScopes": [
         {
+          "id": "824524e2-eb6e-478e-aa54-eccdecd577dd",
+          "name": "groups",
+          "protocol": "openid-connect",
+          "attributes": {
+            "include.in.token.scope": "true",
+            "display.on.consent.screen": "true"
+          },
+          "protocolMappers": [
+            {
+              "id": "f787dc0e-d060-4e55-97ef-7f285662a15c",
+              "name": "groups",
+              "protocol": "openid-connect",
+              "protocolMapper": "oidc-group-membership-mapper",
+              "consentRequired": false,
+              "config": {
+                "full.path": "false",
+                "id.token.claim": "true",
+                "access.token.claim": "true",
+                "claim.name": "groups",
+                "userinfo.token.claim": "true"
+              }
+            }
+          ]
+        },
+        {
           "id": "cbf4adae-b868-47d0-a739-fd7d8f0199bf",
           "name": "kibana",
           "protocol": "openid-connect",
@@ -2310,12 +2426,12 @@ data:
         "password": "**********",
         "starttls": "false",
         "auth": "true",
-        "port": "25",
-        "host": "mail.tmax.co.kr",
-        "from": "tmaxcloud_ck@tmax.co.kr",
+        "port": "587",
+        "host": "smtp.naver.com",
+        "from": "dnxorjs1@naver.com",
         "fromDisplayName": "TMAX CLOUD",
         "ssl": "",
-        "user": "tmaxcloud_ck@tmax.co.kr"
+        "user": "dnxorjs1@naver.com"
       },
       "loginTheme": "tmax",
       "accountTheme": "tmax",

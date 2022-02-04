@@ -1,21 +1,13 @@
 spec:
   destination:
     # description: select between 'name' or 'server'
-    type: server
-    clusterInfo: https://kubernetes.default.svc
-  source:
-    repoURL: https://github.com/tmax-cloud/argocd-installer
-    targetRevision: shkim/appofapp
+    type: name
+    clusterInfo: cluster_name
+    label: single
   project: default
 
 global:
-  network:
-    disabled: false
-  privateRegistry: 172.22.6.2:5000
-  domain: test.domain
-  keycloak:
-    domain: hyperauth.test.domain
-    tmaxClientSecret: tmax_client_secret
+  privateRegistry: testregistry.com
 
 modules:
   ### gateway-bootstrap
@@ -27,39 +19,39 @@ modules:
       # acme로 할 경우, domain에 입력한 주소를 가지고 있어야함
       acme:
         enabled: false
-        email: testtest@tmax.co.kr
+        email: test@tmax.co.kr
         dns:
-          type: testroute53
-          accessKeyID: testaccesskey
-          accessKeySecret: testsecretkey
-          hostedZoneID: testZ07854445SLZAKEQ0V9P
-        environment: testproduction
+          type: route53
+          accessKeyID: accesskey
+          accessKeySecret: secretkey
+          hostedZoneID: Z07854445SLZAKEQ0V9P
+        environment: production
     certManager:
       enabled: true
       # default 300
-      syncWaitTime: 5
+      syncWaitTime: 300
     console:
-      enabled: true
+      enabled: false
       multiCluster:
         enabled: true
       # default 0
-      syncWaitTime: 5
+      syncWaitTime: 0
     gateway:
       enabled: true
       # default 120
-      syncWaitTime: 5
+      syncWaitTime: 120
     jwtDecodeAuth:
       enabled: true
       # default 30
-      syncWaitTime: 5
+      syncWaitTime: 30
 
   ### strimzi-kafka-operator
   strimziKafka:
-    enabled: true
+    enabled: false
 
   ### hyperauth
   hyperAuth:
-    enabled: true
+    enabled: false
     svcType: Ingress
 
   ### efk
@@ -95,7 +87,7 @@ modules:
 
   ### grafana
   grafana:
-    enabled: true
+    enabled: false
     pvcSize: 10Gi
     version: 6.4.3
     imageRepo: grafana/grafana
@@ -110,11 +102,11 @@ modules:
   
   ### kiali
   kiali:
-    enabled: true
+    enabled: false
 
   ### cluster-api
   capi:
-    enabled: true
+    enabled: false
     providers:
       aws:
         enabled: true
@@ -128,7 +120,7 @@ modules:
   
   ### template service broker
   tsb:
-    enabled: true
+    enabled: false
     version: 0.1.3
     clusterTsb:
       version: 0.1.3
@@ -137,15 +129,15 @@ modules:
 
   ### catalog controller
   catalogController:
-    enabled: true
+    enabled: false
 
   ### service broker
   serviceBroker:
-    enabled: true
+    enabled: false
   
   ### hypercloud
   hyperCloud:
-    enabled: true
+    enabled: false
     # description: 'single' or 'multi'
     mode: multi
     kafka:
@@ -153,20 +145,20 @@ modules:
 
   ### tekton pipeline
   tektonPipeline:
-    enabled: true
+    enabled: false
     #namespace: tekton-pipelines
 
   ### tekton trigger
   tektonTrigger:
-    enabled: true
+    enabled: false
 
   ### cicd operator
   cicd:
-    enabled: true
+    enabled: false
 
   ### image validating webhook
   imageValidatingWebhook:
-    enabled: true
+    enabled: false
     
   ### ai-devops
   aiDevops:

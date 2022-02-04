@@ -2,7 +2,13 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
+  labels:
+    cluster: {{ .Values.spec.destination.label }}
+  {{- if eq .Values.spec.destination.label "master" }}
   name: cert-manager
+  {{- else }}
+  name: {{ .Values.spec.destination.label }}-cert-manager
+  {{- end }}
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -23,8 +29,8 @@ spec:
     helm:
       valueFiles:
         - {{ .Values.modules.certManager.source.helm.valueFiles }}
-      parameters:
       {{- if .Values.global.registiry.is_offline }}
+      parameters:
       - name: rootCA.image.repository
         value: "{{ .Values.global.registiry.private_registry }}/docker.io/library/alpine:3.3"
       {{- end }}
