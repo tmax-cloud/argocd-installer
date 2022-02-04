@@ -1,5 +1,5 @@
 if [[ ! $# -eq 2 ]]; then
-    echo "ERORR: set-master-env-yq.sh needs 3 arguments, not ""$#"
+    echo "ERORR: set-master-env-yq.sh needs 2 arguments, not ""$#"
     echo "USAGE : bash set-master-env-yq.sh [REPO_URL] [BRANCH_NAME]"
     #echo "USAGE : bash set-master-env-yq.sh [REPO_URL] [BRANCH_NAME] [NETWORK_DISABLED] [DOMAIN]"
     exit -1
