@@ -31,7 +31,7 @@ modules:
       # default 300
       syncWaitTime: 300
     console:
-      enabled: true
+      enabled: false
       multiCluster:
         enabled: true
       # default 0
