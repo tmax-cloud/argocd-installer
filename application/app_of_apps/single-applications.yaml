@@ -3,6 +3,7 @@ kind: Application
 metadata:
   labels:
     cluster: single
+    appType: app-of-apps
   name: single-applications
   namespace: argocd
 spec:
