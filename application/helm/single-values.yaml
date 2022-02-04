@@ -24,7 +24,7 @@ modules:
           type: route53
           accessKeyID: accesskey
           accessKeySecret: secretkey
-          hostedZoneID: Z07854445SLZAKEQ0V9P
+          hostedZoneID: hostedzoneid
         environment: production
     certManager:
       enabled: true
