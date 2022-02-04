@@ -4,6 +4,7 @@ kind: Application
 metadata:
   labels:
     cluster: {{ .Values.spec.destination.label }}
+    gatewayBootstrap: console
   {{- if eq .Values.spec.destination.label "master" }}
   name: console
   {{- else }}

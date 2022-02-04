@@ -13,10 +13,9 @@
 12. cluster-api-provider-vsphere
 13. template-service-broker
 14. catalog-controller
-15. service-broker
-16. hypercloud
-17. tekton-pipeline
-18. tekton-trigger
-19. cicd-operator
-20. image-validating-webhook
-21. ai-devops(미완)
+15. hypercloud
+16. tekton-pipeline
+17. tekton-trigger
+18. cicd-operator
+19. image-validating-webhook
+20. ai-devops(미완)
