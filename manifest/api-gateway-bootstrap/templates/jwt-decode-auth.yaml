@@ -35,9 +35,9 @@ spec:
           value: {{ .Values.global.hyperauth.address | default "hyperauth.org"}}
         - name: hyperauth.realm
           value: {{ .Values.global.hyperauth.realm | default "tmax" }}
-        {{- if .Values.global.registiry.is_offline }}
+        {{- if .Values.global.registry.is_offline }}
         - name: image.repository
-          value: {{ .Values.global.registiry.private_registry }}/docker.io/tmaxcloudck/jwt-decode
+          value: {{ .Values.global.registry.private_registry }}/docker.io/tmaxcloudck/jwt-decode
         {{- end }}
   project: {{ .Values.spec.project }}
   syncPolicy:
@@ -75,8 +75,8 @@ spec:
       restartPolicy: Never
       containers:
         - name: post-install-job
-          {{- if .Values.global.registiry.is_offline }}
-          image: "{{ .Values.global.registiry.private_registry }}/docker.io/library/alpine:3.3"
+          {{- if .Values.global.registry.is_offline }}
+          image: "{{ .Values.global.registry.private_registry }}/docker.io/library/alpine:3.3"
           {{- else }}
           image: "alpine:3.3"
           {{- end }}

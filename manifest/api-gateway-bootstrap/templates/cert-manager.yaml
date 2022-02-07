@@ -30,16 +30,16 @@ spec:
     helm:
       valueFiles:
         - {{ .Values.modules.certManager.source.helm.valueFiles }}
-      {{- if .Values.global.registiry.is_offline }}
+      {{- if .Values.global.registry.is_offline }}
       parameters:
       - name: cert-manager.image.repository
-        value: "{{ .Values.global.registiry.private_registry }}/jetstack/cert-manager-controller"
+        value: "{{ .Values.global.registry.private_registry }}/jetstack/cert-manager-controller"
       - name: cert-manager.cainjector.image.repository
-        value: "{{ .Values.global.registiry.private_registry }}/jetstack/cert-manager-cainjector"
+        value: "{{ .Values.global.registry.private_registry }}/jetstack/cert-manager-cainjector"
       - name: cert-manager.webhook.image.repository
-        value: "{{ .Values.global.registiry.private_registry }}/jetstack/cert-manager-webhook"
+        value: "{{ .Values.global.registry.private_registry }}/jetstack/cert-manager-webhook"
       - name: rootCA.image.repository
-        value: "{{ .Values.global.registiry.private_registry }}/docker.io/library/alpine:3.3"
+        value: "{{ .Values.global.registry.private_registry }}/docker.io/library/alpine:3.3"
       {{- end }}
   project: {{ .Values.spec.project }}
   syncPolicy:
@@ -79,8 +79,8 @@ spec:
       restartPolicy: Never
       containers:
         - name: post-install-job
-          {{- if .Values.global.registiry.is_offline }}
-          image: "{{ .Values.global.registiry.private_registry }}/docker.io/library/alpine:3.3"
+          {{- if .Values.global.registry.is_offline }}
+          image: "{{ .Values.global.registry.private_registry }}/docker.io/library/alpine:3.3"
           {{- else }}
           image: "alpine:3.3"
           {{- end }}

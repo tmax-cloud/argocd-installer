@@ -59,9 +59,9 @@ spec:
         - name: tls.acme.enabled
           value: "false"
       {{- end }}
-      {{- if .Values.global.registiry.is_offline }}
+      {{- if .Values.global.registry.is_offline }}
         - name: traefik.image.name
-          value: {{ .Values.global.registiry.private_registry }}/docker.io/library/traefik
+          value: {{ .Values.global.registry.private_registry }}/docker.io/library/traefik
       {{- end }}
   project: {{ .Values.spec.project }}
   syncPolicy:
@@ -100,8 +100,8 @@ spec:
       restartPolicy: Never
       containers:
         - name: post-install-job
-          {{- if .Values.global.registiry.is_offline }}
-          image: "{{ .Values.global.registiry.private_registry }}/docker.io/library/alpine:3.3"
+          {{- if .Values.global.registry.is_offline }}
+          image: "{{ .Values.global.registry.private_registry }}/docker.io/library/alpine:3.3"
           {{- else }}
           image: "alpine:3.3"
           {{- end }}

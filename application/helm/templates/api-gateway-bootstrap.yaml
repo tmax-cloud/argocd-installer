@@ -24,9 +24,9 @@ spec:
           value: {{ .Values.global.domain }}
         - name: global.hyperauth.address
           value: {{ .Values.global.keycloak.domain }}
-        - name: global.registiry.is_offline
+        - name: global.registry.is_offline
           value: "{{ .Values.global.network.disabled }}"
-        - name: global.registiry.private_registry
+        - name: global.registry.private_registry
           value: {{ .Values.global.privateRegistry }}
         - name: global.tls.acme.dns.accessKeyID
           value: {{ .Values.modules.gatewayBootstrap.tls.acme.dns.accessKeyID }}
