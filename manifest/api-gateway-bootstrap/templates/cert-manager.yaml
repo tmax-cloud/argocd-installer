@@ -32,6 +32,12 @@ spec:
         - {{ .Values.modules.certManager.source.helm.valueFiles }}
       {{- if .Values.global.registiry.is_offline }}
       parameters:
+      - name: cert-manager.image.repository
+        value: "{{ .Values.global.registiry.private_registry }}/jetstack/cert-manager-controller"
+      - name: cert-manager.cainjector.image.repository
+        value: "{{ .Values.global.registiry.private_registry }}/jetstack/cert-manager-cainjector"
+      - name: cert-manager.webhook.image.repository
+        value: "{{ .Values.global.registiry.private_registry }}/jetstack/cert-manager-webhook"
       - name: rootCA.image.repository
         value: "{{ .Values.global.registiry.private_registry }}/docker.io/library/alpine:3.3"
       {{- end }}
