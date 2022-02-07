@@ -33,11 +33,11 @@ spec:
       {{- if .Values.global.registry.is_offline }}
       parameters:
       - name: cert-manager.image.repository
-        value: "{{ .Values.global.registry.private_registry }}/jetstack/cert-manager-controller"
+        value: "{{ .Values.global.registry.private_registry }}/quay.io/jetstack/cert-manager-controller"
       - name: cert-manager.cainjector.image.repository
-        value: "{{ .Values.global.registry.private_registry }}/jetstack/cert-manager-cainjector"
+        value: "{{ .Values.global.registry.private_registry }}/quay.io/jetstack/cert-manager-cainjector"
       - name: cert-manager.webhook.image.repository
-        value: "{{ .Values.global.registry.private_registry }}/jetstack/cert-manager-webhook"
+        value: "{{ .Values.global.registry.private_registry }}/quay.io/jetstack/cert-manager-webhook"
       - name: rootCA.image.repository
         value: "{{ .Values.global.registry.private_registry }}/docker.io/library/alpine:3.3"
       {{- end }}
