@@ -70,6 +70,7 @@ modules:
 #        - name: regcred
 
   console:
+    ## when installing on single-cluster, enabled: false
     enabled: true
     source:
       path: manifest/api-gateway/console
