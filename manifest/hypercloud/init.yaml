@@ -39,6 +39,17 @@ metadata:
 
 ---
 
+apiVersion: v1
+kind: Secret
+metadata:
+  name: hypercloud5-api-server-service-account-token
+  namespace: hypercloud5-system
+  annotations:
+    kubernetes.io/service-account.name: hypercloud5-admin
+type: kubernetes.io/service-account-token
+
+---
+
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
