@@ -1,0 +1,60 @@
+{{- if .Values.monitoringIngressroute.enabled }}
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: monitoring-ingressroute
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: PathPrefix(`/api/kubernetes`)
+      priority: 100
+      middlewares:
+
+        - name: kubernetes-stripprefix@file
+      services:
+        - kind: Service
+          name: kubernetes
+          namespace: default
+          port: https
+          scheme: https
+          serversTransport: kubernetes@file
+    - kind: Rule
+      match: PathPrefix(`/api/prometheus-tenancy/api`)
+      priority: 100
+      middlewares:
+        - name: {{ .Release.Namespace }}-jwt-decode-auth@kubernetescrd
+        - name: monitoring-stripprefix-tenancy@file
+      services:
+        - kind: Service
+          name: prometheus-k8s
+          namespace: monitoring
+          port: web
+          scheme: http
+    - kind: Rule
+      match: PathPrefix(`/api/prometheus/api`)
+      priority: 100
+      middlewares:
+        - name: {{ .Release.Namespace }}-jwt-decode-auth@kubernetescrd
+        - name: monitoring-stripprefix@file
+      services:
+        - kind: Service
+          name: prometheus-k8s
+          namespace: monitoring
+          port: web
+          scheme: http
+    - kind: Rule
+      match: PathPrefix(`/api/alertmanager/api`)
+      priority: 100
+      middlewares:
+        - name: {{ .Release.Namespace }}-jwt-decode-auth@kubernetescrd
+        - name: monitoring-stripprefix@file
+      services:
+        - kind: Service
+          name: alertmanager-main
+          namespace: monitoring
+          port: web
+          scheme: http
+  tls: {} # use default tls
+{{- end }}

@@ -9,6 +9,8 @@ hyperauth:
   realm: tmax
 middleware:
   enabled: true
+monitoringIngressroute:
+  enabled: false
 
 replicaCount: 1
 

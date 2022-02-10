@@ -55,7 +55,11 @@ spec:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "cert-manager-sync-wave"
+  {{- if eq .Values.spec.destination.label "master" }}
+  name: cert-manager-sync-wave
+  {{- else }}
+  name: {{ .Values.spec.destination.label }}-cert-manager-sync-wave
+  {{- end }}
   namespace: argocd
   labels:
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}

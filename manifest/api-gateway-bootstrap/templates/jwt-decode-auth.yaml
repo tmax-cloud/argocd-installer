@@ -39,6 +39,10 @@ spec:
         - name: image.repository
           value: {{ .Values.global.registry.private_registry }}/docker.io/tmaxcloudck/jwt-decode
         {{- end }}
+        {{- if not .Values.modules.console.enabled }}
+        - name: monitoringIngressroute.enabled
+          value: "true"
+        {{- end }}
   project: {{ .Values.spec.project }}
   syncPolicy:
     automated:
@@ -51,7 +55,11 @@ spec:
 apiVersion: batch/v1
 kind: Job
 metadata:
+  {{- if eq .Values.spec.destination.label "master" }}
   name: jwt-decode-auth-sync-wave
+  {{- else }}
+  name: {{ .Values.spec.destination.label }}-jwt-decode-auth-sync-wave
+  {{- end }}
   namespace: argocd
   labels:
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
