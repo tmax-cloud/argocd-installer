@@ -39,6 +39,10 @@ spec:
         - name: image.repository
           value: {{ .Values.global.registry.private_registry }}/docker.io/tmaxcloudck/jwt-decode
         {{- end }}
+        {{- if not .Values.modules.console.enabled }}
+        - name: monitoringIngressroute.enabled
+          value: "true"
+        {{- end }}
   project: {{ .Values.spec.project }}
   syncPolicy:
     automated:

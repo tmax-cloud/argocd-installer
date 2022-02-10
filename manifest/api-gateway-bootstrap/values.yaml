@@ -71,7 +71,7 @@ modules:
 
   console:
     ## when installing on single-cluster, enabled: false
-    enabled: true
+    enabled: false
     source:
       path: manifest/api-gateway/console
       helm:
