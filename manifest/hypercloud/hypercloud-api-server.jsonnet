@@ -118,6 +118,11 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                                     "name": "html",
                                     "mountPath": "/run/configs/html",
                                     "readOnly": true
+                                },
+                                {
+                                    "name": "hypercloud5-api-server-service-account-token",
+                                    "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                                    "readOnly": true
                                 }
                             ]
                         }
@@ -173,6 +178,13 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                                         "path": "accessSecret"
                                     }
                                 ]
+                            }
+                        },
+                        {
+                            "name": "hypercloud5-api-server-service-account-token",
+                            "secret": {
+                                "secretName": "hypercloud5-api-server-service-account-token",
+                                "defaultMode": "420"
                             }
                         }
                     ]
