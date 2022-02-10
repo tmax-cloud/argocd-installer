@@ -3,6 +3,7 @@ kind: MutatingWebhookConfiguration
 metadata:
   name: hypercloud-mutator
   annotations:
+    argocd.argoproj.io/hook: PostSync
     cert-manager.io/inject-ca-from: hypercloud5-system/hypercloud5-api-server-cert
 webhooks:
   - name: hypercloud.mutating.metadata
