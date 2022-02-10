@@ -6,7 +6,7 @@ function (
     tsb_version = "0.1.3"
 )
 
-local target_registry = if is_offline == false then "" else private_registry + "/";
+local target_registry = if is_offline == "false" then "" else private_registry + "/";
 
 [
   {

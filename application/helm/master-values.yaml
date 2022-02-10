@@ -43,6 +43,8 @@ modules:
       enabled: true
       # default 30
       syncWaitTime: 30
+    monitoringIngressroute:
+      enabled: false
 
   ### strimzi-kafka-operator
   strimziKafka:

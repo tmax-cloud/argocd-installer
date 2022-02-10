@@ -3,7 +3,7 @@ function(
     private_registry="registry.tmaxcloud.org"
 )
 
-local gcr_registry = if is_offline == false then "" else private_registry + "/";
+local gcr_registry = if is_offline == "false" then "" else private_registry + "/";
 
 [
   {
