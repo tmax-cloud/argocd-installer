@@ -76,7 +76,11 @@ spec:
 apiVersion: batch/v1
 kind: Job
 metadata:
+  {{- if eq .Values.spec.destination.label "master" }}
   name: gateway-sync-wave
+  {{- else }}
+  name: {{ .Values.spec.destination.label }}-gateway-sync-wave
+  {{- end }}
   namespace: argocd
   labels:
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
