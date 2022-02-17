@@ -38,7 +38,6 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         }
       },
       "spec": {
-        "serviceAccount": "hyperauth-admin",
         "containers": [
           {
             "image": std.join("", [target_registry, "docker.io/postgres:9.6.2-alpine"]),
@@ -127,7 +126,6 @@ local target_registry = if is_offline == "false" then "" else private_registry +
           }
         },
         "spec": {
-          "serviceAccount": "hyperauth-admin",
           "volumes": [
             {
               "name": "ssl",
