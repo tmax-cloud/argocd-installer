@@ -2,7 +2,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
+  labels:
+    cluster: {{ .Values.spec.destination.label }}
+    gatewayBootstrap: console
+  {{- if eq .Values.spec.destination.label "master" }}
   name: console
+  {{- else }}
+  name: {{ .Values.spec.destination.label }}-console
+  {{- end }}
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -11,7 +18,11 @@ metadata:
 spec:
   destination:
     namespace: api-gateway-system
-    server: {{ .Values.spec.destination.server }}
+    {{- if eq .Values.spec.destination.type "name" }}
+    name: {{ .Values.spec.destination.clusterInfo }}
+    {{- else if eq .Values.spec.destination.type "server" }}
+    server: {{ .Values.spec.destination.clusterInfo }}
+  {{- end }}
   source:
     path: {{ .Values.modules.console.source.path }}
     repoURL: {{ .Values.spec.source.repoURL }}
@@ -30,11 +41,11 @@ spec:
           value: {{ .Values.global.console.mcMode | default true | quote }}
         - name: ingressroute.domain.name
           value: {{ .Values.global.domain | default "tmaxcloud.org" }}
-        {{- if .Values.global.registiry.is_offline }}
+        {{- if .Values.global.registry.is_offline }}
         - name: image.repository
-          value: {{ .Values.global.registiry.private_registry }}/docker.io/tmaxcloudck/hypercloud-console
+          value: {{ .Values.global.registry.private_registry }}/docker.io/tmaxcloudck/hypercloud-console
         {{- end }}
-  project: default
+  project: {{ .Values.spec.project }}
   syncPolicy:
     automated:
       prune: true

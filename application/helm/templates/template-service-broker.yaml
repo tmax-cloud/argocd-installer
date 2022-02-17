@@ -1,0 +1,40 @@
+{{- if .Values.modules.tsb.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  labels:
+    cluster: {{ .Values.spec.destination.label }}
+    tsb: template-service-broker
+  {{- if eq .Values.spec.destination.label "master" }}
+  name: template-service-broker
+  {{- else }}
+  name: {{ .Values.spec.destination.clusterInfo }}-template-service-broker
+  {{- end }}
+  namespace: argocd
+spec:
+  destination:
+    namespace: template
+    {{- if eq .Values.spec.destination.type "name" }}
+    name: {{ .Values.spec.destination.clusterInfo }}
+    {{- else if eq .Values.spec.destination.type "server" }}
+    server: {{ .Values.spec.destination.clusterInfo }}
+    {{- end }}
+  project: {{ .Values.spec.project }}
+  source:
+    directory:
+      jsonnet:
+        tlas:
+          - name: is_offline
+            value: "{{ .Values.global.network.disabled }}"
+          - name: private_registry
+            value: {{ .Values.global.privateRegistry }}
+          - name: template_operator_version
+            value: {{ .Values.modules.tsb.templateOperator.version }}
+          - name: cluster_tsb_version
+            value: {{ .Values.modules.tsb.clusterTsb.version }}
+          - name: tsb_version
+            value: {{ .Values.modules.tsb.version }}
+    path: manifest/template-service-broker
+    repoURL: {{ .Values.spec.source.repoURL }}
+    targetRevision: {{ .Values.spec.source.targetRevision }}
+{{- end }}

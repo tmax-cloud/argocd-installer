@@ -1,0 +1,174 @@
+spec:
+  destination:
+    # description: select between 'name' or 'server'
+    type: name
+    clusterInfo: cluster_name
+    label: single
+  project: default
+
+global:
+  privateRegistry: testregistry.com
+
+modules:
+  ### gateway-bootstrap
+  gatewayBootstrap:
+    enabled: true
+    tls:
+      selfsigned:
+        enabled: true
+      # acme로 할 경우, domain에 입력한 주소를 가지고 있어야함
+      acme:
+        enabled: false
+        email: test@tmax.co.kr
+        dns:
+          type: route53
+          accessKeyID: accesskey
+          accessKeySecret: secretkey
+          hostedZoneID: hostedzoneid
+        environment: production
+    certManager:
+      enabled: true
+      # default 300
+      syncWaitTime: 300
+    console:
+      enabled: false
+      multiCluster:
+        enabled: true
+      # default 0
+      syncWaitTime: 0
+    gateway:
+      enabled: true
+      # default 120
+      syncWaitTime: 120
+    jwtDecodeAuth:
+      enabled: true
+      # default 30
+      syncWaitTime: 30
+    monitoringIngressroute:
+      enabled: true
+
+  ### strimzi-kafka-operator
+  strimziKafka:
+    enabled: false
+
+  ### hyperauth
+  hyperAuth:
+    enabled: false
+    svcType: Ingress
+
+  ### efk
+  efk:
+    enabled: true
+    es:
+      version: 7.2.1
+      volumeSize: 50Gi
+    busyBox:
+      version: 1.32.0
+    kibana:
+      version: 7.2.0
+      svcType: ClusterIP
+    gatekeeper:
+      version: 10.0.0
+    fluentd:
+      version: v1.4.2-debian-elasticsearch-1.1
+  
+  ### prometheus
+  prometheus:
+    enabled: true
+    versions:
+      prometheus: v2.11.0
+      cmReload: v0.0.1
+      cmReloader: v0.34.0
+      operator: v0.34.0
+      alertManager: v0.20.0
+      kubeRbacProxy: v0.4.1
+      kubeStateMetrics: v1.8.0
+      nodeExporter: v0.18.1
+      adapter: v0.5.0
+    pvcSize: 10Gi
+
+  ### grafana
+  grafana:
+    enabled: false
+    pvcSize: 10Gi
+    version: 6.4.3
+    imageRepo: grafana/grafana
+
+  ### istio
+  istio:
+    enabled: true
+
+  ### jaeger
+  jaeger:
+    enabled: true
+  
+  ### kiali
+  kiali:
+    enabled: false
+
+  ### cluster-api
+  capi:
+    enabled: false
+    providers:
+      aws:
+        enabled: true
+        # description: ...
+        credentials: "credential"
+      vsphere:
+        enabled: true
+        credentials: 
+          username: "user"
+          password: "password"
+  
+  ### template service broker
+  tsb:
+    enabled: false
+    version: 0.1.3
+    clusterTsb:
+      version: 0.1.3
+    templateOperator:
+      version: 0.2.6    
+
+  ### catalog controller
+  catalogController:
+    enabled: false
+
+  ### service broker
+  serviceBroker:
+    enabled: false
+  
+  ### hypercloud
+  hyperCloud:
+    enabled: false
+    # description: 'single' or 'multi'
+    mode: multi
+    kafka:
+      enabled: true
+
+  ### tekton pipeline
+  tektonPipeline:
+    enabled: false
+    #namespace: tekton-pipelines
+
+  ### tekton trigger
+  tektonTrigger:
+    enabled: false
+
+  ### cicd operator
+  cicd:
+    enabled: false
+
+  ### image validating webhook
+  imageValidatingWebhook:
+    enabled: false
+    
+  ### ai-devops
+  aiDevops:
+    enabled: false
+    namespace: "kubeflow"
+    knativeNamespace: "knative-serving"
+    notebookSvcType: "Ingress"
+  job:
+      imagePullSecrets: []
+#      imagePullSecrets:
+#        - name: regcred

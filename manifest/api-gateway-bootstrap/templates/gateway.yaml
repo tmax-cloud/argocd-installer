@@ -1,8 +1,15 @@
-{{- if .Values.modules.gateway.enalbed }}
+{{- if .Values.modules.gateway.enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
+  labels:
+    cluster: {{ .Values.spec.destination.label }}
+    gatewayBootstrap: gateway
+  {{- if eq .Values.spec.destination.label "master" }}
   name: gateway
+  {{- else }}
+  name: {{ .Values.spec.destination.label }}-gateway
+  {{- end }}
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -11,7 +18,11 @@ metadata:
 spec:
   destination:
     namespace: api-gateway-system
-    server: {{ .Values.spec.destination.server }}
+    {{- if eq .Values.spec.destination.type "name" }}
+    name: {{ .Values.spec.destination.clusterInfo }}
+    {{- else if eq .Values.spec.destination.type "server" }}
+    server: {{ .Values.spec.destination.clusterInfo }}
+    {{- end }}
   source:
     path: {{ .Values.modules.gateway.source.path }}
     repoURL: {{ .Values.spec.source.repoURL }}
@@ -48,11 +59,11 @@ spec:
         - name: tls.acme.enabled
           value: "false"
       {{- end }}
-      {{- if .Values.global.registiry.is_offline }}
+      {{- if .Values.global.registry.is_offline }}
         - name: traefik.image.name
-          value: {{ .Values.global.registiry.private_registry }}/docker.io/library/traefik
+          value: {{ .Values.global.registry.private_registry }}/docker.io/library/traefik
       {{- end }}
-  project: default
+  project: {{ .Values.spec.project }}
   syncPolicy:
     automated:
       prune: true
@@ -65,7 +76,11 @@ spec:
 apiVersion: batch/v1
 kind: Job
 metadata:
+  {{- if eq .Values.spec.destination.label "master" }}
   name: gateway-sync-wave
+  {{- else }}
+  name: {{ .Values.spec.destination.label }}-gateway-sync-wave
+  {{- end }}
   namespace: argocd
   labels:
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
@@ -89,11 +104,11 @@ spec:
       restartPolicy: Never
       containers:
         - name: post-install-job
-          {{- if .Values.global.registiry.is_offline }}
-          image: "{{ .Values.global.registiry.private_registry }}/docker.io/library/alpine:3.3"
+          {{- if .Values.global.registry.is_offline }}
+          image: "{{ .Values.global.registry.private_registry }}/docker.io/library/alpine:3.3"
           {{- else }}
           image: "alpine:3.3"
           {{- end }}
-          command: ["/bin/sleep","120"]
+          command: ["/bin/sleep","{{ .Values.modules.gateway.syncWaitTime }}"]
           imagePullPolicy: IfNotPresent
 {{- end }}

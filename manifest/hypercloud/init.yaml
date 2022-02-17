@@ -1,22 +1,27 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: hypercloud5-system
+---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
- name: hypercloud5-api-server-cert
- namespace: hypercloud5-system
+  name: hypercloud5-api-server-cert
+  namespace: hypercloud5-system
 spec:
- secretName: hypercloud5-api-server-certs
- usages:
- - digital signature
- - key encipherment
- - server auth
- - client auth
- dnsNames:
- - "hypercloud5-api-server-service.hypercloud5-system.svc"
- - "tmax-cloud"
- issuerRef:
-   kind: ClusterIssuer
-   group: cert-manager.io
-   name: tmaxcloud-issuer
+  secretName: hypercloud5-api-server-certs
+  usages:
+  - digital signature
+  - key encipherment
+  - server auth
+  - client auth
+  dnsNames:
+  - "hypercloud5-api-server-service.hypercloud5-system.svc"
+  - "tmax-cloud"
+  issuerRef:
+    kind: ClusterIssuer
+    group: cert-manager.io
+    name: tmaxcloud-issuer
 ---
 apiVersion: v1
 kind: ResourceQuota
@@ -36,6 +41,17 @@ kind: ServiceAccount
 metadata:
   name: hypercloud5-admin
   namespace: hypercloud5-system
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: hypercloud5-api-server-service-account-token
+  namespace: hypercloud5-system
+  annotations:
+    kubernetes.io/service-account.name: hypercloud5-admin
+type: kubernetes.io/service-account-token
 
 ---
 

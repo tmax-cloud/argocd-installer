@@ -1,0 +1,53 @@
+{{- if .Values.modules.prometheus.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  labels:
+    cluster: {{ .Values.spec.destination.label }}
+  {{- if eq .Values.spec.destination.label "master" }}
+  name: prometheus
+  {{- else }}
+  name: {{ .Values.spec.destination.clusterInfo }}-prometheus
+  {{- end }}
+  namespace: argocd
+spec:
+  destination:
+    namespace: monitoring
+    {{- if eq .Values.spec.destination.type "name" }}
+    name: {{ .Values.spec.destination.clusterInfo }}
+    {{- else if eq .Values.spec.destination.type "server" }}
+    server: {{ .Values.spec.destination.clusterInfo }}
+    {{- end }}
+  project: {{ .Values.spec.project }}
+  source:
+    directory:
+      jsonnet:
+        tlas:
+          - name: is_offline
+            value: "{{ .Values.global.network.disabled }}"
+          - name: private_registry
+            value: {{ .Values.global.privateRegistry }}
+          - name: configmap_reload_version
+            value: {{ .Values.modules.prometheus.versions.cmReload }}
+          - name: configmap_reloader_version
+            value: {{ .Values.modules.prometheus.versions.cmReloader }}
+          - name: prometheus_operator_version
+            value: {{ .Values.modules.prometheus.versions.operator }}
+          - name: alertmanager_version
+            value: {{ .Values.modules.prometheus.versions.alertManager }}
+          - name: kube_rbac_proxy_version
+            value: {{ .Values.modules.prometheus.versions.kubeRbacProxy }}
+          - name: kube_state_metrics_version
+            value: {{ .Values.modules.prometheus.versions.kubeStateMetrics }}
+          - name: node_exporter_version
+            value: {{ .Values.modules.prometheus.versions.nodeExporter }}
+          - name: prometheus_adapter_version
+            value: {{ .Values.modules.prometheus.versions.adapter }}
+          - name: prometheus_pvc
+            value: {{ .Values.modules.prometheus.pvcSize }}
+          - name: prometheus_version
+            value: {{ .Values.modules.prometheus.versions.prometheus }}
+    path: manifest/prometheus
+    repoURL: {{ .Values.spec.source.repoURL }}
+    targetRevision: {{ .Values.spec.source.targetRevision }}
+{{- end }}

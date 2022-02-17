@@ -2,7 +2,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
+  labels:
+    cluster: {{ .Values.spec.destination.label }}
+    gatewayBootstrap: jwt-decode-auth
+  {{- if eq .Values.spec.destination.label "master" }}
   name: jwt-decode-auth
+  {{- else }}
+  name: {{ .Values.spec.destination.label }}-jwt-decode-auth
+  {{- end }}
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -11,7 +18,11 @@ metadata:
 spec:
   destination:
     namespace: api-gateway-system
-    server: {{ .Values.spec.destination.server }}
+    {{- if eq .Values.spec.destination.type "name" }}
+    name: {{ .Values.spec.destination.clusterInfo }}
+    {{- else if eq .Values.spec.destination.type "server" }}
+    server: {{ .Values.spec.destination.clusterInfo }}
+  {{- end }}
   source:
     path: {{ .Values.modules.jwtDecodeAuth.source.path }}
     repoURL: {{ .Values.spec.source.repoURL }}
@@ -24,11 +35,15 @@ spec:
           value: {{ .Values.global.hyperauth.address | default "hyperauth.org"}}
         - name: hyperauth.realm
           value: {{ .Values.global.hyperauth.realm | default "tmax" }}
-        {{- if .Values.global.registiry.is_offline }}
+        {{- if .Values.global.registry.is_offline }}
         - name: image.repository
-          value: {{ .Values.global.registiry.private_registry }}/docker.io/tmaxcloudck/jwt-decode
+          value: {{ .Values.global.registry.private_registry }}/docker.io/tmaxcloudck/jwt-decode
         {{- end }}
-  project: default
+        {{- if not .Values.modules.console.enabled }}
+        - name: monitoringIngressroute.enabled
+          value: "true"
+        {{- end }}
+  project: {{ .Values.spec.project }}
   syncPolicy:
     automated:
       prune: true
@@ -40,7 +55,11 @@ spec:
 apiVersion: batch/v1
 kind: Job
 metadata:
+  {{- if eq .Values.spec.destination.label "master" }}
   name: jwt-decode-auth-sync-wave
+  {{- else }}
+  name: {{ .Values.spec.destination.label }}-jwt-decode-auth-sync-wave
+  {{- end }}
   namespace: argocd
   labels:
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
@@ -64,11 +83,11 @@ spec:
       restartPolicy: Never
       containers:
         - name: post-install-job
-          {{- if .Values.global.registiry.is_offline }}
-          image: "{{ .Values.global.registiry.private_registry }}/docker.io/library/alpine:3.3"
+          {{- if .Values.global.registry.is_offline }}
+          image: "{{ .Values.global.registry.private_registry }}/docker.io/library/alpine:3.3"
           {{- else }}
           image: "alpine:3.3"
           {{- end }}
-          command: ["/bin/sleep","30"]
+          command: ["/bin/sleep","{{ .Values.modules.jwtDecodeAuth.syncWaitTime }}"]
           imagePullPolicy: IfNotPresent
 {{- end }}

@@ -5,10 +5,12 @@
 nameOverride: "jwt-decode-auth"
 fullnameOverride: "jwt-decode-auth"
 hyperauth:
-  address: ckcloud.org
+  address: hyperauth.tmaxcloud.org
   realm: tmax
 middleware:
   enabled: true
+monitoringIngressroute:
+  enabled: false
 
 replicaCount: 1
 

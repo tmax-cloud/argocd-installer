@@ -1,0 +1,45 @@
+{{- if .Values.modules.grafana.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  labels:
+    cluster: {{ .Values.spec.destination.label }}
+  {{- if eq .Values.spec.destination.label "master" }}
+  name: grafana
+  {{- else }}
+  name: {{ .Values.spec.destination.clusterInfo }}-grafana
+  {{- end }}
+  namespace: argocd
+spec:
+  destination:
+    namespace: monitoring
+    {{- if eq .Values.spec.destination.type "name" }}
+    name: {{ .Values.spec.destination.clusterInfo }}
+    {{- else if eq .Values.spec.destination.type "server" }}
+    server: {{ .Values.spec.destination.clusterInfo }}
+    {{- end }}
+  project: {{ .Values.spec.project }}
+  source:
+    directory:
+      jsonnet:
+        tlas:
+          - name: is_offline
+            value: "{{ .Values.global.network.disabled }}"
+          - name: private_registry
+            value: {{ .Values.global.privateRegistry }}
+          - name: tmax_client_secret
+            value: {{ .Values.global.keycloak.tmaxClientSecret }}
+          - name: keycloak_addr
+            value: {{ .Values.global.keycloak.domain }}
+          - name: grafana_pvc
+            value: {{ .Values.modules.grafana.pvcSize }}
+          - name: grafana_version
+            value: {{ .Values.modules.grafana.version }}
+          - name: grafana_image_repo
+            value: {{ .Values.modules.grafana.imageRepo }}
+          - name: ingress_domain
+            value: {{ .Values.global.domain }}
+    path: manifest/grafana
+    repoURL: {{ .Values.spec.source.repoURL }}
+    targetRevision: {{ .Values.spec.source.targetRevision }}
+{{- end }}

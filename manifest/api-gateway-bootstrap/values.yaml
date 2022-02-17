@@ -1,12 +1,16 @@
 spec:
   destination:
-    server: https://kubernetes.default.svc
+    # description: select between 'name' or 'server'
+    type: server
+    clusterInfo: https://kubernetes.default.svc
+    label: master
   source:
     repoURL: https://github.com/tmax-cloud/argocd-installer
     targetRevision: main
+  project: default
 
 global:
-  registiry:
+  registry:
     is_offline: false
     private_registry: 172.22.6.2:5000
   domain: tmaxcloud.local
@@ -44,7 +48,7 @@ modules:
 #        - name: regcred
 
   gateway:
-    enalbed: true
+    enabled: true
     source:
       path: manifest/api-gateway/gateway
       helm:
@@ -66,7 +70,8 @@ modules:
 #        - name: regcred
 
   console:
-    enabled: true
+    ## when installing on single-cluster, enabled: false
+    enabled: false
     source:
       path: manifest/api-gateway/console
       helm:

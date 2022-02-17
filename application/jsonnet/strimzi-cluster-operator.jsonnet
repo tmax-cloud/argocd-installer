@@ -16,13 +16,11 @@ local target_repo = if params.repo_provider == "gitlab" then repo_url_protocol +
     "destination": {
       "namespace": "kafka",
     } + (
-      if params.cluster_name != "" then {
-        "name": params.cluster_name
-      } else {}
-    ) + (
-      if params.cluster_server != "" then {
-        "server": params.cluster_server
-      } else {}
+      if params.cluster_info_type == "name" then {
+        "name": params.cluster_info
+      } else if params.cluster_info_type == "server" then {
+        "server": params.cluster_info
+      }
     ),
     "source": {
       "directory": {

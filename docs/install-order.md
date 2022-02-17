@@ -1,22 +1,21 @@
 # Application 설치 순서
-1. cert-manager
-2. gateway
-3. strimzi kafka operator
-4. hyperauth + kafka
-5. efk
-6. prometheus
-7. grafana
-8. service-mesh(istio, jaeger, kiali)
-9. cluster-api
-10. cluster-api-provider-aws
-11. cluster-api-provider-vsphere
-12. template-service-broker
-13. service-broker
-14. federation(미완)
-15. catalog-controller
-16. hypercloud
-17. tekton-pipeline
-18. tekton-trigger
-19. cicd-operator
-20. image-validating-webhook
-21. ai-devops(미완)
+1. api-gateway-bootstrap(cert-manager + api-gateway)
+2. strimzi kafka operator
+3. hyperauth + kafka
+4. efk
+5. prometheus
+6. grafana
+7. istio
+8. jaeger
+9. kiali
+10. cluster-api
+11. cluster-api-provider-aws
+12. cluster-api-provider-vsphere
+13. template-service-broker
+14. catalog-controller
+15. hypercloud
+16. tekton-pipeline
+17. tekton-trigger
+18. cicd-operator
+19. image-validating-webhook
+20. ai-devops(미완)

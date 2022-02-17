@@ -1,0 +1,83 @@
+{{- if .Values.modules.gatewayBootstrap.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  labels:
+    cluster: {{ .Values.spec.destination.label }}
+    gatewayBootstrap: gateway-bootstrap
+  {{- if eq .Values.spec.destination.label "master" }}
+  name: gateway-bootstrap
+  {{- else }}
+  name: {{ .Values.spec.destination.label }}-gateway-bootstrap
+  {{- end }}
+  namespace: argocd
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+  project: {{ .Values.spec.project }}
+  source:
+    helm:
+      parameters:
+        - name: global.console.mcMode
+          value: "{{ .Values.modules.gatewayBootstrap.console.multiCluster.enabled }}"
+        - name: global.domain
+          value: {{ .Values.global.domain }}
+        - name: global.hyperauth.address
+          value: {{ .Values.global.keycloak.domain }}
+        - name: global.registry.is_offline
+          value: "{{ .Values.global.network.disabled }}"
+        - name: global.registry.private_registry
+          value: {{ .Values.global.privateRegistry }}
+        - name: global.tls.acme.dns.accessKeyID
+          value: {{ .Values.modules.gatewayBootstrap.tls.acme.dns.accessKeyID }}
+        - name: global.tls.acme.dns.accessKeySecret
+          value: {{ .Values.modules.gatewayBootstrap.tls.acme.dns.accessKeySecret }}
+        - name: global.tls.acme.dns.hostedZoneID
+          value: {{ .Values.modules.gatewayBootstrap.tls.acme.dns.hostedZoneID }}
+        - name: global.tls.acme.dns.type
+          value: {{ .Values.modules.gatewayBootstrap.tls.acme.dns.type }}
+        - name: global.tls.acme.email
+          value: {{ .Values.modules.gatewayBootstrap.tls.acme.email }}
+        - name: global.tls.acme.enabled
+          value: "{{ .Values.modules.gatewayBootstrap.tls.acme.enabled }}"
+        - name: global.tls.acme.environment
+          value: {{ .Values.modules.gatewayBootstrap.tls.acme.environment }}
+        - name: global.tls.selfsigned.enabled
+          value: "{{ .Values.modules.gatewayBootstrap.tls.selfsigned.enabled }}"
+        - name: modules.certManager.enabled
+          value: "{{ .Values.modules.gatewayBootstrap.certManager.enabled }}"
+        - name: modules.certManager.syncWaitTime
+          value: "{{ .Values.modules.gatewayBootstrap.certManager.syncWaitTime }}"
+        - name: modules.console.enabled
+          value: "{{ .Values.modules.gatewayBootstrap.console.enabled }}"
+        - name: modules.console.syncWaitTime
+          value: "{{ .Values.modules.gatewayBootstrap.console.syncWaitTime }}"
+        - name: modules.gateway.enabled
+          value: "{{ .Values.modules.gatewayBootstrap.gateway.enabled }}"
+        - name: modules.gateway.syncWaitTime
+          value: "{{ .Values.modules.gatewayBootstrap.gateway.syncWaitTime }}"
+        - name: modules.jwtDecodeAuth.enabled
+          value: "{{ .Values.modules.gatewayBootstrap.jwtDecodeAuth.enabled }}"
+        - name: modules.jwtDecodeAuth.syncWaitTime
+          value: "{{ .Values.modules.gatewayBootstrap.jwtDecodeAuth.syncWaitTime }}"
+        - name: spec.destination.type
+          value: {{ .Values.spec.destination.type }}
+        - name: spec.destination.clusterInfo
+          value: {{ .Values.spec.destination.clusterInfo }}
+        - name: spec.destination.label
+          value: {{ .Values.spec.destination.label }}
+        - name: spec.source.repoURL
+          value: {{ .Values.spec.source.repoURL }}
+        - name: spec.source.targetRevision
+          value: {{ .Values.spec.source.targetRevision }}
+        - name: spec.project
+          value: {{ .Values.spec.project }}
+    path: manifest/api-gateway-bootstrap
+    repoURL: {{ .Values.spec.source.repoURL }}
+    targetRevision: {{ .Values.spec.source.targetRevision }}
+  syncPolicy:
+    automated:
+      prune: true
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+{{- end }}

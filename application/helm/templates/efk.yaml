@@ -1,0 +1,53 @@
+{{- if .Values.modules.efk.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  labels:
+    cluster: {{ .Values.spec.destination.label }}
+  {{- if eq .Values.spec.destination.label "master" }}
+  name: efk
+  {{- else }}
+  name: {{ .Values.spec.destination.clusterInfo }}-efk
+  {{- end }}
+  namespace: argocd
+spec:
+  destination:
+    namespace: kube-logging
+    {{- if eq .Values.spec.destination.type "name" }}
+    name: {{ .Values.spec.destination.clusterInfo }}
+    {{- else if eq .Values.spec.destination.type "server" }}
+    server: {{ .Values.spec.destination.clusterInfo }}
+    {{- end }}
+  project: {{ .Values.spec.project }}
+  source:
+    directory:
+      jsonnet:
+        tlas:
+          - name: is_offline
+            value: "{{ .Values.global.network.disabled }}"
+          - name: private_registry
+            value: {{ .Values.global.privateRegistry }}
+          - name: es_image_tag
+            value: {{ .Values.modules.efk.es.version }}
+          - name: busybox_image_tag
+            value: {{ .Values.modules.efk.busyBox.version }}
+          - name: es_volume_size
+            value: {{ .Values.modules.efk.es.volumeSize }}
+          - name: kibana_image_tag
+            value: {{ .Values.modules.efk.kibana.version }}
+          - name: kibana_svc_type
+            value: {{ .Values.modules.efk.kibana.svcType }}
+          - name: gatekeeper_image_tag
+            value: {{ .Values.modules.efk.gatekeeper.version }}
+          - name: tmax_client_secret
+            value: {{ .Values.global.keycloak.tmaxClientSecret }}
+          - name: hyperauth_url
+            value: {{ .Values.global.keycloak.domain }}
+          - name: custom_domain_name
+            value: {{ .Values.global.domain }}
+          - name: fluentd_image_tag
+            value: {{ .Values.modules.efk.fluentd.version }}
+    path: manifest/efk
+    repoURL: {{ .Values.spec.source.repoURL }}
+    targetRevision: {{ .Values.spec.source.targetRevision }}
+{{- end }}

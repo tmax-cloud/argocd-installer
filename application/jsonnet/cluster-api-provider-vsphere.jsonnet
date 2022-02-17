@@ -14,17 +14,14 @@ local target_repo = if params.repo_provider == "gitlab" then repo_url_protocol +
   },
   "spec": {
     "destination": {
-      "namespace": "default",
+      "namespace": "capv-system",
     } + (
-      if params.cluster_name != "" then {
-        "name": params.cluster_name
-      } else {}
-    ) + (
-      if params.cluster_server != "" then {
-        "server": params.cluster_server
-      } else {}
+      if params.cluster_info_type == "name" then {
+        "name": params.cluster_info
+      } else if params.cluster_info_type == "server" then {
+        "server": params.cluster_info
+      }
     ),
-    "project": "default",
     "source": {
       "directory": {
         "jsonnet": {
@@ -51,6 +48,7 @@ local target_repo = if params.repo_provider == "gitlab" then repo_url_protocol +
       "path": "manifest/cluster-api-provider-vsphere",
       "repoURL": params.repo_url,
       "targetRevision": params.branch
-    }
+    },
+    "project": params.project
   }
 }

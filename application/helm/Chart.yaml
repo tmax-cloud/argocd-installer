@@ -1,0 +1,11 @@
+apiVersion: v2
+name: hypercloud-installer
+description: A Helm chart to simplify creation of ArgoCD AppProject and Applications for easier App of Apps deployments
+
+type: application
+
+version: 0.1.0
+
+maintainers:
+  - name: soohwan_kim
+    email: soohwan_kim@tmax.co.kr

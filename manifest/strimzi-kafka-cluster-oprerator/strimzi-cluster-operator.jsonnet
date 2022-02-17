@@ -3,7 +3,7 @@ function (
     private_registry="172.22.6.2:5000",
 )
 
-local target_registry = if is_offline == "flase" then "" else private_registry + "/";
+local target_registry = if is_offline == "false" then "" else private_registry + "/";
 
 {
   "apiVersion": "apps/v1",

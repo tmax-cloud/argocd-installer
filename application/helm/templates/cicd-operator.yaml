@@ -1,0 +1,36 @@
+{{- if .Values.modules.cicd.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  labels:
+    cluster: {{ .Values.spec.destination.label }}
+    tekton: cicd-operator
+  {{- if eq .Values.spec.destination.label "master" }}
+  name: cicd-operator
+  {{- else }}
+  name: {{ .Values.spec.destination.clusterInfo }}-cicd-operator
+  {{- end }}
+  namespace: argocd
+spec:
+  destination:
+    namespace: cicd-system
+    {{- if eq .Values.spec.destination.type "name" }}
+    name: {{ .Values.spec.destination.clusterInfo }}
+    {{- else if eq .Values.spec.destination.type "server" }}
+    server: {{ .Values.spec.destination.clusterInfo }}
+    {{- end }}
+  project: {{ .Values.spec.project }}
+  source:
+    directory:
+      jsonnet:
+        tlas:
+          - name: is_offline
+            value: "{{ .Values.global.network.disabled }}"
+          - name: private_registry
+            value: {{ .Values.global.privateRegistry }}
+          - name: custom_domain
+            value: {{ .Values.global.domain }}
+    path: manifest/cicd-operator
+    repoURL: {{ .Values.spec.source.repoURL }}
+    targetRevision: {{ .Values.spec.source.targetRevision }}
+{{- end }}

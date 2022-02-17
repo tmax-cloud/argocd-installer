@@ -4,7 +4,7 @@ function(
     custom_domain = "tmaxcloud.org"
 )
 
-local target_registry = if is_offline == false then "" else private_registry + "/";
+local target_registry = if is_offline == "false" then "" else private_registry + "/";
 local cicd_domain = std.join("", ["cicd-webhook.", custom_domain]);
 
 [

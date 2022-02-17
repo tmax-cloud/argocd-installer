@@ -2,7 +2,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
+  labels:
+    cluster: {{ .Values.spec.destination.label }}
+    gatewayBootstrap: cert-manager
+  {{- if eq .Values.spec.destination.label "master" }}
   name: cert-manager
+  {{- else }}
+  name: {{ .Values.spec.destination.label }}-cert-manager
+  {{- end }}
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -10,8 +17,12 @@ metadata:
     argocd.argoproj.io/sync-wave: "-1"
 spec:
   destination:
+    {{- if eq .Values.spec.destination.type "name" }}
+    name: {{ .Values.spec.destination.clusterInfo }}
+    {{- else if eq .Values.spec.destination.type "server" }}
+    server: {{ .Values.spec.destination.clusterInfo }}
+    {{- end }}
     namespace: cert-manager
-    server: {{ .Values.spec.destination.server }}
   source:
     path: {{ .Values.modules.certManager.source.path }}
     repoURL: {{ .Values.spec.source.repoURL }}
@@ -19,12 +30,18 @@ spec:
     helm:
       valueFiles:
         - {{ .Values.modules.certManager.source.helm.valueFiles }}
+      {{- if .Values.global.registry.is_offline }}
       parameters:
-      {{- if .Values.global.registiry.is_offline }}
+      - name: cert-manager.image.repository
+        value: "{{ .Values.global.registry.private_registry }}/quay.io/jetstack/cert-manager-controller"
+      - name: cert-manager.cainjector.image.repository
+        value: "{{ .Values.global.registry.private_registry }}/quay.io/jetstack/cert-manager-cainjector"
+      - name: cert-manager.webhook.image.repository
+        value: "{{ .Values.global.registry.private_registry }}/quay.io/jetstack/cert-manager-webhook"
       - name: rootCA.image.repository
-        value: "{{ .Values.global.registiry.private_registry }}/docker.io/library/alpine:3.3"
+        value: "{{ .Values.global.registry.private_registry }}/docker.io/library/alpine:3.3"
       {{- end }}
-  project: default
+  project: {{ .Values.spec.project }}
   syncPolicy:
     automated:
       prune: true
@@ -38,7 +55,11 @@ spec:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "cert-manager-sync-wave"
+  {{- if eq .Values.spec.destination.label "master" }}
+  name: cert-manager-sync-wave
+  {{- else }}
+  name: {{ .Values.spec.destination.label }}-cert-manager-sync-wave
+  {{- end }}
   namespace: argocd
   labels:
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
@@ -62,11 +83,11 @@ spec:
       restartPolicy: Never
       containers:
         - name: post-install-job
-          {{- if .Values.global.registiry.is_offline }}
-          image: "{{ .Values.global.registiry.private_registry }}/docker.io/library/alpine:3.3"
+          {{- if .Values.global.registry.is_offline }}
+          image: "{{ .Values.global.registry.private_registry }}/docker.io/library/alpine:3.3"
           {{- else }}
           image: "alpine:3.3"
           {{- end }}
-          command: ["/bin/sleep","300"]
+          command: ["/bin/sleep","{{ .Values.modules.certManager.syncWaitTime }}"]
           imagePullPolicy: IfNotPresent
 {{- end }}

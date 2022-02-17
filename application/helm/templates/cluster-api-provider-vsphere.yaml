@@ -1,0 +1,37 @@
+{{- if and .Values.modules.capi.enabled .Values.modules.capi.providers.vsphere.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  labels:
+    cluster: {{ .Values.spec.destination.label }}
+    capi: provider-vsphere
+  {{- if eq .Values.spec.destination.label "master" }}
+  name: cluster-api-provider-vsphere
+  {{- else }}
+  name: {{ .Values.spec.destination.clusterInfo }}-cluster-api-provider-vsphere
+  {{- end }}
+  namespace: argocd
+spec:
+  destination:
+    {{- if eq .Values.spec.destination.type "name" }}
+    name: {{ .Values.spec.destination.clusterInfo }}
+    {{- else if eq .Values.spec.destination.type "server" }}
+    server: {{ .Values.spec.destination.clusterInfo }}
+    {{- end }}
+  project: {{ .Values.spec.project }}
+  source:
+    directory:
+      jsonnet:
+        tlas:
+          - name: is_offline
+            value: "{{ .Values.global.network.disabled }}"
+          - name: private_registry
+            value: {{ .Values.global.privateRegistry }}
+          - name: username
+            value: {{ .Values.modules.capi.providers.vsphere.credentials.username }}
+          - name: password
+            value: {{ .Values.modules.capi.providers.vsphere.credentials.password }}
+    path: manifest/cluster-api-provider-vsphere
+    repoURL: {{ .Values.spec.source.repoURL }}
+    targetRevision: {{ .Values.spec.source.targetRevision }}
+{{- end }}

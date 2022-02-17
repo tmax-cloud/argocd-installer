@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  labels:
+    cluster: master
+    appType: app-of-apps
+  name: master-applications
+  namespace: argocd
+spec:
+  destination:
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    helm:
+      valueFiles:
+        - shared-values.yaml
+        - master-values.yaml
+    path: application/helm
+    repoURL: https://github.com/tmax-cloud/argocd-installer
+    targetRevision: shkim/appofapp
