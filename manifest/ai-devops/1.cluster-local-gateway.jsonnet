@@ -20,19 +20,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         },
         "name": ai_devops_namespace
     }
-    },
-    {
-    "apiVersion": "v1",
-    "kind": "ServiceAccount",
-    "metadata": {
-        "labels": {
-        "app": "cluster-local-gateway",
-        "kustomize.component": "cluster-local-gateway"
-        },
-        "name": "cluster-local-gateway-service-account",
-        "namespace": istio_namespace
-    }
-    },
+    },    
     {
     "apiVersion": "v1",
     "kind": "ServiceAccount",
@@ -473,11 +461,10 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "mountPath": "/etc/istio/clusterlocalgateway-ca-certs",
                     "name": "clusterlocalgateway-ca-certs",
                     "readOnly": true
-                }
+                }             
                 ]
             }
-            ],
-            "serviceAccountName": "cluster-local-gateway-service-account",
+            ],            
             "volumes": [
             {
                 "name": "istio-certs",
@@ -499,7 +486,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "optional": true,
                 "secretName": "istio-clusterlocalgateway-ca-certs"
                 }
-            }
+            }      
             ]
         }
         }
