@@ -1457,25 +1457,27 @@ local katib_object_image_tag = "v0.11.0";
               "name": "cert-generator",
               "volumeMounts": [
                 {
-                    "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
-                    "name": "katib-cert-generator-token",
-                    "readOnly": "true"
-                }            
+                  "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                  "name": "katib-cert-generator-token",
+                  "readOnly": true
+                }
+              ]
+            }
           ],
           "restartPolicy": "Never",
           "volumes": [
             {
-                "name": "katib-cert-generator-token",
-                "secret": {
-                "secretName": "katib-cert-generator-token",
-                "defaultMode": "420"
-                }
+              "name": "katib-cert-generator-token",
+              "secret": {
+                "defaultMode": 420,
+                "secretName": "katib-cert-generator-token"
+              }
             }
-          ]         
+          ]
         }
       }
     }
-  },
+  }, 
   {
     "apiVersion": "admissionregistration.k8s.io/v1",
     "kind": "MutatingWebhookConfiguration",
