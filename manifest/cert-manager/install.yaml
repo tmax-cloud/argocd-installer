@@ -16832,6 +16832,34 @@ subjects:
   name: cert-manager-webhook
   namespace: cert-manager
 ---
+# For KISA
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cert-manager-token
+  namespace: cert-manager
+  annotations:
+    kubernetes.io/service-account.name: cert-manager
+type: kubernetes.io/service-account-token
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cert-manager-cainjector-token
+  namespace: cert-manager
+  annotations:
+    kubernetes.io/service-account.name: cert-manager-cainjector
+type: kubernetes.io/service-account-token
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cert-manager-webhook-token
+  namespace: cert-manager
+  annotations:
+    kubernetes.io/service-account.name: cert-manager-webhook
+type: kubernetes.io/service-account-token
+---
 # Source: cert-manager/templates/service.yaml
 apiVersion: v1
 kind: Service

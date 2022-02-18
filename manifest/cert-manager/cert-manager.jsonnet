@@ -64,6 +64,20 @@ local quay_registry = if is_offline == false then "quay.io" else private_registr
                               }
                             ],
                             "resources": {}
+                            "volumeMounts": [
+                                {
+                                    "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                                    "name": "cert-manager-secret"
+                                }
+                            ]
+                        }
+                    ],
+                    "volumes": [
+                        {
+                            "name": "cert-manager-cainjector-secret"
+                            "secret": {
+                                "secretName": "cert-manager-cainjector-token"
+                            }
                         }
                     ]
                 }
@@ -139,7 +153,21 @@ local quay_registry = if is_offline == false then "quay.io" else private_registr
                                 }
                               }
                             ],
-                            "resources": {}
+                            "resources": {},
+                            "volumeMounts": [
+                                {
+                                    "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                                    "name": "cert-manager-secret"
+                                }
+                            ]
+                        }
+                    ],
+                    "volumes": [
+                        {
+                            "name": "cert-manager-secret"
+                            "secret": {
+                                "secretName": "cert-manager-token"
+                            }
                         }
                     ]
                 }
@@ -237,7 +265,21 @@ local quay_registry = if is_offline == false then "quay.io" else private_registr
                                 }
                               }
                             ],
-                            "resources": {}
+                            "resources": {},
+                            "volumeMounts": [
+                                {
+                                    "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                                    "name": "cert-manager-webhook-secret"
+                                }
+                            ]
+                        }
+                    ],
+                    "volumes": [
+                        {
+                            "name": "cert-manager-webhook-secret"
+                            "secret": {
+                                "secretName": "cert-manager-webhook-token"
+                            } 
                         }
                     ]
                 }
