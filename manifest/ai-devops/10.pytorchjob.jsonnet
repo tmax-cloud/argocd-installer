@@ -7414,5 +7414,17 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         }
         }
     }
+    },
+    {
+    "apiVersion": "v1",
+    "kind": "Secret",
+    "metadata": {
+        "name": "pytorch-operator-token",
+        "namespace": ai_devops_namespace,
+        "annotations": {
+        "kubernetes.io/service-account.name": "pytorch-operator"
+        }
+    },
+    "type": "kubernetes.io/service-account-token"
     }
 ]    

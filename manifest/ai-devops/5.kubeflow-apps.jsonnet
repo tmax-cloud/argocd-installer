@@ -1025,5 +1025,17 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         }
         }
     }
+    },
+    {
+    "apiVersion": "v1",
+    "kind": "Secret",
+    "metadata": {
+        "name": "profiles-controller-service-account-token",
+        "namespace": ai_devops_namespace,
+        "annotations": {
+        "kubernetes.io/service-account.name": "profiles-controller-service-account"
+        }
+    },
+    "type": "kubernetes.io/service-account-token"
     }
 ]

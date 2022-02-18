@@ -14300,5 +14300,17 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         }
         }
     }
+    },
+    {
+    "apiVersion": "v1",
+    "kind": "Secret",
+    "metadata": {
+        "name": "tf-job-operator-token",
+        "namespace": ai_devops_namespace,
+        "annotations": {
+        "kubernetes.io/service-account.name": "tf-job-operator"
+        }
+    },
+    "type": "kubernetes.io/service-account-token"
     }
 ]    

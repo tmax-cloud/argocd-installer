@@ -22697,5 +22697,17 @@ local kfserving_image_tag = "v0.5.1";
       ]
     }
   ]
+},
+{
+  "apiVersion": "v1",
+  "kind": "Secret",
+  "metadata": {
+    "name": "kfserving-controller-manager-token",
+    "namespace": ai_devops_namespace,
+    "annotations": {
+      "kubernetes.io/service-account.name": "kfserving-controller-manager"
+    }
+  },
+  "type": "kubernetes.io/service-account-token"
 }
 ]
