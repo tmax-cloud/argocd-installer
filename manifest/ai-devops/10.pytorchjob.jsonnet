@@ -7238,10 +7238,25 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 }
                 ],
                 "image": std.join("", [target_registry, "gcr.io/kubeflow-images-public/pytorch-operator:vmaster-g518f9c76"]),
-                "name": "pytorch-operator"
+                "name": "pytorch-operator",
+                "volumeMounts": [
+                    {
+                        "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                        "name": "pytorch-operator-token",
+                        "readOnly": "true"
+                    }
+                ]
             }
             ],
-            "serviceAccountName": "pytorch-operator"
+            "volumes": [
+                {
+                    "name": "pytorch-operator-token",
+                    "secret": {
+                        "defaultMode": 420,
+                        "secretName": "pytorch-operator-token"
+                    }
+                }
+            ]
         }
         }
     }

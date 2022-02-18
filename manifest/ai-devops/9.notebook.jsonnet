@@ -5673,10 +5673,25 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 ],
                 "image": std.join("", [target_registry, "docker.io/tmaxcloudck/notebook-controller-go:b0.1.0"]),
                 "imagePullPolicy": "Always",
-                "name": "notebook-controller"
+                "name": "notebook-controller",
+                "volumeMounts": [
+                    {
+                        "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                        "name": "notebook-controller-service-account-token",
+                        "readOnly": "true"
+                    }
+                ]
             }
             ],
-            "serviceAccountName": "notebook-controller-service-account"
+            "volumes": [
+                {
+                    "name": "notebook-controller-service-account-token",
+                    "secret": {
+                        "defaultMode": 420,
+                        "secretName": "notebook-controller-service-account-token"
+                    }
+                }
+            ]
         }
         }
     }

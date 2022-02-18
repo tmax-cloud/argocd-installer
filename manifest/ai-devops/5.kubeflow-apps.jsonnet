@@ -1003,10 +1003,25 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "name": "kfam-http",
                     "protocol": "TCP"
                 }
+                ],
+                "volumeMounts": [
+                    {
+                        "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                        "name": "profiles-controller-service-account-token",
+                        "readOnly": "true"
+                    }
                 ]
             }
             ],
-            "serviceAccountName": "profiles-controller-service-account"
+            "volumes": [
+                {
+                    "name": "profiles-controller-service-account-token",
+                    "secret": {
+                        "defaultMode": 420,
+                        "secretName": "profiles-controller-service-account-token"
+                    }
+                }
+            ]
         }
         }
     }
