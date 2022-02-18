@@ -46,7 +46,6 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
           }
         },
         "spec": {
-          "serviceAccount": "efk-service-account",
           "containers": [
             {
               "name": "elasticsearch",
@@ -201,7 +200,6 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
           }
         },
         "spec": {
-          "serviceAccount": "efk-service-account",
           "volumes": [
             {
               "name": "secret",
