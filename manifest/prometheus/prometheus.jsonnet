@@ -157,7 +157,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 			{
 			  "name": "alertmanager-main",
 			  "secret": {
-				"secretName": "alertmanager-main"
+				"secretName": "alertmanager-main-token"
 			  }
 			}
 		],
