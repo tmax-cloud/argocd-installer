@@ -46,7 +46,6 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
           }
         },
         "spec": {
-          "serviceAccount": "efk-service-account",
           "containers": [
             {
               "name": "elasticsearch",
@@ -201,7 +200,6 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
           }
         },
         "spec": {
-          "serviceAccount": "efk-service-account",
           "volumes": [
             {
               "name": "secret",
@@ -418,7 +416,6 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
           }
         },
         "spec": {
-          "serviceAccount": "fluentd",
           "serviceAccountName": "fluentd",
           "tolerations": [
             {
@@ -463,6 +460,11 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
               },
               "volumeMounts": [
                 {
+                  "name": "fluentd-token",
+                  "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
+                  "readOnly": true
+                },
+                {
                   "name": "varlog",
                   "mountPath": "/var/log"
                 },
@@ -486,6 +488,12 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
           ],
           "terminationGracePeriodSeconds": 30,
           "volumes": [
+            {
+              "name": "fluentd-token",
+              "secret": {
+                "secretName": "fluentd-token"
+              }
+            },
             {
               "name": "varlog",
               "hostPath": {
