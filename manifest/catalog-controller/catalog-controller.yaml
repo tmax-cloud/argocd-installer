@@ -1042,16 +1042,33 @@ spec:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: "service-catalog-controller-manager"
-  namespace: "catalog"
+  name: service-catalog-controller-manager
+  namespace: catalog
 ---
 # The SA for the webhook service
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: "service-catalog-webhook"
-  namespace: "catalog"
-
+  name: service-catalog-webhook
+  namespace: catalog
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: catalog-controller-token
+  namespace: catalog
+  annotations:
+    kubernetes.io/service-account.name: service-catalog-controller-manager
+type: kubernetes.io/service-account-token
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: catalog-controller-webhook-token
+  namespace: catalog
+  annotations:
+    kubernetes.io/service-account.name: service-catalog-webhook
+type: kubernetes.io/service-account-token
 ---
 ### Controller-Manager ###
 
