@@ -356,11 +356,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 },
                 {
                     "name": "SERVICE_ACCOUNT",
-                    "valueFrom": {
-                    "fieldRef": {
-                        "fieldPath": "spec.serviceAccountName"
-                    }
-                    }
+                    "value": "default"              
                 },
                 {
                     "name": "ISTIO_META_POD_NAME",

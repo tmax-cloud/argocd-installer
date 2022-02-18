@@ -1460,8 +1460,7 @@ local katib_object_image_tag = "v0.11.0";
                     "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
                     "name": "katib-cert-generator-token",
                     "readOnly": "true"
-                }
-            }
+                }            
           ],
           "restartPolicy": "Never",
           "volumes": [
