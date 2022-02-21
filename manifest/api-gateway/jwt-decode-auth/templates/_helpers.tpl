@@ -49,14 +49,3 @@ Selector labels
 app.kubernetes.io/name: {{ include "jwt-decode-auth.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
-
-{{/*
-Create the name of the service account to use
-*/}}
-{{- define "jwt-decode-auth.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "jwt-decode-auth.fullname" .) .Values.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.serviceAccount.name }}
-{{- end }}
-{{- end }}

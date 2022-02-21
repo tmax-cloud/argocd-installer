@@ -24,7 +24,7 @@
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "traefik.serviceAccountName" . }}
+      automountServiceAccountToken: false
       terminationGracePeriodSeconds: {{ default 60 .Values.deployment.terminationGracePeriodSeconds }}
       hostNetwork: {{ .Values.hostNetwork }}
       {{- with .Values.deployment.dnsPolicy }}
@@ -79,6 +79,9 @@
           {{- toYaml . | nindent 10 }}
         {{- end }}
         volumeMounts:
+          - name: {{ include "traefik.serviceAccountName" . }}
+            mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+            readOnly: true
           - name: {{ .Values.persistence.name }}
             mountPath: {{ .Values.persistence.path }}
             {{- if .Values.persistence.subPath }}
@@ -269,6 +272,10 @@
         {{- toYaml .Values.deployment.additionalContainers | nindent 6 }}
       {{- end }}
       volumes:
+        - name: {{ include "traefik.serviceAccountName" . }}
+          secret:
+            defaultMode: 420
+            secretName: {{ include "traefik.serviceAccountName" . }}
         - name: {{ .Values.persistence.name }}
           {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
