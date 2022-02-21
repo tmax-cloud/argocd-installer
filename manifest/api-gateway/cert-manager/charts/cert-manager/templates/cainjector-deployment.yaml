@@ -41,7 +41,15 @@ spec:
 {{ toYaml .Values.cainjector.podAnnotations | indent 8 }}
       {{- end }}
     spec:
+      {{- if .Values.cainjector.serviceAccount.automountServiceAccountToken }}
       serviceAccountName: {{ template "cainjector.serviceAccountName" . }}
+      {{- else }}
+      volumes:
+        - name: {{ template "cainjector.serviceAccountName" . }}
+          secret:
+            defaultMode: 420
+            secretName: {{ template "cainjector.serviceAccountName" . }}
+      {{- end }}
       {{- if .Values.global.priorityClassName }}
       priorityClassName: {{ .Values.global.priorityClassName | quote }}
       {{- end }}
@@ -51,6 +59,12 @@ spec:
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
+          {{- if not .Values.cainjector.serviceAccount.automountServiceAccountToken }}
+          volumeMounts:
+            - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+              readOnly: true
+              name: {{ template "cainjector.serviceAccountName" . }}
+          {{- end }}
           {{- with .Values.cainjector.image }}
           image: "{{- if .registry -}}{{ .registry }}/{{- end -}}{{ .repository }}{{- if (.digest) -}} @{{.digest}}{{- else -}}:{{ default $.Chart.AppVersion .tag }} {{- end -}}"
           {{- end }}
