@@ -102,6 +102,8 @@ spec:
         status:
           description: "%clustermanagers.yaml.spec.validation.openAPIV3Schema.properties.status"
           properties:
+            argoReady:
+              type: "boolean"
             controlPlaneEndpoint:
               type: "string"
             controlPlaneReady:
@@ -157,10 +159,14 @@ spec:
               type: "array"
             phase:
               type: "string"
+            prometheusReady:
+              type: "boolean"
             provider:
               type: "string"
             ready:
               type: "boolean"
+            traefikReady:
+              type: boolean
             version:
               type: "string"
             workerRun:
