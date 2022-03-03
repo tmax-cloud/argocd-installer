@@ -5,20 +5,13 @@ Master cluster
 4. efk
 5. prometheus
 6. grafana
-7. istio
-8. jaeger
-9. kiali
-10. cluster-api
-11. cluster-api-provider-aws
-12. cluster-api-provider-vsphere
-13. template-service-broker
-14. catalog-controller
-15. hypercloud
-16. tekton-pipeline
-17. tekton-trigger
-18. cicd-operator
-19. image-validating-webhook
-20. ai-devops(미완)
+7. service-mesh(istio, jaeger, kiali)
+8. cluster-api(aws, vsphere)
+9. template-service-broker
+10. catalog-controller
+11. hypercloud
+12. cicd-operator(tekton)
+13. image-validating-webhook
 ---
 Single cluster
 1. api-gateway-bootstrap(cert-manager + api-gateway w/o console)
