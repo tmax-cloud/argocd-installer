@@ -1,0 +1,27 @@
+Master cluster
+1. api-gateway-bootstrap(cert-manager + api-gateway)
+2. strimzi kafka operator
+3. hyperauth + kafka
+4. efk
+5. prometheus
+6. grafana
+7. istio
+8. jaeger
+9. kiali
+10. cluster-api
+11. cluster-api-provider-aws
+12. cluster-api-provider-vsphere
+13. template-service-broker
+14. catalog-controller
+15. hypercloud
+16. tekton-pipeline
+17. tekton-trigger
+18. cicd-operator
+19. image-validating-webhook
+20. ai-devops(미완)
+---
+Single cluster
+1. api-gateway-bootstrap(cert-manager + api-gateway w/o console)
+2. efk
+3. prometheus
+4. service-mesh(istio, jaeger)
