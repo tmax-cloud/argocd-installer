@@ -1,5 +1,5 @@
 Master cluster
-1. api-gateway-bootstrap(cert-manager + api-gateway)
+1. api-gateway-bootstrap(cert-manager + api-gateway with console)
 2. strimzi kafka operator
 3. hyperauth + kafka
 4. efk
