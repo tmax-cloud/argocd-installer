@@ -64,9 +64,9 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "memory": "100Mi"
                 }
             },
-            "terminationGracePeriodSeconds": "10",
           },
         ],
+        "terminationGracePeriodSeconds": "10",
         "serviceAccount": "redis-operator",
         "serviceAccountName": "redis-operator"
       }
