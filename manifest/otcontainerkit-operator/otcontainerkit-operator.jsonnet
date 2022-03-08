@@ -44,15 +44,15 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "imagePullPolicy": "Always",
             "name": "manager",
             "securityContext": {
-                "allowPrivilegeEscalation": "false"
+                "allowPrivilegeEscalation": false
             },
             "livenessProbe": {
                 "httpGet": {
                     "path": "/healthz",
                     "port": "8081"
                 },
-                "initialDelaySeconds": "15",
-                "periodSeconds": "10"
+                "initialDelaySeconds": 15,
+                "periodSeconds": 10
             },
             "resources": {
                 "limits": {
@@ -65,10 +65,10 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 }
             },
             "terminationGracePeriodSeconds": "10",
-            "serviceAccount": "redis-operator",
-            "serviceAccountName": "redis-operator"
-          }
-        ]
+          },
+        ],
+        "serviceAccount": "redis-operator",
+        "serviceAccountName": "redis-operator"
       }
     },
   }
