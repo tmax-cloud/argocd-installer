@@ -30,7 +30,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
       },
       "spec": {
         "securityContext": {
-            "runAsUser": "65532"
+            "runAsUser": 65532
         },
         "containers": [
           {
@@ -66,7 +66,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             },
           },
         ],
-        "terminationGracePeriodSeconds": "10",
+        "terminationGracePeriodSeconds": 10,
         "serviceAccount": "redis-operator",
         "serviceAccountName": "redis-operator"
       }
