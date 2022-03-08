@@ -17,6 +17,6 @@ spec:
             value: "false"
           - name: private_registry
             value: 172.22.6.2:5000
-    path: manifest/otcontainerkit-redis-oprerator
+    path: manifest/otcontainerkit-oprerator
     repoURL: 'https://github.com/tmax-cloud/argocd-installer'
     targetRevision: main
