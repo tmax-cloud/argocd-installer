@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: otcontainerkit-redis-oprerator
+  namespace: argocd
+spec:
+  destination:
+    name: ''
+    namespace: redis
+    server: 'https://kubernetes.default.svc'
+  project: default
+  source:
+    directory:
+      jsonnet:
+        tlas:
+          - name: is_offline
+            value: "false"
+          - name: private_registry
+            value: 172.22.6.2:5000
+    path: manifest/otcontainerkit-redis-oprerator
+    repoURL: 'https://github.com/tmax-cloud/argocd-installer'
+    targetRevision: main
