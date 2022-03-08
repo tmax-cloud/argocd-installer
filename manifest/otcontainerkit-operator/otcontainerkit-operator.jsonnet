@@ -49,7 +49,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "livenessProbe": {
                 "httpGet": {
                     "path": "/healthz",
-                    "port": "8081"
+                    "port": 8081
                 },
                 "initialDelaySeconds": 15,
                 "periodSeconds": 10
