@@ -34,16 +34,12 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         },
         "containers": [
           {
-            "command": {
-                [
-                    "/manager"
-                ]
-            },
-            "args": {
-                [
-                    "--leader-elect"
-                ]
-            },
+            "command": [
+              "/manager"
+            ],
+            "args": [
+              "--leader-elect"
+            ],
             "image": std.join("", [target_registry, "quay.io/opstree/redis-operator:v0.9.0"]),
             "imagePullPolicy": "Always",
             "name": "manager",
@@ -60,11 +56,11 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             },
             "resources": {
                 "limits": {
-                    "cpu": "100m"
+                    "cpu": "100m",
                     "memory": "100Mi"
                 },
                 "requests": {
-                    "cpu": "100m"
+                    "cpu": "100m",
                     "memory": "100Mi"
                 }
             },
