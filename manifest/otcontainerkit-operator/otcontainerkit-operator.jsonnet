@@ -30,7 +30,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
       },
       "spec": {
         "securityContext": {
-            "runAsUser": 65532
+          "runAsUser": 65532
         },
         "containers": [
           {
@@ -44,25 +44,25 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "imagePullPolicy": "Always",
             "name": "manager",
             "securityContext": {
-                "allowPrivilegeEscalation": false
+              "allowPrivilegeEscalation": false
             },
             "livenessProbe": {
-                "httpGet": {
-                    "path": "/healthz",
-                    "port": 8081
-                },
-                "initialDelaySeconds": 15,
-                "periodSeconds": 10
+              "httpGet": {
+                "path": "/healthz",
+                "port": 8081
+              },
+              "initialDelaySeconds": 15,
+              "periodSeconds": 10
             },
             "resources": {
-                "limits": {
-                    "cpu": "100m",
-                    "memory": "100Mi"
-                },
-                "requests": {
-                    "cpu": "100m",
-                    "memory": "100Mi"
-                }
+              "limits": {
+                "cpu": "100m",
+                "memory": "100Mi"
+              },
+              "requests": {
+                "cpu": "100m",
+                "memory": "100Mi"
+              }
             },
           },
         ],

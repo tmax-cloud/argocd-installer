@@ -339,14 +339,14 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
     "apiVersion": "v1",
     "kind": "Service",
     "metadata": {
-       "name": "kibana",
-       "namespace": "kube-logging",
-       "labels": {
-          "app": "kibana"
-       },
-       "annotations": {
-          "traefik.ingress.kubernetes.io/service.serverstransport": "tmaxcloud@file"
-       }
+      "name": "kibana",
+      "namespace": "kube-logging",
+      "labels": {
+        "app": "kibana"
+      },
+      "annotations": {
+        "traefik.ingress.kubernetes.io/service.serverstransport": "tmaxcloud@file"
+      }
     },
     "spec": {
       "type": kibana_svc_type,
@@ -407,7 +407,7 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
       "selector": {
         "matchLabels": {
           "app": "fluentd"
-         }
+        }
       },
       "template": {
         "metadata": {
@@ -438,7 +438,7 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
                 {
                   "name": "FLUENT_ELASTICSEARCH_SCHEME",
                   "value": "http",
-                 },
+                },
                 {
                   "name": "FLUENTD_SYSTEMD_CONF",
                   "value": "disable",
@@ -461,7 +461,7 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
               "volumeMounts": [
                 {
                   "name": "fluentd-token",
-                  "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
+                  "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
                   "readOnly": true
                 },
                 {
