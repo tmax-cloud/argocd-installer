@@ -1,6 +1,6 @@
 # argocd-installer
 
-# Guide for inatll
+# Guide for install
 - User guide 참조([Link](docs/USER.md))
 # Guide for Developers
 
