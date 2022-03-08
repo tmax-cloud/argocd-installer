@@ -163,6 +163,10 @@ modules:
   imageValidatingWebhook:
     enabled: true
     
+  ### redis-operator
+  redis:
+    enabled: true
+
   ### ai-devops
   aiDevops:
     enabled: false

@@ -11,7 +11,8 @@ Master cluster
 10. catalog-controller
 11. hypercloud
 12. cicd-operator(tekton)
-13. image-validating-webhook
+13. redis-operator
+14. image-validating-webhook
 ---
 Single cluster
 1. api-gateway-bootstrap(cert-manager + api-gateway w/o console)
