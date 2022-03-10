@@ -5,7 +5,10 @@ function (
     istio_namespace="istio-system",
     knative_namespace="knative-serving",
     custom_domain_name="tmaxcloud.org",
-    notebook_svc_type="Ingress"
+    notebook_svc_type="Ingress",
+    tmax_client_secret="tmax_client_secret",
+    hyperauth_url="172.23.4.105",
+    hyperauth_realm="tmax"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -5566,8 +5569,9 @@ local target_registry = if is_offline == "false" then "" else private_registry +
     {
     "apiVersion": "v1",
     "data": {
-        "ISTIO_GATEWAY": "kubeflow/kubeflow-gateway",
-        "USE_ISTIO": "true"
+        "CLIENT_SECRET": tmax_client_secret,
+        "DISCOVERY_URL": std.join("", ["https://", hyperauth_url, "/auth/realms/", hyperauth_realm]),
+        "CUSTOM_DOMAIN": custom_domain_name
     },
     "kind": "ConfigMap",
     "metadata": {
@@ -5653,25 +5657,34 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             {
                 "env": [
                 {
-                    "name": "USE_ISTIO",
+                    "name": "CLIENT_SECRET",
                     "valueFrom": {
                     "configMapKeyRef": {
-                        "key": "USE_ISTIO",
+                        "key": "CLIENT_SECRET",
                         "name": "notebook-controller-config"
                     }
                     }
                 },
                 {
-                    "name": "ISTIO_GATEWAY",
+                    "name": "DISCOVERY_URL",
                     "valueFrom": {
                     "configMapKeyRef": {
-                        "key": "ISTIO_GATEWAY",
+                        "key": "DISCOVERY_URL",
+                        "name": "notebook-controller-config"
+                    }
+                    }
+                },
+                {
+                    "name": "CUSTOM_DOMAIN",
+                    "valueFrom": {
+                    "configMapKeyRef": {
+                        "key": "CUSTOM_DOMAIN",
                         "name": "notebook-controller-config"
                     }
                     }
                 }
                 ],
-                "image": std.join("", [target_registry, "docker.io/tmaxcloudck/notebook-controller-go:b0.1.0"]),
+                "image": std.join("", [target_registry, "docker.io/tmaxcloudck/notebook-controller-go:b0.2.1"]),
                 "imagePullPolicy": "Always",
                 "name": "notebook-controller",
                 "volumeMounts": [
