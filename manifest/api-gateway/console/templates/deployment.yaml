@@ -21,17 +21,11 @@ spec:
       labels:
         {{- include "console.selectorLabels" . | nindent 8 }}
     spec:
-      automountServiceAccountToken: false
-      volumes:
-        - name: {{ include "console.serviceAccountName" . }}
-          secret:
-            defaultMode: 420
-            secretName: {{ include "console.serviceAccountName" . }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-{{/*      serviceAccountName: {{ include "console.serviceAccountName" . }}*/}}
+      serviceAccountName: {{ include "console.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -52,10 +46,6 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          volumeMounts:
-            - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
-              name: {{ include "console.serviceAccountName" . }}
-              readOnly: true
           ports:
             - name: http
               containerPort: 31303

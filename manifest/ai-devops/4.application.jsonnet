@@ -527,40 +527,13 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 ],
                 "image": std.join("", [target_registry, "gcr.io/kubeflow-images-public/kubernetes-sigs/application:1.0-beta"]),
                 "imagePullPolicy": "Always",
-                "name": "manager",
-                "volumeMounts": [
-                {
-                    "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
-                    "name": "application-controller-service-account-token",
-                    "readOnly": true
-                }           
-                ]
+                "name": "manager"
             }
             ],
-            "volumes": [
-            {
-                "name": "application-controller-service-account-token",
-                "secret": {
-                "defalutMode": 420,
-                "secretName": "application-controller-service-account-token"
-                }
-            }        
-            ]
+            "serviceAccountName": "application-controller-service-account"
         }
         },
         "volumeClaimTemplates": []
     }
-    },
-    {
-    "apiVersion": "v1",
-    "kind": "Secret",
-    "metadata": {
-        "name": "application-controller-service-account-token",
-        "namespace": ai_devops_namespace,
-        "annotations": {
-        "kubernetes.io/service-account.name": "application-controller-service-account"
-        }
-    },
-    "type": "kubernetes.io/service-account-token"
     }
 ]

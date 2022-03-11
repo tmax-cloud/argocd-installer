@@ -15,18 +15,6 @@ local REDIRECT_URL = "jaeger." + CUSTOM_DOMAIN_NAME;
 [
     {
       "apiVersion": "v1",
-      "kind": "Secret",
-      "metadata": {
-        "name": "jaeger-service-token",
-        "namespace": "istio-system",
-        "annotations": {
-          "kubernetes.io/service-account.name" : "jaeger-service-account"
-        }
-      }
-      "type": "kubernetes.io/service-account-token"
-    },
-    {
-      "apiVersion": "v1",
       "kind": "ServiceAccount",
       "metadata": {
         "name": "jaeger-service-account",
@@ -217,11 +205,6 @@ local REDIRECT_URL = "jaeger." + CUSTOM_DOMAIN_NAME;
                   {
                     "name": "jaeger-configuration-volume",
                     "mountPath": "/conf"
-                  },
-                  {
-                    "name": "jaeger-service-token",
-                    "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
-                    "readOnly": "true"
                   }
                 ],
                 "env": [
@@ -238,13 +221,6 @@ local REDIRECT_URL = "jaeger." + CUSTOM_DOMAIN_NAME;
               }
             ],
             "volumes": [
-              {
-                "name": "jaeger-service-token",
-                "secret": {
-                  "defaultMode": 420,
-                  "secretName": "jaeger-service-token" 
-                }
-              },
               {
                 "configMap": {
                   "name": "jaeger-configuration",
@@ -410,11 +386,6 @@ local REDIRECT_URL = "jaeger." + CUSTOM_DOMAIN_NAME;
                     "name": "secret",
                     "mountPath": "/etc/secrets",
                     "readOnly": true
-                  },
-                  {
-                    "name": "jaeger-service-token",
-                    "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
-                    "readOnly": "true"
                   }
                 ]
               },
@@ -465,11 +436,6 @@ local REDIRECT_URL = "jaeger." + CUSTOM_DOMAIN_NAME;
                   {
                     "mountPath": "/conf",
                     "name": "jaeger-configuration-volume"
-                  },
-                  {
-                    "name": "jaeger-service-token",
-                    "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
-                    "readOnly": "true"
                   }
                 ]
               }
@@ -484,13 +450,6 @@ local REDIRECT_URL = "jaeger." + CUSTOM_DOMAIN_NAME;
                 "secret": {
                   "secretName": "jaeger-secret"
                 },
-              },
-              {
-                "name": "jaeger-service-token",
-                "secret": {
-                  "defaultMode": 420,
-                  "secretName": "jaeger-service-token"
-                }
               },
               {
                 "name": "gatekeeper-files",
@@ -663,11 +622,6 @@ local REDIRECT_URL = "jaeger." + CUSTOM_DOMAIN_NAME;
                   {
                     "name": "jaeger-configuration-volume",
                     "mountPath": "/conf"
-                  },
-                  {
-                    "name": "jaeger-service-token",
-                    "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
-                    "readOnly": "true"
                   }
                 ],
                 "ports": [
@@ -693,13 +647,6 @@ local REDIRECT_URL = "jaeger." + CUSTOM_DOMAIN_NAME;
             "hostNetwork": true,
             "dnsPolicy": "ClusterFirstWithHostNet",
             "volumes": [
-              {
-                "name": "jaeger-service-token",
-                "secret": {
-                  "defaultMode": 420,
-                  "secretName": "jaeger-service-token"
-                }
-              },
               {
                 "configMap": {
                   "name": "jaeger-configuration",

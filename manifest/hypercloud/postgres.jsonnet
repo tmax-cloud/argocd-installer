@@ -77,11 +77,6 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                             {
                                 "mountPath": "/docker-entrypoint-initdb.d",
                                 "name": "initdbsql"
-                            },
-                            {
-                                "name": "hypercloud5-api-server-service-account-token",
-                                "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
-                                "readOnly": true
                             }
                         ]
                     }
@@ -104,13 +99,6 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                                     "path": "init-db.sql"
                                 }
                             ]
-                        }
-                    },
-                    {
-                        "name": "hypercloud5-api-server-service-account-token",
-                        "secret": {
-                            "secretName": "hypercloud5-api-server-service-account-token",
-                            "defaultMode": "420"
                         }
                     }
                 ]
