@@ -33,12 +33,13 @@ local cicd_domain = std.join("", ["cicd-webhook.", custom_domain]);
           }
         },
         "spec": {
+          "serviceAccount": "cicd-service-account",
           "containers": [
             {
               "command": [
                 "/controller"
               ],
-              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/cicd-operator:v0.4.2"]),
+              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/cicd-operator:v0.4.3"]),
               "imagePullPolicy": "Always",
               "name": "manager",
               "resources": {
@@ -103,12 +104,13 @@ local cicd_domain = std.join("", ["cicd-webhook.", custom_domain]);
           }
         },
         "spec": {
+          "serviceAccount": "cicd-service-account",
           "containers": [
             {
               "command": [
                 "/blocker"
               ],
-              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/cicd-blocker:v0.4.2"]),
+              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/cicd-blocker:v0.4.3"]),
               "imagePullPolicy": "Always",
               "name": "manager",
               "resources": {
