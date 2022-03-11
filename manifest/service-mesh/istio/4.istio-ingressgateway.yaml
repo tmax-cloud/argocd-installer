@@ -82,7 +82,7 @@ spec:
   selector:
     app: istio-ingressgateway
     istio: ingressgateway
-  type: LoadBalancer
+  type: NodePort
 
 ---
 
