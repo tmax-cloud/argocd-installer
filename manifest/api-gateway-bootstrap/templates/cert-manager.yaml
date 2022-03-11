@@ -38,6 +38,8 @@ spec:
         value: "{{ .Values.global.registry.private_registry }}/quay.io/jetstack/cert-manager-cainjector"
       - name: cert-manager.webhook.image.repository
         value: "{{ .Values.global.registry.private_registry }}/quay.io/jetstack/cert-manager-webhook"
+      - name: cert-manager.startupapicheck.image.repository
+        value: "{{ .Values.global.registry.private_registry }}/quay.io/jetstack/cert-manager-ctl"
       - name: rootCA.image.repository
         value: "{{ .Values.global.registry.private_registry }}/docker.io/library/alpine:3.3"
       {{- end }}
