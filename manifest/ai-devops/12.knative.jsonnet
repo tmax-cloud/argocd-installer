@@ -1504,11 +1504,26 @@ local knative_istio_image_tag = "v0.14.1";
                 },
                 "securityContext": {
                 "allowPrivilegeEscalation": false
-                }
+                },
+                "volumeMounts": [
+                    {
+                        "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                        "name": "controller-token",
+                        "readOnly": "true"
+                    }
+                ]
             }
             ],
-            "serviceAccountName": "controller",
-            "terminationGracePeriodSeconds": 300
+            "terminationGracePeriodSeconds": 300,
+            "volumes": [
+                {
+                    "name": "controller-token",
+                    "secret": {
+                        "defaultMode": 420,
+                        "secretName": "controller-token"
+                    }
+                }
+            ]
         }
         }
     }
@@ -1632,10 +1647,25 @@ local knative_istio_image_tag = "v0.14.1";
                 },
                 "securityContext": {
                 "allowPrivilegeEscalation": false
-                }
+                },
+                "volumeMounts": [
+                    {
+                        "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                        "name": "controller-token",
+                        "readOnly": "true"
+                    }
+                ]
             }
             ],
-            "serviceAccountName": "controller"
+            "volumes": [
+                {
+                    "name": "controller-token",
+                    "secret": {
+                        "defaultMode": 420,
+                        "secretName": "controller-token"
+                    }
+                }
+            ]
         }
         }
     }
@@ -1724,10 +1754,25 @@ local knative_istio_image_tag = "v0.14.1";
                 },
                 "securityContext": {
                 "allowPrivilegeEscalation": false
-                }
+                },
+                "volumeMounts": [
+                    {
+                        "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                        "name": "controller-token",
+                        "readOnly": "true"
+                    }
+                ]
             }
             ],
-            "serviceAccountName": "controller"
+            "volumes": [
+                {
+                    "name": "controller-token",
+                    "secret": {
+                        "defaultMode": 420,
+                        "secretName": "controller-token"
+                    }
+                }
+            ]
         }
         }
     }
@@ -1826,10 +1871,25 @@ local knative_istio_image_tag = "v0.14.1";
                 },
                 "securityContext": {
                 "allowPrivilegeEscalation": false
-                }
+                },
+                "volumeMounts": [
+                    {
+                        "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                        "name": "controller-token",
+                        "readOnly": "true"
+                    }
+                ]
             }
             ],
-            "serviceAccountName": "controller"
+            "volumes": [
+                {
+                    "name": "controller-token",
+                    "secret": {
+                        "defaultMode": 420,
+                        "secretName": "controller-token"
+                    }
+                }
+            ]
         }
         }
     }
@@ -1920,10 +1980,25 @@ local knative_istio_image_tag = "v0.14.1";
                 },
                 "securityContext": {
                 "allowPrivilegeEscalation": false
-                }
+                },
+                "volumeMounts": [
+                    {
+                        "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                        "name": "controller-token",
+                        "readOnly": "true"
+                    }
+                ]
             }
             ],
-            "serviceAccountName": "controller"
+            "volumes": [
+                {
+                    "name": "controller-token",
+                    "secret": {
+                        "defaultMode": 420,
+                        "secretName": "controller-token"
+                    }
+                }
+            ]
         }
         }
     }
@@ -2018,10 +2093,25 @@ local knative_istio_image_tag = "v0.14.1";
                 },
                 "securityContext": {
                 "allowPrivilegeEscalation": false
-                }
+                },
+                "volumeMounts": [
+                    {
+                        "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                        "name": "controller-token",
+                        "readOnly": "true"
+                    }
+                ]
             }
             ],
-            "serviceAccountName": "controller"
+            "volumes": [
+                {
+                    "name": "controller-token",
+                    "secret": {
+                        "defaultMode": 420,
+                        "secretName": "controller-token"
+                    }
+                }
+            ]
         }
         }
     }
@@ -2602,5 +2692,17 @@ local knative_istio_image_tag = "v0.14.1";
     "spec": {
         "image": std.join("", [target_registry, "gcr.io/knative-releases/knative.dev/serving/cmd/queue:", knative_serving_image_tag])
     }
+    },
+    {
+    "apiVersion": "v1",
+    "kind": "Secret",
+    "metadata": {
+        "name": "controller-token",
+        "namespace": knative_namespace,
+        "annotations": {
+        "kubernetes.io/service-account.name": "controller"
+        }
+    },
+    "type": "kubernetes.io/service-account-token"
     }
 ]    

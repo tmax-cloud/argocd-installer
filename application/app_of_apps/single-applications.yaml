@@ -18,11 +18,11 @@ spec:
         - single-values.yaml
       parameters:
         - name: spec.destination.clusterInfo
-          value: cluster_name
+          value: cluster_name #change
         - name: spec.destination.label
-          value: cluster_name
+          value: cluster_name #change
         - name: global.privateRegistry
-          value: testregistry.com
+          value: testregistry.com #change
     path: application/helm
-    repoURL: https://github.com/tmax-cloud/argocd-installer
-    targetRevision: HEAD
+    repoURL: https://github.com/tmax-cloud/argocd-installer #change
+    targetRevision: HEAD #change

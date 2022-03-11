@@ -4,15 +4,15 @@ function (
 	coreos_image_repo="quay.io/coreos",
 	prometheus_image_repo="quay.io/prometheus",
 	configmap_reload_version="v0.0.1",
-	configmap_reloader_version="v0.34.0",
-	prometheus_operator_version="v0.34.0",
-	alertmanager_version="v0.20.0",
-	kube_rbac_proxy_version="v0.4.1",
-	kube_state_metrics_version="v1.8.0",
-	node_exporter_version="v0.18.1",
-	prometheus_adapter_version="v0.5.0",
+	configmap_reloader_version="v0.51.2",
+	prometheus_operator_version="v0.51.2",
+	alertmanager_version="v0.23.0",
+	kube_rbac_proxy_version="v0.11.0",
+	kube_state_metrics_version="v2.2.3",
+	node_exporter_version="v1.2.2",
+	prometheus_adapter_version="v0.9.1",
 	prometheus_pvc="10Gi",
-	prometheus_version="v2.11.0"
+	prometheus_version="v2.30.3"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -96,6 +96,13 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 					"memory": "100Mi"
 				  }
 				},
+				"volumeMounts": [
+					{
+					  "name": "prometheus-operator",
+					  "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
+					  "readOnly": true
+					}
+				],
 				"securityContext": {
 				  "allowPrivilegeEscalation": false
 				}
@@ -108,7 +115,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 			  "runAsNonRoot": true,
 			  "runAsUser": 65534
 			},
-			"serviceAccountName": "prometheus-operator"
+			"volumes": [
+				{
+				  "name": "prometheus-operator",
+				  "secret": {
+					"secretName": "prometheus-operator"
+				  }
+				}
+			]
 		  }
 		}
 	  }
@@ -132,6 +146,21 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 				alertmanager_version
 			]
 		),
+		"volumeMounts": [
+			{
+			  "name": "alertmanager-main",
+			  "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
+			  "readOnly": true
+			}
+		],
+		"volumes": [
+			{
+			  "name": "alertmanager-main",
+			  "secret": {
+				"secretName": "alertmanager-main-token"
+			  }
+			}
+		],
 		"resources": {
 		  "requests": {
 			"memory": "200Mi",
@@ -147,7 +176,6 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 		  "runAsNonRoot": true,
 		  "runAsUser": 1000
 		},
-		"serviceAccountName": "alertmanager-main",
 		"version": alertmanager_version
 	  }
 	},
@@ -240,7 +268,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 					"cpu": "10m",
 					"memory": "20Mi"
 				  }
-				}
+				},
+				"volumeMounts": [
+				  {
+				    "name": "kube-state-metrics",
+					"mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
+					"readOnly": true
+				  }
+				]
 			  },
 			  {
 				"args": [
@@ -277,7 +312,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 			  "runAsNonRoot": true,
 			  "runAsUser": 65534
 			},
-			"serviceAccountName": "kube-state-metrics"
+			"volumes": [
+			  {
+				"name": "kube-state-metrics",
+				"secret": {
+				  "secretName": "kube-state-metrics"
+				}
+			  }
+			]
 		  }
 		}
 	  }
@@ -350,6 +392,11 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 					"mountPropagation": "HostToContainer",
 					"name": "root",
 					"readOnly": true
+				  },
+				  {
+				    "name": "node-exporter",
+					"mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
+					"readOnly": true
 				  }
 				]
 			  },
@@ -407,7 +454,6 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 			  "runAsNonRoot": true,
 			  "runAsUser": 65534
 			},
-			"serviceAccountName": "node-exporter",
 			"tolerations": [
 			  {
 				"operator": "Exists"
@@ -431,6 +477,12 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 				  "path": "/"
 				},
 				"name": "root"
+			  },
+			  {
+				"name": "node-exporter",
+				"secret": {
+				  "secretName": "node-exporter"
+				}
 			  }
 			]
 		  }
@@ -503,6 +555,11 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 					"mountPath": "/etc/adapter",
 					"name": "config",
 					"readOnly": false
+				  },
+				  {
+				    "name": "prometheus-adapter",
+					"mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
+					"readOnly": true
 				  }
 				],
 				"resources": {
@@ -520,7 +577,6 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 			"nodeSelector": {
 			  "kubernetes.io/os": "linux"
 			},
-			"serviceAccountName": "prometheus-adapter",
 			"volumes": [
 			  {
 				"emptyDir": {},
@@ -535,6 +591,12 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 				  "name": "adapter-config"
 				},
 				"name": "config"
+			  },
+			  {
+				"name": "prometheus-adapter",
+				"secret": {
+				  "secretName": "prometheus-adapter"
+				}
 			  }
 			]
 		  }
@@ -583,6 +645,21 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 				prometheus_version
 			]
 		),
+		"volumeMounts": [
+			{
+			  "name": "prometheus-k8s",
+			  "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
+			  "readOnly": true
+			}
+		],
+		"volumes": [
+			{
+			  "name": "prometheus-k8s",
+			  "secret": {
+				"secretName": "prometheus-k8s"
+			  }
+			}
+		],
 		"nodeSelector": {
 		  "kubernetes.io/os": "linux"
 		},
@@ -606,7 +683,6 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 		  "runAsNonRoot": true,
 		  "runAsUser": 1000
 		},
-		"serviceAccountName": "prometheus-k8s",
 		"serviceMonitorNamespaceSelector": {},
 		"serviceMonitorSelector": {},
 		"version": prometheus_version

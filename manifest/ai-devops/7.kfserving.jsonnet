@@ -22223,17 +22223,30 @@ local kfserving_image_tag = "v0.5.1";
                 "containerPort": 8443,
                 "name": "https"
               }
+            ],
+            "volumeMounts": [
+              {
+                "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                "name": "kfserving-controller-manager-token",
+                "readOnly": "true"
+              }
             ]
           }
         ],
-        "terminationGracePeriodSeconds": 10,
-        "serviceAccountName": "kfserving-controller-manager",
+        "terminationGracePeriodSeconds": 10,  
         "volumes": [
           {
             "name": "cert",
             "secret": {
               "defaultMode": 420,
               "secretName": "kfserving-webhook-server-cert"
+            }
+          },
+          {
+            "name": "kfserving-controller-manager-token",
+            "secret": {
+              "defaultMode": 420,
+              "secretName": "kfserving-controller-manager-token"
             }
           }
         ]
@@ -22684,5 +22697,17 @@ local kfserving_image_tag = "v0.5.1";
       ]
     }
   ]
+},
+{
+  "apiVersion": "v1",
+  "kind": "Secret",
+  "metadata": {
+    "name": "kfserving-controller-manager-token",
+    "namespace": ai_devops_namespace,
+    "annotations": {
+      "kubernetes.io/service-account.name": "kfserving-controller-manager"
+    }
+  },
+  "type": "kubernetes.io/service-account-token"
 }
 ]

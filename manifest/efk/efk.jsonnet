@@ -46,7 +46,6 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
           }
         },
         "spec": {
-          "serviceAccount": "efk-service-account",
           "containers": [
             {
               "name": "elasticsearch",
@@ -58,11 +57,11 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
               "resources": {
                 "limits": {
                   "cpu": "500m",
-                  "memory": "3000Mi"
+                  "memory": "16Gi"
                 },
                 "requests": {
                   "cpu": "100m",
-                  "memory": "100Mi"
+                  "memory": "10Gi"
                 }
               },
               "ports": [
@@ -106,7 +105,7 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
                 },
                 {
                   "name": "ES_JAVA_OPTS",     
-                  "value": "-Xms2g -Xmx2g"
+                  "value": "-Xms8g -Xmx8g"
                 }
               ]
             }
@@ -201,7 +200,6 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
           }
         },
         "spec": {
-          "serviceAccount": "efk-service-account",
           "volumes": [
             {
               "name": "secret",
@@ -341,14 +339,14 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
     "apiVersion": "v1",
     "kind": "Service",
     "metadata": {
-       "name": "kibana",
-       "namespace": "kube-logging",
-       "labels": {
-          "app": "kibana"
-       },
-       "annotations": {
-          "traefik.ingress.kubernetes.io/service.serverstransport": "tmaxcloud@file"
-       }
+      "name": "kibana",
+      "namespace": "kube-logging",
+      "labels": {
+        "app": "kibana"
+      },
+      "annotations": {
+        "traefik.ingress.kubernetes.io/service.serverstransport": "tmaxcloud@file"
+      }
     },
     "spec": {
       "type": kibana_svc_type,
@@ -409,7 +407,7 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
       "selector": {
         "matchLabels": {
           "app": "fluentd"
-         }
+        }
       },
       "template": {
         "metadata": {
@@ -418,7 +416,6 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
           }
         },
         "spec": {
-          "serviceAccount": "fluentd",
           "serviceAccountName": "fluentd",
           "tolerations": [
             {
@@ -441,7 +438,7 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
                 {
                   "name": "FLUENT_ELASTICSEARCH_SCHEME",
                   "value": "http",
-                 },
+                },
                 {
                   "name": "FLUENTD_SYSTEMD_CONF",
                   "value": "disable",
@@ -454,14 +451,19 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
               "resources": {
                 "limits": {
                   "cpu": "300m",
-                  "memory": "512Mi"
+                  "memory": "1000Mi"
                 },
                 "requests": {
-                  "cpu": "50m",
-                  "memory": "100Mi"
+                  "cpu": "100m",
+                  "memory": "500Mi"
                 }
               },
               "volumeMounts": [
+                {
+                  "name": "fluentd-token",
+                  "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                  "readOnly": true
+                },
                 {
                   "name": "varlog",
                   "mountPath": "/var/log"
@@ -486,6 +488,12 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
           ],
           "terminationGracePeriodSeconds": 30,
           "volumes": [
+            {
+              "name": "fluentd-token",
+              "secret": {
+                "secretName": "fluentd-token"
+              }
+            },
             {
               "name": "varlog",
               "hostPath": {
