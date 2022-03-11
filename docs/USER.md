@@ -2,6 +2,7 @@
 ### ArgoCD를 이용한 resource 배포
 1. prerequsites
     - argocd([Install guide link](https://github.com/tmax-cloud/install-argocd))
+    - yq
 ---
 ## Master cluster
 1. cluster configuration
