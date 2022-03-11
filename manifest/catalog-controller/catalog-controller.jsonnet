@@ -48,13 +48,6 @@ local target_registry = if is_offline == "false" then "" else private_registry +
           {
             "name": "run",
             "emptyDir": {}
-          },
-          {
-            "name": "catalog-controller-token",
-            "secret": {
-              "defaultMode": 420,
-              "secretName": "catalog-controller-token"
-            }
           }
         ],
         "containers": [
@@ -108,11 +101,6 @@ local target_registry = if is_offline == "false" then "" else private_registry +
               {
                 "mountPath": "/var/run",
                 "name": "run"
-              },
-              {
-                "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
-                "name": "catalog-controller-token",
-                "readOnly": true
               }
             ],
             "ports": [
@@ -225,11 +213,6 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "name": "service-catalog-webhook-cert",
                 "mountPath": "/var/run/service-catalog-webhook",
                 "readOnly": true
-              },
-              {
-                "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
-                "name": "catalog-controller-webhook-token",
-                "readOnly": true
               }
             ],
             "readinessProbe": {
@@ -273,13 +256,6 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                   "path": "tls.key"
                 }
               ]
-            }
-          },
-          {
-            "name": "catalog-controller-webhook-token",
-            "secret": {
-              "defaultMode": 420,
-              "secretName": "catalog-controller-webhook-token"
             }
           }
          ]

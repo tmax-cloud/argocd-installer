@@ -152,7 +152,8 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 }
                 ]
             }
-            ],            
+            ],
+            "serviceAccountName": "kubeflow-service-account",
             "volumes": [
             {
                 "name": "data",

@@ -4,6 +4,25 @@ metadata:
   name: hyperauth
 ---
 apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: hyperauth-admin
+  namespace: hyperauth
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: hyperauth-admin
+subjects:
+- kind: ServiceAccount
+  name: hyperauth-admin
+  namespace: hyperauth
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
 kind: Secret
 metadata:
   name: passwords
