@@ -329,7 +329,7 @@ roleRef:
   name: cicd-manager-role
 subjects:
   - kind: ServiceAccount
-    name: default
+    name: cicd-service-account
     namespace: cicd-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -343,7 +343,7 @@ roleRef:
   name: cicd-manager-role
 subjects:
   - kind: ServiceAccount
-    name: default
+    name: cicd-service-account
     namespace: cicd-system
 
 ---
@@ -358,8 +358,14 @@ roleRef:
   name: cicd-manager-role
 subjects:
   - kind: ServiceAccount
-    name: default
+    name: cicd-service-account
     namespace: cicd-system
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cicd-service-account
+  namespace: cicd-system
 ---
 apiVersion: apiregistration.k8s.io/v1
 kind: APIService
