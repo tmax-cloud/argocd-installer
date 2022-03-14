@@ -1,7 +1,7 @@
 function(
     is_offline="false",
     private_registry="registry.tmaxcloud.org",
-    JAEGER_VERSION="1.14",
+    JAEGER_VERSION="1.9",
     tmax_client_secret="tmax_client_secret",
     HYPERAUTH_DOMAIN="hyperauth.domain",
     GATEKEER_VERSION="10.0.0",
@@ -242,7 +242,7 @@ local REDIRECT_URL = "jaeger." + CUSTOM_DOMAIN_NAME;
                 "name": "jaeger-service-token",
                 "secret": {
                   "defaultMode": 420,
-                  "secretName": "jaeger-service-token" 
+                  "secretName": "jaeger-service-token"
                 }
               },
               {
