@@ -7,6 +7,7 @@ spec:
   project: default
 
 global:
+  # 마스터와 다르게 싱글의 경우 값변경이 필요하지 않음
   privateRegistry: testregistry.com
 
 modules:
