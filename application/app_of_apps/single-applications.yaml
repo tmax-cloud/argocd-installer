@@ -18,11 +18,16 @@ spec:
         - single-values.yaml
       parameters:
         - name: spec.destination.clusterInfo
+          # target cluster 이름으로 변경
           value: cluster_name
         - name: spec.destination.label
+          # target cluster 이름으로 변경
           value: cluster_name
         - name: global.privateRegistry
+          # target registry 주소로 변경
           value: testregistry.com
     path: application/helm
+    # 환경에 맞게 url 주소 변경 필요
     repoURL: https://github.com/tmax-cloud/argocd-installer
+    # 환경에 맞게 target branch/release 변경 필요
     targetRevision: HEAD

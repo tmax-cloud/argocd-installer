@@ -8,6 +8,7 @@ spec:
     targetRevision: HEAD
 global:
   network:
+    # 폐쇄망일경우 true
     disabled: false
   domain: testdomain.com
   keycloak:
