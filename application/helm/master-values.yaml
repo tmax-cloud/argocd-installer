@@ -12,6 +12,7 @@ modules:
   ### gateway-bootstrap
   gatewayBootstrap:
     enabled: true
+    svc_type: NodePort
     tls:
       selfsigned:
         enabled: true
