@@ -480,7 +480,7 @@ local REDIRECT_URL = "jaeger." + CUSTOM_DOMAIN_NAME;
       "kind": "Service",
       "metadata": {
         "annotations": {
-           "traefik.ingress.kubernetes.io/service.serverstransport": "tmaxcloud@file"
+          "traefik.ingress.kubernetes.io/service.serverstransport": "tmaxcloud@file"
         },
         "labels": {
           "app": "jaeger",
@@ -507,31 +507,31 @@ local REDIRECT_URL = "jaeger." + CUSTOM_DOMAIN_NAME;
       }
     },
     {
-       "apiVersion": "cert-manager.io/v1",
-       "kind": "Certificate",
-       "metadata": {
-         "name": "jaeger-cert",
-         "namespace": "istio-system"
-       },
-       "spec": {
-         "secretName": "jaeger-secret",
-         "usages": [
-           "digital signature",
-           "key encipherment",
-           "server auth",
-           "client auth"
-         ],
-         "dnsNames": [
-             "tmax-cloud",
-             "jaeger-query.istio-system.svc"
-         ],
-         "issuerRef": {
-           "kind": "ClusterIssuer",
-           "group": "cert-manager.io",
-           "name": CUSTOM_CLUSTER_ISSUER
-         }
-       }
-     },
+      "apiVersion": "cert-manager.io/v1",
+      "kind": "Certificate",
+      "metadata": {
+        "name": "jaeger-cert",
+        "namespace": "istio-system"
+      },
+      "spec": {
+        "secretName": "jaeger-secret",
+        "usages": [
+          "digital signature",
+          "key encipherment",
+          "server auth",
+          "client auth"
+        ],
+        "dnsNames": [
+            "tmax-cloud",
+            "jaeger-query.istio-system.svc"
+        ],
+        "issuerRef": {
+          "kind": "ClusterIssuer",
+          "group": "cert-manager.io",
+          "name": CUSTOM_CLUSTER_ISSUER
+        }
+      }
+    },
     {
       "apiVersion": "networking.k8s.io/v1",
       "kind": "Ingress",
