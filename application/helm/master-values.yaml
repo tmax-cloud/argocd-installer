@@ -124,11 +124,11 @@ modules:
   ### template service broker
   tsb:
     enabled: true
-    version: 0.1.3
+    version: 0.1.4
     clusterTsb:
-      version: 0.1.3
+      version: 0.1.4
     templateOperator:
-      version: 0.2.6    
+      version: 0.2.7    
 
   ### catalog controller
   catalogController:

@@ -17,11 +17,11 @@ spec:
         - name: private_registry
           value: registry.tmaxcloud.org
         - name: template_operator_version
-          value: 0.2.6
+          value: 0.2.7
         - name: cluster_tsb_version
-          value: 0.1.3
+          value: 0.1.4
         - name: tsb_version
-          value: 0.1.3
+          value: 0.1.4
     path: manifest/template-service-broker
     repoURL: https://github.com/tmax-cloud/argocd-installer
     targetRevision: main
