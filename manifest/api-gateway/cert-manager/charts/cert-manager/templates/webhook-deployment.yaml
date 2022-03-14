@@ -40,15 +40,7 @@ spec:
 {{ toYaml .Values.webhook.podAnnotations | indent 8 }}
       {{- end }}
     spec:
-      {{- if .Values.webhook.serviceAccount.automountServiceAccountToken }}
       serviceAccountName: {{ template "webhook.serviceAccountName" . }}
-      {{- else }}
-      volumes:
-        - name: {{ template "webhook.serviceAccountName" . }}
-          secret:
-            secretName: {{ template "webhook.serviceAccountName" . }}
-            defaultMode: 420
-      {{- end }}
       {{- if .Values.global.priorityClassName }}
       priorityClassName: {{ .Values.global.priorityClassName | quote }}
       {{- end }}
@@ -75,12 +67,6 @@ spec:
           - --dynamic-serving-dns-names={{ template "webhook.fullname" . }},{{ template "webhook.fullname" . }}.{{ .Release.Namespace }},{{ template "webhook.fullname" . }}.{{ .Release.Namespace }}.svc{{ if .Values.webhook.url.host }},{{ .Values.webhook.url.host }}{{ end }}
         {{- if .Values.webhook.extraArgs }}
 {{ toYaml .Values.webhook.extraArgs | indent 10 }}
-        {{- end }}
-        {{- if not .Values.webhook.serviceAccount.automountServiceAccountToken }}
-          volumeMounts:
-            - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
-              name: {{ template "webhook.serviceAccountName" . }}
-              readOnly: true
         {{- end }}
           ports:
           - name: https

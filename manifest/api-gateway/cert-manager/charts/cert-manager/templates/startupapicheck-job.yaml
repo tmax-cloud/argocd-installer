@@ -33,15 +33,7 @@ spec:
       {{- end }}
     spec:
       restartPolicy: OnFailure
-      {{- if .Values.startupapicheck.serviceAccount.automountServiceAccountToken }}
       serviceAccountName: {{ template "startupapicheck.serviceAccountName" . }}
-      {{- else }}
-      volumes:
-        - name: {{ template "startupapicheck.serviceAccountName" . }}
-          secret:
-            defaultMode: 420
-            secretName: {{ template "startupapicheck.serviceAccountName" . }}
-      {{- end }}
       {{- if .Values.global.priorityClassName }}
       priorityClassName: {{ .Values.global.priorityClassName | quote }}
       {{- end }}
@@ -61,12 +53,6 @@ spec:
           - --wait={{ .Values.startupapicheck.timeout }}
           {{- if .Values.startupapicheck.extraArgs }}
 {{ toYaml .Values.startupapicheck.extraArgs | indent 10 }}
-          {{- end }}
-          {{- if not .Values.startupapicheck.serviceAccount.automountServiceAccountToken }}
-          volumeMounts:
-            - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
-              name: {{ template "startupapicheck.serviceAccountName" . }}
-              readOnly: true
           {{- end }}
           {{- if .Values.startupapicheck.containerSecurityContext }}
           securityContext:

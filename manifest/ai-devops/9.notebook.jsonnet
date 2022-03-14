@@ -5673,25 +5673,10 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 ],
                 "image": std.join("", [target_registry, "docker.io/tmaxcloudck/notebook-controller-go:b0.1.0"]),
                 "imagePullPolicy": "Always",
-                "name": "notebook-controller",
-                "volumeMounts": [
-                    {
-                        "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
-                        "name": "notebook-controller-service-account-token",
-                        "readOnly": "true"
-                    }
-                ]
+                "name": "notebook-controller"
             }
             ],
-            "volumes": [
-                {
-                    "name": "notebook-controller-service-account-token",
-                    "secret": {
-                        "defaultMode": 420,
-                        "secretName": "notebook-controller-service-account-token"
-                    }
-                }
-            ]
+            "serviceAccountName": "notebook-controller-service-account"
         }
         }
     }
@@ -5780,19 +5765,6 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "yaml": "apiVersion: kubeflow.tmax.io/v1\nkind: Notebook\nmetadata:\n  labels:\n    app: kale-notebook\n  name: kale-notebook\nspec:\n  template:\n    spec:\n      containers:\n      - env: []\n        image: tmaxcloudck/kale-tekton-standalone:211231\n        name: demo\n        resources:\n          requests:\n            cpu: \"0.5\"\n            memory: 1.0Gi\n        volumeMounts:\n        - mountPath: /home/jovyan\n          name: demo-pvc\n        - mountPath: /dev/shm\n          name: dshm\n      serviceAccountName: default-editor\n      volumes:\n      - name: demo-pvc\n        persistentVolumeClaim:\n          claimName: demo-pvc\n      - emptyDir:\n          medium: Memory\n        name: dshm\n  volumeClaim:\n  - name: demo-pvc\n    size: 10Gi\n"
     }
     },
-    {
-    "apiVersion": "v1",
-    "kind": "Secret",
-    "metadata": {
-        "name": "notebook-controller-service-account-token",
-        "namespace": ai_devops_namespace,
-        "annotations": {
-        "kubernetes.io/service-account.name": "notebook-controller-service-account"
-        }
-    },
-    "type": "kubernetes.io/service-account-token"
-    },
-
     if notebook_svc_type == "Ingress" then {        
         "apiVersion": "extensions/v1beta1",
         "kind": "Ingress",

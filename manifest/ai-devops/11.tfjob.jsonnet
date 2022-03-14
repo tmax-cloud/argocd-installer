@@ -14128,25 +14128,10 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 }
                 ],
                 "image": std.join("", [target_registry, "gcr.io/kubeflow-images-public/tf_operator:vmaster-gda226016"]),
-                "name": "tf-job-operator",
-                "volumeMounts": [
-                    {
-                        "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
-                        "name": "tf-job-operator-token",
-                        "readOnly": "true"
-                    }
-                ]
+                "name": "tf-job-operator"
             }
             ],
-            "volumes": [
-                {
-                    "name": "tf-job-operator-token",
-                    "secret": {
-                        "defaultMode": 420,
-                        "secretName": "tf-job-operator-token"
-                    }
-                }
-            ]
+            "serviceAccountName": "tf-job-operator"
         }
         }
     }
@@ -14300,17 +14285,5 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         }
         }
     }
-    },
-    {
-    "apiVersion": "v1",
-    "kind": "Secret",
-    "metadata": {
-        "name": "tf-job-operator-token",
-        "namespace": ai_devops_namespace,
-        "annotations": {
-        "kubernetes.io/service-account.name": "tf-job-operator"
-        }
-    },
-    "type": "kubernetes.io/service-account-token"
     }
 ]    

@@ -17,5 +17,5 @@ spec:
         - shared-values.yaml
         - master-values.yaml
     path: application/helm
-    repoURL: https://github.com/tmax-cloud/argocd-installer #change
-    targetRevision: shkim/appofapp #change
+    repoURL: https://github.com/tmax-cloud/argocd-installer
+    targetRevision: shkim/appofapp

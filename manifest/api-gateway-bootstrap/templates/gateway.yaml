@@ -29,7 +29,11 @@ spec:
     targetRevision: {{ .Values.spec.source.targetRevision }}
     helm:
       valueFiles:
+      {{- if eq .Values.global.svc_type "NodePort"}}
+        - gateway-values-nodeport.yaml
+      {{- else }}
         - {{ .Values.modules.gateway.source.helm.valueFiles }}
+      {{- end }}
       parameters:
       {{- if .Values.global.tls.acme.enabled }}
         - name: tls.acme.enabled

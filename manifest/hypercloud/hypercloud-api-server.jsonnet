@@ -40,7 +40,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "containers": [
                         {
                             "name": "hypercloud5-api-server",
-                            "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-api-server:b5.0.26.6"]),
+                            "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-api-server:b5.0.26.11"]),
                             "imagePullPolicy": "IfNotPresent",
                             "env": [
                                 {
@@ -184,7 +184,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                             "name": "hypercloud5-api-server-service-account-token",
                             "secret": {
                                 "secretName": "hypercloud5-api-server-service-account-token",
-                                "defaultMode": "420"
+                                "defaultMode": 420
                             }
                         }
                     ]
@@ -356,6 +356,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "  readinessProbe:\n\n",
                     "  versionProbe:\n",
                     "    container: manager\n\n",
+                    "- name: KubeFed\n",
+                    "  namespace: kube-federation-system\n",
+                    "  selector:\n",
+                    "    matchLabels:\n",
+                    "      statusLabel:\n",
+                    "      - kubefed-control-plane=controller-manager\n",
+                    "      versionLabel:\n",
+                    "      - kubefed-control-plane=controller-manager\n",
+                    "  readinessProbe:\n\n",
+                    "  versionProbe:\n\n",
                     "- name: Grafana\n",
                     "  namespace: monitoring\n",
                     "  selector:\n",

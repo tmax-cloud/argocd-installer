@@ -585,7 +585,15 @@ local katib_object_image_tag = "v0.11.0";
       },
       "version": "v1beta1"
     }
-  },  
+  },
+  {
+    "apiVersion": "v1",
+    "kind": "ServiceAccount",
+    "metadata": {
+      "name": "kubeflow-service-account",
+      "namespace": ai_devops_namespace
+    }
+  },
   {
     "apiVersion": "v1",
     "kind": "ServiceAccount",
@@ -1131,28 +1139,17 @@ local katib_object_image_tag = "v0.11.0";
                   "mountPath": "/tmp/cert",
                   "name": "cert",
                   "readOnly": true
-                },
-                {
-                  "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
-                  "name": "katib-controller-token",
-                  "readOnly": true
                 }
               ]
             }
-          ],          
+          ],
+          "serviceAccountName": "katib-controller",
           "volumes": [
             {
               "name": "cert",
               "secret": {
                 "defaultMode": 420,
                 "secretName": "katib-webhook-cert"
-              }
-            },
-            {
-              "name": "katib-controller-token",
-              "secret": {
-                "defaultMode": 420,
-                "secretName": "katib-controller-token"
               }
             }
           ]
@@ -1227,7 +1224,8 @@ local katib_object_image_tag = "v0.11.0";
                 }
               ]
             }
-          ],          
+          ],
+          "serviceAccountName": "kubeflow-service-account"
         }
       }
     }
@@ -1336,7 +1334,8 @@ local katib_object_image_tag = "v0.11.0";
                 }
               ]
             }
-          ],          
+          ],
+          "serviceAccountName": "kubeflow-service-account",
           "volumes": [
             {
               "name": "katib-mysql",
@@ -1401,25 +1400,10 @@ local katib_object_image_tag = "v0.11.0";
                   "containerPort": 8080,
                   "name": "ui"
                 }
-              ],
-              "volumeMounts": [
-                {
-                    "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
-                    "name": "katib-ui-token",
-                    "readOnly": "true"
-                }
               ]
             }
           ],
-          "volumes": [            
-            {
-              "name": "katib-ui-token",
-              "secret": {
-                "defaultMode": 420,
-                "secretName": "katib-ui-token"
-              }
-            }
-          ]
+          "serviceAccountName": "katib-ui"
         }
       }
     }
@@ -1454,30 +1438,15 @@ local katib_object_image_tag = "v0.11.0";
               ],
               "image": std.join("", [target_registry, "docker.io/kubeflowkatib/cert-generator:", katib_object_image_tag]),
               "imagePullPolicy": "Always",
-              "name": "cert-generator",
-              "volumeMounts": [
-                {
-                  "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
-                  "name": "katib-cert-generator-token",
-                  "readOnly": true
-                }
-              ]
+              "name": "cert-generator"
             }
           ],
           "restartPolicy": "Never",
-          "volumes": [
-            {
-              "name": "katib-cert-generator-token",
-              "secret": {
-                "defaultMode": 420,
-                "secretName": "katib-cert-generator-token"
-              }
-            }
-          ]
+          "serviceAccountName": "katib-cert-generator"
         }
       }
     }
-  }, 
+  },
   {
     "apiVersion": "admissionregistration.k8s.io/v1",
     "kind": "MutatingWebhookConfiguration",

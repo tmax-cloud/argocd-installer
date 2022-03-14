@@ -6,14 +6,13 @@ spec:
   project: default
 
 global:
-  # 기본시나리오에서는 privateRegistry값만 변경해주면 된다
-  # e.x) 172.22.6.2:5000 or hyperregistry.domain.com
   privateRegistry: testregistry.com
 
 modules:
   ### gateway-bootstrap
   gatewayBootstrap:
     enabled: true
+    svc_type: NodePort
     tls:
       selfsigned:
         enabled: true
@@ -163,10 +162,6 @@ modules:
   imageValidatingWebhook:
     enabled: true
     
-  ### redis-operator
-  redis:
-    enabled: true
-
   ### ai-devops
   aiDevops:
     enabled: false

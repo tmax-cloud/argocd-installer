@@ -81,7 +81,7 @@ serviceAccount:
   # Optional additional annotations to add to the controller's ServiceAccount
   # annotations: {}
   # Automount API credentials for a Service Account.
-  automountServiceAccountToken: false
+  automountServiceAccountToken: true
 
 # Optional additional arguments
 extraArgs: []
@@ -295,7 +295,7 @@ webhook:
     # Optional additional annotations to add to the controller's ServiceAccount
     # annotations: {}
     # Automount API credentials for a Service Account.
-    automountServiceAccountToken: false
+    automountServiceAccountToken: true
 
   # The port that the webhook should listen on for requests.
   # In GKE private clusters, by default kubernetes apiservers are allowed to
@@ -398,7 +398,7 @@ cainjector:
     # Optional additional annotations to add to the controller's ServiceAccount
     # annotations: {}
     # Automount API credentials for a Service Account.
-    automountServiceAccountToken: false
+    automountServiceAccountToken: true
 
 # This startupapicheck is a Helm post-install hook that waits for the webhook
 # endpoints to become available.
@@ -479,4 +479,4 @@ startupapicheck:
       helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
 
     # Automount API credentials for a Service Account.
-    automountServiceAccountToken: false
+    automountServiceAccountToken: true

@@ -172,11 +172,6 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 				  {
 					"name": "grafana-dashboard-hyperauth",
 					"mountPath": "/grafana-dashboard-definitions/0/hyperauth"
-				  },
-				  {
-					"name": "grafana",
-					"mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
-					"readOnly": true
 				  }
 				],
 				"terminationMessagePolicy": "File",
@@ -190,6 +185,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 				)
 			  }
 			],
+			"serviceAccount": "grafana",
 			"volumes": [
 			  {
 				"name": "grafana-storage",
@@ -230,12 +226,6 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 				"configMap": {
 				  "name": "grafana-dashboard-hyperauth",
 				  "defaultMode": 420
-				}
-			  },
-			  {
-				"name": "grafana",
-				"secret": {
-				  "secretName": "grafana"
 				}
 			  }
 			],

@@ -20,6 +20,8 @@ spec:
       parameters:
         - name: global.console.mcMode
           value: "{{ .Values.modules.gatewayBootstrap.console.multiCluster.enabled }}"
+        - name: global.svc_type
+          value: {{ .Values.modules.gatewayBootstrap.svc_type }}
         - name: global.domain
           value: {{ .Values.global.domain }}
         - name: global.hyperauth.address
