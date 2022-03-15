@@ -357,7 +357,7 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
         if hyperauth_url == "" then {
           "port": 5601,
           "name": "kibana"
-        } else if custom_domain_name == ""  then {
+        } else if cluster_name != "master" || custom_domain_name == "" then {
           "port": 3000,
           "name": "gatekeeper"
         } else {
