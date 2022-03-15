@@ -89,11 +89,11 @@
     ex) bash set-master-env-yq.sh {{ git repo url }} {{ branch }} {{ cluster name }} ""
 ---
 3. application 등록
-    - 테스트할 환경에 application을 등록
+    - 테스트할 마스터클러스터 환경에 application을 등록
         ```
         $ kubectl -n {{ argocd ns }} apply -f application/app_of_apps/{{ cluster name }}-applications.yaml
         ```
-    - {{ argocd ns }} 부분을 해당 환경의 argocd 네임스페이스로 치환
+    - {{ argocd ns }} 부분을 마스터클러스터 환경의 argocd 네임스페이스로 치환
     - {{ cluster name }} 부분을 target cluster 이름으로 치환
 ---
 4. resource 배포(application sync)
