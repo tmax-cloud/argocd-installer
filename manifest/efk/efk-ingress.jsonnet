@@ -7,6 +7,7 @@ function (
     kibana_image_tag="7.2.0",
     kibana_svc_type="ClusterIP",
     gatekeeper_image_tag="10.0.0",
+    cluster_name="master",
     kibana_client_id="kibana",
     tmax_client_secret="tmax_client_secret",
     hyperauth_url="172.23.4.105",
@@ -17,7 +18,7 @@ function (
     custom_clusterissuer="tmaxcloud-issuer"
 )
 
-if custom_domain_name != "" then [ 
+if cluster_name == "master" then [ 
   {
     "apiVersion": "networking.k8s.io/v1",
     "kind": "Ingress",

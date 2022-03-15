@@ -47,6 +47,8 @@ spec:
             value: {{ .Values.global.domain }}
           - name: fluentd_image_tag
             value: {{ .Values.modules.efk.fluentd.version }}
+          - name: cluster_name
+            value: {{ .Values.spec.destination.label }}
     path: manifest/efk
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
