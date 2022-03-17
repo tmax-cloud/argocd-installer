@@ -7,6 +7,7 @@ function (
     kibana_image_tag="7.2.0",
     kibana_svc_type="ClusterIP",
     gatekeeper_image_tag="10.0.0",
+    cluster_name="master",
     kibana_client_id="kibana",
     tmax_client_secret="tmax_client_secret",
     hyperauth_url="172.23.4.105",
@@ -341,14 +342,14 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
     "apiVersion": "v1",
     "kind": "Service",
     "metadata": {
-       "name": "kibana",
-       "namespace": "kube-logging",
-       "labels": {
-          "app": "kibana"
-       },
-       "annotations": {
-          "traefik.ingress.kubernetes.io/service.serverstransport": "tmaxcloud@file"
-       }
+      "name": "kibana",
+      "namespace": "kube-logging",
+      "labels": {
+        "app": "kibana"
+      },
+      "annotations": {
+        "traefik.ingress.kubernetes.io/service.serverstransport": "tmaxcloud@file"
+      }
     },
     "spec": {
       "type": kibana_svc_type,
@@ -356,7 +357,7 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
         if hyperauth_url == "" then {
           "port": 5601,
           "name": "kibana"
-        } else if custom_domain_name == ""  then {
+        } else if cluster_name != "master" || custom_domain_name == "" then {
           "port": 3000,
           "name": "gatekeeper"
         } else {

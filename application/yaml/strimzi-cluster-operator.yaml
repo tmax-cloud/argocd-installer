@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: strimzi-kafka-cluster-oprerator
+  name: strimzi-kafka-cluster-operator
   namespace: argocd
 spec:
   destination:
@@ -17,7 +17,7 @@ spec:
             value: "false"
           - name: private_registry
             value: 172.22.6.2:5000
-    path: manifest/strimzi-kafka-cluster-oprerator
+    path: manifest/strimzi-kafka-cluster-operator
     repoURL: 'https://github.com/tmax-cloud/argocd-installer'
     targetRevision: main
 

@@ -37,7 +37,7 @@
     - {{ argocd ns }} 부분을 해당 환경의 argocd 네임스페이스로 치환
 ---
 4. resource 배포(application sync)
-    - application sync 순서는 [docs/install-order.md](install-order.md)를 참조
+    - application sync 순서는 [docs/INSTALL_ORDER.md](INSTALL_ORDER.md)를 참조
     - 순서에 맞춰서 모듈을 sync
     - sync 방식은 아래와 같음
     1) argocd server에 접속후 로그인
@@ -89,11 +89,11 @@
     ex) bash set-master-env-yq.sh {{ git repo url }} {{ branch }} {{ cluster name }} ""
 ---
 3. application 등록
-    - 테스트할 환경에 application을 등록
+    - 테스트할 마스터클러스터 환경에 application을 등록
         ```
         $ kubectl -n {{ argocd ns }} apply -f application/app_of_apps/{{ cluster name }}-applications.yaml
         ```
-    - {{ argocd ns }} 부분을 해당 환경의 argocd 네임스페이스로 치환
+    - {{ argocd ns }} 부분을 마스터클러스터 환경의 argocd 네임스페이스로 치환
     - {{ cluster name }} 부분을 target cluster 이름으로 치환
 ---
 4. resource 배포(application sync)
