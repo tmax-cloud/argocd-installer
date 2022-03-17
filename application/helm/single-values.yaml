@@ -49,7 +49,7 @@ modules:
 
   ### strimzi-kafka-operator
   strimziKafka:
-    enabled: false
+    enabled: true
 
   ### hyperauth
   hyperAuth:
@@ -164,7 +164,7 @@ modules:
     
   ### redis-operator
   redis:
-    enabled: false
+    enabled: true
 
   ### ai-devops
   aiDevops:
