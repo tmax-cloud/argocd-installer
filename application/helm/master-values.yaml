@@ -17,7 +17,7 @@ modules:
     svc_type: NodePort
     tls:
       selfsigned:
-        enabled: true
+        enabled: false
       # acme로 할 경우, domain에 입력한 주소를 가지고 있어야함
       acme:
         enabled: false

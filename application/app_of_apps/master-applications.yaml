@@ -20,4 +20,4 @@ spec:
     # 환경에 맞게 url 주소 변경 필요
     repoURL: https://github.com/tmax-cloud/argocd-installer
     # 환경에 맞게 target branch/release 변경 필요
-    targetRevision: shkim/appofapp
+    targetRevision: HEAD
