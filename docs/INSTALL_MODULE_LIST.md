@@ -17,4 +17,5 @@ Single cluster
 1. api-gateway-bootstrap(cert-manager + api-gateway w/o console)
 2. efk
 3. prometheus
-4. service-mesh(istio, jaeger)
+4. grafana
+5. service-mesh(istio, jaeger, kiali)
