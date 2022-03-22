@@ -15,6 +15,7 @@ modules:
   ### gateway-bootstrap
   gatewayBootstrap:
     enabled: true
+    svc_type: LoadBalancer
     tls:
       selfsigned:
         enabled: false
