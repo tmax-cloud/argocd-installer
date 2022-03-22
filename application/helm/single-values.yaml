@@ -107,7 +107,7 @@ modules:
   
   ### kiali
   kiali:
-    enabled: false
+    enabled: true
 
   ### cluster-api
   capi:
