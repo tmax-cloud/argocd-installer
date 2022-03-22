@@ -7,11 +7,13 @@ function (
 	grafana_pvc="10Gi",
 	grafana_version="6.4.3",
 	grafana_image_repo="grafana/grafana",
-	ingress_domain=""
+	ingress_domain="",
+	cluster_name="master",
+	admin_user="test@test.co.kr"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
-
+local admin_info = if cluster_name == "master" then "" else "admin_user = " + admin_user + "\n";
 [
 	{
 	  "kind": "ConfigMap",
@@ -29,6 +31,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 				"root_url = https://%(domain)s/api/grafana/\n",
 				"serve_from_sub_path = true\n",
 				"[security]\n",
+				admin_info,
 				"allow_embedding = true\n",
 				"[auth]\n",
 				"disable_login_form = true\n",

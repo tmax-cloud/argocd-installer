@@ -9,6 +9,7 @@ spec:
 global:
   # 마스터와 다르게 싱글의 경우 값변경이 필요하지 않음
   privateRegistry: testregistry.com
+  adminUser: test@test.co.kr
 
 modules:
   ### gateway-bootstrap
@@ -90,7 +91,7 @@ modules:
 
   ### grafana
   grafana:
-    enabled: false
+    enabled: true
     pvcSize: 10Gi
     version: 6.4.3
     imageRepo: grafana/grafana
