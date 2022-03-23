@@ -40,7 +40,7 @@ traefik:
     web:
       nodePort: 31080
     websecure:
-      nodePort: 31433
+      nodePort: 31443
     traefik:
       nodePort: 31900
   resources: {}

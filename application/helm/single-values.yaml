@@ -15,7 +15,11 @@ modules:
   ### gateway-bootstrap
   gatewayBootstrap:
     enabled: true
+<<<<<<< HEAD
     svc_type: LoadBalancer
+=======
+    svc_type: "LoadBalancer"
+>>>>>>> master-cluster
     tls:
       selfsigned:
         enabled: false
