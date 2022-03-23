@@ -22,6 +22,14 @@ spec:
             value: quay.io/coreos
           - name: prometheus_image_repo
             value: quay.io/prometheus
+          - name: prometheus_operator_image_repo
+            value: quay.io/prometheus-operator
+          - name: kube_state_metrics_image_repo
+            value: k8s.gcr.io/kube-state-metrics
+          - name: brancz_image_repo
+            value: quay.io/brancz
+          - name: prometheus_adapter_image_repo
+            value: k8s.gcr.io/prometheus-adapter
           - name: configmap_reload_version
             value: v0.0.1
           - name: configmap_reloader_version

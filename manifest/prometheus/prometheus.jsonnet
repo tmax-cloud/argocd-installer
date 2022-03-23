@@ -3,6 +3,10 @@ function (
 	private_registry="172.22.6.2:5000",
 	coreos_image_repo="quay.io/coreos",
 	prometheus_image_repo="quay.io/prometheus",
+	prometheus_operator_image_repo="quay.io/prometheus-operator",
+	kube_state_metrics_image_repo="k8s.gcr.io/kube-state-metrics",
+	brancz_image_repo="quay.io/brancz",
+	prometheus_adapter_image_repo="k8s.gcr.io/prometheus-adapter",
 	configmap_reload_version="v0.0.1",
 	configmap_reloader_version="v0.51.2",
 	prometheus_operator_version="v0.51.2",
@@ -25,7 +29,8 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 		"labels": {
 		  "app.kubernetes.io/component": "controller",
 		  "app.kubernetes.io/name": "prometheus-operator",
-		  "app.kubernetes.io/version": "v0.34.0"
+		  "app.kubernetes.io/part-of": "kube-prometheus",
+		  "app.kubernetes.io/version": "0.51.2"
 		},
 		"name": "prometheus-operator",
 		"namespace": "monitoring"
@@ -35,15 +40,20 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 		"selector": {
 		  "matchLabels": {
 			"app.kubernetes.io/component": "controller",
-			"app.kubernetes.io/name": "prometheus-operator"
+			"app.kubernetes.io/name": "prometheus-operator",
+			"app.kubernetes.io/part-of": "kube-prometheus"
 		  }
 		},
 		"template": {
 		  "metadata": {
+			"annotations": {
+			  "kubectl.kubernetes.io/default-container": "prometheus-operator"
+			},
 			"labels": {
 			  "app.kubernetes.io/component": "controller",
 			  "app.kubernetes.io/name": "prometheus-operator",
-			  "app.kubernetes.io/version": "v0.34.0"
+			  "app.kubernetes.io/part-of": "kube-prometheus",
+			  "app.kubernetes.io/version": "0.51.2"
 			}
 		  },
 		  "spec": {
@@ -51,21 +61,11 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 			  {
 				"args": [
 				  "--kubelet-service=kube-system/kubelet",
-				  "--logtostderr=true",
 				  std.join("",
-				  	[
-						"--config-reloader-image=",
-						target_registry,
-						coreos_image_repo,
-						"/configmap-reload:",
-						configmap_reload_version
-					]
-				  ),
-				  std.join("",
-				  	[
+					[
 					  "--prometheus-config-reloader=",
 					  target_registry,
-					  coreos_image_repo,
+					  prometheus_operator_image_repo,
 					  "/prometheus-config-reloader:",
 					  configmap_reloader_version
 					]
@@ -74,7 +74,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 				"image": std.join("",
 					[
 						target_registry,
-						coreos_image_repo,
+						prometheus_operator_image_repo,
 						"/prometheus-operator:",
 						prometheus_operator_version
 					]
@@ -96,33 +96,57 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 					"memory": "100Mi"
 				  }
 				},
-				"volumeMounts": [
-					{
-					  "name": "prometheus-operator",
-					  "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
-					  "readOnly": true
-					}
-				],
 				"securityContext": {
 				  "allowPrivilegeEscalation": false
+				}
+			  },
+			  {
+				"args": [
+				  "--logtostderr",
+				  "--secure-listen-address=:8443",
+				  "--tls-cipher-suites=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305",
+				  "--upstream=http://127.0.0.1:8080/"
+				],
+				"image": std.join("",
+					[
+						target_registry,
+						brancz_image_repo,
+						"/kube-rbac-proxy:",
+						kube_rbac_proxy_version
+					]
+				),
+				"name": "kube-rbac-proxy",
+				"ports": [
+				  {
+					"containerPort": 8443,
+					"name": "https"
+				  }
+				],
+				"resources": {
+				  "limits": {
+					"cpu": "20m",
+					"memory": "40Mi"
+				  },
+				  "requests": {
+					"cpu": "10m",
+					"memory": "20Mi"
+				  }
+				},
+				"securityContext": {
+				  "runAsGroup": 65532,
+				  "runAsNonRoot": true,
+				  "runAsUser": 65532
 				}
 			  }
 			],
 			"nodeSelector": {
-			  "beta.kubernetes.io/os": "linux"
+			  "kubernetes.io/os": "linux"
 			},
 			"securityContext": {
 			  "runAsNonRoot": true,
 			  "runAsUser": 65534
 			},
-			"volumes": [
-				{
-				  "name": "prometheus-operator",
-				  "secret": {
-					"secretName": "prometheus-operator"
-				  }
-				}
-			]
+			"serviceAccountName": "prometheus-operator"
 		  }
 		}
 	  }
@@ -132,7 +156,11 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 	  "kind": "Alertmanager",
 	  "metadata": {
 		"labels": {
-		  "alertmanager": "main"
+		  "alertmanager": "main",
+		  "app.kubernetes.io/component": "alert-router",
+		  "app.kubernetes.io/name": "alertmanager",
+		  "app.kubernetes.io/part-of": "kube-prometheus",
+		  "app.kubernetes.io/version": "0.23.0"
 		},
 		"name": "main",
 		"namespace": "monitoring"
@@ -146,45 +174,50 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 				alertmanager_version
 			]
 		),
-		"volumeMounts": [
-			{
-			  "name": "alertmanager-main",
-			  "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
-			  "readOnly": true
-			}
-		],
-		"volumes": [
-			{
-			  "name": "alertmanager-main",
-			  "secret": {
-				"secretName": "alertmanager-main-token"
-			  }
-			}
-		],
-		"resources": {
-		  "requests": {
-			"memory": "200Mi",
-			"cpu": "100m"
-		  }
-		},
 		"nodeSelector": {
 		  "kubernetes.io/os": "linux"
 		},
-		"replicas": 1,
+		"podMetadata": {
+		  "labels": {
+			"app.kubernetes.io/component": "alert-router",
+			"app.kubernetes.io/name": "alertmanager",
+			"app.kubernetes.io/part-of": "kube-prometheus",
+			"app.kubernetes.io/version": {
+			  "ALERTMANAGER_VERSION": alertmanager_version
+			}
+		  }
+		},
+		"replicas": 3,
+		"resources": {
+		  "limits": {
+			"cpu": "100m",
+			"memory": "100Mi"
+		  },
+		  "requests": {
+			"cpu": "4m",
+			"memory": "100Mi"
+		  }
+		},
 		"securityContext": {
 		  "fsGroup": 2000,
 		  "runAsNonRoot": true,
 		  "runAsUser": 1000
 		},
-		"version": alertmanager_version
+		"serviceAccountName": "alertmanager-main",
+		"version": {
+		  "ALERTMANAGER_VERSION": alertmanager_version
+		}
 	  }
 	},
-	{
+		{
 	  "apiVersion": "apps/v1",
 	  "kind": "Deployment",
 	  "metadata": {
 		"labels": {
-		  "app": "kube-state-metrics"
+		  "app.kubernetes.io/component": "exporter",
+		  "app.kubernetes.io/name": "kube-state-metrics",
+		  "app.kubernetes.io/part-of": "kube-prometheus",
+		  "app.kubernetes.io/version": "2.2.3"
 		},
 		"name": "kube-state-metrics",
 		"namespace": "monitoring"
@@ -193,28 +226,66 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 		"replicas": 1,
 		"selector": {
 		  "matchLabels": {
-			"app": "kube-state-metrics"
+			"app.kubernetes.io/component": "exporter",
+			"app.kubernetes.io/name": "kube-state-metrics",
+			"app.kubernetes.io/part-of": "kube-prometheus"
 		  }
 		},
 		"template": {
 		  "metadata": {
+			"annotations": {
+			  "kubectl.kubernetes.io/default-container": "kube-state-metrics"
+			},
 			"labels": {
-			  "app": "kube-state-metrics"
+			  "app.kubernetes.io/component": "exporter",
+			  "app.kubernetes.io/name": "kube-state-metrics",
+			  "app.kubernetes.io/part-of": "kube-prometheus",
+			  "app.kubernetes.io/version": "2.2.3"
 			}
 		  },
 		  "spec": {
 			"containers": [
 			  {
 				"args": [
+				  "--host=127.0.0.1",
+				  "--port=8081",
+				  "--telemetry-host=127.0.0.1",
+				  "--telemetry-port=8082"
+				],
+				"image": std.join("",
+					[
+						target_registry,
+						kube_state_metrics_image_repo,
+						"/kube-state-metrics:",
+						kube_state_metrics_version
+					]
+				),
+				"name": "kube-state-metrics",
+				"resources": {
+				  "limits": {
+					"cpu": "100m",
+					"memory": "250Mi"
+				  },
+				  "requests": {
+					"cpu": "10m",
+					"memory": "190Mi"
+				  }
+				},
+				"securityContext": {
+				  "runAsUser": 65534
+				}
+			  },
+			  {
+				"args": [
 				  "--logtostderr",
 				  "--secure-listen-address=:8443",
-				  "--tls-cipher-suites=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
+				  "--tls-cipher-suites=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305",
 				  "--upstream=http://127.0.0.1:8081/"
 				],
 				"image": std.join("",
 					[
 						target_registry,
-						coreos_image_repo,
+						brancz_image_repo,
 						"/kube-rbac-proxy:",
 						kube_rbac_proxy_version
 					]
@@ -228,26 +299,31 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 				],
 				"resources": {
 				  "limits": {
-					"cpu": "20m",
+					"cpu": "40m",
 					"memory": "40Mi"
 				  },
 				  "requests": {
-					"cpu": "10m",
+					"cpu": "20m",
 					"memory": "20Mi"
 				  }
+				},
+				"securityContext": {
+				  "runAsGroup": 65532,
+				  "runAsNonRoot": true,
+				  "runAsUser": 65532
 				}
 			  },
 			  {
 				"args": [
 				  "--logtostderr",
 				  "--secure-listen-address=:9443",
-				  "--tls-cipher-suites=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
+				  "--tls-cipher-suites=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305",
 				  "--upstream=http://127.0.0.1:8082/"
 				],
 				"image": std.join("",
 					[
 						target_registry,
-						coreos_image_repo,
+						brancz_image_repo,
 						"/kube-rbac-proxy:",
 						kube_rbac_proxy_version
 					]
@@ -269,57 +345,17 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 					"memory": "20Mi"
 				  }
 				},
-				"volumeMounts": [
-				  {
-				    "name": "kube-state-metrics",
-					"mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
-					"readOnly": true
-				  }
-				]
-			  },
-			  {
-				"args": [
-				  "--host=127.0.0.1",
-				  "--port=8081",
-				  "--telemetry-host=127.0.0.1",
-				  "--telemetry-port=8082"
-				],
-				"image": std.join("",
-					[
-						target_registry,
-						coreos_image_repo,
-						"/kube-state-metrics:",
-						kube_state_metrics_version
-					]
-				),
-				"name": "kube-state-metrics",
-				"resources": {
-				  "limits": {
-					"cpu": "100m",
-					"memory": "150Mi"
-				  },
-				  "requests": {
-					"cpu": "100m",
-					"memory": "150Mi"
-				  }
+				"securityContext": {
+				  "runAsGroup": 65532,
+				  "runAsNonRoot": true,
+				  "runAsUser": 65532
 				}
 			  }
 			],
 			"nodeSelector": {
 			  "kubernetes.io/os": "linux"
 			},
-			"securityContext": {
-			  "runAsNonRoot": true,
-			  "runAsUser": 65534
-			},
-			"volumes": [
-			  {
-				"name": "kube-state-metrics",
-				"secret": {
-				  "secretName": "kube-state-metrics"
-				}
-			  }
-			]
+			"serviceAccountName": "kube-state-metrics"
 		  }
 		}
 	  }
@@ -329,7 +365,10 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 	  "kind": "DaemonSet",
 	  "metadata": {
 		"labels": {
-		  "app": "node-exporter"
+		  "app.kubernetes.io/component": "exporter",
+		  "app.kubernetes.io/name": "node-exporter",
+		  "app.kubernetes.io/part-of": "kube-prometheus",
+		  "app.kubernetes.io/version": "1.2.2"
 		},
 		"name": "node-exporter",
 		"namespace": "monitoring"
@@ -337,13 +376,21 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 	  "spec": {
 		"selector": {
 		  "matchLabels": {
-			"app": "node-exporter"
+			"app.kubernetes.io/component": "exporter",
+			"app.kubernetes.io/name": "node-exporter",
+			"app.kubernetes.io/part-of": "kube-prometheus"
 		  }
 		},
 		"template": {
 		  "metadata": {
+			"annotations": {
+			  "kubectl.kubernetes.io/default-container": "node-exporter"
+			},
 			"labels": {
-			  "app": "node-exporter"
+			  "app.kubernetes.io/component": "exporter",
+			  "app.kubernetes.io/name": "node-exporter",
+			  "app.kubernetes.io/part-of": "kube-prometheus",
+			  "app.kubernetes.io/version": "1.2.2"
 			}
 		  },
 		  "spec": {
@@ -351,11 +398,13 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 			  {
 				"args": [
 				  "--web.listen-address=127.0.0.1:9100",
-				  "--path.procfs=/host/proc",
 				  "--path.sysfs=/host/sys",
 				  "--path.rootfs=/host/root",
-				  "--collector.filesystem.ignored-mount-points=^/(dev|proc|sys|var/lib/docker/.+)($|/)",
-				  "--collector.filesystem.ignored-fs-types=^(autofs|binfmt_misc|cgroup|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|mqueue|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|sysfs|tracefs)$"
+				  "--no-collector.wifi",
+				  "--no-collector.hwmon",
+				  "--collector.filesystem.mount-points-exclude=^/(dev|proc|sys|var/lib/docker/.+|var/lib/kubelet/pods/.+)($|/)",
+				  "--collector.netclass.ignored-devices=^(veth.*|[a-f0-9]{15})$",
+				  "--collector.netdev.device-exclude=^(veth.*|[a-f0-9]{15})$"
 				],
 				"image": std.join("",
 					[
@@ -378,24 +427,15 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 				},
 				"volumeMounts": [
 				  {
-					"mountPath": "/host/proc",
-					"name": "proc",
-					"readOnly": false
-				  },
-				  {
 					"mountPath": "/host/sys",
+					"mountPropagation": "HostToContainer",
 					"name": "sys",
-					"readOnly": false
+					"readOnly": true
 				  },
 				  {
 					"mountPath": "/host/root",
 					"mountPropagation": "HostToContainer",
 					"name": "root",
-					"readOnly": true
-				  },
-				  {
-				    "name": "node-exporter",
-					"mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
 					"readOnly": true
 				  }
 				]
@@ -403,8 +443,8 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 			  {
 				"args": [
 				  "--logtostderr",
-				  "--secure-listen-address=$(IP):9100",
-				  "--tls-cipher-suites=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
+				  "--secure-listen-address=[$(IP)]:9100",
+				  "--tls-cipher-suites=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305",
 				  "--upstream=http://127.0.0.1:9100/"
 				],
 				"env": [
@@ -420,7 +460,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 				"image": std.join("",
 					[
 						target_registry,
-						coreos_image_repo,
+						brancz_image_repo,
 						"/kube-rbac-proxy:",
 						kube_rbac_proxy_version
 					]
@@ -442,6 +482,11 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 					"cpu": "10m",
 					"memory": "20Mi"
 				  }
+				},
+				"securityContext": {
+				  "runAsGroup": 65532,
+				  "runAsNonRoot": true,
+				  "runAsUser": 65532
 				}
 			  }
 			],
@@ -454,18 +499,13 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 			  "runAsNonRoot": true,
 			  "runAsUser": 65534
 			},
+			"serviceAccountName": "node-exporter",
 			"tolerations": [
 			  {
 				"operator": "Exists"
 			  }
 			],
 			"volumes": [
-			  {
-				"hostPath": {
-				  "path": "/proc"
-				},
-				"name": "proc"
-			  },
 			  {
 				"hostPath": {
 				  "path": "/sys"
@@ -477,42 +517,53 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 				  "path": "/"
 				},
 				"name": "root"
-			  },
-			  {
-				"name": "node-exporter",
-				"secret": {
-				  "secretName": "node-exporter"
-				}
 			  }
 			]
 		  }
+		},
+		"updateStrategy": {
+		  "rollingUpdate": {
+			"maxUnavailable": "10%"
+		  },
+		  "type": "RollingUpdate"
 		}
 	  }
 	},
-	{
+		{
 	  "apiVersion": "apps/v1",
 	  "kind": "Deployment",
 	  "metadata": {
+		"labels": {
+		  "app.kubernetes.io/component": "metrics-adapter",
+		  "app.kubernetes.io/name": "prometheus-adapter",
+		  "app.kubernetes.io/part-of": "kube-prometheus",
+		  "app.kubernetes.io/version": "0.9.1"
+		},
 		"name": "prometheus-adapter",
 		"namespace": "monitoring"
 	  },
 	  "spec": {
-		"replicas": 1,
+		"replicas": 2,
 		"selector": {
 		  "matchLabels": {
-			"name": "prometheus-adapter"
+			"app.kubernetes.io/component": "metrics-adapter",
+			"app.kubernetes.io/name": "prometheus-adapter",
+			"app.kubernetes.io/part-of": "kube-prometheus"
 		  }
 		},
 		"strategy": {
 		  "rollingUpdate": {
 			"maxSurge": 1,
-			"maxUnavailable": 0
+			"maxUnavailable": 1
 		  }
 		},
 		"template": {
 		  "metadata": {
 			"labels": {
-			  "name": "prometheus-adapter"
+			  "app.kubernetes.io/component": "metrics-adapter",
+			  "app.kubernetes.io/name": "prometheus-adapter",
+			  "app.kubernetes.io/part-of": "kube-prometheus",
+			  "app.kubernetes.io/version": "0.9.1"
 			}
 		  },
 		  "spec": {
@@ -524,13 +575,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 				  "--logtostderr=true",
 				  "--metrics-relist-interval=1m",
 				  "--prometheus-url=http://prometheus-k8s.monitoring.svc:9090/",
-				  "--secure-port=6443"
+				  "--secure-port=6443",
+				  "--tls-cipher-suites=TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_GCM_SHA256,TLS_RSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA"
 				],
 				"image": std.join("",
 					[
 						target_registry,
-						coreos_image_repo,
-						"/k8s-prometheus-adapter-amd64:",
+						prometheus_adapter_image_repo,
+						"/prometheus-adapter:",
 						prometheus_adapter_version
 					]
 				),
@@ -540,6 +592,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 					"containerPort": 6443
 				  }
 				],
+				"resources": {
+				  "limits": {
+					"cpu": "250m",
+					"memory": "180Mi"
+				  },
+				  "requests": {
+					"cpu": "102m",
+					"memory": "180Mi"
+				  }
+				},
 				"volumeMounts": [
 				  {
 					"mountPath": "/tmp",
@@ -555,28 +617,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 					"mountPath": "/etc/adapter",
 					"name": "config",
 					"readOnly": false
-				  },
-				  {
-				    "name": "prometheus-adapter",
-					"mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
-					"readOnly": true
 				  }
-				],
-				"resources": {
-				  "limits": {
-					"cpu": "200m",
-					"memory": "200Mi"
-				  },
-				  "requests": {
-					"cpu": "200m",
-					"memory": "200Mi"
-				  }
-				}
+				]
 			  }
 			],
 			"nodeSelector": {
 			  "kubernetes.io/os": "linux"
 			},
+			"serviceAccountName": "prometheus-adapter",
 			"volumes": [
 			  {
 				"emptyDir": {},
@@ -591,29 +639,47 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 				  "name": "adapter-config"
 				},
 				"name": "config"
-			  },
-			  {
-				"name": "prometheus-adapter",
-				"secret": {
-				  "secretName": "prometheus-adapter"
-				}
 			  }
 			]
 		  }
 		}
 	  }
 	},
-	{
+		{
 	  "apiVersion": "monitoring.coreos.com/v1",
 	  "kind": "Prometheus",
 	  "metadata": {
 		"labels": {
+		  "app.kubernetes.io/component": "prometheus",
+		  "app.kubernetes.io/name": "prometheus",
+		  "app.kubernetes.io/part-of": "kube-prometheus",
+		  "app.kubernetes.io/version": "2.30.3",
 		  "prometheus": "k8s"
 		},
 		"name": "k8s",
 		"namespace": "monitoring"
 	  },
 	  "spec": {
+		"alerting": {
+		  "alertmanagers": [
+			{
+			  "apiVersion": "v2",
+			  "name": "alertmanager-main",
+			  "namespace": "monitoring",
+			  "port": "web"
+			}
+		  ]
+		},
+		"enableFeatures": [],
+		"externalLabels": {},
+		"image": std.join("",
+			[
+				target_registry,
+				prometheus_image_repo,
+				"/prometheus:",
+				prometheus_version
+			]
+		),
 		"storage": {
 		  "volumeClaimTemplate": {
 			"spec": {
@@ -628,43 +694,21 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 			}
 		  }
 		},
-		"alerting": {
-		  "alertmanagers": [
-			{
-			  "name": "alertmanager-main",
-			  "namespace": "monitoring",
-			  "port": "web"
-			}
-		  ]
-		},
-		"image": std.join("",
-			[
-				target_registry,
-				prometheus_image_repo,
-				"/prometheus:",
-				prometheus_version
-			]
-		),
-		"volumeMounts": [
-			{
-			  "name": "prometheus-k8s",
-			  "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
-			  "readOnly": true
-			}
-		],
-		"volumes": [
-			{
-			  "name": "prometheus-k8s",
-			  "secret": {
-				"secretName": "prometheus-k8s"
-			  }
-			}
-		],
 		"nodeSelector": {
 		  "kubernetes.io/os": "linux"
 		},
-		"podMonitorSelector": {},
+		"podMetadata": {
+		  "labels": {
+			"app.kubernetes.io/component": "prometheus",
+			"app.kubernetes.io/name": "prometheus",
+			"app.kubernetes.io/part-of": "kube-prometheus",
+			"app.kubernetes.io/version": "2.30.3"
+		  }
+		},
 		"podMonitorNamespaceSelector": {},
+		"podMonitorSelector": {},
+		"probeNamespaceSelector": {},
+		"probeSelector": {},
 		"replicas": 1,
 		"resources": {
 		  "requests": {
@@ -672,20 +716,17 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 			"memory": "2Gi"
 		  }
 		},
-		"ruleSelector": {
-		  "matchLabels": {
-			"prometheus": "k8s",
-			"role": "alert-rules"
-		  }
-		},
+		"ruleNamespaceSelector": {},
+		"ruleSelector": {},
 		"securityContext": {
 		  "fsGroup": 2000,
 		  "runAsNonRoot": true,
 		  "runAsUser": 1000
 		},
+		"serviceAccountName": "prometheus-k8s",
 		"serviceMonitorNamespaceSelector": {},
 		"serviceMonitorSelector": {},
-		"version": prometheus_version
+		"version": "2.30.3"
 	  }
 	}
 ]
