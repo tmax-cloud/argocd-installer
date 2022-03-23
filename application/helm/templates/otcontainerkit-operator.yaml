@@ -5,9 +5,9 @@ metadata:
   labels:
     cluster: {{ .Values.spec.destination.label }}
   {{- if eq .Values.spec.destination.label "master" }}
-  name: otcontainerkit-redis-oprerator
+  name: otcontainerkit-redis-operator
   {{- else }}
-  name: {{ .Values.spec.destination.clusterInfo }}-otcontainerkit-redis-oprerator
+  name: {{ .Values.spec.destination.clusterInfo }}-otcontainerkit-redis-operator
   {{- end }}
   namespace: argocd
 spec:

@@ -9,7 +9,7 @@ local target_repo = if params.repo_provider == "gitlab" then repo_url_protocol +
   "apiVersion": "argoproj.io/v1alpha1",
   "kind": "Application",
   "metadata": {
-    "name": "strimzi-kafka-cluster-oprerator",
+    "name": "strimzi-kafka-cluster-operator",
     "namespace": "argocd"
   },
   "spec": {
@@ -37,7 +37,7 @@ local target_repo = if params.repo_provider == "gitlab" then repo_url_protocol +
           ],
         },
       },
-      "path": "manifest/strimzi-kafka-cluster-oprerator",
+      "path": "manifest/strimzi-kafka-cluster-operator",
       "repoURL": target_repo,
       "targetRevision": params.branch
     },

@@ -6,9 +6,9 @@ metadata:
     cluster: {{ .Values.spec.destination.label }}
     hyperAuth: kafka
   {{- if eq .Values.spec.destination.label "master" }}
-  name: strimzi-kafka-cluster-oprerator
+  name: strimzi-kafka-cluster-operator
   {{- else }}
-  name: {{ .Values.spec.destination.clusterInfo }}-strimzi-kafka-cluster-oprerator
+  name: {{ .Values.spec.destination.clusterInfo }}-strimzi-kafka-cluster-operator
   {{- end }}
   namespace: argocd
 spec:
@@ -28,7 +28,7 @@ spec:
             value: "{{ .Values.global.network.disabled }}"
           - name: private_registry
             value: {{ .Values.global.privateRegistry }}
-    path: manifest/strimzi-kafka-cluster-oprerator
+    path: manifest/strimzi-kafka-cluster-operator
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
 {{- end }}
