@@ -161,6 +161,10 @@ modules:
   cicd:
     enabled: false
 
+  ### redis-operator
+  redis:
+    enabled: true
+
   ### image validating webhook
   imageValidatingWebhook:
     enabled: false
