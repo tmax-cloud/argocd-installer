@@ -7,10 +7,14 @@ function (
 	grafana_pvc="10Gi",
 	grafana_version="6.4.3",
 	grafana_image_repo="grafana/grafana",
-	ingress_domain=""
+	ingress_domain="",
+	cluster_name="master",
+	admin_user="test@test.co.kr"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
+local admin_info = if cluster_name == "master" then "" else "admin_user = " + admin_user + "\n";
+local target_client_id = if cluster_name == "" then client_id else cluster_name + "-";
 
 [
 	{
@@ -29,6 +33,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 				"root_url = https://%(domain)s/api/grafana/\n",
 				"serve_from_sub_path = true\n",
 				"[security]\n",
+				admin_info,
 				"allow_embedding = true\n",
 				"[auth]\n",
 				"disable_login_form = true\n",
@@ -36,7 +41,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 				"name = OAuth\n",
 				"enabled = true\n",
 				"allow_sign_up = true\n",
-				"client_id =", client_id, "\n",
+				"client_id =", target_client_id, client_id, "\n",
 				"client_secret =", tmax_client_secret, "\n",
 				"scopes = openid profile email\n",
 				"email_attribute_name = email:primary\n",

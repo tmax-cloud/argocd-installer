@@ -26,6 +26,9 @@ spec:
         - name: global.privateRegistry
           # target registry 주소로 변경
           value: testregistry.com
+        - name: global.adminUser
+          # 해당 클러스터의 admin 계정으로 변경
+          value: test@test.co.kr
     path: application/helm
     # 환경에 맞게 url 주소 변경 필요
     repoURL: https://github.com/tmax-cloud/argocd-installer

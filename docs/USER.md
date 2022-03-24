@@ -75,7 +75,7 @@
     - 테스트할 환경에서 바라볼 git repo url, branch를 설정
         - yq가 사용 가능한 경우
             ```
-            $ bash set-master-env-yq.sh {{ git repo url }} {{ branch }} {{ cluster name }} {{ private registry url }}
+            $ bash set-master-env-yq.sh {{ git repo url }} {{ branch }} {{ cluster name }} {{ private registry url }} {{ single cluster admin email }}
             ```
         - yq가 사용 불가능한 경우
             - vi 등의 text editor를 통해 직접 수정
@@ -86,7 +86,7 @@
     - gitlab의 경우 git repo url 마지막에 .git을 추가해주어야함
     ex) https://gitlab.com/root/argocd-installer.git
     - private registry를 사용하지 않는 경우에는 빈스트링("")을 입력
-    ex) bash set-master-env-yq.sh {{ git repo url }} {{ branch }} {{ cluster name }} ""
+    ex) bash set-master-env-yq.sh {{ git repo url }} {{ branch }} {{ cluster name }} "" {{ single cluster admin email }}
 ---
 3. application 등록
     - 테스트할 마스터클러스터 환경에 application을 등록
