@@ -274,7 +274,7 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
                 "--enable-metrics=true",
                 std.join("", ["--encryption-key=", encryption_key]),
                 "--resources=uri=/console/kibana/*|roles=kibana:kibana-manager",
-                "--base-uri=/console/kibana"
+                "--base-uri=/console/kibana",
                 "--verbose"
               ],
               "ports": [
