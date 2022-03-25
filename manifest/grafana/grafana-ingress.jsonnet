@@ -21,45 +21,45 @@ if cluster_name == "master" then [
 		"apiVersion": "networking.k8s.io/v1",
 		"kind": "Ingress",
 		"metadata": {
-		"labels": {
-			"ingress.tmaxcloud.org/name": "grafana"
-		},
-		"annotations": {
-			"traefik.ingress.kubernetes.io/router.entrypoints": "websecure"
-		},
-		"name": "grafana",
-		"namespace": "monitoring"
+			"labels": {
+				"ingress.tmaxcloud.org/name": "grafana"
+			},
+			"annotations": {
+				"traefik.ingress.kubernetes.io/router.entrypoints": "websecure"
+			},
+			"name": "grafana",
+			"namespace": "monitoring"
 		},
 		"spec": {
-		"ingressClassName": "tmax-cloud",
-		"rules": [
-			{
-		"host": std.join("", ["grafana.", ingress_domain]),
-		"http": {
-			"paths": [
-			{
-				"backend": {
-			"service": {
-				"name": "grafana",
-				"port": {
-				"number": 3000
+			"ingressClassName": "tmax-cloud",
+			"rules": [
+				{
+					"host": std.join("", ["grafana.", ingress_domain]),
+					"http": {
+						"paths": [
+							{
+								"backend": {
+									"service": {
+										"name": "grafana",
+										"port": {
+											"number": 3000
+										}
+									}
+								},
+								"path": "/",
+								"pathType": "Prefix"
+							}
+						]
+					}
 				}
-			}
-				},
-				"path": "/",
-				"pathType": "Prefix"
-			}
+			],
+			"tls": [
+				{
+					"hosts": [
+						std.join("", ["grafana.", ingress_domain])
+					]
+				}
 			]
-		}
-			}
-		],
-		"tls": [
-			{
-			"hosts": [
-			std.join("", ["grafana.", ingress_domain])
-			]
-			}
-		]
 		}
 	}
 ] else []
