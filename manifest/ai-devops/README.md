@@ -25,6 +25,15 @@ application/ai-devops.yaml의 top-level arguments(tlas) 설정 가이드입니�
   
 - name: notebook_svc_type
   value: "type of service object, if ingress is unavailable use LoadBalancer, else ClusterIP "
+
+- name: tmax_client_secret
+  value: "Hyperauth client secret for AI-DEVOPS notebook-gatekeeper"
+  
+- name: hyperauth_url
+  value: "Hyperauth URL"
+  
+- name: hyperauth_realm
+  value: "Hyperauth realm name for AI-DEVOPS"
 ```
 
 ### 예시
@@ -44,4 +53,10 @@ application/ai-devops.yaml의 top-level arguments(tlas) 설정 가이드입니�
   value: tmaxcloud.org
 - name: notebook_svc_type
   value: Ingress
+- name: tmax_client_secret
+  value: tmax_client_secret
+- name: hyperauth_url
+  value: hyperauth.tmaxcloud.org
+- name: hyperauth_realm
+  value: tmax
 ```
