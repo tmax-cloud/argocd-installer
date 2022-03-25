@@ -25,7 +25,6 @@ local gatekeeper_image_path = "quay.io/keycloak/keycloak-gatekeeper:" + gatekeep
 local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fluentd_image_tag;
 local gatekeeper_enabled = if hyperauth_url != "" then true else false;
 local resource_uri = if cluster_name == "master" then "" else "/console/kibana";
-local base_uri = if cluster_name == "master" then "" else "--base-uri=/console/kibana";
 
 [
   {
