@@ -217,7 +217,113 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
               }
             }
           ],
-          "containers": if hyperauth_url != "" then [
+          "containers": if hyperauth_url == "" then [
+             {
+              "name": "kibana",
+              "image": std.join("",[target_registry, kibana_image_path]),
+              "resources": {
+                "limits": {
+                  "cpu": "500m",
+                  "memory": "1000Mi"
+                },
+                "requests": {
+                  "cpu": "500m",
+                  "memory": "1000Mi"
+                }
+              },
+              "env": [
+                {
+                  "name": "ELASTICSEARCH_URL",
+                  "value": "http://elasticsearch.kube-logging.svc.cluster.local:9200"
+                }
+              ],
+              "ports": [
+                {
+                  "containerPort": 5601
+                }
+              ],
+              "volumeMounts": [
+                {
+                  "mountPath": "/usr/share/kibana/config/kibana.yml",
+                  "name": "config",
+                  "subPath": "kibana.yml"
+                }
+              ]
+            }
+          ] else if cluster_name != "master" then [
+            {
+              "name": "gatekeeper",
+              "image": std.join("", [target_registry, gatekeeper_image_path]),
+              "imagePullPolicy": "Always",
+              "args": [
+                std.join("", ["--client-id=", kibana_client_id]),
+                std.join("", ["--client-secret=", tmax_client_secret]),
+                "--listen=:3000",
+                "--upstream-url=http://127.0.0.1:5601",
+                std.join("", ["--discovery-url=https://", hyperauth_url, "/auth/realms/", hyperauth_realm]),
+                "--secure-cookie=false",
+                "--skip-openid-provider-tls-verify=true",
+                "--enable-self-signed-tls=false",
+                "--tls-cert=/etc/secrets/tls.crt",
+                "--tls-private-key=/etc/secrets/tls.key",
+                "--tls-ca-certificate=/etc/secrets/ca.crt",
+                "--skip-upstream-tls-verify=true",
+                "--upstream-keepalives=false",
+                "--enable-default-deny=true",
+                "--enable-refresh-tokens=true",
+                "--enable-metrics=true",
+                std.join("", ["--encryption-key=", encryption_key]),
+                "--resources=uri=/console/kibana/*|roles=kibana:kibana-manager",
+                "--base-uri=/console/kibana",
+                "--verbose"
+              ],
+              "ports": [
+                {
+                  "name": "service",
+                  "containerPort": 3000
+                }
+              ],
+              "volumeMounts": [
+                {
+                  "name": "secret",
+                  "mountPath": "/etc/secrets",
+                  "readOnly": true
+                }
+              ]
+            },
+            {
+              "name": "kibana",
+              "image": std.join("",[target_registry, kibana_image_path]),
+              "resources": {
+                "limits": {
+                  "cpu": "500m",
+                  "memory": "1000Mi"
+                },
+                "requests": {
+                  "cpu": "500m",
+                  "memory": "1000Mi"
+                }
+              },
+              "env": [
+                {
+                  "name": "ELASTICSEARCH_URL",
+                  "value": "http://elasticsearch.kube-logging.svc.cluster.local:9200"
+                }
+              ],
+              "ports": [
+                {
+                  "containerPort": 5601
+                }
+              ],
+              "volumeMounts": [
+                {
+                  "mountPath": "/usr/share/kibana/config/kibana.yml",
+                  "name": "config",
+                  "subPath": "kibana.yml"
+                }
+              ]
+            }
+          ] else [
             {
               "name": "gatekeeper",
               "image": std.join("", [target_registry, gatekeeper_image_path]),
@@ -289,39 +395,6 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
                 }
               ]
             }
-          ] else [
-            {
-              "name": "kibana",
-              "image": std.join("",[target_registry, kibana_image_path]),
-              "resources": {
-                "limits": {
-                  "cpu": "500m",
-                  "memory": "1000Mi"
-                },
-                "requests": {
-                  "cpu": "500m",
-                  "memory": "1000Mi"
-                }
-              },
-              "env": [
-                {
-                  "name": "ELASTICSEARCH_URL",
-                  "value": "http://elasticsearch.kube-logging.svc.cluster.local:9200"
-                }
-              ],
-              "ports": [
-                {
-                  "containerPort": 5601
-                }
-              ],
-              "volumeMounts": [
-                {
-                  "mountPath": "/usr/share/kibana/config/kibana.yml",
-                  "name": "config",
-                  "subPath": "kibana.yml"
-                }
-              ]
-            }
           ]
         }
       }
@@ -334,8 +407,10 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
       "name": "kibana-config",
       "namespace": "kube-logging"
     },
-    "data": {
+    "data": if cluster_name == "master" then {
       "kibana.yml": std.join("", ["server.name: kibana", "\nserver.host: '0'", "\nelasticsearch.hosts: [ 'http://elasticsearch:9200' ]", "\nelasticsearch.requestTimeout: '100000ms'"])
+    } else {
+      "kibana.yml": std.join("", ["server.name: kibana", "\nserver.host: '0'",  "\nserver.basePath: '/console/kibana'",  "\nserver.rewriteBasePath: true", "\nelasticsearch.hosts: [ 'http://elasticsearch:9200' ]", "\nelasticsearch.requestTimeout: '100000ms'"])
     }
   },
   {
