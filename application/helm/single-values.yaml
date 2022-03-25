@@ -52,7 +52,7 @@ modules:
 
   ### strimzi-kafka-operator
   strimziKafka:
-    enabled: false
+    enabled: true
 
   ### hyperauth
   hyperAuth:
