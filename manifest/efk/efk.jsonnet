@@ -23,6 +23,9 @@ local busybox_image_path = "docker.io/busybox:" + busybox_image_tag;
 local kibana_image_path = "docker.elastic.co/kibana/kibana:" + kibana_image_tag;
 local gatekeeper_image_path = "quay.io/keycloak/keycloak-gatekeeper:" + gatekeeper_image_tag;
 local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fluentd_image_tag;
+local gatekeeper_enabled = if hyperauth_url != "" then true else false;
+local resource_uri = if cluster_name == "master" then "" else "/console/kibana";
+local base_uri = if cluster_name == "master" then "" else "--base-uri=/console/kibana";
 
 [
   {
@@ -217,8 +220,8 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
               }
             }
           ],
-          "containers": if hyperauth_url == "" then [
-             {
+          "containers": [
+            {
               "name": "kibana",
               "image": std.join("",[target_registry, kibana_image_path]),
               "resources": {
@@ -250,7 +253,7 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
                 }
               ]
             }
-          ] else if cluster_name != "master" then [
+          ]  + if gatekeeper_enabled then [
             {
               "name": "gatekeeper",
               "image": std.join("", [target_registry, gatekeeper_image_path]),
@@ -273,8 +276,8 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
                 "--enable-refresh-tokens=true",
                 "--enable-metrics=true",
                 std.join("", ["--encryption-key=", encryption_key]),
-                "--resources=uri=/console/kibana/*|roles=kibana:kibana-manager",
-                "--base-uri=/console/kibana",
+                std.join("", ["--resources=uri=", resource_uri, "/*|roles=kibana:kibana-manager"]),
+                base_uri,
                 "--verbose"
               ],
               "ports": [
@@ -290,112 +293,8 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
                   "readOnly": true
                 }
               ]
-            },
-            {
-              "name": "kibana",
-              "image": std.join("",[target_registry, kibana_image_path]),
-              "resources": {
-                "limits": {
-                  "cpu": "500m",
-                  "memory": "1000Mi"
-                },
-                "requests": {
-                  "cpu": "500m",
-                  "memory": "1000Mi"
-                }
-              },
-              "env": [
-                {
-                  "name": "ELASTICSEARCH_URL",
-                  "value": "http://elasticsearch.kube-logging.svc.cluster.local:9200"
-                }
-              ],
-              "ports": [
-                {
-                  "containerPort": 5601
-                }
-              ],
-              "volumeMounts": [
-                {
-                  "mountPath": "/usr/share/kibana/config/kibana.yml",
-                  "name": "config",
-                  "subPath": "kibana.yml"
-                }
-              ]
             }
-          ] else [
-            {
-              "name": "gatekeeper",
-              "image": std.join("", [target_registry, gatekeeper_image_path]),
-              "imagePullPolicy": "Always",
-              "args": [
-                std.join("", ["--client-id=", kibana_client_id]),
-                std.join("", ["--client-secret=", tmax_client_secret]),
-                "--listen=:3000",
-                "--upstream-url=http://127.0.0.1:5601",
-                std.join("", ["--discovery-url=https://", hyperauth_url, "/auth/realms/", hyperauth_realm]),
-                "--secure-cookie=false",
-                "--skip-openid-provider-tls-verify=true",
-                "--enable-self-signed-tls=false",
-                "--tls-cert=/etc/secrets/tls.crt",
-                "--tls-private-key=/etc/secrets/tls.key",
-                "--tls-ca-certificate=/etc/secrets/ca.crt",
-                "--skip-upstream-tls-verify=true",
-                "--upstream-keepalives=false",
-                "--enable-default-deny=true",
-                "--enable-refresh-tokens=true",
-                "--enable-metrics=true",
-                std.join("", ["--encryption-key=", encryption_key]),
-                "--resources=uri=/*|roles=kibana:kibana-manager",
-                "--verbose"
-              ],
-              "ports": [
-                {
-                  "name": "service",
-                  "containerPort": 3000
-                }
-              ],
-              "volumeMounts": [
-                {
-                  "name": "secret",
-                  "mountPath": "/etc/secrets",
-                  "readOnly": true
-                }
-              ]
-            },
-            {
-              "name": "kibana",
-              "image": std.join("",[target_registry, kibana_image_path]),
-              "resources": {
-                "limits": {
-                  "cpu": "500m",
-                  "memory": "1000Mi"
-                },
-                "requests": {
-                  "cpu": "500m",
-                  "memory": "1000Mi"
-                }
-              },
-              "env": [
-                {
-                  "name": "ELASTICSEARCH_URL",
-                  "value": "http://elasticsearch.kube-logging.svc.cluster.local:9200"
-                }
-              ],
-              "ports": [
-                {
-                  "containerPort": 5601
-                }
-              ],
-              "volumeMounts": [
-                {
-                  "mountPath": "/usr/share/kibana/config/kibana.yml",
-                  "name": "config",
-                  "subPath": "kibana.yml"
-                }
-              ]
-            }
-          ]
+          ],
         }
       }
     }
@@ -485,7 +384,7 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
       "selector": {
         "matchLabels": {
           "app": "fluentd"
-         }
+        }
       },
       "template": {
         "metadata": {
@@ -517,7 +416,7 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
                 {
                   "name": "FLUENT_ELASTICSEARCH_SCHEME",
                   "value": "http",
-                 },
+                },
                 {
                   "name": "FLUENTD_SYSTEMD_CONF",
                   "value": "disable",
