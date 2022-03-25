@@ -294,7 +294,7 @@ local base_uri = if cluster_name == "master" then "" else "--base-uri=/console/k
                 }
               ]
             }
-          ],
+          ] else [],
         }
       }
     }
