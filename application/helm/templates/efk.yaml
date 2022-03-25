@@ -49,6 +49,10 @@ spec:
             value: {{ .Values.modules.efk.fluentd.version }}
           - name: cluster_name
             value: {{ .Values.spec.destination.label }}
+          {{- if eq .Values.spec.destination.label "master" }}
+          - name: kibana_client_id
+            value: {{ .Values.spec.destination.label }}-kibana
+          {{- end }}
     path: manifest/efk
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
