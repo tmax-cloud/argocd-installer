@@ -43,6 +43,10 @@ spec:
             value: {{ .Values.spec.destination.label }}
           - name: admin_user
             value: {{ .Values.global.adminUser }}
+          {{- if ne .Values.spec.destination.label "master" }}
+          - name: client_id
+            value: {{ .Values.spec.destination.label }}-grafana
+          {{- end }}
     path: manifest/grafana
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}

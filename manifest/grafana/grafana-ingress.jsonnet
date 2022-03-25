@@ -12,10 +12,6 @@ function (
 	admin_user="test@test.co.kr"
 )
 
-local target_registry = if is_offline == "false" then "" else private_registry + "/";
-local admin_info = if cluster_name == "master" then "" else "admin_user = " + admin_user + "\n";
-local target_client_id = if cluster_name == "master" then "" else cluster_name + "-";
-
 if cluster_name == "master" then [
 	{
 		"apiVersion": "networking.k8s.io/v1",
