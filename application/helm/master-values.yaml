@@ -78,15 +78,15 @@ modules:
   prometheus:
     enabled: true
     versions:
-      prometheus: v2.11.0
+      prometheus: v2.30.3
       cmReload: v0.0.1
-      cmReloader: v0.34.0
-      operator: v0.34.0
-      alertManager: v0.20.0
-      kubeRbacProxy: v0.4.1
-      kubeStateMetrics: v1.8.0
-      nodeExporter: v0.18.1
-      adapter: v0.5.0
+      cmReloader: v0.51.2
+      operator: v0.51.2
+      alertManager: v0.23.0
+      kubeRbacProxy: v0.11.0
+      kubeStateMetrics: v2.2.3
+      nodeExporter: v1.2.2
+      adapter: v0.9.1
     pvcSize: 10Gi
 
   ### grafana
