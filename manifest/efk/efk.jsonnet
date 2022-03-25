@@ -277,9 +277,10 @@ local base_uri = if cluster_name == "master" then "" else "--base-uri=/console/k
                 "--enable-metrics=true",
                 std.join("", ["--encryption-key=", encryption_key]),
                 std.join("", ["--resources=uri=", resource_uri, "/*|roles=kibana:kibana-manager"]),
-                base_uri,
                 "--verbose"
-              ],
+              ] + if cluster_name != "master" then [
+                "--base-uri=/console/kibana"
+              ] else [],
               "ports": [
                 {
                   "name": "service",
