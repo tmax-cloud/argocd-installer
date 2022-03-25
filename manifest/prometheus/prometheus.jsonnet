@@ -182,9 +182,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 			"app.kubernetes.io/component": "alert-router",
 			"app.kubernetes.io/name": "alertmanager",
 			"app.kubernetes.io/part-of": "kube-prometheus",
-			"app.kubernetes.io/version": {
-			  "ALERTMANAGER_VERSION": alertmanager_version
-			}
+			"app.kubernetes.io/version": "0.23.0"
 		  }
 		},
 		"replicas": 3,
@@ -204,12 +202,10 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 		  "runAsUser": 1000
 		},
 		"serviceAccountName": "alertmanager-main",
-		"version": {
-		  "ALERTMANAGER_VERSION": alertmanager_version
-		}
+		"version": "v0.23.0"
 	  }
 	},
-		{
+	{
 	  "apiVersion": "apps/v1",
 	  "kind": "Deployment",
 	  "metadata": {
@@ -529,7 +525,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 		}
 	  }
 	},
-		{
+	{
 	  "apiVersion": "apps/v1",
 	  "kind": "Deployment",
 	  "metadata": {
@@ -645,7 +641,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 		}
 	  }
 	},
-		{
+	{
 	  "apiVersion": "monitoring.coreos.com/v1",
 	  "kind": "Prometheus",
 	  "metadata": {
