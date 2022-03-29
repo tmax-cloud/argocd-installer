@@ -708,7 +708,11 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 		"replicas": 1,
 		"resources": {
 		  "requests": {
-			"cpu": "10m",
+			"cpu": "100m",
+			"memory": "2Gi"
+		  },
+		  "limits": {
+			"cpu": "100m",
 			"memory": "2Gi"
 		  }
 		},
