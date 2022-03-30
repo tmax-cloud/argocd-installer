@@ -11,6 +11,18 @@ spec:
     - name: kubernetes.rules
       rules:
         - expr: >-
+            kube_pod_container_resource_requests{resource="cpu"}
+          record: 'kube_pod_container_resource_requests_cpu_cores'
+        - expr: >-
+            kube_pod_container_resource_limits{resource="cpu"}
+          record: 'kube_pod_container_resource_limits_cpu_cores'
+        - expr: >-
+            kube_pod_container_resource_requests{resource="memory"}
+          record: 'kube_pod_container_resource_requests_memory_bytes'
+        - expr: >-
+            kube_pod_container_resource_limits{resource="memory"}
+          record: 'kube_pod_container_resource_limits_memory_bytes'
+        - expr: >-
             sum(container_memory_usage_bytes{container_name!="POD",pod!=""})
             BY (pod, namespace)
           record: 'pod:container_memory_usage_bytes:sum'
