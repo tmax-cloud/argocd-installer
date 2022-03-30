@@ -15,7 +15,7 @@ spec:
           record: 'kube_pod_container_resource_requests_cpu_cores'
         - expr: >-
             kube_pod_container_resource_limits{resource="cpu"}
-          record: 'kube_pod_container_limits_requests_cpu_cores'
+          record: 'kube_pod_container_resource_limits_cpu_cores'
         - expr: >-
             kube_pod_container_resource_requests{resource="memory"}
           record: 'kube_pod_container_resource_requests_memory_bytes'
