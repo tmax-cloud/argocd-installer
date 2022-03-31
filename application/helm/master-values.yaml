@@ -149,6 +149,10 @@ modules:
     kafka:
       enabled: true
 
+  ### hyperregistry
+  harbor:
+    enabled: false
+
   ### tekton pipeline
   tektonPipeline:
     enabled: true

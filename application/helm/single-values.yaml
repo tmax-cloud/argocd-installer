@@ -148,18 +148,22 @@ modules:
     kafka:
       enabled: true
 
+  ### hyperregistry
+  harbor:
+    enabled: true
+
   ### tekton pipeline
   tektonPipeline:
-    enabled: false
+    enabled: true
     #namespace: tekton-pipelines
 
   ### tekton trigger
   tektonTrigger:
-    enabled: false
+    enabled: true
 
   ### cicd operator
   cicd:
-    enabled: false
+    enabled: true
 
   ### redis-operator
   redis:
