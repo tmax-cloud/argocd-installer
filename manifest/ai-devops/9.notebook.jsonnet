@@ -5790,7 +5790,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "kind": "Notebook"
         },
         "title": "Tmax-KALE Notebook",
-        "yaml": "apiVersion: kubeflow.tmax.io/v1\nkind: Notebook\nmetadata:\n  labels:\n    app: kale-notebook\n  name: kale-notebook\nspec:\n  template:\n    spec:\n      containers:\n      - env: []\n        image: tmaxcloudck/kale-tekton-standalone:211231\n        name: demo\n        resources:\n          requests:\n            cpu: \"0.5\"\n            memory: 1.0Gi\n        volumeMounts:\n        - mountPath: /home/jovyan\n          name: demo-pvc\n        - mountPath: /dev/shm\n          name: dshm\n      serviceAccountName: default-editor\n      volumes:\n      - name: demo-pvc\n        persistentVolumeClaim:\n          claimName: demo-pvc\n      - emptyDir:\n          medium: Memory\n        name: dshm\n  volumeClaim:\n  - name: demo-pvc\n    size: 10Gi\n"
+        "yaml": "apiVersion: kubeflow.tmax.io/v1\nkind: Notebook\nmetadata:\n  labels:\n    app: kale-notebook\n  name: kale-notebook\nspec:\n  template:\n    spec:\n      containers:\n      - env: []\n        image: tmaxcloudck/kale-tekton-standalone:211231\n        name: demo\n        resources:\n          requests:\n            cpu: \"0.5\"\n            memory: 1.0Gi\n        volumeMounts:\n        - mountPath: /home/jovyan\n          name: demo-pvc\n        - mountPath: /dev/shm\n          name: dshm\n      volumes:\n      - name: demo-pvc\n        persistentVolumeClaim:\n          claimName: demo-pvc\n      - emptyDir:\n          medium: Memory\n        name: dshm\n  volumeClaim:\n  - name: demo-pvc\n    size: 10Gi\n"
     }
     },
     {
