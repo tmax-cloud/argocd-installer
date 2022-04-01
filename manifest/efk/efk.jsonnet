@@ -61,11 +61,11 @@ local resource_uri = if cluster_name == "master" then "" else "/console/kibana";
               "resources": {
                 "limits": {
                   "cpu": "500m",
-                  "memory": "3000Mi"
+                  "memory": "16Gi"
                 },
                 "requests": {
                   "cpu": "100m",
-                  "memory": "100Mi"
+                  "memory": "10Gi"
                 }
               },
               "ports": [
@@ -109,7 +109,7 @@ local resource_uri = if cluster_name == "master" then "" else "/console/kibana";
                 },
                 {
                   "name": "ES_JAVA_OPTS",     
-                  "value": "-Xms2g -Xmx2g"
+                  "value": "-Xms8g -Xmx8g"
                 }
               ]
             }
@@ -429,11 +429,11 @@ local resource_uri = if cluster_name == "master" then "" else "/console/kibana";
               "resources": {
                 "limits": {
                   "cpu": "300m",
-                  "memory": "512Mi"
+                  "memory": "1000Mi"
                 },
                 "requests": {
-                  "cpu": "50m",
-                  "memory": "100Mi"
+                  "cpu": "100m",
+                  "memory": "500Mi"
                 }
               },
               "volumeMounts": [
