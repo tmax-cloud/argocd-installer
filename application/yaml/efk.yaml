@@ -22,6 +22,12 @@ spec:
             value: docker.io/tmaxcloudck/elasticsearch:7.2.1
           - name: busybox_image_tag
             value: docker.io/busybox:1.32.0
+          - name: es_resource_limit_memory
+            value: 8Gi
+          - name: es_resource_request_memory
+            value: 5Gi
+          - name: es_jvm_heap
+            value: -Xms4g -Xmx4g
           - name: es_volume_size
             value: 50Gi
           - name: kibana_image_tag
