@@ -614,6 +614,30 @@ local katib_object_image_tag = "v0.11.0";
     }
   },
   {
+    "apiVersion": "v1",
+    "kind": "Secret",
+    "metadata": {
+        "name": "katib-controller-token",
+        "namespace": ai_devops_namespace,
+        "annotations": {
+        "kubernetes.io/service-account.name": "katib-controller"
+        }
+    },
+    "type": "kubernetes.io/service-account-token"
+  },
+  {
+    "apiVersion": "v1",
+    "kind": "Secret",
+    "metadata": {
+        "name": "katib-ui-token",
+        "namespace": ai_devops_namespace,
+        "annotations": {
+        "kubernetes.io/service-account.name": "katib-ui"
+        }
+    },
+    "type": "kubernetes.io/service-account-token"
+  },
+  {
     "apiVersion": "rbac.authorization.k8s.io/v1",
     "kind": "ClusterRole",
     "metadata": {
@@ -1426,6 +1450,18 @@ local katib_object_image_tag = "v0.11.0";
         }
       }
     }
+  },
+  {
+    "apiVersion": "v1",
+    "kind": "Secret",
+    "metadata": {
+        "name": "katib-cert-generator-token",
+        "namespace": ai_devops_namespace,
+        "annotations": {
+        "kubernetes.io/service-account.name": "katib-cert-generator"
+        }
+    },
+    "type": "kubernetes.io/service-account-token"
   },
   {
     "apiVersion": "batch/v1",
