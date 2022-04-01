@@ -7246,7 +7246,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     {
                         "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
                         "name": "pytorch-operator-token",
-                        "readOnly": "true"
+                        "readOnly": true
                     }
                 ]
             }

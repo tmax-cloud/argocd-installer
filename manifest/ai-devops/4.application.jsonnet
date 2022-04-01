@@ -544,7 +544,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             {
                 "name": "application-controller-service-account-token",
                 "secret": {
-                "defalutMode": 420,
+                "defaultMode": 420,
                 "secretName": "application-controller-service-account-token"
                 }
             }        

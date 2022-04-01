@@ -1409,7 +1409,7 @@ local katib_object_image_tag = "v0.11.0";
                 {
                     "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
                     "name": "katib-ui-token",
-                    "readOnly": "true"
+                    "readOnly": true
                 }
               ]
             }

@@ -1512,7 +1512,7 @@ local knative_istio_image_tag = "v0.14.1";
                     {
                         "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
                         "name": "controller-token",
-                        "readOnly": "true"
+                        "readOnly": true
                     }
                 ]
             }
@@ -1655,7 +1655,7 @@ local knative_istio_image_tag = "v0.14.1";
                     {
                         "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
                         "name": "controller-token",
-                        "readOnly": "true"
+                        "readOnly": true
                     }
                 ]
             }
@@ -1762,7 +1762,7 @@ local knative_istio_image_tag = "v0.14.1";
                     {
                         "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
                         "name": "controller-token",
-                        "readOnly": "true"
+                        "readOnly": true
                     }
                 ]
             }
@@ -1879,7 +1879,7 @@ local knative_istio_image_tag = "v0.14.1";
                     {
                         "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
                         "name": "controller-token",
-                        "readOnly": "true"
+                        "readOnly": true
                     }
                 ]
             }
@@ -1988,7 +1988,7 @@ local knative_istio_image_tag = "v0.14.1";
                     {
                         "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
                         "name": "controller-token",
-                        "readOnly": "true"
+                        "readOnly": true
                     }
                 ]
             }
@@ -2101,7 +2101,7 @@ local knative_istio_image_tag = "v0.14.1";
                     {
                         "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
                         "name": "controller-token",
-                        "readOnly": "true"
+                        "readOnly": true
                     }
                 ]
             }

@@ -22209,6 +22209,11 @@ local kfserving_image_tag = "v0.5.1";
                 "mountPath": "/tmp/k8s-webhook-server/serving-certs",
                 "name": "cert",
                 "readOnly": true
+              },
+              {
+                "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                "name": "kfserving-controller-manager-token",
+                "readOnly": true
               }
             ]
           },
@@ -22231,7 +22236,7 @@ local kfserving_image_tag = "v0.5.1";
               {
                 "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
                 "name": "kfserving-controller-manager-token",
-                "readOnly": "true"
+                "readOnly": true
               }
             ]
           }
