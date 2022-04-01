@@ -43,6 +43,18 @@ local target_repo = if params.repo_provider == "gitlab" then repo_url_protocol +
               "value": params.busybox_image_tag
             },
             {
+              "name": "es_resource_limit_memory",
+              "value": params.es_resource_limit_memory
+            },
+            {
+              "name": "es_resource_request_memory",
+              "value": params.resource_request_memory
+            },
+            {
+              "name": "es_jvm_heap",
+              "value": params.es_jvm_heap
+            },
+            {
               "name": "es_volume_size",
               "value": params.es_volume_size
             },
