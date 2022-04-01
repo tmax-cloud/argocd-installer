@@ -21,7 +21,8 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "app.kubernetes.io/component": "kubeflow",
         "app.kubernetes.io/name": "kubeflow"
         },
-        "name": "kubeflow"
+        "name": "kubeflow",
+        "namespace": ai_devops_namespace
     },
     "spec": {
         "addOwnerRef": true,
