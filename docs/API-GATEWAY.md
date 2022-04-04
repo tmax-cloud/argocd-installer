@@ -67,7 +67,7 @@ global:
 #  - name: regcred
 ```
 ```shell
-helm install cert-manager . --namespace cert-manager --create-namespace      
+helm install cert-manager . --namespace cert-manager --create-namespace
 ```
 2. Deploying gateway(traefik)
 ```shell

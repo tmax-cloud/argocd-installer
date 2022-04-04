@@ -107,7 +107,7 @@ modules:
     ### jaeger
     jaeger:
       enabled: false
-    
+
     ### kiali
     kiali:
       enabled: false
@@ -133,7 +133,7 @@ modules:
     clusterTsb:
       version: 0.1.4
     templateOperator:
-      version: 0.2.7    
+      version: 0.2.7
 
   ### catalog controller
   catalogController:
@@ -145,7 +145,7 @@ modules:
     # description: 'single' or 'multi'
     mode: multi
     kafka:
-      enabled: true
+      enabled: false
 
   ### hyperregistry
   harbor:
