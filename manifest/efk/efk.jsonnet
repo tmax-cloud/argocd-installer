@@ -3,6 +3,9 @@ function (
     private_registry="172.22.6.2:5000",
     es_image_tag="7.2.1",
     busybox_image_tag="1.32.0",
+    es_resource_limit_memory="8Gi",
+    es_resource_request_memory="5Gi",
+    es_jvm_heap="-Xms4g -Xmx4g",
     es_volume_size="50Gi",
     kibana_image_tag="7.2.0",
     kibana_svc_type="ClusterIP",
@@ -57,11 +60,11 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
               "resources": {
                 "limits": {
                   "cpu": "500m",
-                  "memory": "16Gi"
+                  "memory": es_resource_limit_memory
                 },
                 "requests": {
                   "cpu": "100m",
-                  "memory": "10Gi"
+                  "memory": es_resource_request_memory
                 }
               },
               "ports": [
@@ -105,7 +108,7 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
                 },
                 {
                   "name": "ES_JAVA_OPTS",     
-                  "value": "-Xms8g -Xmx8g"
+                  "value": es_jvm_heap
                 }
               ]
             }
@@ -451,11 +454,11 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
               "resources": {
                 "limits": {
                   "cpu": "300m",
-                  "memory": "1000Mi"
+                  "memory": "512Mi"
                 },
                 "requests": {
-                  "cpu": "100m",
-                  "memory": "500Mi"
+                  "cpu": "50m",
+                  "memory": "100Mi"
                 }
               },
               "volumeMounts": [
