@@ -21,4 +21,6 @@ Single cluster
 4. prometheus
 5. grafana
 6. service-mesh(istio, jaeger, kiali)
-7. redis-operator
+7. harbor
+8. cicd-operator(tekton)
+9. redis-operator

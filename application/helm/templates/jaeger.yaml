@@ -1,4 +1,4 @@
-{{- if .Values.modules.jaeger.enabled }}
+{{- if .Values.modules.serviceMesh.jaeger.enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
