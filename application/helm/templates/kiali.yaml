@@ -1,4 +1,4 @@
-{{- if .Values.modules.kiali.enabled }}
+{{- if .Values.modules.serviceMesh.kiali.enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:

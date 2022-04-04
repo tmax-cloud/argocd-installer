@@ -1,4 +1,4 @@
-{{- if .Values.modules.istio.enabled }}
+{{- if .Values.modules.serviceMesh.istio.enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:

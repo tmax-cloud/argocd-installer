@@ -52,7 +52,7 @@ modules:
 
   ### strimzi-kafka-operator
   strimziKafka:
-    enabled: true
+    enabled: false
 
   ### hyperauth
   hyperAuth:
@@ -61,7 +61,7 @@ modules:
 
   ### efk
   efk:
-    enabled: true
+    enabled: false
     es:
       version: 7.2.1
       volumeSize: 50Gi
@@ -97,28 +97,30 @@ modules:
     version: 6.4.3
     imageRepo: grafana/grafana
 
-  ### istio
-  istio:
-    enabled: true
+  ### service-mesh
+  serviceMesh:
+    ### istio
+    istio:
+      enabled: false
 
-  ### jaeger
-  jaeger:
-    enabled: true
-  
-  ### kiali
-  kiali:
-    enabled: true
+    ### jaeger
+    jaeger:
+      enabled: false
+    
+    ### kiali
+    kiali:
+      enabled: false
 
   ### cluster-api
   capi:
     enabled: false
     providers:
       aws:
-        enabled: true
+        enabled: false
         # description: ...
         credentials: "credential"
       vsphere:
-        enabled: true
+        enabled: false
         credentials: 
           username: "user"
           password: "password"
@@ -135,10 +137,6 @@ modules:
   ### catalog controller
   catalogController:
     enabled: false
-
-  ### service broker
-  serviceBroker:
-    enabled: false
   
   ### hypercloud
   hyperCloud:
@@ -154,20 +152,20 @@ modules:
 
   ### tekton pipeline
   tektonPipeline:
-    enabled: true
+    enabled: false
     #namespace: tekton-pipelines
 
   ### tekton trigger
   tektonTrigger:
-    enabled: true
+    enabled: false
 
   ### cicd operator
   cicd:
-    enabled: true
+    enabled: false
 
   ### redis-operator
   redis:
-    enabled: true
+    enabled: false
 
   ### image validating webhook
   imageValidatingWebhook:
