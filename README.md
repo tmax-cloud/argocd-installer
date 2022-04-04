@@ -1,6 +1,6 @@
 # argocd-installer
 
-# Guide for inatll
+# Guide for install
 - User guide 참조([Link](docs/USER.md))
 # Guide for Developers
 
@@ -23,11 +23,11 @@
 
 # Application별 공통화 변수
 - image registry 경로
-    - private registry 주소 : 172.22.6.2:5000  
-      original image: gcr.io/kubebuilder/kube-rbac-proxy:v0.5.0  
+    - private registry 주소 : 172.22.6.2:5000
+      original image: gcr.io/kubebuilder/kube-rbac-proxy:v0.5.0
       의 구성으로 예시를 들어보면 아래와 같습니다.  
         ```
-        public:  gcr.io/kubebuilder/kube-rbac-proxy:v0.5.0  
+        public:  gcr.io/kubebuilder/kube-rbac-proxy:v0.5.0
         private: 172.22.6.2:5000/gcr.io/kubebuilder/kube-rbac-proxy:v0.5.0
         ```
     - 이를 jsonnet에서 logic 분기 처리하기 위한 방식은 아래와 같습니다.

@@ -46,8 +46,8 @@ subjects:
 - kind: Group
   name: hypercloud5 
 roleRef:
-  kind: ClusterRole  
-  name: clusterrole-new-user  
+  kind: ClusterRole
+  name: clusterrole-new-user
   apiGroup: rbac.authorization.k8s.io
 
 ---
