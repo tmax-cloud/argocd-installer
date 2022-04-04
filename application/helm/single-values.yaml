@@ -64,6 +64,9 @@ modules:
     enabled: true
     es:
       version: 7.2.1
+      limitMemory: 8Gi
+      requestMemory: 5Gi
+      jvmHeap: "-Xms4g -Xmx4g"
       volumeSize: 50Gi
     busyBox:
       version: 1.32.0

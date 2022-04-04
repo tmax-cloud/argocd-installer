@@ -3,6 +3,9 @@ function (
     private_registry="172.22.6.2:5000",
     es_image_tag="7.2.1",
     busybox_image_tag="1.32.0",
+    es_resource_limit_memory="8Gi",
+    es_resource_request_memory="5Gi",
+    es_jvm_heap="-Xms4g -Xmx4g",
     es_volume_size="50Gi",
     kibana_image_tag="7.2.0",
     kibana_svc_type="ClusterIP",
@@ -61,11 +64,11 @@ local resource_uri = if cluster_name == "master" then "" else "/console/kibana";
               "resources": {
                 "limits": {
                   "cpu": "500m",
-                  "memory": "3000Mi"
+                  "memory": es_resource_limit_memory
                 },
                 "requests": {
                   "cpu": "100m",
-                  "memory": "100Mi"
+                  "memory": es_resource_request_memory
                 }
               },
               "ports": [
@@ -109,7 +112,7 @@ local resource_uri = if cluster_name == "master" then "" else "/console/kibana";
                 },
                 {
                   "name": "ES_JAVA_OPTS",     
-                  "value": "-Xms2g -Xmx2g"
+                  "value": es_jvm_heap
                 }
               ]
             }
