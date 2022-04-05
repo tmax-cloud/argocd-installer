@@ -25,6 +25,12 @@ local gatekeeper_image_path = "quay.io/keycloak/keycloak-gatekeeper:" + gatekeep
 local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fluentd_image_tag;
 local gatekeeper_enabled = if hyperauth_url != "" then true else false;
 local resource_uri = if cluster_name == "master" then "" else "/console/kibana";
+local single_kibana_cmdata = if cluster_name == "master" then "" else std.join("", 
+  [
+    "\nserver.basePath: '/console/kibana'",
+    "\nserver.rewriteBasePath: true"
+  ]
+);
 
 [
   {
@@ -252,7 +258,7 @@ local resource_uri = if cluster_name == "master" then "" else "/console/kibana";
                 }
               ]
             }
-          ]  + if gatekeeper_enabled then [
+          ] + if gatekeeper_enabled then [
             {
               "name": "gatekeeper",
               "image": std.join("", [target_registry, gatekeeper_image_path]),
@@ -275,7 +281,7 @@ local resource_uri = if cluster_name == "master" then "" else "/console/kibana";
                 "--enable-refresh-tokens=true",
                 "--enable-metrics=true",
                 std.join("", ["--encryption-key=", encryption_key]),
-                std.join("", ["--resources=uri=", resource_uri, "/*|roles=kibana:kibana-manager"]),
+                std.join("", ["--resources=uri=", resource_uri, "/*|roles=", kibana_client_id, ":kibana-manager"]),
                 "--verbose"
               ] + if cluster_name != "master" then [
                 "--base-uri=/console/kibana"
@@ -306,10 +312,16 @@ local resource_uri = if cluster_name == "master" then "" else "/console/kibana";
       "name": "kibana-config",
       "namespace": "kube-logging"
     },
-    "data": if cluster_name == "master" then {
-      "kibana.yml": std.join("", ["server.name: kibana", "\nserver.host: '0'", "\nelasticsearch.hosts: [ 'http://elasticsearch:9200' ]", "\nelasticsearch.requestTimeout: '100000ms'"])
-    } else {
-      "kibana.yml": std.join("", ["server.name: kibana", "\nserver.host: '0'",  "\nserver.basePath: '/console/kibana'",  "\nserver.rewriteBasePath: true", "\nelasticsearch.hosts: [ 'http://elasticsearch:9200' ]", "\nelasticsearch.requestTimeout: '100000ms'"])
+    "data": {
+      "kibana.yml": std.join("", 
+        [
+          "server.name: kibana",
+          "\nserver.host: '0'",
+          single_kibana_cmdata,
+          "\nelasticsearch.hosts: [ 'http://elasticsearch:9200' ]",
+          "\nelasticsearch.requestTimeout: '100000ms'"
+        ]
+      )
     }
   },
   {
