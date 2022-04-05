@@ -184,6 +184,10 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                   {
                     "name": "PILOT_EXTERNAL_GALLEY",
                     "value": "false"
+                  },
+                  {
+                    "name": "TARGET_HUB",
+                    "value": std.join("", [target_registry, "docker.io/istio"])
                   }
                 ],
                 "envFrom": [

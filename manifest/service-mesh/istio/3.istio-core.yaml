@@ -599,7 +599,7 @@ data:
         "enableHelmTest": false,
         "enableTracing": true,
         "enabled": true,
-        "hub": "docker.io/istio",
+        "hub": TARGET_HUB,
         "imagePullPolicy": "IfNotPresent",
         "imagePullSecrets": [],
         "istioNamespace": "istio-system",
