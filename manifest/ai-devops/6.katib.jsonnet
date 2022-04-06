@@ -1314,7 +1314,7 @@ local katib_object_image_tag = "v0.11.0";
                   "value": "katib"
                 }
               ],
-              "image": std.join("", [target_registry, "mysql:8.0.27"]),
+              "image": std.join("", [target_registry, "docker.io/library/mysql:8.0.27"]),
               "livenessProbe": {
                 "exec": {
                   "command": [
