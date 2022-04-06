@@ -50,7 +50,7 @@ if cluster_name == "master" then [
                     "port": if hyperauth_url == "" then {
                       "number": 5601
                     } else {
-                      "number" : 443
+                      "number": 443
                     }
                   }
                 },
