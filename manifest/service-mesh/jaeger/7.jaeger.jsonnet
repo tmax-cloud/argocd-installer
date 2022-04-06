@@ -283,6 +283,7 @@ local REDIRECT_URL = "jaeger." + CUSTOM_DOMAIN_NAME;
     "apiVersion": "v1",
     "kind": "Service",
     "metadata": {
+      "namespace": "istio-system",
       "name": "zipkin",
       "labels": {
         "app": "jaeger",
