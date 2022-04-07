@@ -51,6 +51,9 @@ spec:
             value: {{ .Values.global.domain }}
           - name: fluentd_image_tag
             value: {{ .Values.modules.opensearch.fluentd.version }}
+          - name: cluster_name
+            value: {{ .Values.spec.destination.label }}
+          {{- if ne .Values.spec.destination.label "master" }}
     path: manifest/opensearch
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
