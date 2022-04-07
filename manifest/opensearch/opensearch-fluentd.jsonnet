@@ -579,7 +579,7 @@ local single_dashboard_cmdata = if cluster_name == "master" then "" else std.joi
           "\nopensearch_security.openid.connect_url: https://", hyperauth_url, "/auth/realms/", hyperauth_realm, "/.well-known/openid-configuration",
           "\nopensearch_security.openid.client.id: ", dashboard_client_id, 
           "\nopensearch_security.openid.client_secret: ", tmax_client_secret, 
-          "\nopensearch_security.openid.base_redirect_url: dashboards_redirect_url,
+          "\nopensearch_security.openid.base_redirect_url: ", dashboards_redirect_url,
           "\nopensearch_security.openid.root_ca: /usr/share/opensearch-dashboards/config/certificates/ca.crt", 
           "\nopensearch_security.openid.verify_hostnames: false", 
           "\nopensearch_security.cookie.secure: false"
