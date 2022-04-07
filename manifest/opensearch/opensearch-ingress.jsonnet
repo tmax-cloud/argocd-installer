@@ -18,7 +18,7 @@ function (
     custom_clusterissuer="tmaxcloud-issuer"
 )
 
-if custom_domain_name != "" then [
+if cluster_name == "master" then [
   {
     "apiVersion": "networking.k8s.io/v1",
     "kind": "Ingress",
