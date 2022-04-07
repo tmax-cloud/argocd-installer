@@ -546,7 +546,8 @@ local single_dashboard_cmdata = if cluster_name == "master" then "" else std.joi
       "opensearch-dashboards.yml": std.join("", 
         [
           "server.name: dashboards", 
-          "\nserver.host: '0.0.0.0'", 
+          "\nserver.host: '0.0.0.0'",
+          single_dashboard_cmdata,
           "\nopensearch.username: admin",
           "\nopensearch.password: admin",
           "\nopensearch.ssl.verificationMode: none",
