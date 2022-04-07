@@ -1,5 +1,6 @@
 function (
     is_offline="false",
+    cluster_name="master",
     private_registry="172.22.6.2:5000",
     os_image_tag="1.2.3",
     busybox_image_tag="1.32.0",
