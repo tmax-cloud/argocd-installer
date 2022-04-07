@@ -19,11 +19,12 @@ function (
     custom_clusterissuer="tmaxcloud-issuer"
 )
 
-local target_registry= if is_offline == "false" then "" else private_registry + "/";
+local target_registry = if is_offline == "false" then "" else private_registry + "/";
 local os_image_path = "docker.io/opensearchproject/opensearch:" + os_image_tag;
 local busybox_image_path = "docker.io/busybox:" + busybox_image_tag;
 local dashboard_image_path = "docker.io/opensearchproject/opensearch-dashboards:" + dashboard_image_tag;
 local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fluentd_image_tag;
+local dashboards_redirect_url = if cluster_name == "master" then "https://dashboards." + custom_domain_name else "https://console." + custom_domain_name + "/console/dashboards";
 local single_dashboard_cmdata = if cluster_name == "master" then "" else std.join("", 
   [
     "\nserver.basePath: '/console/dashboards'",
@@ -578,7 +579,7 @@ local single_dashboard_cmdata = if cluster_name == "master" then "" else std.joi
           "\nopensearch_security.openid.connect_url: https://", hyperauth_url, "/auth/realms/", hyperauth_realm, "/.well-known/openid-configuration",
           "\nopensearch_security.openid.client.id: ", dashboard_client_id, 
           "\nopensearch_security.openid.client_secret: ", tmax_client_secret, 
-          "\nopensearch_security.openid.base_redirect_url: https://dashboards.", custom_domain_name, 
+          "\nopensearch_security.openid.base_redirect_url: dashboards_redirect_url,
           "\nopensearch_security.openid.root_ca: /usr/share/opensearch-dashboards/config/certificates/ca.crt", 
           "\nopensearch_security.openid.verify_hostnames: false", 
           "\nopensearch_security.cookie.secure: false"
