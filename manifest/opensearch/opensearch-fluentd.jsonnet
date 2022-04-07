@@ -1,5 +1,6 @@
 function (
     is_offline="false",
+    cluster_name="master",
     private_registry="172.22.6.2:5000",
     os_image_tag="1.2.3",
     busybox_image_tag="1.32.0",
@@ -23,6 +24,12 @@ local os_image_path = "docker.io/opensearchproject/opensearch:" + os_image_tag;
 local busybox_image_path = "docker.io/busybox:" + busybox_image_tag;
 local dashboard_image_path = "docker.io/opensearchproject/opensearch-dashboards:" + dashboard_image_tag;
 local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fluentd_image_tag;
+local single_dashboard_cmdata = if cluster_name == "master" then "" else std.join("", 
+  [
+    "\nserver.basePath: '/console/dashboards'",
+    "\nserver.rewriteBasePath: true"
+  ]
+);
 
 [
   {
@@ -551,6 +558,7 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
         [
           "server.name: dashboards", 
           "\nserver.host: '0.0.0.0'", 
+          single_dashboard_cmdata,
           "\nserver.ssl.enabled: true", 
           "\nserver.ssl.certificate: /usr/share/opensearch-dashboards/config/certificates/tls.crt",
           "\nserver.ssl.key: /usr/share/opensearch-dashboards/config/certificates/tls.key",
