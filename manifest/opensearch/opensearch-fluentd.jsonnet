@@ -106,7 +106,19 @@ local single_dashboard_cmdata = if cluster_name == "master" then "" else std.joi
                   "mountPath": "/usr/share/opensearch/config/certificates/admin",
                   "readOnly": true
                 }
-              ] + if hyperauth_url != "" then [
+              ] + if cluster_name != "master" then [
+                {
+                  "name": "security-config",
+                  "mountPath": "/usr/share/opensearch/plugins/opensearch-security/securityconfig/config.yml",
+                  "subPath": "config.yml",
+                  "readOnly": true
+                },
+                {
+                  "name": "hyperauth-ca",
+                  "mountPath": "/usr/share/opensearch/config/certificates/hyperauth",
+                  "readOnly": true
+                }
+              ] else if hyperauth_url != "" then [
                 {
                   "name": "security-config",
                   "mountPath": "/usr/share/opensearch/plugins/opensearch-security/securityconfig/config.yml",
@@ -161,7 +173,20 @@ local single_dashboard_cmdata = if cluster_name == "master" then "" else std.joi
                 "secretName": "admin-secret"
               }
             }
-          ] + if hyperauth_url != "" then [
+          ] + if cluster_name != "master" then [
+            {
+              "name": "security-config",
+              "configMap": {
+                "name": "opensearch-securityconfig"
+              }
+            },
+            {
+              "name": "hyperauth-ca",
+              "secret": {
+                "secretName": "hyperauth-ca"
+              }
+            }
+          ] else if hyperauth_url != "" then [
             {
               "name": "security-config",
               "configMap": {
