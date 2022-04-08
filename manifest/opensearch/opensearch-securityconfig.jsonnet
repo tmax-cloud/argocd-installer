@@ -19,6 +19,8 @@ function (
     custom_clusterissuer="tmaxcloud-issuer"
 )
 
+local hyperauth_ca_path= if cluster_name == "master" then "/usr/share/opensearch/config/certificates/ca.crt" else ""
+
 if hyperauth_url != "" then [
   {
     "apiVersion": "v1",
@@ -51,7 +53,7 @@ if hyperauth_url != "" then [
           "\nconfig.dynamic.authc.openid_auth_domain.http_authenticator.config.openid_connect_url: https://", hyperauth_url, "/auth/realms/", hyperauth_realm, "/.well-known/openid-configuration",
           "\nconfig.dynamic.authc.openid_auth_domain.http_authenticator.config.openid_connect_idp.enable_ssl: true",
           "\nconfig.dynamic.authc.openid_auth_domain.http_authenticator.config.openid_connect_idp.verify_hostnames: false",
-          "\nconfig.dynamic.authc.openid_auth_domain.http_authenticator.config.openid_connect_idp.pemtrustedcas_filepath: /usr/share/opensearch/config/certificates/ca.crt",
+          "\nconfig.dynamic.authc.openid_auth_domain.http_authenticator.config.openid_connect_idp.pemtrustedcas_filepath: ", hyperauth_ca_path,
           "\nconfig.dynamic.authc.openid_auth_domain.authentication_backend.type: noop"
         ]
       )
