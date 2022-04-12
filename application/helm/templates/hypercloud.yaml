@@ -33,6 +33,8 @@ spec:
             value: "{{ .Values.modules.hyperCloud.kafka.enabled }}"
           - name: hyperauth_url
             value: {{ .Values.global.keycloak.domain }}
+          - name: hyperauth_client_secret
+            value: {{ .Values.global.keycloak.tmaxClientSecret }}
     path: manifest/hypercloud
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
