@@ -1,7 +1,7 @@
 Master cluster
 1. api-gateway-bootstrap(cert-manager + api-gateway with console)
 2. strimzi-kafka-operator
-3. hyperauth + kafka
+3. hyperauth
 4. efk
 5. prometheus
 6. grafana

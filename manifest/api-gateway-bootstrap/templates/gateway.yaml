@@ -1,15 +1,14 @@
 {{- if .Values.modules.gateway.enabled }}
+{{ $isMaster := eq .Values.global.cluster "master" }}
+{{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
+{{ $module := "gateway" }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   labels:
-    cluster: {{ .Values.spec.destination.label }}
+    cluster: {{ ternary "master" $prefix $isMaster }}
     gatewayBootstrap: gateway
-  {{- if eq .Values.spec.destination.label "master" }}
-  name: gateway
-  {{- else }}
-  name: {{ .Values.spec.destination.label }}-gateway
-  {{- end }}
+  name: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -17,12 +16,8 @@ metadata:
     argocd.argoproj.io/sync-wave: "0"
 spec:
   destination:
+    name: {{ .Values.global.clusterName }}
     namespace: api-gateway-system
-    {{- if eq .Values.spec.destination.type "name" }}
-    name: {{ .Values.spec.destination.clusterInfo }}
-    {{- else if eq .Values.spec.destination.type "server" }}
-    server: {{ .Values.spec.destination.clusterInfo }}
-    {{- end }}
   source:
     path: {{ .Values.modules.gateway.source.path }}
     repoURL: {{ .Values.spec.source.repoURL }}
@@ -77,14 +72,11 @@ spec:
     retry:
       limit: 3
 ---
+{{ $syncWave := "gateway-sync-wave" }}
 apiVersion: batch/v1
 kind: Job
 metadata:
-  {{- if eq .Values.spec.destination.label "master" }}
-  name: gateway-sync-wave
-  {{- else }}
-  name: {{ .Values.spec.destination.label }}-gateway-sync-wave
-  {{- end }}
+  name: {{ ternary $syncWave (printf "%s-%s" $prefix $syncWave) $isMaster }}
   namespace: argocd
   labels:
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
