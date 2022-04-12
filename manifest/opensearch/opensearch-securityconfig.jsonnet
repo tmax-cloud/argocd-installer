@@ -19,7 +19,7 @@ function (
     custom_clusterissuer="tmaxcloud-issuer"
 )
 
-local hyperauth_ca_path= if cluster_name == "master" then "/usr/share/opensearch/config/certificates/ca.crt" else ""
+local hyperauth_ca_path= if cluster_name == "master" then "/usr/share/opensearch/config/certificates/ca.crt" else "/usr/share/opensearch/config/certificates/hyperauth/ca.crt"
 
 if hyperauth_url != "" then [
   {
