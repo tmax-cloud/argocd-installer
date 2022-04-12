@@ -1,3 +1,7 @@
 .idea
 
+# Personal Ide setting file
 .vscode
+
+# Application yaml files for test
+application/single-applications
