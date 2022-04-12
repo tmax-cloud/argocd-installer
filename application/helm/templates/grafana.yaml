@@ -35,7 +35,7 @@ spec:
           - name: ingress_domain
             value: {{ .Values.global.domain }}
           - name: cluster_name
-            value: {{ .Values.spec.global.clusterName }}
+            value: {{ .Values.global.clusterName }}
           - name: admin_user
             value: {{ .Values.global.adminUser }}
           - name: client_id
