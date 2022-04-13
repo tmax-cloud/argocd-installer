@@ -25,7 +25,7 @@ spec:
           value: {{ .Values.global.domain }}
         - name: expose.ingress.hosts.core
           value: {{ .Values.modules.hyperregistry.core.subdomain }}
-        - name: modules.hyperregistry.notary
+        - name: expose.ingress.hosts.notary
           value: {{ .Values.modules.hyperregistry.notary.subdomain }}
         - name: storageClass
           value: {{ .Values.modules.hyperregistry.storageClass }}
