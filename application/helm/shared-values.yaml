@@ -6,6 +6,7 @@ spec:
     repoURL: https://github.com/tmax-cloud/argocd-installer
     # description: target branch or release name
     targetRevision: HEAD
+    
 global:
   network:
     # 폐쇄망일경우 true

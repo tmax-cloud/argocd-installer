@@ -1,24 +1,18 @@
-{{- if .Values.modules.serviceMesh.istio.enabled }}
+{{ if .Values.modules.serviceMesh.istio.enabled }}
+{{ $isMaster := eq .Values.global.cluster "master" }}
+{{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
+{{ $module := "istio" }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   labels:
-    cluster: {{ .Values.spec.destination.label }}
-    serviceMesh: istio
-  {{- if eq .Values.spec.destination.label "master" }}
-  name: istio
-  {{- else }}
-  name: {{ .Values.spec.destination.clusterInfo }}-istio
-  {{- end }}
+    cluster: {{ ternary "master" $prefix $isMaster }}
+  name: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
   namespace: argocd
 spec:
   destination:
+    name: {{ .Values.global.clusterName }}
     namespace: istio-system
-    {{- if eq .Values.spec.destination.type "name" }}
-    name: {{ .Values.spec.destination.clusterInfo }}
-    {{- else if eq .Values.spec.destination.type "server" }}
-    server: {{ .Values.spec.destination.clusterInfo }}
-    {{- end }}
   project: {{ .Values.spec.project }}
   source:
     directory:
@@ -31,4 +25,4 @@ spec:
     path: manifest/service-mesh/istio
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
-{{- end }}
+{{ end }}

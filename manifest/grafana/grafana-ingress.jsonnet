@@ -8,11 +8,11 @@ function (
 	grafana_version="6.4.3",
 	grafana_image_repo="grafana/grafana",
 	ingress_domain="",
-	cluster_name="master",
-	admin_user="test@test.co.kr"
+	admin_user="test@test.co.kr",
+	is_master_cluster="true"
 )
 
-if cluster_name == "master" then [
+if is_master_cluster == "true" then [
 	{
 		"apiVersion": "networking.k8s.io/v1",
 		"kind": "Ingress",

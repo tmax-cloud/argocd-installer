@@ -2,15 +2,17 @@ spec:
   destination:
     type: server
     clusterInfo: https://kubernetes.default.svc
-    label: master
   project: default
 
 global:
   # 기본시나리오에서는 privateRegistry값만 변경해주면 된다
   # e.x) 172.22.6.2:5000 or hyperregistry.domain.com
-  privateRegistry: testregistry.com
+  privateRegistry: test-registry.com
   # 값 변경 필요 없음
   adminUser: test@test.co.kr
+  cluster: master
+  clusterName: in-cluster
+  clusterNamespace: default
 
 modules:
   ### gateway-bootstrap
@@ -79,6 +81,23 @@ modules:
     fluentd:
       version: v1.4.2-debian-elasticsearch-1.1
   
+  ### opensearch
+  opensearch:
+    enabled: true
+    os:
+      version: 1.2.3
+      limitMemory: 8Gi
+      requestMemory: 5Gi
+      jvmHeap: "-Xms4g -Xmx4g"
+      volumeSize: 50Gi
+    busyBox:
+      version: 1.32.0
+    dashboard:
+      version: 1.2.0
+      svcType: ClusterIP
+    fluentd:
+      version: v1.4.2-debian-elasticsearch-1.1
+
   ### prometheus
   prometheus:
     enabled: true

@@ -17,15 +17,15 @@ spec:
         - shared-values.yaml
         - single-values.yaml
       parameters:
-        - name: spec.destination.clusterInfo
+        - name: global.clusterName
           # target cluster 이름으로 변경
-          value: cluster_name
-        - name: spec.destination.label
-          # target cluster 이름으로 변경
-          value: cluster_name
+          value: cluster-name
+        - name: global.clusterNamespace
+          # target cluster의 네임스페이스로 변경
+          value: cluster-namespace
         - name: global.privateRegistry
           # target registry 주소로 변경
-          value: testregistry.com
+          value: test-registry.com
         - name: global.adminUser
           # 해당 클러스터의 admin 계정으로 변경
           value: test@test.co.kr
