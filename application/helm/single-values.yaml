@@ -41,6 +41,7 @@ modules:
         enabled: true
       # default 0
       syncWaitTime: 0
+      subdomain: console
     gateway:
       enabled: true
       # default 120
@@ -60,6 +61,7 @@ modules:
   hyperAuth:
     enabled: false
     svcType: Ingress
+    subdomain: hyperauth
 
   ### efk
   efk:
@@ -75,6 +77,7 @@ modules:
     kibana:
       version: 7.2.0
       svcType: ClusterIP
+      subdomain: kibana
     gatekeeper:
       version: 10.0.0
     fluentd:
@@ -118,6 +121,7 @@ modules:
     pvcSize: 10Gi
     version: 6.4.3
     imageRepo: grafana/grafana
+    subdomain: grafana
 
   ### service-mesh
   serviceMesh:
@@ -128,10 +132,12 @@ modules:
     ### jaeger
     jaeger:
       enabled: false
+      subdomain: jaeger
 
     ### kiali
     kiali:
       enabled: false
+      subdomain: kiali
 
   ### cluster-api
   capi:
@@ -169,8 +175,12 @@ modules:
       enabled: false
 
   ### hyperregistry
-  harbor:
+  hyperregistry:
     enabled: true
+    core:
+      subdomain: hyperregistry
+    notary:
+      subdomain: hyperregistry-notary
 
   ### tekton pipeline
   tektonPipeline:
@@ -184,6 +194,7 @@ modules:
   ### cicd operator
   cicd:
     enabled: false
+    subdomain: cicd-webhook
 
   ### redis-operator
   redis:
