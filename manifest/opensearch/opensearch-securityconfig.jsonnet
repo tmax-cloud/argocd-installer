@@ -1,6 +1,5 @@
 function (
     is_offline="false",
-    cluster_name="master",
     private_registry="172.22.6.2:5000",
     os_image_tag="1.2.3",
     busybox_image_tag="1.32.0",
@@ -16,10 +15,13 @@ function (
     hyperauth_realm="tmax",
     custom_domain_name="domain_name",
     fluentd_image_tag="v1.4.2-debian-elasticsearch-1.1",
-    custom_clusterissuer="tmaxcloud-issuer"
+    custom_clusterissuer="tmaxcloud-issuer",
+    is_master_cluster="true",
+    opensearch_subdomain="opensearch-dashboard"
 )
 
-local hyperauth_ca_path= if cluster_name == "master" then "/usr/share/opensearch/config/certificates/ca.crt" else "/usr/share/opensearch/config/certificates/hyperauth/ca.crt"
+local crt_path = "/usr/share/opensearch/config/certificates";
+local hyperauth_ca_path = if is_master_cluster == "true" then crt_path + "/ca.crt" else crt_path + "/hyperauth/ca.crt";
 
 if hyperauth_url != "" then [
   {

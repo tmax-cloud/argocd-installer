@@ -32,26 +32,38 @@ spec:
           # 해당 클러스터의 admin 계정으로 변경
           value: test@test.co.kr
         - name: modules.gatewayBootstrap.console.subdomain
-          # 콘솔의 subdomain으로 변경
+          # 콘솔이 사용할 subdomain으로 변경
           value: console
         - name: modules.hyperAuth.subdomain
-          # HyperAuth의 subdomain으로 변경
+          # HyperAuth가 사용할 subdomain으로 변경
           value: hyperauth
         - name: modules.efk.kibana.subdomain
-          # Kibana의 subdomain으로 변경
+          # Kibana가 사용할 subdomain으로 변경
           value: kibana
         - name: modules.grafana.subdomain
-          # Grafana의 subdomain으로 변경
+          # Grafana가 사용할 subdomain으로 변경
           value: grafana
         - name: modules.serviceMesh.jaeger.subdomain
-          # Jaeger의 subdomain으로 변경
+          # Jaeger가 사용할 subdomain으로 변경
           value: jaeger
         - name: modules.serviceMesh.kiali.subdomain
-          # Kiali의 subdomain으로 변경
+          # Kiali가 사용할 subdomain으로 변경
           value: kiali
         - name: modules.cicd.subdomain
-          # Cicd-operator의 webhook의 subdomain으로 변경
+          # Cicd-operator webhook이 사용할 subdomain으로 변경
           value: cicd-webhook
+        - name: modules.opensearch.dashboard.subdomain
+          # OpenSearch가 사용할 subdomain으로 변경
+          value: opensearch-dashboard
+        - name: modules.hyperregistry.core.subdomain
+          # Hyperregistry core가 사용할 subdomain으로 변경
+          value: hyperregistry
+        - name: modules.hyperregistry.notary.subdomain
+          # Hyperregistry notary가 사용할 subdomain으로 변경
+          value: hyperregistry-notary
+        - name: modules.hyperregistry.storageClass
+          # Hyperregistry notary가 사용할 storage class로 변경
+          value: nfs
     path: application/helm
     # 환경에 맞게 url 주소 변경 필요
     repoURL: https://github.com/tmax-cloud/argocd-installer

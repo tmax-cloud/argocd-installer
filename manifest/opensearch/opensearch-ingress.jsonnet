@@ -1,6 +1,5 @@
 function (
     is_offline="false",
-    cluster_name="master",
     private_registry="172.22.6.2:5000",
     os_image_tag="1.2.3",
     busybox_image_tag="1.32.0",
@@ -16,10 +15,12 @@ function (
     hyperauth_realm="tmax",
     custom_domain_name="domain_name",
     fluentd_image_tag="v1.4.2-debian-elasticsearch-1.1",
-    custom_clusterissuer="tmaxcloud-issuer"
+    custom_clusterissuer="tmaxcloud-issuer",
+    is_master_cluster="true",
+    opensearch_subdomain="opensearch-dashboard"
 )
 
-if cluster_name == "master" then [
+[
   {
     "apiVersion": "networking.k8s.io/v1",
     "kind": "Ingress",
@@ -38,7 +39,7 @@ if cluster_name == "master" then [
       "ingressClassName": "tmax-cloud",
       "rules": [
         {
-          "host": std.join("", ["dashboards.", custom_domain_name]),
+          "host": std.join("", [opensearch_subdomain, ".", custom_domain_name]),
           "http": {
             "paths": [
               {
@@ -60,10 +61,10 @@ if cluster_name == "master" then [
       "tls": [
         {
           "hosts": [
-            std.join("", ["dashboards.", custom_domain_name])
+            std.join("", [opensearch_subdomain, ".", custom_domain_name])
           ]
         }
       ]
     }
   }
-] else []
+]

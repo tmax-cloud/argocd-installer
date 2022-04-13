@@ -97,6 +97,7 @@ modules:
     dashboard:
       version: 1.2.0
       svcType: ClusterIP
+      subdomain: opensearch-dashboard
     fluentd:
       version: v1.4.2-debian-elasticsearch-1.1
 
@@ -181,6 +182,7 @@ modules:
       subdomain: hyperregistry
     notary:
       subdomain: hyperregistry-notary
+    storageClass: nfs
 
   ### tekton pipeline
   tektonPipeline:
