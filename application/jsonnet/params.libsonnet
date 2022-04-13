@@ -33,7 +33,18 @@
     kibana_svc_type:      "ClusterIP",
     gatekeeper_image_tag: "quay.io/keycloak/keycloak-gatekeeper:10.0.0",
     fluentd_image_tag:    "docker.io/fluent/fluentd-kubernetes-daemonset:v1.4.2-debian-elasticsearch-1.1",
-
+    
+    ## Opensearch variables
+    os_image_tag:         "1.2.3",
+    busybox_image_tag:    "1.32.0",
+    os_resource_limit_memory:       "8Gi",
+    os_resource_request_memory:       "5Gi",
+    os_jvm_heap:       "-Xms4g -Xmx4g",
+    os_volume_size:       "50Gi",
+    dashboard_image_tag:     "1.2.0",
+    dashboard_svc_type:      "ClusterIP",
+    fluentd_image_tag:    "v1.4.2-debian-elasticsearch-1.1",
+    
     ## Prometheus variables
     configmap_reload_version:           "v0.0.1",
     configmap_reloader_version:         "v0.34.0",
