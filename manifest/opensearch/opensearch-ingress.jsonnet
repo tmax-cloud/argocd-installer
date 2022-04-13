@@ -1,35 +1,33 @@
 function (
     is_offline="false",
-    private_registry="172.22.6.2:5000",
-    es_image_tag="7.2.1",
-    busybox_image_tag="1.32.0",
-    es_resource_limit_memory="8Gi",
-    es_resource_request_memory="5Gi",
-    es_jvm_heap="-Xms4g -Xmx4g",
-    es_volume_size="50Gi",
-    kibana_image_tag="7.2.0",
-    kibana_svc_type="ClusterIP",
-    gatekeeper_image_tag="10.0.0",
     cluster_name="master",
-    kibana_client_id="kibana",
+    private_registry="172.22.6.2:5000",
+    os_image_tag="1.2.3",
+    busybox_image_tag="1.32.0",
+    os_resource_limit_memory="8Gi",
+    os_resource_request_memory="5Gi",
+    os_jvm_heap="-Xms4g -Xmx4g",
+    os_volume_size="50Gi",
+    dashboard_image_tag="1.2.0",
+    dashboard_svc_type="ClusterIP",
+    dashboard_client_id="dashboards",
     tmax_client_secret="tmax_client_secret",
     hyperauth_url="172.23.4.105",
     hyperauth_realm="tmax",
     custom_domain_name="domain_name",
-    encryption_key="AgXa7xRcoClDEU0ZDSH4X0XhL5Qy2Z2j",
     fluentd_image_tag="v1.4.2-debian-elasticsearch-1.1",
     custom_clusterissuer="tmaxcloud-issuer"
 )
 
-if cluster_name == "master" then [ 
+if cluster_name == "master" then [
   {
     "apiVersion": "networking.k8s.io/v1",
     "kind": "Ingress",
     "metadata": {
-      "name": "kibana",
+      "name": "dashboards",
       "namespace": "kube-logging",
       "labels": {
-        "ingress.tmaxcloud.org/name": "kibana"
+        "ingress.tmaxcloud.org/name": "dashboards"
       },
       "annotations": {
         "traefik.ingress.kubernetes.io/router.entrypoints": "websecure",
@@ -40,17 +38,15 @@ if cluster_name == "master" then [
       "ingressClassName": "tmax-cloud",
       "rules": [
         {
-          "host": std.join("", ["kibana.", custom_domain_name]),
+          "host": std.join("", ["dashboards.", custom_domain_name]),
           "http": {
             "paths": [
               {
                 "backend": {
                   "service": {
-                    "name": "kibana",
-                    "port": if hyperauth_url == "" then {
+                    "name": "dashboards",
+                    "port": {
                       "number": 5601
-                    } else {
-                      "number": 443
                     }
                   }
                 },
@@ -64,7 +60,7 @@ if cluster_name == "master" then [
       "tls": [
         {
           "hosts": [
-            std.join("", ["kibana.", custom_domain_name])
+            std.join("", ["dashboards.", custom_domain_name])
           ]
         }
       ]

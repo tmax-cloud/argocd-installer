@@ -2,13 +2,15 @@ function (
     is_offline="false",
     private_registry="172.22.6.2:5000",
     hyperauth_svc_type="Ingress",
-    hyperauth_external_dns="hyperauth.172.22.6.18.nip.io",
     hyperauth_external_ip="172.22.6.8",
     is_kafka_enabled="true"
+    hyperauth_subdomain="hyperauth",
+    hypercloud_domain_host="tmaxcloud.org",
 )
 
 local svcType = if hyperauth_svc_type == "Ingress" then "ClusterIP" else hyperauth_svc_type;
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
+local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_host;
 
 [
   {

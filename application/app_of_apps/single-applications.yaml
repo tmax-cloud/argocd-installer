@@ -4,12 +4,14 @@ metadata:
   labels:
     cluster: single
     appType: app-of-apps
+  # {{ cluster namespace }}-{{ cluster name}}-applications로 변경
   name: single-applications
   namespace: argocd
 spec:
   destination:
+    # cluster 이름으로 변경
+    name: cluster
     namespace: argocd
-    server: https://kubernetes.default.svc
   project: default
   source:
     helm:
@@ -17,18 +19,39 @@ spec:
         - shared-values.yaml
         - single-values.yaml
       parameters:
-        - name: spec.destination.clusterInfo
+        - name: global.clusterName
           # target cluster 이름으로 변경
-          value: cluster_name
-        - name: spec.destination.label
-          # target cluster 이름으로 변경
-          value: cluster_name
+          value: cluster-name
+        - name: global.clusterNamespace
+          # target cluster의 네임스페이스로 변경
+          value: cluster-namespace
         - name: global.privateRegistry
           # target registry 주소로 변경
-          value: testregistry.com
+          value: test-registry.com
         - name: global.adminUser
           # 해당 클러스터의 admin 계정으로 변경
           value: test@test.co.kr
+        - name: modules.gatewayBootstrap.console.subdomain
+          # 콘솔의 subdomain으로 변경
+          value: console
+        - name: modules.hyperAuth.subdomain
+          # HyperAuth의 subdomain으로 변경
+          value: hyperauth
+        - name: modules.efk.kibana.subdomain
+          # Kibana의 subdomain으로 변경
+          value: kibana
+        - name: modules.grafana.subdomain
+          # Grafana의 subdomain으로 변경
+          value: grafana
+        - name: modules.serviceMesh.jaeger.subdomain
+          # Jaeger의 subdomain으로 변경
+          value: jaeger
+        - name: modules.serviceMesh.kiali.subdomain
+          # Kiali의 subdomain으로 변경
+          value: kiali
+        - name: modules.cicd.subdomain
+          # Cicd-operator의 webhook의 subdomain으로 변경
+          value: cicd-webhook
     path: application/helm
     # 환경에 맞게 url 주소 변경 필요
     repoURL: https://github.com/tmax-cloud/argocd-installer

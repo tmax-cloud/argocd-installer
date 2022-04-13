@@ -2,14 +2,16 @@ spec:
   destination:
     # description: select between 'name' or 'server'
     type: name
-    clusterInfo: cluster_name
-    label: single
+    clusterInfo: cluster-name
   project: default
 
 global:
   # 마스터와 다르게 싱글의 경우 값변경이 필요하지 않음
-  privateRegistry: testregistry.com
+  privateRegistry: test-registry.com
   adminUser: test@test.co.kr
+  cluster: single
+  clusterName: cluster-name
+  clusterNamespace: cluster-namespace
 
 modules:
   ### gateway-bootstrap
@@ -39,6 +41,7 @@ modules:
         enabled: true
       # default 0
       syncWaitTime: 0
+      subdomain: console
     gateway:
       enabled: true
       # default 120
@@ -58,6 +61,7 @@ modules:
   hyperAuth:
     enabled: false
     svcType: Ingress
+    subdomain: hyperauth
 
   ### efk
   efk:
@@ -73,11 +77,29 @@ modules:
     kibana:
       version: 7.2.0
       svcType: ClusterIP
+      subdomain: kibana
     gatekeeper:
       version: 10.0.0
     fluentd:
       version: v1.4.2-debian-elasticsearch-1.1
   
+  ### opensearch
+  opensearch:
+    enabled: true
+    os:
+      version: 1.2.3
+      limitMemory: 8Gi
+      requestMemory: 5Gi
+      jvmHeap: "-Xms4g -Xmx4g"
+      volumeSize: 50Gi
+    busyBox:
+      version: 1.32.0
+    dashboard:
+      version: 1.2.0
+      svcType: ClusterIP
+    fluentd:
+      version: v1.4.2-debian-elasticsearch-1.1
+
   ### prometheus
   prometheus:
     enabled: true
@@ -99,6 +121,7 @@ modules:
     pvcSize: 10Gi
     version: 6.4.3
     imageRepo: grafana/grafana
+    subdomain: grafana
 
   ### service-mesh
   serviceMesh:
@@ -109,10 +132,12 @@ modules:
     ### jaeger
     jaeger:
       enabled: false
+      subdomain: jaeger
 
     ### kiali
     kiali:
       enabled: false
+      subdomain: kiali
 
   ### cluster-api
   capi:
@@ -150,8 +175,12 @@ modules:
       enabled: false
 
   ### hyperregistry
-  harbor:
+  hyperregistry:
     enabled: true
+    core:
+      subdomain: hyperregistry
+    notary:
+      subdomain: hyperregistry-notary
 
   ### tekton pipeline
   tektonPipeline:
@@ -165,6 +194,7 @@ modules:
   ### cicd operator
   cicd:
     enabled: false
+    subdomain: cicd-webhook
 
   ### redis-operator
   redis:

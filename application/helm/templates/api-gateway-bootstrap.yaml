@@ -1,15 +1,13 @@
-{{- if .Values.modules.gatewayBootstrap.enabled }}
+{{ if .Values.modules.gatewayBootstrap.enabled }}
+{{ $isMaster := eq .Values.global.cluster "master" }}
+{{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
+{{ $module := "gateway-bootstrap" }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   labels:
-    cluster: {{ .Values.spec.destination.label }}
-    gatewayBootstrap: gateway-bootstrap
-  {{- if eq .Values.spec.destination.label "master" }}
-  name: gateway-bootstrap
-  {{- else }}
-  name: {{ .Values.spec.destination.label }}-gateway-bootstrap
-  {{- end }}
+    cluster: {{ ternary "master" $prefix $isMaster }}
+  name: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
   namespace: argocd
 spec:
   destination:
@@ -18,6 +16,12 @@ spec:
   source:
     helm:
       parameters:
+        - name: global.cluster
+          value: {{ .Values.global.cluster }}
+        - name: global.clusterName
+          value: {{ .Values.global.clusterName }}
+        - name: global.clusterNamespace
+          value: {{ .Values.global.clusterNamespace }}
         - name: global.console.mcMode
           value: "{{ .Values.modules.gatewayBootstrap.console.multiCluster.enabled }}"
         - name: global.svc_type
@@ -54,6 +58,8 @@ spec:
           value: "{{ .Values.modules.gatewayBootstrap.console.enabled }}"
         - name: modules.console.syncWaitTime
           value: "{{ .Values.modules.gatewayBootstrap.console.syncWaitTime }}"
+        - name: modules.console.subdomain
+          value: "{{ .Values.modules.gatewayBootstrap.console.subdomain }}"
         - name: modules.gateway.enabled
           value: "{{ .Values.modules.gatewayBootstrap.gateway.enabled }}"
         - name: modules.gateway.syncWaitTime
@@ -62,12 +68,6 @@ spec:
           value: "{{ .Values.modules.gatewayBootstrap.jwtDecodeAuth.enabled }}"
         - name: modules.jwtDecodeAuth.syncWaitTime
           value: "{{ .Values.modules.gatewayBootstrap.jwtDecodeAuth.syncWaitTime }}"
-        - name: spec.destination.type
-          value: {{ .Values.spec.destination.type }}
-        - name: spec.destination.clusterInfo
-          value: {{ .Values.spec.destination.clusterInfo }}
-        - name: spec.destination.label
-          value: {{ .Values.spec.destination.label }}
         - name: spec.source.repoURL
           value: {{ .Values.spec.source.repoURL }}
         - name: spec.source.targetRevision
@@ -82,4 +82,4 @@ spec:
       prune: true
     syncOptions:
       - ApplyOutOfSyncOnly=true
-{{- end }}
+{{ end }}

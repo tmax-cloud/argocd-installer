@@ -1,0 +1,60 @@
+{{- if .Values.modules.opensearch.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  labels:
+    cluster: {{ .Values.spec.destination.label }}
+  {{- if eq .Values.spec.destination.label "master" }}
+  name: efk
+  {{- else }}
+  name: {{ .Values.spec.destination.clusterInfo }}-opensearch
+  {{- end }}
+  namespace: argocd
+spec:
+  destination:
+    namespace: kube-logging
+    {{- if eq .Values.spec.destination.type "name" }}
+    name: {{ .Values.spec.destination.clusterInfo }}
+    {{- else if eq .Values.spec.destination.type "server" }}
+    server: {{ .Values.spec.destination.clusterInfo }}
+    {{- end }}
+  project: {{ .Values.spec.project }}
+  source:
+    directory:
+      jsonnet:
+        tlas:
+          - name: is_offline
+            value: "{{ .Values.global.network.disabled }}"
+          - name: private_registry
+            value: {{ .Values.global.privateRegistry }}
+          - name: os_image_tag
+            value: {{ .Values.modules.opensearch.os.version }}
+          - name: busybox_image_tag
+            value: {{ .Values.modules.opensearch.busyBox.version }}
+          - name: os_resource_limit_memory
+            value: {{ .Values.modules.opensearch.os.limitMemory }}
+          - name: os_resource_request_memory
+            value: {{ .Values.modules.opensearch.os.requestMemory }}
+          - name: os_jvm_heap
+            value: {{ .Values.modules.opensearch.os.jvmHeap }}
+          - name: os_volume_size
+            value: {{ .Values.modules.opensearch.os.volumeSize }}
+          - name: dashboard_image_tag
+            value: {{ .Values.modules.opensearch.dashboard.version }}
+          - name: dashboard_svc_type
+            value: {{ .Values.modules.opensearch.dashboard.svcType }}
+          - name: tmax_client_secret
+            value: {{ .Values.global.keycloak.tmaxClientSecret }}
+          - name: hyperauth_url
+            value: {{ .Values.global.keycloak.domain }}
+          - name: custom_domain_name
+            value: {{ .Values.global.domain }}
+          - name: fluentd_image_tag
+            value: {{ .Values.modules.opensearch.fluentd.version }}
+          - name: cluster_name
+            value: {{ .Values.spec.destination.label }}
+          {{- if ne .Values.spec.destination.label "master" }}
+    path: manifest/opensearch
+    repoURL: {{ .Values.spec.source.repoURL }}
+    targetRevision: {{ .Values.spec.source.targetRevision }}
+{{- end }}
