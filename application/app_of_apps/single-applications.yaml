@@ -4,12 +4,14 @@ metadata:
   labels:
     cluster: single
     appType: app-of-apps
+  # {{ cluster namespace }}-{{ cluster name}}-applications로 변경
   name: single-applications
   namespace: argocd
 spec:
   destination:
+    # cluster 이름으로 변경
+    name: cluster
     namespace: argocd
-    server: https://kubernetes.default.svc
   project: default
   source:
     helm:
