@@ -1,9 +1,8 @@
-# Guide for Installation
-### ArgoCD를 이용한 resource 배포
-1. prerequsites
-    - argocd([Install guide link](https://github.com/tmax-cloud/install-argocd))
+# Installation Guide for Master Cluster
+## Prerequisites
+    1. ArgoCD([Install guide link](https://github.com/tmax-cloud/install-argocd))
 ---
-## Master cluster
+## How to install
 1. cluster configuration
     - cluster에 필요한 정보(registry domain, hyperclou domain등)를 셋팅한다.
     - 수정해야 하는 파일은 아래와 같다.
@@ -33,7 +32,7 @@
         ```
 ---
 4. resource 배포(application sync)
-    - application sync 순서는 [docs/INSTALL_ORDER.md](INSTALL_ORDER.md)를 참조
+    - application sync 순서는 INSTALL_ORDER.md([링크](INSTALL_ORDER.md))를 참조
     - 순서에 맞춰서 모듈을 sync
     - sync 방식은 아래와 같음
     1) argocd server에 접속후 로그인
@@ -56,27 +55,3 @@
 
         - app card를 누르면 리소스별 status 체크 가능
         ![img](../figure/5_details.png)
----
-## Single cluster
-1. application file 생성
-    - 아래 명령어를 통해 application file을 생성해준다.
-    ```
-    $ cp application/app_of_apps/single-applications.yaml application/app_of_apps/{{ cluster namespace }}-{{ cluster name }}-applications.yaml
-    ```
-    ex) "cluster"라는 이름의 클러스터가 default namespace에 있을 경우,  
-    ```
-    $ cp application/app_of_apps/single-applications.yaml application/app_of_apps/default-cluster-applications.yaml
-    ```
----
-2. application 변수 셋팅
-    - 1번에서 생성한 파일을 수정한다.
-    - 변경해야 하는 값은 파일안의 주석을 참조한다.
----
-3. application 등록
-    - "마스터클러스터 환경"에 application을 등록
-        ```
-        $ kubectl -n argocd apply -f application/app_of_apps/{{ cluster namespace }}-{{ cluster name }}-applications.yaml
-        ```
----
-4. resource 배포(application sync)
-    - 마스터와 동일
