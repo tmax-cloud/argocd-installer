@@ -8,12 +8,10 @@ function(
     GATEKEER_VERSION="10.0.0",
     CUSTOM_DOMAIN_NAME="custom-domain",
     CUSTOM_CLUSTER_ISSUER="tmaxcloud-issuer",
+    jaeger_subdomain="jaeger"
 )
 
-local target_registry = if is_offline == "false" then "" else private_registry + "/";
-local REDIRECT_URL = "jaeger." + CUSTOM_DOMAIN_NAME;
-
-if cluster_name == "master" then [
+[
   {
     "apiVersion": "networking.k8s.io/v1",
     "kind": "Ingress",
@@ -34,7 +32,7 @@ if cluster_name == "master" then [
       "ingressClassName": "tmax-cloud",
       "rules": [
         {
-          "host": std.join("", ["jaeger.", CUSTOM_DOMAIN_NAME]),
+          "host": std.join("", [jaeger_subdomain, ".", CUSTOM_DOMAIN_NAME]),
           "http": {
             "paths": [
               {
@@ -56,10 +54,10 @@ if cluster_name == "master" then [
       "tls": [
         {
           "hosts": [
-            std.join("", ["jaeger.", CUSTOM_DOMAIN_NAME]),
+            std.join("", [jaeger_subdomain, ".", CUSTOM_DOMAIN_NAME]),
           ]
         }
       ]
     }
   }
-] else []
+]

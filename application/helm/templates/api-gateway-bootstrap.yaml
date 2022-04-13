@@ -54,6 +54,8 @@ spec:
           value: "{{ .Values.modules.gatewayBootstrap.console.enabled }}"
         - name: modules.console.syncWaitTime
           value: "{{ .Values.modules.gatewayBootstrap.console.syncWaitTime }}"
+        - name: modules.console.subdomain
+          value: "{{ .Values.modules.gatewayBootstrap.console.subdomain }}"
         - name: modules.gateway.enabled
           value: "{{ .Values.modules.gatewayBootstrap.gateway.enabled }}"
         - name: modules.gateway.syncWaitTime

@@ -8,6 +8,7 @@ function(
     GATEKEER_VERSION="10.0.0",
     CUSTOM_DOMAIN_NAME="custom-domain",
     CUSTOM_CLUSTER_ISSUER="tmaxcloud-issuer",
+    jaeger_subdomain="jaeger"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";

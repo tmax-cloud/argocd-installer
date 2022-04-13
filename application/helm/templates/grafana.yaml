@@ -47,6 +47,8 @@ spec:
           - name: client_id
             value: {{ .Values.spec.destination.label }}-grafana
           {{- end }}
+          - name: grafana_subdomain
+            value: {{ .Values.modules.grafana.subdomain }}
     path: manifest/grafana
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
