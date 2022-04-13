@@ -36,6 +36,8 @@ spec:
           value: {{ .Values.global.console.mcMode | default true | quote }}
         - name: ingressroute.domain.name
           value: {{ .Values.global.domain | default "tmaxcloud.org" }}
+        - name: ingressroute.domain.subdomain
+          value: {{ .Values.global.subdomain | default "console" }}
         {{- if .Values.global.registry.is_offline }}
         - name: image.repository
           value: {{ .Values.global.registry.private_registry }}/docker.io/tmaxcloudck/hypercloud-console

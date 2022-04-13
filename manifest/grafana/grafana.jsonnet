@@ -9,7 +9,8 @@ function (
 	grafana_image_repo="grafana/grafana",
 	ingress_domain="",
 	admin_user="test@test.co.kr",
-	is_master_cluster="true"
+	is_master_cluster="true",
+	grafana_subdomain="grafana"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -245,6 +246,51 @@ local admin_info = if is_master_cluster == "true" then "" else "admin_user = " +
 		},
 		"revisionHistoryLimit": 10,
 		"progressDeadlineSeconds": 600
+		}
+	},
+	{
+		"apiVersion": "networking.k8s.io/v1",
+		"kind": "Ingress",
+		"metadata": {
+			"labels": {
+				"ingress.tmaxcloud.org/name": "grafana"
+			},
+			"annotations": {
+				"traefik.ingress.kubernetes.io/router.entrypoints": "websecure"
+			},
+			"name": "grafana",
+			"namespace": "monitoring"
+		},
+		"spec": {
+			"ingressClassName": "tmax-cloud",
+			"rules": [
+				{
+					"host": std.join("", [grafana_subdomain, ".", ingress_domain]),
+					"http": {
+						"paths": [
+							{
+								"backend": {
+									"service": {
+										"name": "grafana",
+										"port": {
+											"number": 3000
+										}
+									}
+								},
+								"path": "/",
+								"pathType": "Prefix"
+							}
+						]
+					}
+				}
+			],
+			"tls": [
+				{
+					"hosts": [
+						std.join("", [grafana_subdomain, ".", ingress_domain])
+					]
+				}
+			]
 		}
 	}
 ]

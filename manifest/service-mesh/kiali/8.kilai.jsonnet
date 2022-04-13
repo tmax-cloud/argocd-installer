@@ -4,7 +4,8 @@ function(
     KIALI_VERSION="v1.21",
     HYPERAUTH_DOMAIN="hyperauth.domain",
     CUSTOM_DOMAIN_NAME="custom-domain",
-    CUSTOM_CLUSTER_ISSUER="tmaxcloud-issuer"
+    CUSTOM_CLUSTER_ISSUER="tmaxcloud-issuer",
+    kiali_subdomain="kiali"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -583,13 +584,13 @@ local target_registry = if is_offline == "false" then "" else private_registry +
       "tls": [
         {
           "hosts": [
-            std.join("", ["kiali.", CUSTOM_DOMAIN_NAME]),
+            std.join("", [kiali_subdomain, ".", CUSTOM_DOMAIN_NAME]),
           ]
         }
       ],
       "rules": [
         {
-          "host": std.join("", ["kiali.", CUSTOM_DOMAIN_NAME]),
+          "host": std.join("", [kiali_subdomain, ".", CUSTOM_DOMAIN_NAME]),
           "http": {
             "paths": [
               {
