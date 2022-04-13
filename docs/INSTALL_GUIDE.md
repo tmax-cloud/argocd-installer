@@ -1,4 +1,4 @@
-# Guide for Users
+# Guide for Installation
 ### ArgoCD를 이용한 resource 배포
 1. prerequsites
     - argocd([Install guide link](https://github.com/tmax-cloud/install-argocd))
