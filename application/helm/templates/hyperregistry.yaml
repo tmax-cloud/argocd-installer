@@ -1,0 +1,36 @@
+{{ if .Values.modules.hyperregistry.enabled }}
+{{ $isMaster := eq .Values.global.cluster "master" }}
+{{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
+{{ $module := "hyperregistry" }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  labels:
+    cluster: {{ ternary "master" $prefix $isMaster }}
+  name: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
+  namespace: argocd
+spec:
+  destination:
+    name: {{ .Values.global.clusterName }}
+    namespace: hyperauth
+  project: {{ .Values.spec.project }}
+  source:
+    directory:
+      jsonnet:
+        tlas:
+          - name: is_offline
+            value: "{{ .Values.global.network.disabled }}"
+          - name: private_registry
+            value: {{ .Values.global.privateRegistry }}
+          - name: expose.ingress.hosts.domain
+            value: {{ .Values.global.domain }}
+          - name: expose.ingress.hosts.core
+            value: {{ .Values.modules.hyperregistry.core.subdomain }}
+          - name: modules.hyperregistry.notary
+            value: {{ .Values.modules.hyperregistry.notary.subdomain }}
+          - name: storageClass
+            value: {{ .Values.modules.hyperregistry.storageClass }}
+    path: manifest/hyperregistry
+    repoURL: {{ .Values.spec.source.repoURL }}
+    targetRevision: {{ .Values.spec.source.targetRevision }}
+{{ end }}

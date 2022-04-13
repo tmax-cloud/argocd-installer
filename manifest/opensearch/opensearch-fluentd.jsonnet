@@ -1,6 +1,5 @@
 function (
     is_offline="false",
-    cluster_name="master",
     private_registry="172.22.6.2:5000",
     os_image_tag="1.2.3",
     busybox_image_tag="1.32.0",
@@ -16,7 +15,9 @@ function (
     hyperauth_realm="tmax",
     custom_domain_name="domain_name",
     fluentd_image_tag="v1.4.2-debian-elasticsearch-1.1",
-    custom_clusterissuer="tmaxcloud-issuer"
+    custom_clusterissuer="tmaxcloud-issuer",
+    is_master_cluster="true",
+    opensearch_subdomain="opensearch-dashboard"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -24,8 +25,8 @@ local os_image_path = "docker.io/opensearchproject/opensearch:" + os_image_tag;
 local busybox_image_path = "docker.io/busybox:" + busybox_image_tag;
 local dashboard_image_path = "docker.io/opensearchproject/opensearch-dashboards:" + dashboard_image_tag;
 local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fluentd_image_tag;
-local dashboards_redirect_url = if cluster_name == "master" then "https://dashboards." + custom_domain_name else "https://console." + custom_domain_name + "/console/dashboards";
-local single_dashboard_cmdata = if cluster_name == "master" then "" else std.join("", 
+local dashboards_redirect_url = if is_master_cluster == "true" then "https://dashboards." + custom_domain_name else "https://console." + custom_domain_name + "/console/dashboards";
+local single_dashboard_cmdata = if is_master_cluster == "true" then "" else std.join("", 
   [
     "\nserver.basePath: '/console/dashboards'",
     "\nserver.rewriteBasePath: true"
@@ -106,7 +107,7 @@ local single_dashboard_cmdata = if cluster_name == "master" then "" else std.joi
                   "mountPath": "/usr/share/opensearch/config/certificates/admin",
                   "readOnly": true
                 }
-              ] + if cluster_name != "master" then [
+              ] + if is_master_cluster != "true" then [
                 {
                   "name": "security-config",
                   "mountPath": "/usr/share/opensearch/plugins/opensearch-security/securityconfig/config.yml",
@@ -173,7 +174,7 @@ local single_dashboard_cmdata = if cluster_name == "master" then "" else std.joi
                 "secretName": "admin-secret"
               }
             }
-          ] + if cluster_name != "master" then [
+          ] + if is_master_cluster != "true" then [
             {
               "name": "security-config",
               "configMap": {
@@ -295,7 +296,7 @@ local single_dashboard_cmdata = if cluster_name == "master" then "" else std.joi
             {
               "name": "settings",
               "configMap": {
-                "defaultMode": 0700,
+                "defaultMode": 700,
                 "name": "os-policy",
                 "items": [
                   {
