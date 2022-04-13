@@ -2,18 +2,18 @@ function(
     is_offline="false",
     private_registry="registry.tmaxcloud.org",
     JAEGER_VERSION="1.9",
-    cluster_name="master",
     tmax_client_secret="tmax_client_secret",
     HYPERAUTH_DOMAIN="hyperauth.domain",
     GATEKEER_VERSION="10.0.0",
     CUSTOM_DOMAIN_NAME="custom-domain",
     CUSTOM_CLUSTER_ISSUER="tmaxcloud-issuer",
+    is_master_cluster="true"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
 local REDIRECT_URL = "jaeger." + CUSTOM_DOMAIN_NAME;
 
-if cluster_name == "master" then [
+if is_master_cluster == "true" then [
   {
     "apiVersion": "networking.k8s.io/v1",
     "kind": "Ingress",

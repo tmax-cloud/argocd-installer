@@ -8,12 +8,12 @@ function (
 	grafana_version="6.4.3",
 	grafana_image_repo="grafana/grafana",
 	ingress_domain="",
-	cluster_name="master",
-	admin_user="test@test.co.kr"
+	admin_user="test@test.co.kr",
+	is_master_cluster="true"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
-local admin_info = if cluster_name == "master" then "" else "admin_user = " + admin_user + "\n";
+local admin_info = if is_master_cluster == "true" then "" else "admin_user = " + admin_user + "\n";
 
 [
 	{

@@ -2,14 +2,16 @@ spec:
   destination:
     # description: select between 'name' or 'server'
     type: name
-    clusterInfo: cluster_name
-    label: single
+    clusterInfo: cluster-name
   project: default
 
 global:
   # 마스터와 다르게 싱글의 경우 값변경이 필요하지 않음
-  privateRegistry: testregistry.com
+  privateRegistry: test-registry.com
   adminUser: test@test.co.kr
+  cluster: single
+  clusterName: cluster-name
+  clusterNamespace: cluster-namespace
 
 modules:
   ### gateway-bootstrap

@@ -10,7 +10,6 @@ function (
     kibana_image_tag="7.2.0",
     kibana_svc_type="ClusterIP",
     gatekeeper_image_tag="10.0.0",
-    cluster_name="master",
     kibana_client_id="kibana",
     tmax_client_secret="tmax_client_secret",
     hyperauth_url="172.23.4.105",
@@ -18,10 +17,11 @@ function (
     custom_domain_name="domain_name",
     encryption_key="AgXa7xRcoClDEU0ZDSH4X0XhL5Qy2Z2j",
     fluentd_image_tag="v1.4.2-debian-elasticsearch-1.1",
-    custom_clusterissuer="tmaxcloud-issuer"
+    custom_clusterissuer="tmaxcloud-issuer",
+    is_master_cluster="true"
 )
 
-if cluster_name == "master" then [ 
+if is_master_cluster == "true" then [ 
   {
     "apiVersion": "networking.k8s.io/v1",
     "kind": "Ingress",
