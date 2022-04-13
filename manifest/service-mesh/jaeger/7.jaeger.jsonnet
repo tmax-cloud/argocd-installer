@@ -406,7 +406,7 @@ local REDIRECT_URL = "jaeger." + CUSTOM_DOMAIN_NAME;
                   }
                 },
                 {
-                  "name": "QUERY_BASE_PATH",
+                  "name": "BASE_QUERY_PATH",
                   "value": "/api/jaeger"
                 }
               ],
