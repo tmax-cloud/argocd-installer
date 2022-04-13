@@ -24,4 +24,4 @@
         ```
 ---
 4. resource 배포(application sync)
-    - 마스터와 동일하므로 마스터 설치 가이드 4번 항목 참조([링크](INSTALL_GUIDE_MASTER.md#4))
+    - 마스터와 동일하므로 마스터 설치 가이드 4번 항목 참조([링크](INSTALL_GUIDE_MASTER.md#how-to-install))
