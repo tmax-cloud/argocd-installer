@@ -52,6 +52,8 @@ spec:
             value: "{{ $isMaster }}"
           - name: kibana_client_id
             value: {{ ternary "kibana" (printf "%s-kibana" $prefix) $isMaster }}
+          - name: kibana_subdomain
+            value: {{ .Values.modules.efk.kibana.subdomain }}
     path: manifest/efk
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
