@@ -32,6 +32,8 @@ spec:
             value: {{ .Values.modules.hyperAuth.svcType }}
           - name: hyperauth_external_dns
             value: {{ .Values.global.keycloak.domain }}
+          - name: is_kafka_enabled
+            value: "{{ .Values.modules.strimziKafka.enabled }}"
     path: manifest/hyperauth
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
