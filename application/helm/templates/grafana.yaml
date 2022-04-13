@@ -34,8 +34,8 @@ spec:
             value: {{ .Values.modules.grafana.imageRepo }}
           - name: ingress_domain
             value: {{ .Values.global.domain }}
-          - name: cluster_name
-            value: {{ .Values.global.clusterName }}
+          - name: is_master_cluster
+            value: "{{ $isMaster }}"
           - name: admin_user
             value: {{ .Values.global.adminUser }}
           - name: client_id

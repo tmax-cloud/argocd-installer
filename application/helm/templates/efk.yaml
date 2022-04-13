@@ -48,8 +48,8 @@ spec:
             value: {{ .Values.global.domain }}
           - name: fluentd_image_tag
             value: {{ .Values.modules.efk.fluentd.version }}
-          - name: cluster_name
-            value: {{ .Values.global.clusterName }}
+          - name: is_master_cluster
+            value: "{{ $isMaster }}"
           - name: kibana_client_id
             value: {{ ternary "kibana" (printf "%s-kibana" $prefix) $isMaster }}
     path: manifest/efk
