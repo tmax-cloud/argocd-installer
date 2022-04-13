@@ -296,7 +296,7 @@ local single_dashboard_cmdata = if is_master_cluster == "true" then "" else std.
             {
               "name": "settings",
               "configMap": {
-                "defaultMode": 700,
+                "defaultMode": 448,
                 "name": "os-policy",
                 "items": [
                   {
@@ -330,7 +330,7 @@ local single_dashboard_cmdata = if is_master_cluster == "true" then "" else std.
               "name": "dashboards",
               "image": std.join("", [target_registry, dashboard_image_path]),
               "imagePullPolicy": "IfNotPresent",
-              "securityPolicy": {
+              "securityContext": {
                 "privileged": true
               },
               "command": [
