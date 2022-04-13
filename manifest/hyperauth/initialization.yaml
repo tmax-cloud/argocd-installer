@@ -1361,7 +1361,7 @@ data:
           "clientAuthenticatorType": "client-secret",
           "secret": "tmax_client_secret",
           "redirectUris": [
-            "https://hyperregistry.ckcloud.org/c/oidc/callback"
+            "*"
           ],
           "webOrigins": [],
           "notBefore": 0,
