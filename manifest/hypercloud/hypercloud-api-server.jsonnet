@@ -7,7 +7,6 @@ function (
     hyperauth_client_secret="tmax_client_secret",
     domain="tmaxcloud.org",
     hyperauth_subdomain="hyperauth",
-    harbor_subdomain="hyperregistry",
     console_subdomain="console"
 )
 

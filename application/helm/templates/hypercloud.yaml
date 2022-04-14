@@ -39,8 +39,6 @@ spec:
             value: {{ .Values.modules.console.subdomain }}
           - name: auth_subdomain
             value: {{ .Values.modules.console.subdomain }}
-          - name: harbor_subdomain
-            value: {{ .Values.modules.console.subdomain }}
     path: manifest/hypercloud
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
