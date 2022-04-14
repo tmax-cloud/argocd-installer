@@ -12,7 +12,7 @@ metadata:
 spec:
   destination:
     name: {{ .Values.global.clusterName }}
-    namespace: hyperauth
+    namespace: hyperregistry
   project: {{ .Values.spec.project }}
   source:
     helm:
