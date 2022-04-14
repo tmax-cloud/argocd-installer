@@ -3,7 +3,12 @@ function (
     private_registry="registry.hypercloud.org",
     hypercloud_hpcd_mode="multi",
     hypercloud_kafka_enabled="\"true\"",
-    hyperauth_url="hyperauth.172.22.6.18.nip.io"
+    hyperauth_url="hyperauth.172.22.6.18.nip.io",
+    hyperauth_client_secret="tmax_client_secret",
+    domain="tmaxcloud.org",
+    hyperauth_subdomain="hyperauth",
+    harbor_subdomain="hyperregistry",
+    console_subdomain="console"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -70,7 +75,15 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                                 {
                                     "name": "KAFKA_GROUP_ID",
                                     "value":"hypercloud-api-server"
-                                }
+                                },
+                                {
+                                    "name": "HC_DOMAIN",
+                                    "value": domain
+                                },
+                                {
+                                    "name": "CONSOLE_SUBDOMAIN",
+                                    "value": console_subdomain
+                                },
                             ],
                             "ports": [
                                 {

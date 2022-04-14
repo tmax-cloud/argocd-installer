@@ -4,11 +4,14 @@ function (
     hypercloud_hpcd_mode="multi",
     hypercloud_kafka_enabled="\"true\"",
     hyperauth_url="hyperauth.172.22.6.18.nip.io",
-    hyperauth_client_secret="tmax_client_secret"
+    hyperauth_client_secret="tmax_client_secret",
+    domain="tmaxcloud.org",
+    hyperauth_subdomain="hyperauth",
+    hyperregistry_subdomain="hyperregistry",
+    console_subdomain="console"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
-local domain = std.strReplace(hyperauth_url, "hyperauth.", "");
 
 [
     {
@@ -56,6 +59,14 @@ local domain = std.strReplace(hyperauth_url, "hyperauth.", "");
                                 {
                                     "name": "AUTH_CLIENT_SECRET",
                                     "value": hyperauth_client_secret
+                                },
+                                {
+                                    "name": "AUTH_SUBDOMAIN",
+                                    "value": hyperauth_subdomain
+                                },
+                                {
+                                    "name": "HYPERREGISTRY_SUBDOMAIN",
+                                    "value": hyperregistry_subdomain
                                 },
                             ],
                             "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-multi-operator:b5.0.26.7"]),
