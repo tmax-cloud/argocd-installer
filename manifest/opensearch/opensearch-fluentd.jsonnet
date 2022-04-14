@@ -331,7 +331,7 @@ local single_dashboard_cmdata = if is_master_cluster == "true" then "" else std.
               "image": std.join("", [target_registry, dashboard_image_path]),
               "imagePullPolicy": "IfNotPresent",
               "securityContext": {
-                "privileged": true
+                "runAsUser": 0
               },
               "command": [
                 "/bin/bash",
