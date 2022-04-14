@@ -47,7 +47,7 @@ spec:
     syncOptions:
       - ApplyOutOfSyncOnly=true
 ---
-{{ $syncWave := "gateway-sync-wave" }}
+{{ $syncWave := "jwt-decode-auth-sync-wave" }}
 apiVersion: batch/v1
 kind: Job
 metadata:
