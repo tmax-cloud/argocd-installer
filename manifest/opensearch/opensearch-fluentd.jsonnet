@@ -336,7 +336,7 @@ local single_dashboard_cmdata = if is_master_cluster == "true" then "" else std.
               "command": [
                 "/bin/bash",
                 "-c",
-                "/usr/share/opensearch-dashboards/settings.sh && /usr/share/opensearch-dashboards/opensearch-dashboards-docker-entrypoint.sh"
+                "/usr/share/opensearch-dashboards/settings.sh && /usr/share/opensearch-dashboards/opensearch-dashboards-docker-entrypoint.sh --allow-root"
               ],
               "resources": {
                 "limits": {
