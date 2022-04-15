@@ -8,7 +8,7 @@ metadata:
 spec:
   type: ClusterIP
   selector:
-    app: elasticsearch
+    app: opensearch
   ports:
     - port: 9200
       protocol: TCP
