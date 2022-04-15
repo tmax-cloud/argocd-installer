@@ -37,7 +37,7 @@ if hyperauth_url != "" then [
     "data": {
       "config.yml": std.join("", 
         [
-          "_meta:"
+          "_meta:",
           "\n  type: 'config'",
           "\n  config_version: 2",
           "\nconfig:",
@@ -63,7 +63,7 @@ if hyperauth_url != "" then [
           "\n            subject_key: preferred_username",
           "\n            roles_key: roles",
           "\n            openid_connect_url: https://", hyperauth_url, "/auth/realms/", hyperauth_realm, "/.well-known/openid-configuration",
-          "\n            openid_connect_idp",
+          "\n            openid_connect_idp:",
           "\n              enable_ssl: true",
           "\n              verify_hostnames: false",
           "\n              pemtrustedcas_filepath: ", hyperauth_ca_path,
