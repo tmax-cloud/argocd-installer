@@ -129,7 +129,7 @@ local single_dashboard_cmdata = if is_master_cluster == "true" then "" else std.
               ] else [],
               "env": [
                 {
-                  "name": "cluster-name",
+                  "name": "cluster.name",
                   "value": "os-cluster"
                 },
                 {
