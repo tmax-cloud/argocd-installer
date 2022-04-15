@@ -491,8 +491,8 @@ local single_dashboard_cmdata = if is_master_cluster == "true" then "" else std.
                 },
                 {
                   "name": "config",
-                  "mountPath": "/fluentd/etc/kubernetes.conf",
-                  "subPath": "kubernetes.conf"
+                  "mountPath": "/fluentd/etc/fluent.conf",
+                  "subPath": "fluent.conf"
                 },
                 {
                   "name": "gem",
