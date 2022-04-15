@@ -51,6 +51,7 @@ local single_dashboard_cmdata = if is_master_cluster == "true" then "" else std.
       },
       "template": {
         "metadata": {
+          "name": "opensearch",
           "labels": {
             "app": "opensearch"
           }
