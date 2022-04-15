@@ -37,7 +37,7 @@ if hyperauth_url != "" then [
     "data": {
       "config.yml": std.join("", 
         [
-          "_meta:"
+          "_meta:",
           "\n  type: 'config'",
           "\n  config_version: 2",
           "\nconfig:",
