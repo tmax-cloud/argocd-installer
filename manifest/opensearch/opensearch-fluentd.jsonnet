@@ -130,7 +130,7 @@ local single_dashboard_cmdata = if is_master_cluster == "true" then "" else std.
               "env": [
                 {
                   "name": "cluster-name",
-                  "value": "k8s-logs"
+                  "value": "os-cluster"
                 },
                 {
                   "name": "node.name",
