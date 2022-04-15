@@ -51,6 +51,7 @@ local single_dashboard_cmdata = if is_master_cluster == "true" then "" else std.
       },
       "template": {
         "metadata": {
+          "name": "opensearch",
           "labels": {
             "app": "opensearch"
           }
@@ -129,8 +130,8 @@ local single_dashboard_cmdata = if is_master_cluster == "true" then "" else std.
               ] else [],
               "env": [
                 {
-                  "name": "cluster-name",
-                  "value": "k8s-logs"
+                  "name": "cluster.name",
+                  "value": "os-cluster"
                 },
                 {
                   "name": "node.name",
@@ -431,6 +432,11 @@ local single_dashboard_cmdata = if is_master_cluster == "true" then "" else std.
             {
               "name": "fluentd",
               "image": std.join("",[target_registry, fluentd_image_path]),
+              "command": [
+                "/bin/bash", 
+                "-c", 
+                "gem install fluent-plugin-opensearch && fluentd -c /fluentd/etc/fluent.conf -p /fluentd/plugins --gemfile /fluentd/Gemfile"
+              ],
               "env": [
                 {
                   "name": "FLUENT_OPENSEARCH_HOST",
@@ -491,8 +497,8 @@ local single_dashboard_cmdata = if is_master_cluster == "true" then "" else std.
                 },
                 {
                   "name": "config",
-                  "mountPath": "/fluentd/etc/kubernetes.conf",
-                  "subPath": "kubernetes.conf"
+                  "mountPath": "/fluentd/etc/fluent.conf",
+                  "subPath": "fluent.conf"
                 },
                 {
                   "name": "gem",
