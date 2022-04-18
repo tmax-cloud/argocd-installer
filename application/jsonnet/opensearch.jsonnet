@@ -40,7 +40,7 @@ local target_repo = if params.repo_provider == "gitlab" then repo_url_protocol +
             },
             {
               "name": "busybox_image_tag",
-              "value": params.busybox_image_tag
+              "value": params.os_busybox_image_tag
             },
             {
               "name": "os_resource_limit_memory",
@@ -80,7 +80,7 @@ local target_repo = if params.repo_provider == "gitlab" then repo_url_protocol +
             },
             {
               "name": "fluentd_image_tag",
-              "value": params.fluentd_image_tag
+              "value": params.os_fluentd_image_tag
             }
           ],
         },
