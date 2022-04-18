@@ -108,7 +108,7 @@ local single_dashboard_cmdata = if is_master_cluster == "true" then "" else std.
                   "mountPath": "/usr/share/opensearch/config/certificates/admin",
                   "readOnly": true
                 }
-              ] + if is_master_cluster != "true" then [
+              ] + if hyperauth_url != "" then [
                 {
                   "name": "security-config",
                   "mountPath": "/usr/share/opensearch/plugins/opensearch-security/securityconfig/config.yml",
@@ -119,14 +119,7 @@ local single_dashboard_cmdata = if is_master_cluster == "true" then "" else std.
                   "name": "hyperauth-ca",
                   "mountPath": "/usr/share/opensearch/config/certificates/hyperauth",
                   "readOnly": true
-                }
-              ] else if hyperauth_url != "" then [
-                {
-                  "name": "security-config",
-                  "mountPath": "/usr/share/opensearch/plugins/opensearch-security/securityconfig/config.yml",
-                  "subPath": "config.yml",
-                  "readOnly": true
-                }
+                } 
               ] else [],
               "env": [
                 {
@@ -175,7 +168,7 @@ local single_dashboard_cmdata = if is_master_cluster == "true" then "" else std.
                 "secretName": "admin-secret"
               }
             }
-          ] + if is_master_cluster != "true" then [
+          ] + if hyperauth_url != "" then [
             {
               "name": "security-config",
               "configMap": {
@@ -186,13 +179,6 @@ local single_dashboard_cmdata = if is_master_cluster == "true" then "" else std.
               "name": "hyperauth-ca",
               "secret": {
                 "secretName": "hyperauth-ca"
-              }
-            }
-          ] else if hyperauth_url != "" then [
-            {
-              "name": "security-config",
-              "configMap": {
-                "name": "opensearch-securityconfig"
               }
             }
           ] else [],
