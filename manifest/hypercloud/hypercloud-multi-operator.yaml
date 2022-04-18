@@ -114,6 +114,8 @@ spec:
               type: "boolean"
             hyperregistryOidcReady:
               type: "boolean"
+            masterRun:
+              type: "integer"
             nodeInfo:
               items:
                 description: "%clustermanagers.yaml.spec.validation.openAPIV3Schema.properties.status.properties.nodeInfo.items"
