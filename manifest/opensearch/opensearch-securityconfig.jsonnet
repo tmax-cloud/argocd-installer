@@ -20,9 +20,6 @@ function (
     opensearch_subdomain="opensearch-dashboard"
 )
 
-local crt_path = "/usr/share/opensearch/config/certificates";
-local hyperauth_ca_path = if is_master_cluster == "true" then crt_path + "/ca.crt" else crt_path + "/hyperauth/ca.crt";
-
 if hyperauth_url != "" then [
   {
     "apiVersion": "v1",
@@ -66,7 +63,7 @@ if hyperauth_url != "" then [
           "\n            openid_connect_idp:",
           "\n              enable_ssl: true",
           "\n              verify_hostnames: false",
-          "\n              pemtrustedcas_filepath: ", hyperauth_ca_path,
+          "\n              pemtrustedcas_filepath: /usr/share/opensearch/config/certificates/hyperauth/ca.crt",
           "\n        authentication_backend:",
           "\n          type: noop"
         ]
