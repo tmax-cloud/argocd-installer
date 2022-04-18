@@ -1181,8 +1181,8 @@ data:
         {
           "id": "6e693f32-07ef-4671-a33f-4baaabcc3ec5",
           "clientId": "grafana",
-          "rootUrl": "https://grafana.ckcloud.org/api/grafana/",
-          "adminUrl": "https://grafana.cklcloud.org/api/grafana/",
+          "rootUrl": "",
+          "adminUrl": "",
           "baseUrl": "",
           "surrogateAuthRequired": false,
           "enabled": true,
@@ -1190,12 +1190,9 @@ data:
           "clientAuthenticatorType": "client-secret",
           "secret": "tmax_client_secret",
           "redirectUris": [
-            "https://grafana.cklcloud.org/api/grafana/login/generic_oauth/*",
             "*"
           ],
-          "webOrigins": [
-            "https://grafana.cklcloud.org/api/grafana/"
-          ],
+          "webOrigins": [],
           "notBefore": 0,
           "bearerOnly": false,
           "consentRequired": false,
