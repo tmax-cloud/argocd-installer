@@ -103,17 +103,17 @@ spec:
           description: "%clustermanagers.yaml.spec.validation.openAPIV3Schema.properties.status"
           properties:
             argoReady:
-              type: boolean
+              type: "boolean"
             authClientReady:
-              type: boolean
+              type: "boolean"
             controlPlaneEndpoint:
-              type: string
+              type: "string"
             controlPlaneReady:
-              type: boolean
+              type: "boolean"
             gatewayReady:
-              type: boolean
+              type: "boolean"
             hyperregistryOidcReady:
-              type: boolean
+              type: "boolean"
             nodeInfo:
               items:
                 description: "%clustermanagers.yaml.spec.validation.openAPIV3Schema.properties.status.properties.nodeInfo.items"
@@ -171,7 +171,7 @@ spec:
             ready:
               type: "boolean"
             traefikReady:
-              type: boolean
+              type: "boolean"
             version:
               type: "string"
             workerRun:
