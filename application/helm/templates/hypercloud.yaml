@@ -38,7 +38,7 @@ spec:
           - name: console_subdomain
             value: {{ .Values.modules.console.subdomain }}
           - name: auth_subdomain
-            value: {{ .Values.modules.console.subdomain }}
+            value: {{ .Values.modules.hyperAuth.subdomain }}
     path: manifest/hypercloud
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
