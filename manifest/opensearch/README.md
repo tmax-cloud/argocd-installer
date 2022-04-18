@@ -25,7 +25,7 @@ argocd에서 Opensearch-fluentd 배포를 하기 위해서는 application/opense
 - name: dashboard_svc_type
   value: "type of service object, if ingress is unavailable use LoadBalancer, else ClusterIP "
   
-- name: dashboard_client_id
+- name: opensearch_client_id
   value: "Hyperauth client id for OpenSearch-Dashboards"
   
 - name: tmax_client_secret
@@ -61,8 +61,8 @@ argocd에서 Opensearch-fluentd 배포를 하기 위해서는 application/opense
   value: 1.2.0
 - name: dashboard_svc_type
   value: ClusterIP
-- name: dashboard_client_id
-  value: dashboards
+- name: opensearch_client_id
+  value: opensearch
 - name: tmax_client_secret
   value: tmax_client_secret
 - name: hyperauth_url
