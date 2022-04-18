@@ -9,7 +9,7 @@ function (
     os_volume_size="50Gi",
     dashboard_image_tag="1.2.0",
     dashboard_svc_type="ClusterIP",
-    dashboard_client_id="dashboards",
+    opensearch_client_id="opensearch",
     tmax_client_secret="tmax_client_secret",
     hyperauth_url="172.23.4.105",
     hyperauth_realm="tmax",
