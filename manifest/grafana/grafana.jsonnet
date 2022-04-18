@@ -28,7 +28,7 @@ local admin_info = if is_master_cluster == "true" then "" else "admin_user = " +
 			"grafana.ini": std.join("",
 				[
 					"[server]\n",
-					"domain = grafana.",ingress_domain, "\n",
+					"domain = ", grafana_subdomain, ".", ingress_domain, "\n",
 					"http_port = 3000\n",
 					"root_url = https://%(domain)s/api/grafana/\n",
 					"serve_from_sub_path = true\n",
