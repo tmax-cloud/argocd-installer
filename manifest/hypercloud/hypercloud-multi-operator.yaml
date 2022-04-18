@@ -1077,7 +1077,7 @@ webhooks:
       namespace: hypercloud5-system
       path: /validate-cluster-tmax-io-v1alpha1-clustermanager
   failurePolicy: Fail
-  name: validation.webhook.clustermanager.kb.io
+  name: validation.webhook.clustermanager
   rules:
   - apiGroups:
     - cluster.tmax.io
