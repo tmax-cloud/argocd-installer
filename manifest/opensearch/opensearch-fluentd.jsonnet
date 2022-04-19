@@ -9,7 +9,7 @@ function (
     os_volume_size="50Gi",
     dashboard_image_tag="1.2.0",
     dashboard_svc_type="ClusterIP",
-    dashboard_client_id="dashboards",
+    opensearch_client_id="opensearch",
     tmax_client_secret="tmax_client_secret",
     hyperauth_url="172.23.4.105",
     hyperauth_realm="tmax",
@@ -108,7 +108,7 @@ local single_dashboard_cmdata = if is_master_cluster == "true" then "" else std.
                   "mountPath": "/usr/share/opensearch/config/certificates/admin",
                   "readOnly": true
                 }
-              ] + if is_master_cluster != "true" then [
+              ] + if hyperauth_url != "" then [
                 {
                   "name": "security-config",
                   "mountPath": "/usr/share/opensearch/plugins/opensearch-security/securityconfig/config.yml",
@@ -119,14 +119,7 @@ local single_dashboard_cmdata = if is_master_cluster == "true" then "" else std.
                   "name": "hyperauth-ca",
                   "mountPath": "/usr/share/opensearch/config/certificates/hyperauth",
                   "readOnly": true
-                }
-              ] else if hyperauth_url != "" then [
-                {
-                  "name": "security-config",
-                  "mountPath": "/usr/share/opensearch/plugins/opensearch-security/securityconfig/config.yml",
-                  "subPath": "config.yml",
-                  "readOnly": true
-                }
+                } 
               ] else [],
               "env": [
                 {
@@ -175,7 +168,7 @@ local single_dashboard_cmdata = if is_master_cluster == "true" then "" else std.
                 "secretName": "admin-secret"
               }
             }
-          ] + if is_master_cluster != "true" then [
+          ] + if hyperauth_url != "" then [
             {
               "name": "security-config",
               "configMap": {
@@ -186,13 +179,6 @@ local single_dashboard_cmdata = if is_master_cluster == "true" then "" else std.
               "name": "hyperauth-ca",
               "secret": {
                 "secretName": "hyperauth-ca"
-              }
-            }
-          ] else if hyperauth_url != "" then [
-            {
-              "name": "security-config",
-              "configMap": {
-                "name": "opensearch-securityconfig"
               }
             }
           ] else [],
@@ -609,7 +595,7 @@ local single_dashboard_cmdata = if is_master_cluster == "true" then "" else std.
           "\nopensearch_security.multitenancy.enable_filter: false",
           "\nopensearch_security.auth.type: openid", 
           "\nopensearch_security.openid.connect_url: https://", hyperauth_url, "/auth/realms/", hyperauth_realm, "/.well-known/openid-configuration",
-          "\nopensearch_security.openid.client.id: ", dashboard_client_id, 
+          "\nopensearch_security.openid.client.id: ", opensearch_client_id, 
           "\nopensearch_security.openid.client_secret: ", tmax_client_secret, 
           "\nopensearch_security.openid.base_redirect_url: ", dashboards_redirect_url,
           "\nopensearch_security.openid.verify_hostnames: false", 

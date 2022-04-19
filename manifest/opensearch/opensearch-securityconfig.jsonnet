@@ -9,7 +9,7 @@ function (
     os_volume_size="50Gi",
     dashboard_image_tag="1.2.0",
     dashboard_svc_type="ClusterIP",
-    dashboard_client_id="dashboards",
+    opensearch_client_id="opensearch",
     tmax_client_secret="tmax_client_secret",
     hyperauth_url="172.23.4.105",
     hyperauth_realm="tmax",
@@ -19,9 +19,6 @@ function (
     is_master_cluster="true",
     opensearch_subdomain="opensearch-dashboard"
 )
-
-local crt_path = "/usr/share/opensearch/config/certificates";
-local hyperauth_ca_path = if is_master_cluster == "true" then crt_path + "/ca.crt" else crt_path + "/hyperauth/ca.crt";
 
 if hyperauth_url != "" then [
   {
@@ -66,7 +63,7 @@ if hyperauth_url != "" then [
           "\n            openid_connect_idp:",
           "\n              enable_ssl: true",
           "\n              verify_hostnames: false",
-          "\n              pemtrustedcas_filepath: ", hyperauth_ca_path,
+          "\n              pemtrustedcas_filepath: /usr/share/opensearch/config/certificates/hyperauth/ca.crt",
           "\n        authentication_backend:",
           "\n          type: noop"
         ]
