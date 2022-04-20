@@ -107,6 +107,16 @@ local single_dashboard_cmdata = if is_master_cluster == "true" then "" else std.
                   "name": "admin-cert",
                   "mountPath": "/usr/share/opensearch/config/certificates/admin",
                   "readOnly": true
+                },
+                {
+                  "name": "role-mapping",
+                  "mountPath": "/usr/share/opensearch/plugins/opensearch-security/securityconfig/roles_mapping.yml",
+                  "subPath": "roles_mapping.yml"
+                },
+                {
+                  "name": "user-role",
+                  "mountPath": "/usr/share/opensearch/plugins/opensearch-security/securityconfig/internal_users.yml",
+                  "subPath": "internal_users.yml"
                 }
               ] + if hyperauth_url != "" then [
                 {
@@ -166,6 +176,18 @@ local single_dashboard_cmdata = if is_master_cluster == "true" then "" else std.
               "name": "admin-cert",
               "secret": {
                 "secretName": "admin-secret"
+              }
+            },
+            {
+              "name": "role-mapping",
+              "configMap": {
+                "name": "os-role-mapping"
+              }
+            },
+            {
+              "name": "user-role",
+              "configMap": {
+                "name": "os-users"
               }
             }
           ] + if hyperauth_url != "" then [
@@ -602,6 +624,121 @@ local single_dashboard_cmdata = if is_master_cluster == "true" then "" else std.
           "\nopensearch_security.cookie.secure: false"
         ]
       )
+    }
+  },
+  {
+    "apiVersion": "v1",
+    "kind": "ConfigMap",
+    "metadata": {
+      "name": "os-role-mapping",
+      "namespace": "kube-logging"
+    },
+    "data": {
+      "roles_mapping.yml": std.join("",
+      [
+        "_meta:",
+        "\n  type: 'rolesmapping'",
+        "\n  config_version: 2",
+        "\n ",
+        "\nall_access:",
+        "\n  reserved: false",
+        "\n  backend_roles:",
+        "\n  - 'opensearch-admin'",
+        "\n  description: 'Maps admin to all_access'",
+        "\n ",
+        "\nown_index:",
+        "\n  reserved: false",
+        "\n  users:",
+        "\n  - '*'",
+        "\n  description: 'Allow full access to an index named like the username",
+        "\n ",
+        "\nlogstash:",
+        "\n  reserved: false",
+        "\n  backend_roles:",
+        "\n  - 'logstash'",
+        "\n ",
+        "\nkibana_user:",
+        "\n  reserved: false",
+        "\n  backend_roles:",
+        "\n  - 'kibanauser'",
+        "\n  description: 'Maps kibanauser to kibana_user",
+        "\n ",
+        "\nreadall:",
+        "\n  reserved: false",
+        "\n  backend_roles:",
+        "\n  - 'readall'",
+        "\n ",
+        "\nmanage_snapshots:",
+        "\n  reserved: false",
+        "\n  backend_roles:",
+        "\n  - 'snapshotrestore'",
+        "\n ",
+        "\nkibana_server:",
+        "\n  reserved: true",
+        "\n  users:",
+        "\n  - 'kibanaserver'"
+      ]
+    }
+  },
+  {
+    "apiVersion": "v1",
+    "kind": "ConfigMap",
+    "metadata": {
+      "name": "os-users",
+      "namespace": "kube-logging"
+    },
+    "data": {
+      "internal_users.yml": std.join("",
+      [
+        "_meta:",
+        "\n  type: 'internalusers'",
+        "\n  config_version: 2",
+        "\n ",
+        "\nadmin:",
+        "\n  hash: '$2a$12$VcCDgh2NDk07JGN0rjGbM.Ad41qVR/YFJcgHp0UGns5JDymv..TOG'",
+        "\n  reserved: true",
+        "\n  backend_roles:",
+        "\n  - 'opensearch-admin'",
+        "\n  description: 'Demo admin user'",
+        "\n ",
+        "\nkibanaserver:",
+        "\n  hash: '$2a$12$4AcgAt3xwOWadA5s5blL6ev39OXDNhmOesEoo33eZtrq2N0YrU3H.'",
+        "\n  reserved: true",
+        "\n  description: 'Demo OpenSearch Dashboards user'",
+        "\n ",
+        "\nkibanaro:",
+        "\n  hash: '$2a$12$JJSXNfTowz7Uu5ttXfeYpeYE0arACvcwlPBStB1F.MI7f0U9Z4DGC'",
+        "\n  reserved: false",
+        "\n  backend_roles:",
+        "\n  - 'kibanauser'",
+        "\n  - 'readall'",
+        "\n  attributes:",
+        "\n    attribute1: 'value1'",
+        "\n    attribute2: 'value2'",
+        "\n    attribute3: 'value3'",
+        "\n  description: 'Demo OpenSearch Dashboards read only user'",
+        "\n ",
+        "\nlogstash:",
+        "\n  hash: '$2a$12$u1ShR4l4uBS3Uv59Pa2y5.1uQuZBrZtmNfqB3iM/.jL0XoV9sghS2'",
+        "\n  reserved: false",
+        "\n  backend_roles:",
+        "\n  - 'logstash'",
+        "\n  description: 'Demo logstash user'",
+        "\n ",
+        "\nreadall:",
+        "\n  hash: '$2a$12$ae4ycwzwvLtZxwZ82RmiEunBbIPiAmGZduBAjKN0TXdwQFtCwARz2'",
+        "\n  reserved: false",
+        "\n  backend_roles:",
+        "\n  - 'readall'",
+        "\n  description: 'Demo readall user'",
+        "\n ",
+        "\nsnapshotrestore:",
+        "\n  hash: '$2y$12$DpwmetHKwgYnorbgdvORCenv4NAK8cPUg8AI6pxLCuWf/ALc0.v7W'",
+        "\n  reserved: false",
+        "\n  backend_roles:",
+        "\n  - 'snapshotrestore'",
+        "\n  description: 'Demo snapshotrestore user'"
+      ]
     }
   }
 ]
