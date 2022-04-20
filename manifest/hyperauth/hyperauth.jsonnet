@@ -3,7 +3,8 @@ function (
     private_registry="172.22.6.2:5000",
     hyperauth_svc_type="Ingress",
     hyperauth_external_dns="hyperauth.172.22.6.18.nip.io",
-    hyperauth_external_ip="172.22.6.8"
+    hyperauth_external_ip="172.22.6.8",
+    is_kafka_enabled="true"
 )
 
 local svcType = if hyperauth_svc_type == "Ingress" then "ClusterIP" else hyperauth_svc_type;
