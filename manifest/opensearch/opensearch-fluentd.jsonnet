@@ -25,7 +25,6 @@ local os_image_path = "docker.io/opensearchproject/opensearch:" + os_image_tag;
 local busybox_image_path = "docker.io/busybox:" + busybox_image_tag;
 local dashboard_image_path = "docker.io/opensearchproject/opensearch-dashboards:" + dashboard_image_tag;
 local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fluentd_image_tag;
-local opensearch_admin_role = if is_master_cluster == "true" then "opensearch-admin" else "single-admin";
 local dashboards_redirect_url = if is_master_cluster == "true" then "https://dashboards." + custom_domain_name else "https://console." + custom_domain_name + "/console/dashboards";
 local single_dashboard_cmdata = if is_master_cluster == "true" then "" else std.join("", 
   [
@@ -644,7 +643,7 @@ local single_dashboard_cmdata = if is_master_cluster == "true" then "" else std.
         "\nall_access:",
         "\n  reserved: false",
         "\n  backend_roles:",
-        "\n  - ", opensearch_admin_role,
+        "\n  - 'opensearch-admin'",
         "\n  description: 'Maps admin to all_access'",
         "\n ",
         "\nown_index:",
@@ -699,7 +698,7 @@ local single_dashboard_cmdata = if is_master_cluster == "true" then "" else std.
         "\n  hash: '$2a$12$VcCDgh2NDk07JGN0rjGbM.Ad41qVR/YFJcgHp0UGns5JDymv..TOG'",
         "\n  reserved: true",
         "\n  backend_roles:",
-        "\n  - ", opensearch_admin_role,
+        "\n  - 'opensearch-admin'",
         "\n  description: 'Demo admin user'",
         "\n ",
         "\nkibanaserver:",
