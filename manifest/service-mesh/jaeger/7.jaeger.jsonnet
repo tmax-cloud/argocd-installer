@@ -1,7 +1,7 @@
 function(
     is_offline="false",
     private_registry="registry.tmaxcloud.org",
-    JAEGER_VERSION="1.9",
+    JAEGER_VERSION="1.27",
     cluster_name="master",
     tmax_client_secret="tmax_client_secret",
     HYPERAUTH_DOMAIN="hyperauth.domain",
@@ -135,9 +135,9 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
     },
     "data": {
       "span-storage-type": "elasticsearch",
-      "collector": "es:\n  server-urls: http://elasticsearch.kube-logging.svc.cluster.local:9200\ncollector:\n  zipkin:\n    http-port: 9411\n",
+      "collector": "es:\n  server-urls: http://elasticsearch.kube-logging.svc.cluster.local:9200\ncollector:\n  zipkin:\n    host-port: 9411\n",
       "query": "es:\n  server-urls: http://elasticsearch.kube-logging.svc.cluster.local:9200\n",
-      "agent": "collector:\n  host-port: \"jaeger-collector:14267\"\n"
+      "agent": "reporter:\n  grpc:\n  host-port: \"jaeger-collector:14250\"\n"
     }
   },
   {
@@ -185,7 +185,7 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
               ],
               "ports": [
                 {
-                  "containerPort": 14267,
+                  "containerPort": 14250,
                   "protocol": "TCP"
                 },
                 {
@@ -255,10 +255,10 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
     "spec": {
       "ports": [
         {
-          "name": "jaeger-collector-tchannel",
-          "port": 14267,
+          "name": "jaeger-collector-grpc",
+          "port": 14250,
           "protocol": "TCP",
-          "targetPort": 14267
+          "targetPort": 14250
         },
         {
           "name": "jaeger-collector-http",
@@ -596,7 +596,15 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
                   "containerPort": 5778,
                   "protocol": "TCP"
                 }
-              ]
+              ],
+              "readinessProbe": {
+                "failureThreshold": 3,
+                "httpGet": {
+                  "path": "/",
+                  "port": 14271,
+                  "scheme": "HTTP"
+                }
+              }
             }
           ],
           "hostNetwork": true,
