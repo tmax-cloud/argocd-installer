@@ -660,7 +660,7 @@ data:
       "webAuthnPolicyCreateTimeout": 0,
       "webAuthnPolicyAvoidSameAuthenticatorRegister": false,
       "webAuthnPolicyAcceptableAaguids": [],
-      "webAuthnPolicyPasswordlessRpEntityName": "hyerauth",
+      "webAuthnPolicyPasswordlessRpEntityName": "hyperauth",
       "webAuthnPolicyPasswordlessSignatureAlgorithms": [
         "ES256",
         "ES384",
