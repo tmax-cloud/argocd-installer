@@ -5,7 +5,10 @@ function (
     istio_namespace="istio-system",
     knative_namespace="knative-serving",
     custom_domain_name="tmaxcloud.org",
-    notebook_svc_type="Ingress"
+    notebook_svc_type="Ingress",
+    tmax_client_secret="tmax_client_secret",
+    hyperauth_url="172.23.4.105",
+    hyperauth_realm="tmax"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -18,7 +21,8 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "app.kubernetes.io/component": "kubeflow",
         "app.kubernetes.io/name": "kubeflow"
         },
-        "name": "kubeflow"
+        "name": "kubeflow",
+        "namespace": ai_devops_namespace
     },
     "spec": {
         "addOwnerRef": true,
@@ -944,6 +948,13 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "name": "manager-http",
                     "protocol": "TCP"
                 }
+                ],
+                "volumeMounts": [
+                    {
+                        "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                        "name": "profiles-controller-service-account-token",
+                        "readOnly": true
+                    }
                 ]
             },
             {
@@ -1003,12 +1014,39 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "name": "kfam-http",
                     "protocol": "TCP"
                 }
+                ],
+                "volumeMounts": [
+                    {
+                        "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                        "name": "profiles-controller-service-account-token",
+                        "readOnly": true
+                    }
                 ]
             }
             ],
-            "serviceAccountName": "profiles-controller-service-account"
+            "volumes": [
+                {
+                    "name": "profiles-controller-service-account-token",
+                    "secret": {
+                        "defaultMode": 420,
+                        "secretName": "profiles-controller-service-account-token"
+                    }
+                }
+            ]
         }
         }
     }
+    },
+    {
+    "apiVersion": "v1",
+    "kind": "Secret",
+    "metadata": {
+        "name": "profiles-controller-service-account-token",
+        "namespace": ai_devops_namespace,
+        "annotations": {
+        "kubernetes.io/service-account.name": "profiles-controller-service-account"
+        }
+    },
+    "type": "kubernetes.io/service-account-token"
     }
 ]

@@ -25,6 +25,12 @@ spec:
           value: tmaxcloud.org
         - name: notebook_svc_type
           value: Ingress
+        - name: tmax_client_secret
+          value: tmax_client_secret
+        - name: hyperauth_url
+          value: ""
+        - name: hyperauth_realm
+          value: tmax
     path: manifest/ai-devops
     repoURL: https://github.com/tmax-cloud/argocd-installer
     targetRevision: main
