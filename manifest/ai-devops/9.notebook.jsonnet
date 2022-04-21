@@ -5369,8 +5369,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "rbac.authorization.kubeflow.org/aggregate-to-kubeflow-admin": "true"
         },
         "name": "notebook-controller-kubeflow-notebooks-admin"
-    },
-    "rules": []
+    }
     },
     {
     "apiVersion": "rbac.authorization.k8s.io/v1",
@@ -5551,22 +5550,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "namespace": ai_devops_namespace
         }
     ]
-    },
-    {
-    "apiVersion": "v1",
-    "data": {
-        "cluster-name": "",
-        "clusterDomain": "cluster.local",
-        "istio-namespace": istio_namespace,
-        "userid-header": "kubeflow-userid",
-        "userid-prefix": ""
-    },
-    "kind": "ConfigMap",
-    "metadata": {
-        "name": "kubeflow-config-mb6ktt4hf9",
-        "namespace": ai_devops_namespace
-    }
-    },
+    },    
     {
     "apiVersion": "v1",
     "data": {
@@ -5769,11 +5753,11 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "selector": {
         "matchLabels": {
             "app.kubernetes.io/component": "notebook-controller-go",
-            "app.kubernetes.io/instance": "notebook-controller-go-b0.0.2",
+            "app.kubernetes.io/instance": "notebook-controller-go-b0.2.1",
             "app.kubernetes.io/managed-by": "kfctl",
             "app.kubernetes.io/name": "notebook-controller",
             "app.kubernetes.io/part-of": "hyperflow",
-            "app.kubernetes.io/version": "b0.0.2"
+            "app.kubernetes.io/version": "b0.2.1"
         }
         }
     }

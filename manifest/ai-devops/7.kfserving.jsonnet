@@ -21831,8 +21831,7 @@ local kfserving_image_tag = "v0.5.1";
       "rbac.authorization.kubeflow.org/aggregate-to-kubeflow-admin": "true"
     },
     "name": "kubeflow-kfserving-admin"
-  },
-  "rules": []
+  }
 },
 {
   "apiVersion": "rbac.authorization.k8s.io/v1",
