@@ -25,13 +25,6 @@ local os_image_path = "docker.io/opensearchproject/opensearch:" + os_image_tag;
 local busybox_image_path = "docker.io/busybox:" + busybox_image_tag;
 local dashboard_image_path = "docker.io/opensearchproject/opensearch-dashboards:" + dashboard_image_tag;
 local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fluentd_image_tag;
-local dashboards_redirect_url = if is_master_cluster == "true" then "https://dashboards." + custom_domain_name else "https://console." + custom_domain_name + "/console/dashboards";
-local single_dashboard_cmdata = if is_master_cluster == "true" then "" else std.join("", 
-  [
-    "\nserver.basePath: '/console/dashboards'",
-    "\nserver.rewriteBasePath: true"
-  ]
-);
 
 [
   {
@@ -588,7 +581,6 @@ local single_dashboard_cmdata = if is_master_cluster == "true" then "" else std.
         [
           "server.name: dashboards", 
           "\nserver.host: '0.0.0.0'",
-          single_dashboard_cmdata,
           "\nopensearch.username: admin",
           "\nopensearch.password: admin",
           "\nopensearch.ssl.verificationMode: none",
@@ -600,7 +592,6 @@ local single_dashboard_cmdata = if is_master_cluster == "true" then "" else std.
         [
           "server.name: dashboards", 
           "\nserver.host: '0.0.0.0'", 
-          single_dashboard_cmdata,
           "\nserver.ssl.enabled: true", 
           "\nserver.ssl.certificate: /usr/share/opensearch-dashboards/config/certificates/tls.crt",
           "\nserver.ssl.key: /usr/share/opensearch-dashboards/config/certificates/tls.key",
@@ -619,7 +610,7 @@ local single_dashboard_cmdata = if is_master_cluster == "true" then "" else std.
           "\nopensearch_security.openid.connect_url: https://", hyperauth_url, "/auth/realms/", hyperauth_realm, "/.well-known/openid-configuration",
           "\nopensearch_security.openid.client.id: ", opensearch_client_id, 
           "\nopensearch_security.openid.client_secret: ", tmax_client_secret, 
-          "\nopensearch_security.openid.base_redirect_url: ", dashboards_redirect_url,
+          "\nopensearch_security.openid.base_redirect_url: https://", opensearch_subdomain, ".", "custom_domain_name",
           "\nopensearch_security.openid.verify_hostnames: false", 
           "\nopensearch_security.cookie.secure: false"
         ]
