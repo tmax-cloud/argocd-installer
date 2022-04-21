@@ -191,20 +191,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "kind": "Deployment"
         }
         ],
-        "descriptor": {
-        "description": "",
+        "descriptor": {        
         "keywords": [
             "minio",
             "kubeflow"
         ],
         "links": [
             {
-            "description": "About",
-            "url": ""
+            "description": "About",            
             }
-        ],
-        "maintainers": [],
-        "owners": [],
+        ],        
         "type": "minio",
         "version": "v1beta1"
         },

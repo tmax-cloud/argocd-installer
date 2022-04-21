@@ -2142,20 +2142,16 @@ local knative_istio_image_tag = "v0.14.1";
             "kind": "Deployment"
         }
         ],
-        "descriptor": {
-        "description": "",
+        "descriptor": {        
         "keywords": [
             "knative-serving-crds",
             "kubeflow"
         ],
         "links": [
             {
-            "description": "About",
-            "url": ""
+            "description": "About"            
             }
-        ],
-        "maintainers": [],
-        "owners": [],
+        ],        
         "type": "knative-serving-crds",
         "version": "v1beta1"
         },
@@ -2191,20 +2187,16 @@ local knative_istio_image_tag = "v0.14.1";
             "kind": "Deployment"
         }
         ],
-        "descriptor": {
-        "description": "",
+        "descriptor": {        
         "keywords": [
             "knative-serving-install",
             "kubeflow"
         ],
         "links": [
             {
-            "description": "About",
-            "url": ""
+            "description": "About",            
             }
-        ],
-        "maintainers": [],
-        "owners": [],
+        ],        
         "type": "knative-serving-install",
         "version": "v1beta1"
         },
