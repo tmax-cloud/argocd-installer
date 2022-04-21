@@ -28,7 +28,7 @@ synchronize시 synchronize resources에 configmap과 같은 해당 crd 이외의
   value: "namespace for knative-serving"
 
 - name: custom_domain_name
-  value: "custom domain name for ingress"  
+  value: "custom domain name for ingress"
   
 - name: notebook_svc_type
   value: "type of service object, if ingress is unavailable use LoadBalancer, else ClusterIP "

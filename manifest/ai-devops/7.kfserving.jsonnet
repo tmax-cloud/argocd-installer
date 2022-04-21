@@ -22249,7 +22249,7 @@ local kfserving_image_tag = "v0.5.1";
             ]
           }
         ],
-        "terminationGracePeriodSeconds": 10,  
+        "terminationGracePeriodSeconds": 10,
         "volumes": [
           {
             "name": "cert",

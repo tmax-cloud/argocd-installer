@@ -589,7 +589,7 @@ local katib_object_image_tag = "v0.11.0";
       },
       "version": "v1beta1"
     }
-  },  
+  },
   {
     "apiVersion": "v1",
     "kind": "ServiceAccount",
@@ -916,7 +916,7 @@ local katib_object_image_tag = "v0.11.0";
     "data": {
       "early-stopping": std.join("", ["{\n  \"medianstop\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/earlystopping-medianstop:v0.12.0", "\"\n  }\n}"]),
       "metrics-collector-sidecar": std.join("", ["{\n  \"StdOut\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/file-metrics-collector:v0.12.0\"", "\n  },\n  \"File\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/file-metrics-collector:v0.12.0\"\n  },\n  \"TensorFlowEvent\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/tfevent-metrics-collector:v0.12.0\",\n    \"resources\": {\n      \"limits\": {\n        \"memory\": \"1Gi\"\n      }\n    }\n  }\n}"]),
-      "suggestion": std.join("", ["{\n  \"random\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/suggestion-hyperopt:v0.12.0\"\n  },\n  \"tpe\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/suggestion-hyperopt:v0.12.0\"\n  },\n  \"grid\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/suggestion-chocolate:v0.12.0\"\n  },\n  \"hyperband\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/suggestion-hyperband:v0.12.0\"\n  },\n  \"bayesianoptimization\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/suggestion-skopt:v0.12.0\"\n  },\n  \"cmaes\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/suggestion-goptuna:v0.12.0\"\n  },\n  \"sobol\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/suggestion-goptuna:v0.12.0\"\n  },\n  \"multivariate-tpe\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/suggestion-optuna:v0.12.0\"\n  },\n  \"enas\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/suggestion-enas:v0.12.0\",\n    \"resources\": {\n      \"limits\": {\n        \"memory\": \"200Mi\"\n      }\n    }\n  },\n  \"darts\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/suggestion-darts:v0.12.0\"\n  }\n}"])      
+      "suggestion": std.join("", ["{\n  \"random\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/suggestion-hyperopt:v0.12.0\"\n  },\n  \"tpe\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/suggestion-hyperopt:v0.12.0\"\n  },\n  \"grid\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/suggestion-chocolate:v0.12.0\"\n  },\n  \"hyperband\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/suggestion-hyperband:v0.12.0\"\n  },\n  \"bayesianoptimization\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/suggestion-skopt:v0.12.0\"\n  },\n  \"cmaes\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/suggestion-goptuna:v0.12.0\"\n  },\n  \"sobol\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/suggestion-goptuna:v0.12.0\"\n  },\n  \"multivariate-tpe\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/suggestion-optuna:v0.12.0\"\n  },\n  \"enas\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/suggestion-enas:v0.12.0\",\n    \"resources\": {\n      \"limits\": {\n        \"memory\": \"200Mi\"\n      }\n    }\n  },\n  \"darts\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/suggestion-darts:v0.12.0\"\n  }\n}"])
     },
     "kind": "ConfigMap",
     "metadata": {
@@ -1167,7 +1167,7 @@ local katib_object_image_tag = "v0.11.0";
                 }
               ]
             }
-          ],          
+          ],
           "volumes": [
             {
               "name": "cert",
@@ -1255,7 +1255,7 @@ local katib_object_image_tag = "v0.11.0";
                 }
               ]
             }
-          ],          
+          ],
         }
       }
     }
@@ -1364,7 +1364,7 @@ local katib_object_image_tag = "v0.11.0";
                 }
               ]
             }
-          ],          
+          ],
           "volumes": [
             {
               "name": "katib-mysql",
@@ -1636,4 +1636,4 @@ local katib_object_image_tag = "v0.11.0";
       }
     ]
   }
-]  
+]
