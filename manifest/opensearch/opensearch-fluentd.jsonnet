@@ -610,7 +610,7 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
           "\nopensearch_security.openid.connect_url: https://", hyperauth_url, "/auth/realms/", hyperauth_realm, "/.well-known/openid-configuration",
           "\nopensearch_security.openid.client.id: ", opensearch_client_id, 
           "\nopensearch_security.openid.client_secret: ", tmax_client_secret, 
-          "\nopensearch_security.openid.base_redirect_url: https://", opensearch_subdomain, ".", "custom_domain_name",
+          "\nopensearch_security.openid.base_redirect_url: https://", opensearch_subdomain, ".", custom_domain_name,
           "\nopensearch_security.openid.verify_hostnames: false", 
           "\nopensearch_security.cookie.secure: false"
         ]
