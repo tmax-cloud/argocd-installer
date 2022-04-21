@@ -5,7 +5,11 @@ function (
     istio_namespace="istio-system",
     knative_namespace="knative-serving",
     custom_domain_name="tmaxcloud.org",
-    notebook_svc_type="Ingress"
+    notebook_svc_type="Ingress",
+    tmax_client_secret="tmax_client_secret",
+    hyperauth_url="172.23.4.105",
+    hyperauth_realm="tmax",
+    console_subdomain="console"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -21972,18 +21976,24 @@ local kfserving_image_tag = "v0.5.1";
 {
   "apiVersion": "v1",
   "data": {
-    "agent": "{\n    \"image\" : \"kfserving/agent:v0.5.1\",\n    \"memoryRequest\": \"100Mi\",\n    \"memoryLimit\": \"1Gi\",\n    \"cpuRequest\": \"100m\",\n    \"cpuLimit\": \"1\"\n}",
-    "batcher": "{\n    \"image\" : \"kfserving/agent:v0.5.1\",\n    \"memoryRequest\": \"1Gi\",\n    \"memoryLimit\": \"1Gi\",\n    \"cpuRequest\": \"1\",\n    \"cpuLimit\": \"1\"\n}",
+    "agent": std.join("", ["{\n    \"image\" : \"", target_registry, "docker.io/kfserving/agent:v0.5.1\",\n    \"memoryRequest\": \"100Mi\",\n    \"memoryLimit\": \"1Gi\",\n    \"cpuRequest\": \"100m\",\n    \"cpuLimit\": \"1\"\n}"]),
+    "batcher": std.join("", ["{\n    \"image\" : \"", target_registry, "docker.io/kfserving/agent:v0.5.1\",\n    \"memoryRequest\": \"1Gi\",\n    \"memoryLimit\": \"1Gi\",\n    \"cpuRequest\": \"1\",\n    \"cpuLimit\": \"1\"\n}"]),
     "credentials": "{\n   \"gcs\": {\n       \"gcsCredentialFileName\": \"gcloud-application-credentials.json\"\n   },\n   \"s3\": {\n       \"s3AccessKeyIDName\": \"AWS_ACCESS_KEY_ID\",\n       \"s3SecretAccessKeyName\": \"AWS_SECRET_ACCESS_KEY\"\n   }\n}",
-    "explainers": "{\n    \"alibi\": {\n        \"image\" : \"gcr.io/kfserving/alibi-explainer\",\n        \"defaultImageVersion\": \"v0.5.1\"\n    },\n    \"aix\": {\n        \"image\" : \"kfserving/aix-explainer\",\n        \"defaultImageVersion\": \"v0.5.1\"\n    },\n    \"art\": {\n        \"image\" : \"kfserving/art-explainer\",\n        \"defaultImageVersion\": \"v0.5.1\"\n    }\n}",
-    "ingress": "{\n    \"ingressGateway\" : \"knative-ingress-gateway.knative-serving\",\n    \"ingressService\" : \"istio-ingressgateway.istio-system.svc.cluster.local\",\n    \"localGateway\" : \"cluster-local-gateway.knative-serving\",\n    \"localGatewayService\" : \"cluster-local-gateway.istio-system.svc.cluster.local\"\n}",
-    "logger": "{\n    \"image\" : \"kfserving/agent:v0.5.1\",\n    \"memoryRequest\": \"100Mi\",\n    \"memoryLimit\": \"1Gi\",\n    \"cpuRequest\": \"100m\",\n    \"cpuLimit\": \"1\",\n    \"defaultUrl\": \"http://default-broker\"\n}",
-    "predictors": "{\n    \"tensorflow\": {\n        \"image\": \"tensorflow/serving\",\n        \"defaultImageVersion\": \"1.14.0\",\n        \"defaultGpuImageVersion\": \"1.14.0-gpu\",\n        \"defaultTimeout\": \"60\",\n        \"supportedFrameworks\": [\n          \"tensorflow\"\n        ],\n        \"multiModelServer\": false\n    },\n    \"onnx\": {\n        \"image\": \"mcr.microsoft.com/onnxruntime/server\",\n        \"defaultImageVersion\": \"v1.0.0\",\n        \"supportedFrameworks\": [\n          \"onnx\"\n        ],\n        \"multiModelServer\": false\n    },\n    \"sklearn\": {\n      \"v1\": {\n        \"image\": \"gcr.io/kfserving/sklearnserver\",\n        \"defaultImageVersion\": \"v0.5.1\",\n        \"supportedFrameworks\": [\n          \"sklearn\"\n        ],\n        \"multiModelServer\": false\n      },\n      \"v2\": {\n        \"image\": \"docker.io/seldonio/mlserver\",\n        \"defaultImageVersion\": \"0.2.1\",\n        \"supportedFrameworks\": [\n          \"sklearn\"\n        ],\n        \"multiModelServer\": false\n      }\n    },\n    \"xgboost\": {\n      \"v1\": {\n        \"image\": \"gcr.io/kfserving/xgbserver\",\n        \"defaultImageVersion\": \"v0.5.1\",\n        \"supportedFrameworks\": [\n          \"xgboost\"\n        ],\n        \"multiModelServer\": false\n      },\n      \"v2\": {\n        \"image\": \"docker.io/seldonio/mlserver\",\n        \"defaultImageVersion\": \"0.2.1\",\n        \"supportedFrameworks\": [\n          \"xgboost\"\n        ],\n        \"multiModelServer\": false\n      }\n    },\n    \"pytorch\": {\n      \"v1\" : {\n        \"image\": \"gcr.io/kfserving/pytorchserver\",\n        \"defaultImageVersion\": \"v0.5.1\",\n        \"defaultGpuImageVersion\": \"v0.5.1-gpu\",\n        \"supportedFrameworks\": [\n          \"pytorch\"\n        ],\n        \"multiModelServer\": false\n      },\n      \"v2\" : {\n        \"image\": \"kfserving/torchserve-kfs\",\n        \"defaultImageVersion\": \"0.3.0\",\n        \"defaultGpuImageVersion\": \"0.3.0-gpu\",\n        \"supportedFrameworks\": [\n          \"pytorch\"\n        ],\n        \"multiModelServer\": false\n      }\n    },\n    \"triton\": {\n        \"image\": \"nvcr.io/nvidia/tritonserver\",\n        \"defaultImageVersion\": \"20.08-py3\",\n        \"supportedFrameworks\": [\n          \"tensorrt\",\n          \"tensorflow\",\n          \"onnx\",\n          \"pytorch\",\n          \"caffe2\"\n        ],\n        \"multiModelServer\": false\n    },\n    \"pmml\": {\n        \"image\": \"kfserving/pmmlserver\",\n        \"defaultImageVersion\": \"v0.5.1\",\n        \"supportedFrameworks\": [\n          \"pmml\"\n        ],\n        \"multiModelServer\": false\n    },\n    \"lightgbm\": {\n        \"image\": \"kfserving/lgbserver\",\n        \"defaultImageVersion\": \"v0.5.1\",\n        \"supportedFrameworks\": [\n          \"lightgbm\"\n        ],\n        \"multiModelServer\": false\n    }\n}",
-    "storageInitializer": "{\n    \"image\" : \"gcr.io/kfserving/storage-initializer:v0.5.1\",\n    \"memoryRequest\": \"100Mi\",\n    \"memoryLimit\": \"1Gi\",\n    \"cpuRequest\": \"100m\",\n    \"cpuLimit\": \"1\"\n}",
+    "explainers": std.join("", ["{\n    \"alibi\": {\n        \"image\" : \"", target_registry, "docker.io/kfserving/alibi-explainer\",\n        \"defaultImageVersion\": \"v0.5.1\"\n    },\n    \"aix\": {\n        \"image\" : \"", target_registry, "docker.io/kfserving/aix-explainer\",\n        \"defaultImageVersion\": \"v0.5.1\"\n    },\n    \"art\": {\n        \"image\" : \"", target_registry, "docker.io/kfserving/art-explainer\",\n        \"defaultImageVersion\": \"v0.5.1\"\n    }\n}"]),
+    "ingress": "{\n    \"ingressGateway\" : \"kubeflow-gateway.kubeflow\",\n    \"ingressService\" : \"istio-ingressgateway.istio-system.svc.cluster.local\",\n    \"localGateway\" : \"cluster-local-gateway.knative-serving\",\n    \"localGatewayService\" : \"cluster-local-gateway.istio-system.svc.cluster.local\"\n}",
+    "logger": std.join("", ["{\n    \"image\" : \"", target_registry, "docker.io/kfserving/agent:v0.5.1\",\n    \"memoryRequest\": \"100Mi\",\n    \"memoryLimit\": \"1Gi\",\n    \"cpuRequest\": \"100m\",\n    \"cpuLimit\": \"1\",\n    \"defaultUrl\": \"http://default-broker\"\n}"]),
+    "predictors": std.join("", ["{\n    \"tensorflow\": {\n        \"image\": \"", target_registry, "docker.io/tensorflow/serving\",\n        \"defaultImageVersion\": \"1.14.0\",\n        \"defaultGpuImageVersion\": \"1.14.0-gpu\",\n        \"defaultTimeout\": \"60\",\n        \"supportedFrameworks\": [\n          \"tensorflow\"\n        ],\n        \"multiModelServer\": false\n    },\n    \"onnx\": {\n        \"image\": \"", target_registry, "mcr.microsoft.com/onnxruntime/server\",\n        \"defaultImageVersion\": \"v1.0.0\",\n        \"supportedFrameworks\": [\n          \"onnx\"\n        ],\n        \"multiModelServer\": false\n    },\n    \"sklearn\": {\n      \"v1\": {\n        \"image\": \"", target_registry, "gcr.io/kfserving/sklearnserver\",\n        \"defaultImageVersion\": \"v0.5.1\",\n        \"supportedFrameworks\": [\n          \"sklearn\"\n        ],\n        \"multiModelServer\": false\n      },\n      \"v2\": {\n        \"image\": \"", target_registry, "docker.io/seldonio/mlserver\",\n        \"defaultImageVersion\": \"0.2.1\",\n        \"supportedFrameworks\": [\n          \"sklearn\"\n        ],\n        \"multiModelServer\": false\n      }\n    },\n    \"xgboost\": {\n      \"v1\": {\n        \"image\": \"", target_registry, "gcr.io/kfserving/xgbserver\",\n        \"defaultImageVersion\": \"v0.5.1\",\n        \"supportedFrameworks\": [\n          \"xgboost\"\n        ],\n        \"multiModelServer\": false\n      },\n      \"v2\": {\n        \"image\": \"", target_registry, "docker.io/seldonio/mlserver\",\n        \"defaultImageVersion\": \"0.2.1\",\n        \"supportedFrameworks\": [\n          \"xgboost\"\n        ],\n        \"multiModelServer\": false\n      }\n    },\n    \"pytorch\": {\n      \"v1\" : {\n        \"image\": \"", target_registry, "gcr.io/kfserving/pytorchserver\",\n        \"defaultImageVersion\": \"v0.5.1\",\n        \"defaultGpuImageVersion\": \"v0.5.1-gpu\",\n        \"supportedFrameworks\": [\n          \"pytorch\"\n        ],\n        \"multiModelServer\": false\n      },\n      \"v2\" : {\n        \"image\": \"", target_registry, "docker.io/kfserving/torchserve-kfs\",\n        \"defaultImageVersion\": \"0.3.0\",\n        \"defaultGpuImageVersion\": \"0.3.0-gpu\",\n        \"supportedFrameworks\": [\n          \"pytorch\"\n        ],\n        \"multiModelServer\": false\n      }\n    },\n    \"triton\": {\n        \"image\": \"", target_registry, "nvcr.io/nvidia/tritonserver\",\n        \"defaultImageVersion\": \"20.08-py3\",\n        \"supportedFrameworks\": [\n          \"tensorrt\",\n          \"tensorflow\",\n          \"onnx\",\n          \"pytorch\",\n          \"caffe2\"\n        ],\n        \"multiModelServer\": true\n    },\n    \"pmml\": {\n        \"image\": \"", target_registry, "docker.io/kfserving/pmmlserver\",\n        \"defaultImageVersion\": \"v0.5.1\",\n        \"supportedFrameworks\": [\n          \"pmml\"\n        ],\n        \"multiModelServer\": false\n    },\n    \"lightgbm\": {\n        \"image\": \"", target_registry, "docker.io/kfserving/lgbserver\",\n        \"defaultImageVersion\": \"v0.5.1\",\n        \"supportedFrameworks\": [\n          \"lightgbm\"\n        ],\n        \"multiModelServer\": false\n    }\n}"]),
+    "storageInitializer": std.join("", ["{\n    \"image\" : \"", target_registry, "gcr.io/kfserving/storage-initializer:v0.5.1\",\n    \"memoryRequest\": \"100Mi\",\n    \"memoryLimit\": \"1Gi\",\n    \"cpuRequest\": \"100m\",\n    \"cpuLimit\": \"1\"\n}"]),
     "transformers": "{\n}"
   },
   "kind": "ConfigMap",
   "metadata": {
+    "labels": {
+      "app": "kfserving",
+      "app.kubernetes.io/component": "kfserving",
+      "app.kubernetes.io/name": "kfserving",
+      "kustomize.component": "kfserving"
+    },
     "name": "inferenceservice-config",
     "namespace": ai_devops_namespace
   }
@@ -22206,6 +22216,11 @@ local kfserving_image_tag = "v0.5.1";
                 "mountPath": "/tmp/k8s-webhook-server/serving-certs",
                 "name": "cert",
                 "readOnly": true
+              },
+              {
+                "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                "name": "kfserving-controller-manager-token",
+                "readOnly": true
               }
             ]
           },
@@ -22223,17 +22238,30 @@ local kfserving_image_tag = "v0.5.1";
                 "containerPort": 8443,
                 "name": "https"
               }
+            ],
+            "volumeMounts": [
+              {
+                "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                "name": "kfserving-controller-manager-token",
+                "readOnly": true
+              }
             ]
           }
         ],
-        "terminationGracePeriodSeconds": 10,
-        "serviceAccountName": "kfserving-controller-manager",
+        "terminationGracePeriodSeconds": 10,  
         "volumes": [
           {
             "name": "cert",
             "secret": {
               "defaultMode": 420,
               "secretName": "kfserving-webhook-server-cert"
+            }
+          },
+          {
+            "name": "kfserving-controller-manager-token",
+            "secret": {
+              "defaultMode": 420,
+              "secretName": "kfserving-controller-manager-token"
             }
           }
         ]
@@ -22308,81 +22336,6 @@ local kfserving_image_tag = "v0.5.1";
       ],
       "type": "kfserving",
       "version": "v1beta1"
-    },
-    "selector": {
-      "matchLabels": {
-        "app.kubernetes.io/component": "kfserving",
-        "app.kubernetes.io/name": "kfserving"
-      }
-    }
-  }
-},
-{
-  "apiVersion": "app.k8s.io/v1beta1",
-  "kind": "Application",
-  "metadata": {
-    "labels": {
-      "app": "kfserving",
-      "app.kubernetes.io/component": "kfserving",
-      "app.kubernetes.io/name": "kfserving",
-      "kustomize.component": "kfserving"
-    },
-    "name": "kfserving"
-  },
-  "spec": {
-    "addOwnerRef": true,
-    "componentKinds": [
-      {
-        "group": "apps",
-        "kind": "StatefulSet"
-      },
-      {
-        "group": "core",
-        "kind": "Service"
-      },
-      {
-        "group": "core",
-        "kind": "Secret"
-      },
-      {
-        "group": "core",
-        "kind": "ConfigMap"
-      },
-      {
-        "group": "rbac.authorization.k8s.io/v1",
-        "kind": "Role"
-      },
-      {
-        "group": "rbac.authorization.k8s.io/v1",
-        "kind": "RoleBinding"
-      }
-    ],
-    "descriptor": {
-      "description": "KFServing provides a Kubernetes Custom Resource Definition for serving ML Models on arbitrary frameworks",
-      "keywords": [
-        "kfserving",
-        "inference"
-      ],
-      "links": [
-        {
-          "description": "About",
-          "url": "https://github.com/kubeflow/kfserving"
-        }
-      ],
-      "maintainers": [
-        {
-          "email": "johnugeo@cisco.com",
-          "name": "Johnu George"
-        }
-      ],
-      "owners": [
-        {
-          "email": "johnugeo@cisco.com",
-          "name": "Johnu George"
-        }
-      ],
-      "type": "kfserving",
-      "version": "v0.5.0"
     },
     "selector": {
       "matchLabels": {
@@ -22684,5 +22637,17 @@ local kfserving_image_tag = "v0.5.1";
       ]
     }
   ]
+},
+{
+  "apiVersion": "v1",
+  "kind": "Secret",
+  "metadata": {
+    "name": "kfserving-controller-manager-token",
+    "namespace": ai_devops_namespace,
+    "annotations": {
+      "kubernetes.io/service-account.name": "kfserving-controller-manager"
+    }
+  },
+  "type": "kubernetes.io/service-account-token"
 }
 ]
