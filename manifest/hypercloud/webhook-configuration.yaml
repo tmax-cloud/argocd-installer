@@ -161,6 +161,14 @@ webhooks:
       - key: webhook
         operator: NotIn 
         values: ["false"]
+    objectSelector:
+      matchExpressions:
+      - key: hypercloud5
+        operator: NotIn
+        values: ["api-server"]
+      - key: app
+        operator: NotIn
+        values: ["postgres"]
     failurePolicy: Fail
   - name: hypercloud.mutating.inject.pod
     objectSelector:
