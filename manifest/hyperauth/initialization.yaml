@@ -132,6 +132,7 @@ data:
     {
       "id": "tmax",
       "realm": "tmax",
+      "displayName": "tmax",
       "notBefore": 1642749441,
       "revokeRefreshToken": true,
       "refreshTokenMaxReuse": 2,
@@ -519,9 +520,38 @@ data:
               "attributes": {}
             }
           ],
+          "opensearch": [
+            {
+              "id": "599d7d05-decd-48b2-97c7-5c7dadc5d3a9",
+              "name": "opensearch-admin",
+              "composite": false,
+              "clientRole": true,
+              "containerId": "e6c53d6c-4cba-4167-bf0d-1c34471df723",
+              "attributes": {}
+            }
+          ],
           "admin-cli": [],
+          "notebook-gatekeeper": [
+            {
+              "id": "34add55f-7141-4225-b864-2c8ac9bd1848",
+              "name": "notebook-gatekeeper-manager",
+              "description": "notebook-gatekeeper-manager",
+              "composite": false,
+              "clientRole": true,
+              "containerId": "d1c99fe1-54ab-44c8-9f25-ff16713a6bd5",
+              "attributes": {}
+            }
+          ],
           "gitlab": [],
           "kibana": [
+            {
+              "id": "292ee968-8553-44b9-94f4-a87c9a00396e",
+              "name": "uma_protection",
+              "composite": false,
+              "clientRole": true,
+              "containerId": "37955f07-cc97-4828-8a93-72fba084795b",
+              "attributes": {}
+            },
             {
               "id": "90db8999-1107-47bc-b868-6f5bb0b5a16a",
               "name": "kibana-manager",
@@ -621,8 +651,7 @@ data:
           "realmRoles": [
             "all_access",
             "uma_authorization",
-            "offline_access",
-            "admin"
+            "offline_access"
           ],
           "clientRoles": {},
           "subGroups": []
@@ -687,18 +716,21 @@ data:
           "emailVerified" : true,
           "email" : "hc-admin@tmax.co.kr",
           "attributes" : {
-            "lastPasswordUpdateTime" : [ "1642742685003" ]
+            "lastPasswordUpdateTime" : [ "1643953675016" ]
           },
           "credentials" : [ {
             "id" : "1455bc09-78b7-461f-8deb-b78810c3fc78",
             "type" : "password",
-            "createdDate" : 1642742684995,
-            "secretData" : "{\"value\":\"a4a8RxdwjCK/c/XMebrs7vxbbrtfbyoPi7vhIJq9lPTYBytNiEY02QRXZ0OAKP0tcVcAmfNRgQkNdqRmD9QZlg==\",\"salt\":\"Z1bYMhjZiuUekrX5MZr1Gg==\"}",
+            "createdDate" : 1643953675008,
+            "secretData" : "{\"value\":\"LXZUPqifjsYk5wIj61Kh3dhJcvVAMCkeKEIqN16BB3VthZmWiz/SyOvYC+QcY7TluVnbkd1DGVHbGVJPhfCE4w==\",\"salt\":\"nu+LFEu2kV/ZlKwtj2PYyw==\"}",
             "credentialData" : "{\"hashIterations\":27500,\"algorithm\":\"pbkdf2-sha256\"}"
           } ],
           "disableableCredentialTypes" : [ ],
           "requiredActions" : [ ],
+          "realmRoles" : [ "admin" ],
           "clientRoles" : {
+            "opensearch" : [ "opensearch-admin" ],
+            "notebook-gatekeeper" : [ "notebook-gatekeeper-manager" ],
             "kibana" : [ "kibana-manager" ],
             "account" : [ "manage-account", "view-profile" ],
             "jaeger" : [ "jaeger-manager" ]
@@ -706,12 +738,12 @@ data:
           "clientConsents" : [ {
             "clientId" : "kiali",
             "grantedClientScopes" : [ "profile", "group", "email", "user_name", "kiali", "roles" ],
-            "createdDate" : 1642582495165,
-            "lastUpdatedDate" : 1642582495175
+            "createdDate" : 1643953191260,
+            "lastUpdatedDate" : 1643953191276
           } ],
           "notBefore" : 0,
-          "groups" : [ "/hypercloud5", "/argocd-admin" ]
-        }, 
+          "groups" : [ "/argocd-admin", "/hypercloud5" ]
+        },
         {
           "id": "3fc4854d-a416-48fc-bd54-dfa6f92be66a",
           "createdTimestamp": 1636954461156,
@@ -759,6 +791,9 @@ data:
             "offline_access"
           ],
           "clientRoles": {
+            "kibana": [
+              "uma_protection"
+            ],
             "account": [
               "manage-account",
               "view-profile"
@@ -1041,7 +1076,8 @@ data:
               "config": {
                 "included.client.audience": "argocd",
                 "id.token.claim": "false",
-                "access.token.claim": "true"
+                "access.token.claim": "true",
+                "userinfo.token.claim": "false"
               }
             }
           ],
@@ -1593,6 +1629,7 @@ data:
           "implicitFlowEnabled": false,
           "directAccessGrantsEnabled": true,
           "serviceAccountsEnabled": true,
+          "authorizationServicesEnabled": true,
           "publicClient": false,
           "frontchannelLogout": false,
           "protocol": "openid-connect",
@@ -1631,6 +1668,211 @@ data:
             },
             {
               "id": "9768b0ab-bf36-4b89-9e98-6b5426d40be6",
+              "name": "docker-v2-allow-all-mapper",
+              "protocol": "docker-v2",
+              "protocolMapper": "docker-v2-allow-all-mapper",
+              "consentRequired": false,
+              "config": {}
+            }
+          ],
+          "defaultClientScopes": [
+            "web-origins",
+            "role_list",
+            "user_name",
+            "profile",
+            "roles",
+            "email",
+            "group"
+          ],
+          "optionalClientScopes": [
+            "address",
+            "phone",
+            "offline_access",
+            "microprofile-jwt"
+          ],
+          "authorizationSettings": {
+            "allowRemoteResourceManagement": true,
+            "policyEnforcementMode": "ENFORCING",
+            "resources": [
+              {
+                "name": "Default Resource",
+                "type": "urn:kibana:resources:default",
+                "ownerManagedAccess": false,
+                "attributes": {},
+                "_id": "5af6d577-1352-4c1a-9931-4ddde19c7b38",
+                "uris": [
+                  "/*"
+                ]
+              }
+            ],
+            "policies": [
+              {
+                "id": "e85704bd-3721-4378-a0fd-e1f5247c295b",
+                "name": "Default Policy",
+                "description": "A policy that grants access only for users within this realm",
+                "type": "js",
+                "logic": "POSITIVE",
+                "decisionStrategy": "AFFIRMATIVE",
+                "config": {
+                  "code": "// by default, grants any permission associated with this policy\n$evaluation.grant();\n"
+                }
+              },
+              {
+                "id": "ec82124c-fc7f-4899-8d37-f426676420b8",
+                "name": "Default Permission",
+                "description": "A permission that applies to the default resource type",
+                "type": "resource",
+                "logic": "POSITIVE",
+                "decisionStrategy": "UNANIMOUS",
+                "config": {
+                  "defaultResourceType": "urn:kibana:resources:default",
+                  "applyPolicies": "[\"Default Policy\"]"
+                }
+              }
+            ],
+            "scopes": [],
+            "decisionStrategy": "UNANIMOUS"
+          }
+        },
+        {
+          "id": "d1c99fe1-54ab-44c8-9f25-ff16713a6bd5",
+          "clientId": "notebook-gatekeeper",
+          "surrogateAuthRequired": false,
+          "enabled": true,
+          "alwaysDisplayInConsole": false,
+          "clientAuthenticatorType": "client-secret",
+          "secret": "tmax_client_secret",
+          "redirectUris": [
+            "*"
+          ],
+          "webOrigins": [],
+          "notBefore": 0,
+          "bearerOnly": false,
+          "consentRequired": false,
+          "standardFlowEnabled": true,
+          "implicitFlowEnabled": false,
+          "directAccessGrantsEnabled": true,
+          "serviceAccountsEnabled": false,
+          "publicClient": false,
+          "frontchannelLogout": false,
+          "protocol": "openid-connect",
+          "attributes": {
+            "saml.assertion.signature": "false",
+            "saml.multivalued.roles": "false",
+            "saml.force.post.binding": "false",
+            "saml.encrypt": "false",
+            "saml.server.signature": "false",
+            "saml.server.signature.keyinfo.ext": "false",
+            "exclude.session.state.from.auth.response": "false",
+            "saml_force_name_id_format": "false",
+            "saml.client.signature": "false",
+            "tls.client.certificate.bound.access.tokens": "false",
+            "saml.authnstatement": "false",
+            "display.on.consent.screen": "false",
+            "saml.onetimeuse.condition": "false"
+          },
+          "authenticationFlowBindingOverrides": {},
+          "fullScopeAllowed": true,
+          "nodeReRegistrationTimeout": -1,
+          "protocolMappers": [
+            {
+              "id": "4ffc78b0-fe0e-489c-bc5f-5ad1629eec24",
+              "name": "docker-v2-allow-all-mapper",
+              "protocol": "docker-v2",
+              "protocolMapper": "docker-v2-allow-all-mapper",
+              "consentRequired": false,
+              "config": {}
+            },
+            {
+              "id": "502caeff-b593-4cd9-8f88-9e28b6f5cd2f",
+              "name": "notebook-gatekeeper",
+              "protocol": "openid-connect",
+              "protocolMapper": "oidc-audience-mapper",
+              "consentRequired": false,
+              "config": {
+                "included.client.audience": "notebook-gatekeeper",
+                "id.token.claim": "false",
+                "access.token.claim": "true",
+                "userinfo.token.claim": "false"
+              }
+            }
+          ],
+          "defaultClientScopes": [
+            "web-origins",
+            "role_list",
+            "user_name",
+            "profile",
+            "roles",
+            "email",
+            "group"
+          ],
+          "optionalClientScopes": [
+            "address",
+            "phone",
+            "offline_access",
+            "microprofile-jwt"
+          ]
+        },
+        {
+          "id": "e6c53d6c-4cba-4167-bf0d-1c34471df723",
+          "clientId": "opensearch",
+          "surrogateAuthRequired": false,
+          "enabled": true,
+          "alwaysDisplayInConsole": false,
+          "clientAuthenticatorType": "client-secret",
+          "secret": "tmax_client_secret",
+          "redirectUris": [
+            "*"
+          ],
+          "webOrigins": [],
+          "notBefore": 0,
+          "bearerOnly": false,
+          "consentRequired": false,
+          "standardFlowEnabled": true,
+          "implicitFlowEnabled": false,
+          "directAccessGrantsEnabled": true,
+          "serviceAccountsEnabled": false,
+          "publicClient": false,
+          "frontchannelLogout": false,
+          "protocol": "openid-connect",
+          "attributes": {
+            "saml.assertion.signature": "false",
+            "saml.multivalued.roles": "false",
+            "saml.force.post.binding": "false",
+            "saml.encrypt": "false",
+            "saml.server.signature": "false",
+            "saml.server.signature.keyinfo.ext": "false",
+            "exclude.session.state.from.auth.response": "false",
+            "saml_force_name_id_format": "false",
+            "saml.client.signature": "false",
+            "tls.client.certificate.bound.access.tokens": "false",
+            "saml.authnstatement": "false",
+            "display.on.consent.screen": "false",
+            "saml.onetimeuse.condition": "false"
+          },
+          "authenticationFlowBindingOverrides": {},
+          "fullScopeAllowed": true,
+          "nodeReRegistrationTimeout": -1,
+          "protocolMappers": [
+            {
+              "id": "a873ac7d-5c9f-4623-8c73-9768465bf2c5",
+              "name": "client roles",
+              "protocol": "openid-connect",
+              "protocolMapper": "oidc-usermodel-client-role-mapper",
+              "consentRequired": false,
+              "config": {
+                "multivalued": "true",
+                "userinfo.token.claim": "true",
+                "user.attribute": "foo",
+                "id.token.claim": "true",
+                "access.token.claim": "true",
+                "claim.name": "roles",
+                "jsonType.label": "String",
+                "usermodel.clientRoleMapping.clientId": "opensearch"
+              }
+            },
+            {
+              "id": "b3dd87ab-07c6-4f00-b0fb-f94f715b29ae",
               "name": "docker-v2-allow-all-mapper",
               "protocol": "docker-v2",
               "protocolMapper": "docker-v2-allow-all-mapper",
