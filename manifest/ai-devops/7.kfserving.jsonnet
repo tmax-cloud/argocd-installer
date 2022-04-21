@@ -21,7 +21,8 @@ local kfserving_image_tag = "v0.5.1";
   "metadata": {
     "annotations": {
       "cert-manager.io/inject-ca-from": "kubeflow/serving-cert",
-      "controller-gen.kubebuilder.io/version": "v0.3.1-0.20200528125929-5c0c6ae3b64b"
+      "controller-gen.kubebuilder.io/version": "v0.3.1-0.20200528125929-5c0c6ae3b64b",
+      "argocd.argoproj.io/sync-options": "Replace=true"
     },
     "labels": {
       "app": "kfserving",

@@ -18,6 +18,9 @@ local target_registry = if is_offline == "false" then "" else private_registry +
     "apiVersion": "apiextensions.k8s.io/v1beta1",
     "kind": "CustomResourceDefinition",
     "metadata": {
+        "annotations": {
+            "argocd.argoproj.io/sync-options": "Replace=true"
+        }, 
         "name": "pytorchjobs.kubeflow.org"
     },
     "spec": {
