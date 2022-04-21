@@ -8,8 +8,7 @@ function (
     notebook_svc_type="Ingress",
     tmax_client_secret="tmax_client_secret",
     hyperauth_url="172.23.4.105",
-    hyperauth_realm="tmax",
-    console_subdomain="console"
+    hyperauth_realm="tmax"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -5369,8 +5368,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "rbac.authorization.kubeflow.org/aggregate-to-kubeflow-admin": "true"
         },
         "name": "notebook-controller-kubeflow-notebooks-admin"
-    },
-    "rules": []
+    }
     },
     {
     "apiVersion": "rbac.authorization.k8s.io/v1",
@@ -5551,22 +5549,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "namespace": ai_devops_namespace
         }
     ]
-    },
-    {
-    "apiVersion": "v1",
-    "data": {
-        "cluster-name": "",
-        "clusterDomain": "cluster.local",
-        "istio-namespace": istio_namespace,
-        "userid-header": "kubeflow-userid",
-        "userid-prefix": ""
-    },
-    "kind": "ConfigMap",
-    "metadata": {
-        "name": "kubeflow-config-mb6ktt4hf9",
-        "namespace": ai_devops_namespace
-    }
-    },
+    },    
     {
     "apiVersion": "v1",
     "data": {
@@ -5818,7 +5801,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "ingressClassName": "tmax-cloud",
             "rules": [
             {
-                "host": std.join("", [console_subdomain, ".", custom_domain_name]),
+                "host": std.join("", ["console.", custom_domain_name]),
                 "http": {
                 "paths": [
                     {
@@ -5836,7 +5819,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "tls": [
             {
                 "hosts": [
-                std.join("", [console_subdomain, ".", custom_domain_name])
+                std.join("", ["console.", custom_domain_name])
                 ]
             }
             ]

@@ -8,8 +8,7 @@ function (
     notebook_svc_type="Ingress",
     tmax_client_secret="tmax_client_secret",
     hyperauth_url="172.23.4.105",
-    hyperauth_realm="tmax",
-    console_subdomain="console"
+    hyperauth_realm="tmax"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -24,7 +23,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         },
         "name": ai_devops_namespace
     }
-    },
+    },    
     {
     "apiVersion": "v1",
     "kind": "ServiceAccount",
@@ -360,7 +359,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 },
                 {
                     "name": "SERVICE_ACCOUNT",
-                    "value": "default"
+                    "value": "default"              
                 },
                 {
                     "name": "ISTIO_META_POD_NAME",
@@ -461,10 +460,10 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "mountPath": "/etc/istio/clusterlocalgateway-ca-certs",
                     "name": "clusterlocalgateway-ca-certs",
                     "readOnly": true
-                }
+                }             
                 ]
             }
-            ],
+            ],            
             "volumes": [
             {
                 "name": "istio-certs",
@@ -486,7 +485,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "optional": true,
                 "secretName": "istio-clusterlocalgateway-ca-certs"
                 }
-            }
+            }      
             ]
         }
         }
@@ -546,4 +545,4 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         }
     }
     }
-]
+]    

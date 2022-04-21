@@ -8,8 +8,7 @@ function (
     notebook_svc_type="Ingress",
     tmax_client_secret="tmax_client_secret",
     hyperauth_url="172.23.4.105",
-    hyperauth_realm="tmax",
-    console_subdomain="console"
+    hyperauth_realm="tmax"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -89,28 +88,81 @@ local target_registry = if is_offline == "false" then "" else private_registry +
     "kind": "ClusterRole",
     "metadata": {
         "name": "kubeflow-admin"
-    },
-    "rules": []
+    }    
     },
     {
-    "aggregationRule": {
-        "clusterRoleSelectors": [
-        {
-            "matchLabels": {
-            "rbac.authorization.kubeflow.org/aggregate-to-kubeflow-edit": "true"
-            }
-        }
-        ]
-    },
     "apiVersion": "rbac.authorization.k8s.io/v1",
     "kind": "ClusterRole",
     "metadata": {
-        "name": "kubeflow-edit",
-        "labels": {
-        "rbac.authorization.kubeflow.org/aggregate-to-kubeflow-admin": "true"
-        }
+        "name": "kubeflow-edit"
     },
     "rules": [
+        {
+        "apiGroups": [
+            "istio.io",
+            "networking.istio.io"
+        ],
+        "resources": [
+            "*"
+        ],
+        "verbs": [
+            "get",
+            "list",
+            "watch",
+            "create",
+            "delete",
+            "deletecollection",
+            "patch",
+            "update"
+        ]
+        },
+        {
+        "apiGroups": [
+            "serving.kubeflow.org"
+        ],
+        "resources": [
+            "inferenceservices"
+        ],
+        "verbs": [
+            "get",
+            "list",
+            "watch",
+            "create",
+            "delete",
+            "deletecollection",
+            "patch",
+            "update"
+        ]
+        },
+        {
+        "apiGroups": [
+            ""
+        ],
+        "resources": [
+            "pods/attach",
+            "pods/exec",
+            "pods/portforward",
+            "pods/proxy",
+            "secrets",
+            "services/proxy"
+        ],
+        "verbs": [
+            "get",
+            "list",
+            "watch"
+        ]
+        },
+        {
+        "apiGroups": [
+            ""
+        ],
+        "resources": [
+            "serviceaccounts"
+        ],
+        "verbs": [
+            "impersonate"
+        ]
+        },
         {
         "apiGroups": [
             "tekton.dev"
@@ -125,6 +177,446 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         ],
         "verbs": [
             "*"
+        ]
+        },
+        {
+        "apiGroups": [
+            ""
+        ],
+        "resources": [
+            "pods",
+            "pods/attach",
+            "pods/exec",
+            "pods/portforward",
+            "pods/proxy"
+        ],
+        "verbs": [
+            "create",
+            "delete",
+            "deletecollection",
+            "patch",
+            "update"
+        ]
+        },
+        {
+        "apiGroups": [
+            ""
+        ],
+        "resources": [
+            "configmaps",
+            "endpoints",
+            "persistentvolumeclaims",
+            "replicationcontrollers",
+            "replicationcontrollers/scale",
+            "secrets",
+            "serviceaccounts",
+            "services",
+            "services/proxy"
+        ],
+        "verbs": [
+            "create",
+            "delete",
+            "deletecollection",
+            "patch",
+            "update"
+        ]
+        },
+        {
+        "apiGroups": [
+            "apps"
+        ],
+        "resources": [
+            "daemonsets",
+            "deployments",
+            "deployments/rollback",
+            "deployments/scale",
+            "replicasets",
+            "replicasets/scale",
+            "statefulsets",
+            "statefulsets/scale"
+        ],
+        "verbs": [
+            "create",
+            "delete",
+            "deletecollection",
+            "patch",
+            "update"
+        ]
+        },
+        {
+        "apiGroups": [
+            "autoscaling"
+        ],
+        "resources": [
+            "horizontalpodautoscalers"
+        ],
+        "verbs": [
+            "create",
+            "delete",
+            "deletecollection",
+            "patch",
+            "update"
+        ]
+        },
+        {
+        "apiGroups": [
+            "batch"
+        ],
+        "resources": [
+            "cronjobs",
+            "jobs"
+        ],
+        "verbs": [
+            "create",
+            "delete",
+            "deletecollection",
+            "patch",
+            "update"
+        ]
+        },
+        {
+        "apiGroups": [
+            "extensions"
+        ],
+        "resources": [
+            "daemonsets",
+            "deployments",
+            "deployments/rollback",
+            "deployments/scale",
+            "ingresses",
+            "networkpolicies",
+            "replicasets",
+            "replicasets/scale",
+            "replicationcontrollers/scale"
+        ],
+        "verbs": [
+            "create",
+            "delete",
+            "deletecollection",
+            "patch",
+            "update"
+        ]
+        },
+        {
+        "apiGroups": [
+            "policy"
+        ],
+        "resources": [
+            "poddisruptionbudgets"
+        ],
+        "verbs": [
+            "create",
+            "delete",
+            "deletecollection",
+            "patch",
+            "update"
+        ]
+        },
+        {
+        "apiGroups": [
+            "networking.k8s.io"
+        ],
+        "resources": [
+            "ingresses",
+            "networkpolicies"
+        ],
+        "verbs": [
+            "create",
+            "delete",
+            "deletecollection",
+            "patch",
+            "update"
+        ]
+        },
+        {
+        "apiGroups": [
+            "kubeflow.org"
+        ],
+        "resources": [
+            "pytorchjobs",
+            "pytorchjobs/status",
+            "pytorchjobs/finalizers"
+        ],
+        "verbs": [
+            "get",
+            "list",
+            "watch",
+            "create",
+            "delete",
+            "deletecollection",
+            "patch",
+            "update"
+        ]
+        },
+        {
+        "apiGroups": [
+            "kubeflow.org"
+        ],
+        "resources": [
+            "tfjobs",
+            "tfjobs/status"
+        ],
+        "verbs": [
+            "get",
+            "list",
+            "watch",
+            "create",
+            "delete",
+            "deletecollection",
+            "patch",
+            "update"
+        ]
+        },
+        {
+        "apiGroups": [
+            "istio.io",
+            "networking.istio.io"
+        ],
+        "resources": [
+            "*"
+        ],
+        "verbs": [
+            "get",
+            "list",
+            "watch"
+        ]
+        },
+        {
+        "apiGroups": [
+            "serving.kubeflow.org"
+        ],
+        "resources": [
+            "inferenceservices"
+        ],
+        "verbs": [
+            "get",
+            "list",
+            "watch"
+        ]
+        },
+        {
+        "apiGroups": [
+            ""
+        ],
+        "resources": [
+            "configmaps",
+            "endpoints",
+            "persistentvolumeclaims",
+            "persistentvolumeclaims/status",
+            "pods",
+            "replicationcontrollers",
+            "replicationcontrollers/scale",
+            "serviceaccounts",
+            "services",
+            "services/status"
+        ],
+        "verbs": [
+            "get",
+            "list",
+            "watch"
+        ]
+        },
+        {
+        "apiGroups": [
+            ""
+        ],
+        "resources": [
+            "bindings",
+            "events",
+            "limitranges",
+            "namespaces/status",
+            "pods/log",
+            "pods/status",
+            "replicationcontrollers/status",
+            "resourcequotas",
+            "resourcequotas/status"
+        ],
+        "verbs": [
+            "get",
+            "list",
+            "watch"
+        ]
+        },
+        {
+        "apiGroups": [
+            ""
+        ],
+        "resources": [
+            "namespaces"
+        ],
+        "verbs": [
+            "get",
+            "list",
+            "watch"
+        ]
+        },
+        {
+        "apiGroups": [
+            "apps"
+        ],
+        "resources": [
+            "controllerrevisions",
+            "daemonsets",
+            "daemonsets/status",
+            "deployments",
+            "deployments/scale",
+            "deployments/status",
+            "replicasets",
+            "replicasets/scale",
+            "replicasets/status",
+            "statefulsets",
+            "statefulsets/scale",
+            "statefulsets/status"
+        ],
+        "verbs": [
+            "get",
+            "list",
+            "watch"
+        ]
+        },
+        {
+        "apiGroups": [
+            "autoscaling"
+        ],
+        "resources": [
+            "horizontalpodautoscalers",
+            "horizontalpodautoscalers/status"
+        ],
+        "verbs": [
+            "get",
+            "list",
+            "watch"
+        ]
+        },
+        {
+        "apiGroups": [
+            "batch"
+        ],
+        "resources": [
+            "cronjobs",
+            "cronjobs/status",
+            "jobs",
+            "jobs/status"
+        ],
+        "verbs": [
+            "get",
+            "list",
+            "watch"
+        ]
+        },
+        {
+        "apiGroups": [
+            "extensions"
+        ],
+        "resources": [
+            "daemonsets",
+            "daemonsets/status",
+            "deployments",
+            "deployments/scale",
+            "deployments/status",
+            "ingresses",
+            "ingresses/status",
+            "networkpolicies",
+            "replicasets",
+            "replicasets/scale",
+            "replicasets/status",
+            "replicationcontrollers/scale"
+        ],
+        "verbs": [
+            "get",
+            "list",
+            "watch"
+        ]
+        },
+        {
+        "apiGroups": [
+            "policy"
+        ],
+        "resources": [
+            "poddisruptionbudgets",
+            "poddisruptionbudgets/status"
+        ],
+        "verbs": [
+            "get",
+            "list",
+            "watch"
+        ]
+        },
+        {
+        "apiGroups": [
+            "networking.k8s.io"
+        ],
+        "resources": [
+            "ingresses",
+            "ingresses/status",
+            "networkpolicies"
+        ],
+        "verbs": [
+            "get",
+            "list",
+            "watch"
+        ]
+        },
+        {
+        "apiGroups": [
+            "kubeflow.org"
+        ],
+        "resources": [
+            "pytorchjobs",
+            "pytorchjobs/status",
+            "pytorchjobs/finalizers"
+        ],
+        "verbs": [
+            "get",
+            "list",
+            "watch"
+        ]
+        },
+        {
+        "apiGroups": [
+            "kubeflow.org"
+        ],
+        "resources": [
+            "tfjobs",
+            "tfjobs/status"
+        ],
+        "verbs": [
+            "get",
+            "list",
+            "watch"
+        ]
+        },
+        {
+        "apiGroups": [
+            "kubeflow.org"
+        ],
+        "resources": [
+            "notebooks",
+            "notebooks/status"
+        ],
+        "verbs": [
+            "get",
+            "list",
+            "watch"
+        ]
+        },
+        {
+        "apiGroups": [
+            "kubeflow.org"
+        ],
+        "resources": [
+            "notebooks",
+            "notebooks/status"
+        ],
+        "verbs": [
+            "get",
+            "list",
+            "watch",
+            "create",
+            "delete",
+            "deletecollection",
+            "patch",
+            "update"
         ]
         }
     ]
@@ -146,8 +638,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "labels": {
         "rbac.authorization.kubeflow.org/aggregate-to-kubeflow-edit": "true"
         }
-    },
-    "rules": []
+    }    
     },
     {
     "apiVersion": "rbac.authorization.k8s.io/v1",
@@ -811,7 +1302,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "app.kubernetes.io/name": "profiles",
         "kustomize.component": "profiles"
         },
-        "name": "profiles-kubeflow-config-mb6ktt4hf9",
+        "name": "kubeflow-config-mb6ktt4hf9",
         "namespace": ai_devops_namespace
     }
     },
@@ -909,7 +1400,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "valueFrom": {
                     "configMapKeyRef": {
                         "key": "userid-header",
-                        "name": "profiles-kubeflow-config-mb6ktt4hf9"
+                        "name": "kubeflow-config-mb6ktt4hf9"
                     }
                     }
                 },
@@ -918,7 +1409,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "valueFrom": {
                     "configMapKeyRef": {
                         "key": "userid-prefix",
-                        "name": "profiles-kubeflow-config-mb6ktt4hf9"
+                        "name": "kubeflow-config-mb6ktt4hf9"
                     }
                     }
                 },
@@ -975,7 +1466,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "valueFrom": {
                     "configMapKeyRef": {
                         "key": "userid-header",
-                        "name": "profiles-kubeflow-config-mb6ktt4hf9"
+                        "name": "kubeflow-config-mb6ktt4hf9"
                     }
                     }
                 },
@@ -984,7 +1475,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "valueFrom": {
                     "configMapKeyRef": {
                         "key": "userid-prefix",
-                        "name": "profiles-kubeflow-config-mb6ktt4hf9"
+                        "name": "kubeflow-config-mb6ktt4hf9"
                     }
                     }
                 },
