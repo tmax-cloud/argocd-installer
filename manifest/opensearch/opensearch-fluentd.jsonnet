@@ -374,8 +374,8 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
               "volumeMounts": [
                 {
                   "name": "config",
-                  "mountPath": "/usr/share/opensearch-dashboards/config/opensearch-dashboards.yml",
-                  "subPath": "opensearch-dashboards.yml"
+                  "mountPath": "/usr/share/opensearch-dashboards/config/opensearch_dashboards.yml",
+                  "subPath": "opensearch_dashboards.yml"
                 },
                 {
                   "name": "settings",
@@ -588,7 +588,7 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
         ]
       )
     } else {
-      "opensearch-dashboards.yml": std.join("",
+      "opensearch_dashboards.yml": std.join("",
         [
           "server.name: dashboards", 
           "\nserver.host: '0.0.0.0'", 
@@ -608,7 +608,7 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
           "\nopensearch_security.multitenancy.enable_filter: false",
           "\nopensearch_security.auth.type: openid", 
           "\nopensearch_security.openid.connect_url: https://", hyperauth_url, "/auth/realms/", hyperauth_realm, "/.well-known/openid-configuration",
-          "\nopensearch_security.openid.client.id: ", opensearch_client_id, 
+          "\nopensearch_security.openid.client_id: ", opensearch_client_id, 
           "\nopensearch_security.openid.client_secret: ", tmax_client_secret, 
           "\nopensearch_security.openid.base_redirect_url: https://", opensearch_subdomain, ".", custom_domain_name,
           "\nopensearch_security.openid.verify_hostnames: false", 
