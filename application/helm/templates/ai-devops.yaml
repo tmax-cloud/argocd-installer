@@ -39,4 +39,7 @@ spec:
     path: manifest/ai-devops
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
+  syncPolicy:
+    syncOptions:
+      - Replace=true
 {{ end }}
