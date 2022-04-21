@@ -8,8 +8,7 @@ function (
     notebook_svc_type="Ingress",
     tmax_client_secret="tmax_client_secret",
     hyperauth_url="172.23.4.105",
-    hyperauth_realm="tmax",
-    console_subdomain="console"
+    hyperauth_realm="tmax"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -772,8 +771,7 @@ local knative_istio_image_tag = "v0.14.1";
         "serving.knative.dev/release": "v0.14.3"
         },
         "name": "knative-serving-admin"
-    },
-    "rules": []
+    }
     },
     {
     "apiVersion": "rbac.authorization.k8s.io/v1",
@@ -2144,20 +2142,16 @@ local knative_istio_image_tag = "v0.14.1";
             "kind": "Deployment"
         }
         ],
-        "descriptor": {
-        "description": "",
+        "descriptor": {        
         "keywords": [
             "knative-serving-crds",
             "kubeflow"
         ],
         "links": [
             {
-            "description": "About",
-            "url": ""
+            "description": "About"            
             }
-        ],
-        "maintainers": [],
-        "owners": [],
+        ],        
         "type": "knative-serving-crds",
         "version": "v1beta1"
         },
@@ -2193,20 +2187,16 @@ local knative_istio_image_tag = "v0.14.1";
             "kind": "Deployment"
         }
         ],
-        "descriptor": {
-        "description": "",
+        "descriptor": {        
         "keywords": [
             "knative-serving-install",
             "kubeflow"
         ],
         "links": [
             {
-            "description": "About",
-            "url": ""
+            "description": "About",            
             }
-        ],
-        "maintainers": [],
-        "owners": [],
+        ],        
         "type": "knative-serving-install",
         "version": "v1beta1"
         },
@@ -2709,4 +2699,4 @@ local knative_istio_image_tag = "v0.14.1";
     },
     "type": "kubernetes.io/service-account-token"
     }
-]
+]    

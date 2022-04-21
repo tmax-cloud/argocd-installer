@@ -8,8 +8,7 @@ function (
     notebook_svc_type="Ingress",
     tmax_client_secret="tmax_client_secret",
     hyperauth_url="172.23.4.105",
-    hyperauth_realm="tmax",
-    console_subdomain="console"
+    hyperauth_realm="tmax"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -537,7 +536,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
                     "name": "application-controller-service-account-token",
                     "readOnly": true
-                }
+                }           
                 ]
             }
             ],
@@ -548,7 +547,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "defaultMode": 420,
                 "secretName": "application-controller-service-account-token"
                 }
-            }
+            }        
             ]
         }
         },

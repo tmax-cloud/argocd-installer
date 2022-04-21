@@ -8,8 +8,7 @@ function (
     notebook_svc_type="Ingress",
     tmax_client_secret="tmax_client_secret",
     hyperauth_url="172.23.4.105",
-    hyperauth_realm="tmax",
-    console_subdomain="console"
+    hyperauth_realm="tmax"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -156,7 +155,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 }
                 ]
             }
-            ],
+            ],            
             "volumes": [
             {
                 "name": "data",
@@ -192,20 +191,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "kind": "Deployment"
         }
         ],
-        "descriptor": {
-        "description": "",
+        "descriptor": {        
         "keywords": [
             "minio",
             "kubeflow"
         ],
         "links": [
             {
-            "description": "About",
-            "url": ""
+            "description": "About",            
             }
-        ],
-        "maintainers": [],
-        "owners": [],
+        ],        
         "type": "minio",
         "version": "v1beta1"
         },
@@ -217,4 +212,4 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         }
     }
     }
-]
+]    
