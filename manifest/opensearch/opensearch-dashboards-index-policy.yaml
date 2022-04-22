@@ -7,7 +7,21 @@ metadata:
     app: opensearch-dashboards
 data:
   settings.sh: |
-    curl -XPUT -u admin:admin -k -H 'Content-Type: application/json' 'https://opensearch.kube-logging.svc:9200/_plugins/_ism/policies/watch-history-ilm-policy' -d@/usr/share/opensearch-dashboards/index-policy.json
+    for ((i=0; i<11; i++))
+    do
+      is_success=`curl -XGET -k -u admin:admin "https://opensearch.kube-logging.svc:9200/" -I`
+
+      if [[ "$is_success" == *"200 OK"* ]]; then
+        curl -XPUT -u admin:admin -k -H 'Content-Type: application/json' 'https://opensearch.kube-logging.svc:9200/_plugins/_ism/policies/watch-history-ilm-policy' -d@/usr/share/opensearch-dashboards/index-policy.json
+        break
+      elif [ $i == 10 ]; then
+        echo "Timeout. Dashboard status is not ready"
+        exit 1
+      else
+        echo "waiting for Opensearch starts up..."
+        sleep 30s
+      fi
+    done
   index-policy.json: |
     {
       "policy": {
