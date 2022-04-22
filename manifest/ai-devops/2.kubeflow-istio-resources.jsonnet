@@ -32,8 +32,7 @@ local gatewaySelector = "ingressgateway";
         "rbac.authorization.kubeflow.org/aggregate-to-kubeflow-admin": "true"
         },
         "name": "kubeflow-istio-admin"
-    },
-    "rules": []
+    }
     },
     {
     "apiVersion": "rbac.authorization.k8s.io/v1",

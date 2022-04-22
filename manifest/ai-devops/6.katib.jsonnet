@@ -923,22 +923,7 @@ local katib_object_image_tag = "v0.11.0";
       "name": "katib-config",
       "namespace": ai_devops_namespace
     }
-  },
-  {
-    "apiVersion": "v1",
-    "data": {
-      "cluster-name": "",
-      "clusterDomain": "cluster.local",
-      "istio-namespace": istio_namespace,
-      "userid-header": "kubeflow-userid",
-      "userid-prefix": ""
-    },
-    "kind": "ConfigMap",
-    "metadata": {
-      "name": "kubeflow-config-mb6ktt4hf9",
-      "namespace": ai_devops_namespace
-    }
-  },
+  },  
   {
     "apiVersion": "v1",
     "kind": "ConfigMap",

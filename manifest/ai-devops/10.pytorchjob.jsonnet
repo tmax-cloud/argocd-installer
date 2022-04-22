@@ -6986,8 +6986,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "rbac.authorization.kubeflow.org/aggregate-to-kubeflow-admin": "true"
         },
         "name": "kubeflow-pytorchjobs-admin"
-    },
-    "rules": []
+    }
     },
     {
     "apiVersion": "rbac.authorization.k8s.io/v1",
@@ -7132,22 +7131,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "namespace": ai_devops_namespace
         }
     ]
-    },
-    {
-    "apiVersion": "v1",
-    "data": {
-        "cluster-name": "",
-        "clusterDomain": "cluster.local",
-        "istio-namespace": istio_namespace,
-        "userid-header": "kubeflow-userid",
-        "userid-prefix": ""
-    },
-    "kind": "ConfigMap",
-    "metadata": {
-        "name": "kubeflow-config-mb6ktt4hf9",
-        "namespace": ai_devops_namespace
-    }
-    },
+    },    
     {
     "apiVersion": "v1",
     "kind": "Service",
