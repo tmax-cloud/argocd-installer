@@ -5,7 +5,10 @@ function (
     istio_namespace="istio-system",
     knative_namespace="knative-serving",
     custom_domain_name="tmaxcloud.org",
-    notebook_svc_type="Ingress"
+    notebook_svc_type="Ingress",
+    tmax_client_secret="tmax_client_secret",
+    hyperauth_url="172.23.4.105",
+    hyperauth_realm="tmax"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -153,7 +156,6 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 ]
             }
             ],
-            "serviceAccountName": "kubeflow-service-account",
             "volumes": [
             {
                 "name": "data",
@@ -189,20 +191,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "kind": "Deployment"
         }
         ],
-        "descriptor": {
-        "description": "",
+        "descriptor": {        
         "keywords": [
             "minio",
             "kubeflow"
         ],
         "links": [
             {
-            "description": "About",
-            "url": ""
+            "description": "About",            
             }
-        ],
-        "maintainers": [],
-        "owners": [],
+        ],        
         "type": "minio",
         "version": "v1beta1"
         },
