@@ -15,3 +15,5 @@ global:
     domain: testauth.testdomain.com
     # Do not change value of tmaxClientSecret!
     tmaxClientSecret: tmax_client_secret
+  gateway:
+    tlsSecret: gateway-tls-acme
