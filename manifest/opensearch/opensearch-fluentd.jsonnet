@@ -117,12 +117,7 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
                   "mountPath": "/usr/share/opensearch/plugins/opensearch-security/securityconfig/config.yml",
                   "subPath": "config.yml",
                   "readOnly": true
-                },
-                {
-                  "name": "hyperauth-ca",
-                  "mountPath": "/usr/share/opensearch/config/certificates/hyperauth",
-                  "readOnly": true
-                } 
+                }
               ] else [],
               "env": [
                 {
@@ -188,12 +183,6 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
               "name": "security-config",
               "configMap": {
                 "name": "opensearch-securityconfig"
-              }
-            },
-            {
-              "name": "hyperauth-ca",
-              "secret": {
-                "secretName": "hyperauth-ca"
               }
             }
           ] else [],
@@ -577,7 +566,7 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
       "namespace": "kube-logging"
     },
     "data": if hyperauth_url == "" then {
-      "opensearch-dashboards.yml": std.join("", 
+      "opensearch_dashboards.yml": std.join("", 
         [
           "server.name: dashboards", 
           "\nserver.host: '0.0.0.0'",
