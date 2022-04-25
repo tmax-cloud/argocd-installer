@@ -1,5 +1,5 @@
 {{ $isMaster := eq .Values.global.cluster "master" }}
-{{ if and (.Values.modules.hyperregistry.enabled !$isMaster) }}
+{{ if (and .Values.modules.hyperregistry.enabled (not $isMaster)) }}
 {{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
 {{ $module := "hyperregistry" }}
 apiVersion: argoproj.io/v1alpha1
