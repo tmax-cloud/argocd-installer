@@ -177,6 +177,8 @@ modules:
       enabled: false
 
   ### hyperregistry
+  # single cluster 설치용 변수
+  # enabled: true로 변경 X
   hyperregistry:
     enabled: false
     core:
