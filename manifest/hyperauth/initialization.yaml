@@ -1326,9 +1326,7 @@ data:
             "display.on.consent.screen": "false",
             "saml.onetimeuse.condition": "false"
           },
-          "authenticationFlowBindingOverrides": {
-            "browser": "6f19b396-cf30-44fe-8e37-56f895d4fd8c"
-          },
+          "authenticationFlowBindingOverrides": {},
           "fullScopeAllowed": true,
           "nodeReRegistrationTimeout": -1,
           "protocolMappers": [
