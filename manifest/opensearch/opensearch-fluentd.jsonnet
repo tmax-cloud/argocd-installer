@@ -422,11 +422,6 @@ local fluentd_image_path = "docker.io/tmaxcloudck/hypercloud:" + fluentd_image_t
             {
               "name": "fluentd",
               "image": std.join("",[target_registry, fluentd_image_path]),
-              "command": [
-                "/bin/bash", 
-                "-c", 
-                "gem install fluent-plugin-opensearch && fluentd -c /fluentd/etc/fluent.conf -p /fluentd/plugins --gemfile /fluentd/Gemfile"
-              ],
               "env": [
                 {
                   "name": "FLUENT_OPENSEARCH_HOST",
