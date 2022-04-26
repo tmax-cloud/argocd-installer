@@ -39,8 +39,6 @@ spec:
             value: {{ .Values.modules.console.subdomain }}
           - name: hyperauth_subdomain
             value: {{ .Values.modules.hyperAuth.subdomain }}
-          - name: gateway_tls_secret
-            value: {{ .Values.global.gateway.tlsSecret }}
     path: manifest/hypercloud
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
