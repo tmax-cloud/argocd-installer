@@ -64,7 +64,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                                     "value": hyperauth_subdomain
                                 },
                             ],
-                            "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-multi-operator:b5.0.26.9"]),
+                            "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-multi-operator:b5.0.26.10"]),
                             "name": "manager",
                             "ports": [
                                 {
