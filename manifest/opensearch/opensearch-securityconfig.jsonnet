@@ -14,7 +14,7 @@ function (
     hyperauth_url="172.23.4.105",
     hyperauth_realm="tmax",
     custom_domain_name="domain_name",
-    fluentd_image_tag="v1.4.2-debian-elasticsearch-1.1",
+    fluentd_image_tag="fluentd-v1.4.2-debian-elasticsearch-1.1",
     custom_clusterissuer="tmaxcloud-issuer",
     is_master_cluster="true",
     opensearch_subdomain="opensearch-dashboard"
