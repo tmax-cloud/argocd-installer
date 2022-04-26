@@ -72,5 +72,5 @@ argocd에서 Opensearch-fluentd 배포를 하기 위해서는 application/opense
 - name: custom_domain_name
   value: tmaxcloud.org
 - name: fluentd_image_tag
-  value: v1.4.2-debian-elasticsearch-1.1
+  value: fluentd-v1.4.2-debian-elasticsearch-1.1
 ```
