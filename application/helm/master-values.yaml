@@ -100,7 +100,7 @@ modules:
       svcType: ClusterIP
       subdomain: opensearch-dashboard
     fluentd:
-      version: v1.4.2-debian-elasticsearch-1.1
+      version: fluentd-v1.4.2-debian-elasticsearch-1.1
 
   ### prometheus
   prometheus:

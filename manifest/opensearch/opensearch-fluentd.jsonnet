@@ -14,7 +14,7 @@ function (
     hyperauth_url="172.23.4.105",
     hyperauth_realm="tmax",
     custom_domain_name="domain_name",
-    fluentd_image_tag="v1.4.2-debian-elasticsearch-1.1",
+    fluentd_image_tag="fluentd-v1.4.2-debian-elasticsearch-1.1",
     custom_clusterissuer="tmaxcloud-issuer",
     is_master_cluster="true",
     opensearch_subdomain="opensearch-dashboard"
@@ -24,7 +24,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 local os_image_path = "docker.io/opensearchproject/opensearch:" + os_image_tag;
 local busybox_image_path = "docker.io/busybox:" + busybox_image_tag;
 local dashboard_image_path = "docker.io/opensearchproject/opensearch-dashboards:" + dashboard_image_tag;
-local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fluentd_image_tag;
+local fluentd_image_path = "docker.io/tmaxcloudck/hypercloud:" + fluentd_image_tag;
 
 [
   {
@@ -422,11 +422,6 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
             {
               "name": "fluentd",
               "image": std.join("",[target_registry, fluentd_image_path]),
-              "command": [
-                "/bin/bash", 
-                "-c", 
-                "gem install fluent-plugin-opensearch && fluentd -c /fluentd/etc/fluent.conf -p /fluentd/plugins --gemfile /fluentd/Gemfile"
-              ],
               "env": [
                 {
                   "name": "FLUENT_OPENSEARCH_HOST",
