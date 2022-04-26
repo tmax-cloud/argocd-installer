@@ -43,7 +43,7 @@
     os_volume_size:       "50Gi",
     dashboard_image_tag:     "1.2.0",
     dashboard_svc_type:      "ClusterIP",
-    os_fluentd_image_tag:    "v1.4.2-debian-elasticsearch-1.1",
+    os_fluentd_image_tag:    "fluentd-v1.4.2-debian-elasticsearch-1.1",
     
     ## Prometheus variables
     configmap_reload_version:           "v0.0.1",
