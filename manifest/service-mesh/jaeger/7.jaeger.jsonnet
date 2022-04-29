@@ -9,6 +9,7 @@ function(
     CUSTOM_DOMAIN_NAME="custom-domain",
     CUSTOM_CLUSTER_ISSUER="tmaxcloud-issuer",
     jaeger_subdomain="jaeger"
+    storage_type="opensearch"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -134,9 +135,9 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
       }
     },
     "data": {
-      "span-storage-type": "elasticsearch",
-      "collector": "es:\n  server-urls: http://elasticsearch.kube-logging.svc.cluster.local:9200\ncollector:\n  zipkin:\n    host-port: 9411\n",
-      "query": "es:\n  server-urls: http://elasticsearch.kube-logging.svc.cluster.local:9200\n",
+      "span-storage-type": "opensearch",
+      "collector": "es:\n  server-urls: https://opensearch.kube-logging.svc.cluster.local:9200\nusername: admin\npassword: admin\ntls:\n  enabled:true\nca: /ca/cert/ca.crt\ncert: /ca/cert/tls.crt\nkey: /ca/cert/tls.key\ncollector:\n  zipkin:\n    host-port: 9411\n",
+      "query": "es:\n  server-urls: https://opensearch.kube-logging.svc.cluster.local:9200\nusername: admin\npassword: admin\ntls:  enabled: true\nca: /ca/cert/ca.crt\ncert: /ca/cert/tls.crt\nkey: /ca/cert/tls.key\n",
       "agent": "reporter:\n  grpc:\n  host-port: \"jaeger-collector:14250\"\n"
     }
   },
@@ -207,6 +208,11 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
                 {
                   "name": "jaeger-configuration-volume",
                   "mountPath": "/conf"
+                },
+                {
+                  "name": "jaeger-certs",
+                  "mountPath": "/ca/cert",
+                  "readOnly": true
                 }
               ],
               "env": [
@@ -223,6 +229,14 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
             }
           ],
           "volumes": [
+            {
+              "name": "jaeger-certs,
+              "secret":
+                {
+                  "defalutMode": 420,
+                  "secretName": "jaeger-secret"
+                }
+            },
             {
               "configMap": {
                 "name": "jaeger-configuration",
@@ -439,6 +453,11 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
                 {
                   "mountPath": "/conf",
                   "name": "jaeger-configuration-volume"
+                },
+                {
+                  "name": "jaeger-certs",
+                  "mountPath": "/ca/cert",
+                  "readOnly": true
                 }
               ]
             }
@@ -451,8 +470,9 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
             {
               "name": "secret",
               "secret": {
+                "defaultMode": 420,
                 "secretName": "jaeger-secret"
-              },
+              }
             },
             {
               "name": "gatekeeper-files",
@@ -577,6 +597,11 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
                 {
                   "name": "jaeger-configuration-volume",
                   "mountPath": "/conf"
+                },
+                {
+                  "name": "jaeger-certs",
+                  "mountPath": "/ca/cert",
+                  "readOnly": true
                 }
               ],
               "ports": [
@@ -610,6 +635,14 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
           "hostNetwork": true,
           "dnsPolicy": "ClusterFirstWithHostNet",
           "volumes": [
+            {
+              "name": "jaeger-certs,
+              "secret":
+                {
+                  "defalutMode": 420,
+                  "secretName": "jaeger-secret"
+                }
+            },
             {
               "configMap": {
                 "name": "jaeger-configuration",
