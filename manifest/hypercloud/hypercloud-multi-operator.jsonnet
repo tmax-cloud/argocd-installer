@@ -7,7 +7,8 @@ function (
     hyperauth_client_secret="tmax_client_secret",
     domain="tmaxcloud.org",
     hyperauth_subdomain="hyperauth",
-    console_subdomain="console"
+    console_subdomain="console",
+    hyperregistry_enabled="true"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -63,8 +64,12 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                                     "name": "AUTH_SUBDOMAIN",
                                     "value": hyperauth_subdomain
                                 },
+                                {
+                                    "name": "HYPERREGISTRY_ENABLED",
+                                    "value": hyperregistry_enabled
+                                },
                             ],
-                            "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-multi-operator:b5.0.26.10"]),
+                            "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-multi-operator:b5.0.26.11"]),
                             "name": "manager",
                             "ports": [
                                 {

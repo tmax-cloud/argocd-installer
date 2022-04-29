@@ -7,7 +7,8 @@ function (
     hyperauth_client_secret="tmax_client_secret",
     domain="tmaxcloud.org",
     hyperauth_subdomain="hyperauth",
-    console_subdomain="console"
+    console_subdomain="console",
+    hyperregistry_enabled="true"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
