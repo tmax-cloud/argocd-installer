@@ -8,7 +8,7 @@ function(
     GATEKEER_VERSION="10.0.0",
     CUSTOM_DOMAIN_NAME="custom-domain",
     CUSTOM_CLUSTER_ISSUER="tmaxcloud-issuer",
-    jaeger_subdomain="jaeger"
+    jaeger_subdomain="jaeger",
     storage_type="opensearch"
 )
 
