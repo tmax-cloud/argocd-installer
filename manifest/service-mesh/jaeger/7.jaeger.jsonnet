@@ -145,7 +145,7 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
             "cert": "/ca/cert/tls.crt",
             "key": "/ca/cert/tls.key"
           },
-          "username": "admin\n password: admin"
+          "username": "admin\npassword: admin"
         },
         "collector": {
           "zipkin": {
