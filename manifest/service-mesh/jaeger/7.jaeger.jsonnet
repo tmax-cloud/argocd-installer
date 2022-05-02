@@ -233,7 +233,7 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
               "name": "jaeger-certs",
               "secret":
                 {
-                  "defalutMode": 420,
+                  "defaultMode": 420,
                   "secretName": "jaeger-secret"
                 }
             },
@@ -639,7 +639,7 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
               "name": "jaeger-certs",
               "secret":
                 {
-                  "defalutMode": 420,
+                  "defaultMode": 420,
                   "secretName": "jaeger-secret"
                 }
             },
