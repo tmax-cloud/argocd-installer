@@ -468,11 +468,12 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
           "terminationGracePeriodSeconds": 30,
           "volumes": [
             {
-              "name": "secret",
-              "secret": {
-                "defaultMode": 420,
-                "secretName": "jaeger-secret"
-              }
+              "name": "jaeger-certs",
+              "secret":
+                {
+                  "defaultMode": 420,
+                  "secretName": "jaeger-secret"
+                }
             },
             {
               "name": "gatekeeper-files",
