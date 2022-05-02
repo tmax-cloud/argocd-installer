@@ -230,7 +230,7 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
           ],
           "volumes": [
             {
-              "name": "jaeger-certs,
+              "name": "jaeger-certs",
               "secret":
                 {
                   "defalutMode": 420,
@@ -636,7 +636,7 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
           "dnsPolicy": "ClusterFirstWithHostNet",
           "volumes": [
             {
-              "name": "jaeger-certs,
+              "name": "jaeger-certs",
               "secret":
                 {
                   "defalutMode": 420,
