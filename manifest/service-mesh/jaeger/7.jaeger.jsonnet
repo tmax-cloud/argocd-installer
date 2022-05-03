@@ -143,7 +143,7 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
           "username: admin",
           "password: admin",
           "tls:",
-          "  enabled:true",
+          "  enabled: true",
           "ca: /ca/cert/ca.crt",
           "cert: /ca/cert/tls.crt",
           "key: /ca/cert/tls.key",
