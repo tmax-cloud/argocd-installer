@@ -1,15 +1,15 @@
 function(
-    is_offline="false",
-    private_registry="registry.tmaxcloud.org",
-    JAEGER_VERSION="1.27",
-    cluster_name="master",
-    tmax_client_secret="tmax_client_secret",
-    HYPERAUTH_DOMAIN="hyperauth.domain",
-    GATEKEER_VERSION="10.0.0",
-    CUSTOM_DOMAIN_NAME="custom-domain",
-    CUSTOM_CLUSTER_ISSUER="tmaxcloud-issuer",
-    jaeger_subdomain="jaeger",
-    storage_type="opensearch"
+  is_offline="false",
+  private_registry="registry.tmaxcloud.org",
+  JAEGER_VERSION="1.27",
+  cluster_name="master",
+  tmax_client_secret="tmax_client_secret",
+  HYPERAUTH_DOMAIN="hyperauth.domain",
+  GATEKEER_VERSION="10.0.0",
+  CUSTOM_DOMAIN_NAME="custom-domain",
+  CUSTOM_CLUSTER_ISSUER="tmaxcloud-issuer",
+  jaeger_subdomain="jaeger",
+  storage_type="opensearch"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";

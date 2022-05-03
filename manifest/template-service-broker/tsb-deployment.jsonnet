@@ -1,9 +1,9 @@
-function (
-    is_offline = "false",
-    private_registry="registry.tmaxcloud.org",
-    template_operator_version = "0.2.6",
-    cluster_tsb_version = "0.1.3",
-    tsb_version = "0.1.3"
+function(
+  is_offline = "false",
+  private_registry="registry.tmaxcloud.org",
+  template_operator_version = "0.2.6",
+  cluster_tsb_version = "0.1.3",
+  tsb_version = "0.1.3"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -50,37 +50,37 @@ local target_registry = if is_offline == "false" then "" else private_registry +
     }
   },
   {
-  "apiVersion": "apps/v1",
-  "kind": "Deployment",
-  "metadata": {
-    "labels": {
-      "app": "cluster-template-service-broker"
-    },
-    "name": "cluster-template-service-broker",
-    "namespace": "cluster-tsb-ns"
-  },
-  "spec": {
-    "replicas": 1,
-    "selector": {
-      "matchLabels": {
+    "apiVersion": "apps/v1",
+    "kind": "Deployment",
+    "metadata": {
+      "labels": {
         "app": "cluster-template-service-broker"
-      }
+      },
+      "name": "cluster-template-service-broker",
+      "namespace": "cluster-tsb-ns"
     },
-    "template": {
-      "metadata": {
-        "labels": {
+    "spec": {
+      "replicas": 1,
+      "selector": {
+        "matchLabels": {
           "app": "cluster-template-service-broker"
         }
       },
-      "spec": {
-        "serviceAccountName": "cluster-tsb-sa",
-        "containers": [
-          {
-            "image": std.join("", [target_registry, "docker.io/tmaxcloudck/cluster-tsb:", cluster_tsb_version]),
-            "name": "cluster-tsb",
-            "imagePullPolicy": "Always"
+      "template": {
+        "metadata": {
+          "labels": {
+            "app": "cluster-template-service-broker"
           }
-         ]
+        },
+        "spec": {
+          "serviceAccountName": "cluster-tsb-sa",
+          "containers": [
+            {
+              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/cluster-tsb:", cluster_tsb_version]),
+              "name": "cluster-tsb",
+              "imagePullPolicy": "Always"
+            }
+          ]
         }
       }
     }

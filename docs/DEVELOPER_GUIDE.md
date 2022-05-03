@@ -30,7 +30,7 @@
 ---
 - 모듈 Manifest에서 모두 공통으로 선언해주어야 하는 변수는 두개입니다.
     ```
-    function (
+    function(
         is_offline="false"
         private_registry="172.22.6.2:5000"
     )
