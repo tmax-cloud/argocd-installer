@@ -158,7 +158,8 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
           "  server-urls: https://opensearch.kube-logging.svc:9200",
           "username: admin",
           "password: admin",
-          "tls:  enabled: true",
+          "tls:",
+          "  enabled: true",
           "ca: /ca/cert/ca.crt",
           "cert: /ca/cert/tls.crt",
           "key: /ca/cert/tls.key"
