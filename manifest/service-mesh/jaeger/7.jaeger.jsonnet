@@ -136,42 +136,9 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
     },
     "data": {
       "span-storage-type": "opensearch",
-      "collector": {
-        "es": {
-          "server-urls": "https://opensearch.kube-logging.svc:9200",
-          "tls": {
-            "enabled": true,
-            "ca": "/ca/cert/ca.crt",
-            "cert": "/ca/cert/tls.crt",
-            "key": "/ca/cert/tls.key"
-          },
-          "username": "admin\npassword: admin"
-        },
-        "collector": {
-          "zipkin": {
-            "host-port": 9411
-          }
-        }
-      },
-    "query": {
-      "es": {
-        "server-urls": "https://opensearch.kube-logging.svc:9200",
-        "tls": {
-          "enabled": true,
-            "ca": "/ca/cert/ca.crt",
-            "cert": "/ca/cert/tls.crt",
-            "key": "/ca/cert/tls.key"
-        },
-        "username": "admin\npassword: admin"
-        }
-      },
-    "agent": {
-      "reporter": {
-        "grpc": {
-          "host-port": "\"jaeger-collector:14250\""
-          }
-        }
-      }
+      "collector": "es:\n  server-urls: https://opensearch.kube-logging.svc:9200\nusername: admin\npassword: admin\ntls:\n  enabled:true\nca: /ca/cert/ca.crt\ncert: /ca/cert/tls.crt\nkey: /ca/cert/tls.key\ncollector:\n  zipkin:\n    host-port: 9411\n",
+      "query": "es:\n  server-urls: https://opensearch.kube-logging.svc:9200\nusername: admin\npassword: admin\ntls:  enabled: true\nca: /ca/cert/ca.crt\ncert: /ca/cert/tls.crt\nkey: /ca/cert/tls.key\n",
+      "agent": "reporter:\n  grpc:\n  host-port: \"jaeger-collector:14250\"\n"
     }
   },
   {
