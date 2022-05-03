@@ -1,9 +1,8 @@
-# Need to convert values in ()
-# After convert, delete "|"
-| {{- if .Values.modules.(module_name).enabled }}
+# Need to convert values in (())
+{{- if .Values.modules.((module_name)).enabled }}
 {{ $isMaster := eq .Values.global.cluster "master" }}
 {{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
-| {{ $module := "(module_name)" }}
+{{ $module := "((module_name))" }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -14,7 +13,7 @@ metadata:
 spec:
   destination:
     name: {{ .Values.global.clusterName }}
-    | namespace: (module ns)
+    namespace: ((module ns))
   project: {{ .Values.spec.project }}
   source:
     directory:
@@ -24,7 +23,7 @@ spec:
             value: {{ .Values.global.network.disabled }}
           - name: private_registry
             value: {{ .Values.global.privateRegistry }}
-    | path: (module_path)
+    path: ((module_path))
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
 {{- end }}
