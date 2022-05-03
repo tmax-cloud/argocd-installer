@@ -136,9 +136,42 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
     },
     "data": {
       "span-storage-type": "opensearch",
-      "collector": "es:\n  server-urls: https://opensearch.kube-logging.svc:9200\nusername: admin\npassword: admin\ntls:\n  enabled:true\nca: /ca/cert/ca.crt\ncert: /ca/cert/tls.crt\nkey: /ca/cert/tls.key\ncollector:\n  zipkin:\n    host-port: 9411\n",
-      "query": "es:\n  server-urls: https://opensearch.kube-logging.svc:9200\nusername: admin\npassword: admin\ntls:  enabled: true\nca: /ca/cert/ca.crt\ncert: /ca/cert/tls.crt\nkey: /ca/cert/tls.key\n",
-      "agent": "reporter:\n  grpc:\n  host-port: \"jaeger-collector:14250\"\n"
+      "collector": std.join("\n", 
+        [
+          "es:",
+          "  server-urls: https://opensearch.kube-logging.svc:9200",
+          "username: admin",
+          "password: admin",
+          "tls:",
+          "  enabled:true",
+          "ca: /ca/cert/ca.crt",
+          "cert: /ca/cert/tls.crt",
+          "key: /ca/cert/tls.key",
+          "collector:",
+          "  zipkin:",
+          "    host-port: 9411"
+        ]
+      ),
+      "query": std.join("\n",
+        [
+          "es:",
+          "  server-urls: https://opensearch.kube-logging.svc:9200",
+          "username: admin",
+          "password: admin",
+          "tls:",
+          "  enabled: true",
+          "ca: /ca/cert/ca.crt",
+          "cert: /ca/cert/tls.crt",
+          "key: /ca/cert/tls.key"
+        ]
+      ),
+      "agent": std.join("\n",
+        [
+          "reporter:",
+          "  grpc:",
+          "  host-port: \"jaeger-collector:14250\""
+        ]
+      )
     }
   },
   {
@@ -179,7 +212,7 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
           "serviceAccountName": "jaeger-service-account",
           "containers": [
             {
-              "image": std.join("", [target_registry, "docker.io/jaegertracing/jaeger-collector:",JAEGER_VERSION]),
+              "image": std.join("", [target_registry, "docker.io/jaegertracing/jaeger-collector:", JAEGER_VERSION]),
               "name": "jaeger-collector",
               "args": [
                 "--config-file=/conf/collector.yaml"
@@ -363,7 +396,7 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
           "containers": [
             {
               "name": "gatekeeper",
-              "image": std.join("", [target_registry, "quay.io/keycloak/keycloak-gatekeeper:",GATEKEER_VERSION]),
+              "image": std.join("", [target_registry, "quay.io/keycloak/keycloak-gatekeeper:", GATEKEER_VERSION]),
               "imagePullPolicy": "Always",
               "args": [
                 "--client-id=jaeger",
@@ -425,7 +458,7 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
                   "value": "/api/jaeger"
                 }
               ],
-              "image": std.join("", [target_registry, "docker.io/jaegertracing/jaeger-query:",JAEGER_VERSION]),
+              "image": std.join("", [target_registry, "docker.io/jaegertracing/jaeger-query:", JAEGER_VERSION]),
               "imagePullPolicy": "IfNotPresent",
               "name": "jaeger-query",
               "ports": [
@@ -588,7 +621,7 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
         "spec": {
           "containers": [
             {
-              "image": std.join("", [target_registry, "docker.io/jaegertracing/jaeger-agent:",JAEGER_VERSION]),
+              "image": std.join("", [target_registry, "docker.io/jaegertracing/jaeger-agent:", JAEGER_VERSION]),
               "name": "jaeger-agent",
               "args": [
                 "--config-file=/conf/agent.yaml"
