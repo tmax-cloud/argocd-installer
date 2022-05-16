@@ -63,6 +63,9 @@ modules:
     enabled: true
     svcType: Ingress
     subdomain: hyperauth
+    # default로 주는 경우 default storage class를 사용
+    # default를 사용하지 않고 싶은 경우에는 storage class이름을 기입
+    storageClass: default
 
   ### efk
   efk:
@@ -101,6 +104,9 @@ modules:
       subdomain: opensearch-dashboard
     fluentd:
       version: fluentd-v1.4.2-debian-elasticsearch-1.1
+      # default로 주는 경우 default storage class를 사용
+      # default를 사용하지 않고 싶은 경우에는 storage class이름을 기입
+      storageClass: default
 
   ### prometheus
   prometheus:
@@ -175,6 +181,9 @@ modules:
     mode: multi
     kafka:
       enabled: false
+    # default로 주는 경우 default storage class를 사용
+    # default를 사용하지 않고 싶은 경우에는 storage class이름을 기입
+    storageClass: default
 
   ### hyperregistry
   # single cluster 설치용 변수
