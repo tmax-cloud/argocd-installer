@@ -18,6 +18,8 @@ modules:
   ### gateway-bootstrap
   gatewayBootstrap:
     enabled: true
+    # cloud provider의 load balancer 서비스(ex. aws nlb)를 사용하기 위해서는
+    # LoadBalancer로 값을 변경
     svc_type: NodePort
     tls:
       selfsigned:
