@@ -5,7 +5,8 @@ function (
     hyperauth_external_ip="172.22.6.8",
     is_kafka_enabled="true",
     hyperauth_subdomain="hyperauth",
-    hypercloud_domain_host="tmaxcloud.org"
+    hypercloud_domain_host="tmaxcloud.org",
+    storageClass="default"
 )
 
 local svcType = if hyperauth_svc_type == "Ingress" then "ClusterIP" else hyperauth_svc_type;
@@ -349,7 +350,7 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
           hyperauth_external_ip
         ]
       } else {}
-    ),
+    )
   },
   if hyperauth_svc_type == "Ingress" then {
     "apiVersion": "networking.k8s.io/v1",
@@ -396,5 +397,30 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
         }
       ]
     }
-  } else {}
+  } else {},
+  {
+    "apiVersion": "v1",
+    "kind": "PersistentVolumeClaim",
+    "metadata": {
+      "name": "hyperauth-profile-picture",
+      "namespace": "hyperauth",
+      "labels": {
+        "app": "hyperauth"
+      }
+    },
+    "spec": {
+      "accessModes": [
+        "ReadWriteMany"
+      ],
+      "resources": {
+        "requests": {
+          "storage": "50Gi"
+        }
+      }
+    } + (
+      if storageClass != "default" then {
+        "storageClassName": storageClass
+      } else {}
+    )
+  }
 ]

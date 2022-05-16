@@ -50,6 +50,8 @@ spec:
             value: "{{ $isMaster }}"
           - name: opensearch_subdomain
             value: {{ .Values.modules.opensearch.dashboard.subdomain }}
+          - name: storageClass
+            value: {{ .Values.modules.opensearch.fluentd.storageClass }}
     path: manifest/opensearch
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
