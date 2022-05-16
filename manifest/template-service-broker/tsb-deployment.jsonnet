@@ -1,4 +1,4 @@
-function(
+function (
   is_offline = "false",
   private_registry="registry.tmaxcloud.org",
   template_operator_version = "0.2.6",

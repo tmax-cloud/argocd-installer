@@ -1,4 +1,4 @@
-function(
+function (
   is_offline="false",
   private_registry="172.22.6.2:5000",
   client_id="grafana",

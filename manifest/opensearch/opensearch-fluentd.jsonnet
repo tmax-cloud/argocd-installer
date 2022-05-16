@@ -1,4 +1,4 @@
-function(
+function (
   is_offline="false",
   private_registry="172.22.6.2:5000",
   os_image_tag="1.2.3",
@@ -17,7 +17,8 @@ function(
   fluentd_image_tag="fluentd-v1.4.2-debian-elasticsearch-1.1",
   custom_clusterissuer="tmaxcloud-issuer",
   is_master_cluster="true",
-  opensearch_subdomain="opensearch-dashboard"
+  opensearch_subdomain="opensearch-dashboard",
+  storageClass="default"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -247,7 +248,11 @@ local fluentd_image_path = "docker.io/tmaxcloudck/hypercloud:" + fluentd_image_t
                 "storage": os_volume_size
               }
             }
-          }
+          } + (
+            if storageClass != "default" then {
+              "storageClassName": storageClass
+            } else {}
+          )
         }
       ]
     }  

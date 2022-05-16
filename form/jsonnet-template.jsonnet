@@ -1,4 +1,4 @@
-function(
+function (
   params = import 'params.libsonnet'
 )
 

@@ -1,4 +1,4 @@
-function(
+function (
   is_offline="false",
   private_registry="registry.tmaxcloud.org",
   ISTIO_VERSION= "1.5.1",
