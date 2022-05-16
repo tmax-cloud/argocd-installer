@@ -117,7 +117,7 @@ modules:
 
   ### cluster-api
   capi:
-    enabled: false
+    enabled: true
     providers:
       aws:
         enabled: false
