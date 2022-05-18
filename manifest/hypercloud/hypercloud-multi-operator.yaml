@@ -163,11 +163,13 @@ spec:
                 - "systemUUID"
                 type: "object"
               type: "array"
+            openSearchReady:
+              type: "boolean"
             phase:
               type: "string"
             prometheusReady:
-              description: will be deprecated
-              type: boolean
+              description: "%clustermanagers.yaml.spec.validation.openAPIV3Schema.properties.status.properties.prometheusReady"
+              type: "boolean"
             provider:
               type: "string"
             ready:
