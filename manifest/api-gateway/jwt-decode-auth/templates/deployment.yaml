@@ -24,11 +24,17 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "jwt-decode-auth.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      volumes:
+        - name: api-gateway-token
+          secret:
+            defaultMode: 420
+            secretName: api-gateway-token
       containers:
         - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           env:
@@ -48,8 +54,12 @@ spec:
               value: "8080"
             - name: TOKEN_VALIDATED_HEADER_KEY
               value: jwt-token-validated
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+            - name: MULTI_CLUSTER_PREFIX
+              value: multicluster
+          volumeMounts:
+            - name: api-gateway-token
+              mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+              readOnly: true
           ports:
             - name: http
               containerPort: 8080

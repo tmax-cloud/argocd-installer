@@ -16,7 +16,7 @@ image:
   repository: docker.io/tmaxcloudck/jwt-decode
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "5.0.0.1"
+  tag: "5.0.0.3"
 #imagePullSecrets: []
 imagePullSecrets:
   - name: regcred
