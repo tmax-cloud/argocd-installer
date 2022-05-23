@@ -37,21 +37,6 @@ data:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: postgres-pvc
-  namespace: hyperauth
-  labels:
-    app: postgresql
-spec:
-  #storageClassName: csi-cephfs-sc
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 100Gi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
   name: hyperauth-log-pvc
   namespace: hyperauth
   labels:
@@ -79,9 +64,7 @@ spec:
   resources:
     requests:
       storage: 50Gi
-
 ---
-
 apiVersion: v1
 kind: Service
 metadata:

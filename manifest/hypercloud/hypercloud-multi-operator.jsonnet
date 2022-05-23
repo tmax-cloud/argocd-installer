@@ -4,6 +4,7 @@ function (
     hypercloud_hpcd_mode="multi",
     hypercloud_kafka_enabled="\"true\"",
     hyperauth_url="hyperauth.172.22.6.18.nip.io",
+    storageClass="default",
     time_zone="UTC"
 )
 

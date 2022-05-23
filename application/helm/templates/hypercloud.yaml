@@ -28,6 +28,8 @@ spec:
             value: "{{ .Values.modules.hyperCloud.kafka.enabled }}"
           - name: hyperauth_url
             value: {{ .Values.global.keycloak.domain }}
+          - name: storageClass
+            value: {{ .Values.modules.hyperCloud.storageClass }}
           - name: time_zone
             value: {{ .Values.global.timeZone }}
     path: manifest/hypercloud
