@@ -3,7 +3,8 @@ function (
     private_registry="registry.hypercloud.org",
     hypercloud_hpcd_mode="multi",
     hypercloud_kafka_enabled="\"true\"",
-    hyperauth_url="hyperauth.172.22.6.18.nip.io"
+    hyperauth_url="hyperauth.172.22.6.18.nip.io",
+    time_zone="UTC"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -46,7 +47,7 @@ local domain = std.strReplace(hyperauth_url, "hyperauth.", "");
                             "env": [
                                 {
                                     "name": "TZ",
-                                    "value": "Asia/Seoul"
+                                    "value": time_zone
                                 },
                                 {
                                     "name": "HC_DOMAIN",

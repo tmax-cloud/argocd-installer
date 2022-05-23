@@ -3,7 +3,8 @@ function (
     private_registry="registry.hypercloud.org",
     hypercloud_hpcd_mode="multi",
     hypercloud_kafka_enabled="\"true\"",
-    hyperauth_url="hyperauth.172.22.6.18.nip.io"
+    hyperauth_url="hyperauth.172.22.6.18.nip.io",
+    time_zone="UTC"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -40,6 +41,12 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         ],
                         "command": [
                             "/manager"
+                        ],
+                        "env": [
+                            {
+                                "name": "TZ",
+                                "value": time_zone
+                            },
                         ],
                         "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-single-operator:b5.0.25.16"]),
                         "name": "manager",
