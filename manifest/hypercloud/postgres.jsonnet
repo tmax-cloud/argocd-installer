@@ -43,10 +43,6 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                             ],
                             "env": [
                                 {
-                                    "name": "TZ",
-                                    "value": time_zone
-                                },
-                                {
                                     "name": "POSTGRES_USER",
                                     "value": "postgres"
                                 },
@@ -80,7 +76,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                                     "mountPath": "/docker-entrypoint-initdb.d",
                                     "name": "initdbsql"
                                 }
-                            ]
+                            ] + (
+                                if time_zone != "UTC" then [
+                                    {
+                                        "name": "timezone-config",
+                                        "mountPath": "/etc/localtime"
+                                    }
+                                ] else []
+                            )
                         }
                     ],
                     "serviceAccountName": "hypercloud5-admin",
@@ -103,7 +106,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                                 ]
                             }
                         }
-                    ]
+                    ] + (
+                        if time_zone != "UTC" then [
+                            {
+                                "name": "timezone-config",
+                                "hostPath": {
+                                    "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                                }
+                            }
+                        ] else []
+                    )
                 }
             }
         }

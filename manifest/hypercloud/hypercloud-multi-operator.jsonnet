@@ -47,10 +47,6 @@ local domain = std.strReplace(hyperauth_url, "hyperauth.", "");
                             ],
                             "env": [
                                 {
-                                    "name": "TZ",
-                                    "value": time_zone
-                                },
-                                {
                                     "name": "HC_DOMAIN",
                                     "value": domain
                                 },
@@ -85,7 +81,14 @@ local domain = std.strReplace(hyperauth_url, "hyperauth.", "");
                                     "name": "hypercloud-multi-operator-controller-manager-token",
                                     "readOnly": true
                                 }
-                            ]
+                            ] + (
+                                if time_zone != "UTC" then [
+                                    {
+                                        "name": "timezone-config",
+                                        "mountPath": "/etc/localtime"
+                                    }
+                                ] else []
+                            )
                         },
                         {
                             "args": [
@@ -138,7 +141,16 @@ local domain = std.strReplace(hyperauth_url, "hyperauth.", "");
                                 "secretName": "hypercloud-multi-operator-controller-manager-token"
                             }
                         }
-                    ]
+                    ] + (
+                        if time_zone != "UTC" then [
+                            {
+                                "name": "timezone-config",
+                                "hostPath": {
+                                    "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                                }
+                            }
+                        ] else []
+                    )
                 }
             }
         }

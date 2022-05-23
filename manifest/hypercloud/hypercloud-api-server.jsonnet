@@ -46,10 +46,6 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                             "imagePullPolicy": "IfNotPresent",
                             "env": [
                                 {
-                                    "name": "TZ",
-                                    "value": time_zone
-                                },
-                                {
                                     "name": "HC_MODE",
                                     "value": hypercloud_hpcd_mode
                                 },
@@ -126,7 +122,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                                     "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
                                     "readOnly": true
                                 }
-                            ]
+                            ] + (
+                                if time_zone != "UTC" then [
+                                    {
+                                        "name": "timezone-config",
+                                        "mountPath": "/etc/localtime"
+                                    }
+                                ] else []
+                            )
                         }
                     ],
                     "volumes": [
@@ -189,7 +192,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                                 "defaultMode": 420
                             }
                         }
-                    ]
+                    ] + (
+                        if time_zone != "UTC" then [
+                            {
+                                "name": "timezone-config",
+                                "hostPath": {
+                                    "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                                }
+                            }
+                        ] else []
+                    )
                 }
             }
         }

@@ -42,13 +42,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         ],
                         "command": [
                             "/manager"
-                        ],
-                        "env": [
-                            {
-                                "name": "TZ",
-                                "value": time_zone
-                            },
-                        ],
+                        ],                        
                         "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-single-operator:b5.0.25.16"]),
                         "name": "manager",
                         "ports": [
@@ -83,7 +77,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                                 "mountPath": "/logs",
                                 "name": "operator-log-mnt"
                             }
-                        ]
+                        ] + (
+                                if time_zone != "UTC" then [
+                                    {
+                                        "name": "timezone-config",
+                                        "mountPath": "/etc/localtime"
+                                    }
+                                ] else []
+                            )
                     },
                     {
                         "args": [
@@ -140,7 +141,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     {
                         "name": "operator-log-mnt"
                     }
-                ]
+                ] + (
+                        if time_zone != "UTC" then [
+                            {
+                                "name": "timezone-config",
+                                "hostPath": {
+                                    "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                                }
+                            }
+                        ] else []
+                    )
             }
         }
     }
