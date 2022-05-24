@@ -15,6 +15,7 @@ spec:
   project: {{ .Values.spec.project }}
   source:
     directory:
+      exclude: infrastructure-components-vsphere-v0.7.6.yaml
       jsonnet:
         tlas:
           - name: is_offline
