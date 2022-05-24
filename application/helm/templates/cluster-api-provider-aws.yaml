@@ -15,6 +15,7 @@ spec:
   project: {{ .Values.spec.project }}
   source:
     directory:
+      exclude: infrastructure-components-aws-v0.6.5.yaml
       jsonnet:
         tlas:
           - name: is_offline

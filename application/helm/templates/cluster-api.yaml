@@ -15,6 +15,7 @@ spec:
   project: {{ .Values.spec.project }}
   source:
     directory:
+      exclude: cluster-api-components-v0.3.16.yaml
       jsonnet:
         tlas:
           - name: is_offline
