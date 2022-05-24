@@ -402,19 +402,19 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
     "apiVersion": "v1",
     "kind": "PersistentVolumeClaim",
     "metadata": {
-      "name": "hyperauth-profile-picture",
+      "name": "postgres-pvc",
       "namespace": "hyperauth",
       "labels": {
-        "app": "hyperauth"
+        "app": "postgresql"
       }
     },
     "spec": {
       "accessModes": [
-        "ReadWriteMany"
+        "ReadWriteOnce"
       ],
       "resources": {
         "requests": {
-          "storage": "50Gi"
+          "storage": "100Gi"
         }
       }
     } + (
