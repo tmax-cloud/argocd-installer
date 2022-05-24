@@ -18,6 +18,8 @@ modules:
   ### gateway-bootstrap
   gatewayBootstrap:
     enabled: true
+    # cloud provider의 load balancer 서비스(ex. aws nlb)를 사용하기 위해서는
+    # LoadBalancer로 값을 변경
     svc_type: NodePort
     tls:
       selfsigned:
@@ -63,6 +65,9 @@ modules:
     enabled: true
     svcType: Ingress
     subdomain: hyperauth
+    # default로 주는 경우 default storage class를 사용
+    # default를 사용하지 않고 싶은 경우에는 storage class이름을 기입
+    storageClass: default
 
   ### efk
   efk:
@@ -101,6 +106,9 @@ modules:
       subdomain: opensearch-dashboard
     fluentd:
       version: fluentd-v1.4.2-debian-elasticsearch-1.1
+      # default로 주는 경우 default storage class를 사용
+      # default를 사용하지 않고 싶은 경우에는 storage class이름을 기입
+      storageClass: default
 
   ### prometheus
   prometheus:
@@ -143,7 +151,7 @@ modules:
 
   ### cluster-api
   capi:
-    enabled: false
+    enabled: true
     providers:
       aws:
         enabled: false
@@ -175,6 +183,9 @@ modules:
     mode: multi
     kafka:
       enabled: false
+    # default로 주는 경우 default storage class를 사용
+    # default를 사용하지 않고 싶은 경우에는 storage class이름을 기입
+    storageClass: default
 
   ### hyperregistry
   # single cluster 설치용 변수
