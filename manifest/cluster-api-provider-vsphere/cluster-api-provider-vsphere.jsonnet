@@ -2,7 +2,8 @@ function (
     is_offline="false",
     private_registry="172.22.6.2:5000",
     username="username",
-    password="password"
+    password="password",
+    time_zone="UTC"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -74,7 +75,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                                     "name": "capv-controller-manager-token",
                                     "readOnly": true
                                 }
-                            ]
+                            ] + (
+                                if time_zone != "UTC" then [
+                                    {
+                                        "name": "timezone-config",
+                                        "mountPath": "/etc/localtime"
+                                    }
+                                ] else []
+                            )
                         },
                         {
                             "args": [
@@ -120,7 +128,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                                     "name": "capv-controller-manager-token",
                                     "readOnly": true
                                 }
-                            ]
+                            ] + (
+                                if time_zone != "UTC" then [
+                                    {
+                                        "name": "timezone-config",
+                                        "mountPath": "/etc/localtime"
+                                    }
+                                ] else []
+                            )
                         }
                     ],
                     "serviceAccountName": "capv-controller-manager",
@@ -146,7 +161,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                                 "secretName": "capv-controller-manager-token"
                             }
                         }
-                    ]
+                    ] + (
+                        if time_zone != "UTC" then [
+                            {
+                                "name": "timezone-config",
+                                "hostPath": {
+                                    "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                                }
+                            }
+                        ] else []
+                    )
                 }
             }
         }
@@ -200,7 +224,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                                 "name": "capv-controller-manager-token",
                                 "readOnly": true
                             }
-                            ]
+                            ] + (
+                                if time_zone != "UTC" then [
+                                    {
+                                        "name": "timezone-config",
+                                        "mountPath": "/etc/localtime"
+                                    }
+                                ] else []
+                            )
                         },
                         {
                             "args": [
@@ -239,7 +270,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                                     "name": "capv-controller-manager-token",
                                     "readOnly": true
                                 }
-                            ]
+                            ] + (
+                                if time_zone != "UTC" then [
+                                    {
+                                        "name": "timezone-config",
+                                        "mountPath": "/etc/localtime"
+                                    }
+                                ] else []
+                            )
                         }
                     ],
                     "serviceAccountName": "capv-controller-manager",
@@ -264,7 +302,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                             "secretName": "capv-controller-manager-token"
                             }
                         }
-                    ]
+                    ] + (
+                        if time_zone != "UTC" then [
+                            {
+                                "name": "timezone-config",
+                                "hostPath": {
+                                    "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                                }
+                            }
+                        ] else []
+                    )
                 }
             }
         }

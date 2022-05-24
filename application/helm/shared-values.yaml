@@ -8,6 +8,10 @@ spec:
     targetRevision: HEAD
     
 global:
+  # 현재 지원하는 timeZone value
+  # UTC (default)
+  # Asia/Seoul
+  timeZone: UTC
   network:
     # 폐쇄망일경우 true
     disabled: false
