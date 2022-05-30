@@ -175,7 +175,7 @@ local fluentd_image_path = "docker.io/tmaxcloudck/hypercloud:" + fluentd_image_t
             {
               "name": "roles",
               "configMap": {
-                "name": "os-roles"
+                "name": "os-role"
               }
             },
             {
