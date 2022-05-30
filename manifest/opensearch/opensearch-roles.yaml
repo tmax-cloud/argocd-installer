@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: os-role
-  namespace: opensearch
+  namespace: kube-logging
 data:
   roles.yml: |
     _meta:
@@ -244,7 +244,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: os-role-mapping
-  namespace: opensearch
+  namespace: kube-logging
 data:
   roles_mapping.yml: |
     ---
@@ -313,7 +313,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: os-users
-  namespace: opensearch
+  namespace: kube-logging
 data:
   internal_users.yml: |
     ---
