@@ -103,6 +103,11 @@ local fluentd_image_path = "docker.io/tmaxcloudck/hypercloud:" + fluentd_image_t
                   "readOnly": true
                 },
                 {
+                  "name": "roles",
+                  "mountPath": "/usr/share/opensearch/plugins/opensearch-security/securityconfig/roles.yml",
+                  "subPath": "roles.yml"
+                },
+                {
                   "name": "role-mapping",
                   "mountPath": "/usr/share/opensearch/plugins/opensearch-security/securityconfig/roles_mapping.yml",
                   "subPath": "roles_mapping.yml"
@@ -165,6 +170,12 @@ local fluentd_image_path = "docker.io/tmaxcloudck/hypercloud:" + fluentd_image_t
               "name": "admin-cert",
               "secret": {
                 "secretName": "admin-secret"
+              }
+            },
+            {
+              "name": "roles",
+              "configMap": {
+                "name": "os-roles"
               }
             },
             {
