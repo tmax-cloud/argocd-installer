@@ -93,11 +93,11 @@ spec:
   ingressClassName: tmax-cloud
   {{- if .Values.tls.enabled }}
   tls:
-    hosts:
-    - {{ .Values.ingress.hosts.subdomain }}.{{ Values.ingress.hosts.domain }}
+  - hosts:
+    - {{ .Values.ingress.hosts.subdomain }}.{{ .Values.ingress.hosts.domain }}
   {{- end }}
   rules:
-  - host: {{ .Values.ingress.hosts.subdomain }}.{{ Values.ingress.hosts.domain }}
+  - host: {{ .Values.ingress.hosts.subdomain }}.{{ .Values.ingress.hosts.domain }}
     http:
       paths:
       - path: /
@@ -107,21 +107,6 @@ spec:
             name: gitlab-service
             port:
               number: 80
-
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: gitlab-pvc
-  namespace: gitlab-system
-  labels:
-    app: gitlab
-spec:
-  accessModes:
-  - ReadWriteMany
-  resources:
-    requests:
-      storage: 30Gi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -145,9 +130,9 @@ spec:
       initContainers:
       - name: parse-svc
         {{- if .Values.global.registry.is_offline }}
-        image: {{ .Values.global.private_registry }}/{{ .Values.image.kube.repository }}:{{ .Values.image.kube.tag }}
+        image: "{{ .Values.global.private_registry }}/{{ .Values.image.kube.repo }}:{{ .Values.image.kube.tag }}"
         {{- else }}
-        image: {{ .Values.kube.image.repository }}:{{ .Values.kube.image.tag }}
+        image: "{{ .Values.image.kube.repo }}:{{ .Values.image.kube.tag }}"
         {{- end }}
         env:
         - name: NODE_IP
@@ -180,7 +165,6 @@ spec:
           PORT_SSH=2221
           PORT="${PORT/\.[0-9]*/}"
           PORT_SSH="${PORT_SSH/\.[0-9]*/}"
-
           cat <<EOT >> /tmp/shared/omnibus.env
           external_url {{ .Values.externalURL }}
           gitlab_rails['gitlab_shell_ssh_port'] = $PORT_SSH
@@ -192,15 +176,14 @@ spec:
           gitlab_rails['initial_root_password'] = "password"
           nginx['ssl_protocols'] = "TLSv1.1"
           EOT
-
       containers:
       - name: gitlab
         securityContext:
           privileged: true
         {{- if .Values.global.registry.is_offline }}
-        image: {{ .Values.global.private_registry }}/{{ .Values.image.gitlab.repository }}:{{ .Values.image.gitlab.tag }}
+        image: "{{ .Values.global.private_registry }}/{{ .Values.image.gitlab.repo }}:{{ .Values.image.gitlab.tag }}"
         {{- else }}
-        image: {{ .Values.gitlab.image.repository }}:{{ .Values.gitlab.image.tag }}
+        image: "{{ .Values.image.gitlab.repo }}:{{ .Values.image.gitlab.tag }}"
         {{- end }}
         command:
         - /bin/sh

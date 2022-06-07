@@ -64,6 +64,9 @@ spec:
         - name: modules.hyperregistry.storageClass
           # Hyperregistry notary가 사용할 storage class로 변경
           value: nfs
+        - name: modules.gitlab.subdomain
+          # gitlab이 사용할 subdomain으로 변경
+          value: gitlab
     path: application/helm
     # 환경에 맞게 url 주소 변경 필요
     repoURL: https://github.com/tmax-cloud/argocd-installer
