@@ -56,10 +56,14 @@ spec:
               value: jwt-token-validated
             - name: MULTI_CLUSTER_PREFIX
               value: multicluster
+            - name: SECRET_CACHE_TTL
+              value: "300"
           volumeMounts:
             - name: api-gateway-token
               mountPath: /var/run/secrets/kubernetes.io/serviceaccount
               readOnly: true
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
               containerPort: 8080
