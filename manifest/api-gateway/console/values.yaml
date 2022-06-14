@@ -13,6 +13,7 @@ console:
     realm: tmax
     clientid: hypercloud5
   mcMode: true
+  chatbotEmbed: true
 
 image:
   repository: docker.io/tmaxcloudck/hypercloud-console
