@@ -149,11 +149,11 @@ spec:
 {{ include "harbor.labels" . | indent 8 }}
     spec:
       accessModes: [{{ $database.accessMode | quote }}]
-      {{- if .Values.storageClass }}
-      {{- if (eq "-" .Values.storageClass) }}
+      {{- if .Values.storageClassDatabase }}
+      {{- if (eq "-" .Values.storageClassDatabase) }}
       storageClassName: ""
       {{- else }}
-      storageClassName: "{{ .Values.storageClass }}"
+      storageClassName: "{{ .Values.storageClassDatabase }}"
       {{- end }}
       {{- end }}
       resources:

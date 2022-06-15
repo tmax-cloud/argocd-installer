@@ -29,6 +29,8 @@ spec:
           value: {{ .Values.modules.hyperregistry.notary.subdomain }}
         - name: storageClass
           value: {{ .Values.modules.hyperregistry.storageClass }}
+        - name: storageClassDatabase
+          value: {{ .Values.modules.hyperregistry.storageClassDatabase }}
     path: manifest/hyperregistry
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
