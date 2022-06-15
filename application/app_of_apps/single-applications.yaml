@@ -62,8 +62,10 @@ spec:
           # Hyperregistry notary가 사용할 subdomain으로 변경
           value: hyperregistry-notary
         - name: modules.hyperregistry.storageClass
+          # Hyperregistry에서 postgres외의 pvc의 storage class로 변경
           value: nfs
         - name: modules.hyperregistry.storageClassDatabase
+          # Hyperregistry에서 postgres의 pvc의 storage class로 변경
           value: nfs
     path: application/helm
     # 환경에 맞게 url 주소 변경 필요
