@@ -238,7 +238,7 @@ local domain = std.strReplace(hyperauth_url, "hyperauth.", "");
                     "cloud-provider": "aws"
                 }
                 }
-            },            
+            },
             "initConfiguration": {
                 "nodeRegistration": {
                 "kubeletExtraArgs": {
