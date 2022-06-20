@@ -224,14 +224,10 @@ local domain = std.strReplace(hyperauth_url, "hyperauth.", "");
             "clusterConfiguration": {
                 "apiServer": {
                 "extraArgs": {
-                    "audit-policy-file": "/etc/kubernetes/pki/audit-policy.yaml",
-                    "audit-webhook-config-file": "/etc/kubernetes/pki/audit-webhook-config",
-                    "audit-webhook-mode": "batch",
                     "cloud-provider": "aws",
-                    "oidc-ca-file": "/etc/kubernetes/pki/hyperauth.crt",
                     "oidc-client-id": "hypercloud5",
                     "oidc-groups-claim": "group",
-                    "oidc-issuer-url": "${HYPERAUTH_URL}",
+                    "oidc-issuer-url": hyperauth_url,
                     "oidc-username-claim": "preferred_username",
                     "oidc-username-prefix": "-"
                 }
@@ -242,26 +238,6 @@ local domain = std.strReplace(hyperauth_url, "hyperauth.", "");
                 }
                 }
             },
-            "files": [
-                {
-                "content": "${HYPERAUTH_CERT}\n",
-                "owner": "root:root",
-                "path": "/etc/kubernetes/pki/hyperauth.crt",
-                "permissions": "0644"
-                },
-                {
-                "content": "${AUDIT_WEBHOOK_CONFIG}\n",
-                "owner": "root:root",
-                "path": "/etc/kubernetes/pki/audit-webhook-config",
-                "permissions": "0644"
-                },
-                {
-                "content": "${AUDIT_POLICY}\n",
-                "owner": "root:root",
-                "path": "/etc/kubernetes/pki/audit-policy.yaml",
-                "permissions": "0644"
-                }
-            ],
             "initConfiguration": {
                 "nodeRegistration": {
                 "kubeletExtraArgs": {
@@ -628,14 +604,11 @@ local domain = std.strReplace(hyperauth_url, "hyperauth.", "");
             "clusterConfiguration": {
                 "apiServer": {
                 "extraArgs": {
-                    "audit-policy-file": "/etc/kubernetes/pki/audit-policy.yaml",
-                    "audit-webhook-config-file": "/etc/kubernetes/pki/audit-webhook-config",
-                    "audit-webhook-mode": "batch",
                     "cloud-provider": "external",
                     "oidc-ca-file": "/etc/kubernetes/pki/hyperauth.crt",
                     "oidc-client-id": "hypercloud5",
                     "oidc-groups-claim": "group",
-                    "oidc-issuer-url": "${HYPERAUTH_URL}",
+                    "oidc-issuer-url": hyperauth_url,
                     "oidc-username-claim": "preferred_username",
                     "oidc-username-prefix": "-"
                 }
@@ -648,28 +621,57 @@ local domain = std.strReplace(hyperauth_url, "hyperauth.", "");
             },
             "files": [
                 {
-                "content": "apiVersion: v1\nkind: Pod\nmetadata:\n  creationTimestamp: null\n  name: kube-vip\n  namespace: kube-system\nspec:\n  containers:\n  - args:\n    - start\n    env:\n    - name: vip_arp\n      value: \"true\"\n    - name: vip_leaderelection\n      value: \"true\"\n    - name: vip_address\n      value: ${VcenterKcpIp}\n    - name: vip_interface\n      value: eth0\n    - name: vip_leaseduration\n      value: \"15\"\n    - name: vip_renewdeadline\n      value: \"10\"\n    - name: vip_retryperiod\n      value: \"2\"\n    image: plndr/kube-vip:0.3.2\n    imagePullPolicy: IfNotPresent\n    name: kube-vip\n    resources: {}\n    securityContext:\n      capabilities:\n        add:\n        - NET_ADMIN\n        - SYS_TIME\n    volumeMounts:\n    - mountPath: /etc/kubernetes/admin.conf\n      name: kubeconfig\n  hostNetwork: true\n  volumes:\n  - hostPath:\n      path: /etc/kubernetes/admin.conf\n      type: FileOrCreate\n    name: kubeconfig\nstatus: {}\n",
+                "content": std.join("\n",
+                    [
+                        "apiVersion: v1",
+                        "kind: Pod",
+                        "metadata:",
+                        "  creationTimestamp: null",
+                        "  name: kube-vip",
+                        "  namespace: kube-system",
+                        "spec:",
+                        "  containers:",
+                        "  - args:",
+                        "    - start",
+                        "    env:",
+                        "    - name: vip_arp",
+                        "      value: \"true\"",
+                        "    - name: vip_leaderelection",
+                        "      value: \"true\"",
+                        "    - name: vip_address",
+                        "      value: ${VcenterKcpIp}",
+                        "    - name: vip_interface",
+                        "      value: eth0",
+                        "    - name: vip_leaseduration",
+                        "      value: \"15\"",
+                        "    - name: vip_renewdeadline",
+                        "      value: \"10\"",
+                        "    - name: vip_retryperiod",
+                        "      value: \"2\"",
+                        "    image: plndr/kube-vip:0.3.2",
+                        "    imagePullPolicy: IfNotPresent",
+                        "    name: kube-vip",
+                        "    resources: {}",
+                        "    securityContext:",
+                        "      capabilities:",
+                        "        add:",
+                        "        - NET_ADMIN",
+                        "        - SYS_TIME",
+                        "    volumeMounts:",
+                        "    - mountPath: /etc/kubernetes/admin.conf",
+                        "      name: kubeconfig",
+                        "  hostNetwork: true",
+                        "  volumes:",
+                        "  - hostPath:",
+                        "      path: /etc/kubernetes/admin.conf",
+                        "      type: FileOrCreate",
+                        "    name: kubeconfig",
+                        "status: {}"
+                    ]
+                ),
                 "owner": "root:root",
                 "path": "/etc/kubernetes/manifests/kube-vip.yaml"
                 },
-                {
-                "content": "${HYPERAUTH_CERT}\n",
-                "owner": "root:root",
-                "path": "/etc/kubernetes/pki/hyperauth.crt",
-                "permissions": "0644"
-                },
-                {
-                "content": "${AUDIT_WEBHOOK_CONFIG}\n",
-                "owner": "root:root",
-                "path": "/etc/kubernetes/pki/audit-webhook-config",
-                "permissions": "0644"
-                },
-                {
-                "content": "${AUDIT_POLICY}\n",
-                "owner": "root:root",
-                "path": "/etc/kubernetes/pki/audit-policy.yaml",
-                "permissions": "0644"
-                }
             ],
             "initConfiguration": {
                 "nodeRegistration": {
