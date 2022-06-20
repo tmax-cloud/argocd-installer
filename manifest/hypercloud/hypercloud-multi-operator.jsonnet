@@ -228,7 +228,7 @@ local domain = std.strReplace(hyperauth_url, "hyperauth.", "");
                     "cloud-provider": "aws",
                     "oidc-client-id": "hypercloud5",
                     "oidc-groups-claim": "group",
-                    "oidc-issuer-url": hyperauth_url,
+                    "oidc-issuer-url": std.join("", ["https://", hyperauth_url, "/auth/realms/tmax"]),
                     "oidc-username-claim": "preferred_username",
                     "oidc-username-prefix": "-"
                 }
@@ -606,10 +606,9 @@ local domain = std.strReplace(hyperauth_url, "hyperauth.", "");
                 "apiServer": {
                 "extraArgs": {
                     "cloud-provider": "external",
-                    "oidc-ca-file": "/etc/kubernetes/pki/hyperauth.crt",
                     "oidc-client-id": "hypercloud5",
                     "oidc-groups-claim": "group",
-                    "oidc-issuer-url": hyperauth_url,
+                    "oidc-issuer-url": std.join("", ["https://", hyperauth_url, "/auth/realms/tmax"]),
                     "oidc-username-claim": "preferred_username",
                     "oidc-username-prefix": "-"
                 }
