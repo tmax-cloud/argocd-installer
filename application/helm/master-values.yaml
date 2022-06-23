@@ -102,6 +102,9 @@ modules:
       replicas: 1
     controller:
       replicas: 1
+    ingress:
+      enableTraefik: true
+      secretName:
       
   ### opensearch
   opensearch:
