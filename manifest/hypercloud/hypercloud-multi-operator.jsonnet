@@ -259,7 +259,7 @@ local domain = std.strReplace(hyperauth_url, "hyperauth.", "");
                 "mkdir -p $HOME/.kube",
                 "cp /etc/kubernetes/admin.conf $HOME/.kube/config",
                 "chown $USER:$USER $HOME/.kube/config",
-                "kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml",
+                "kubectl apply -f https://docs.projectcalico.org/archive/v3.16/manifests/calico.yaml",
                 "kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.41.0/deploy/static/provider/aws/deploy.yaml"
             ]
             },
@@ -702,7 +702,7 @@ local domain = std.strReplace(hyperauth_url, "hyperauth.", "");
                 "mkdir -p $HOME/.kube",
                 "cp /etc/kubernetes/admin.conf $HOME/.kube/config",
                 "chown $USER:$USER $HOME/.kube/config",
-                "kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml",
+                "kubectl apply -f https://docs.projectcalico.org/archive/v3.16/manifests/calico.yaml",
                 "kubectl apply -f https://github.com/tmax-cloud/capi-template-ingress/releases/download/v0.41.0/ingress-nodeport.yaml"
             ],
             "useExperimentalRetryJoin": true,
