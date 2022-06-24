@@ -4,7 +4,9 @@ function (
     hypercloud_hpcd_mode="multi",
     hypercloud_kafka_enabled="\"true\"",
     hyperauth_url="hyperauth.172.22.6.18.nip.io",
-    storageClass="default"
+    storageClass="default",
+    aws_enabled="true",
+    vsphere_enabled="true"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";

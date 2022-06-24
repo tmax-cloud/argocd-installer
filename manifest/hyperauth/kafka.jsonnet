@@ -5,7 +5,8 @@ function (
     hyperauth_external_ip="172.22.6.8",
     is_kafka_enabled="true",
     hyperauth_subdomain="hyperauth",
-    hypercloud_domain_host="tmaxcloud.org"
+    hypercloud_domain_host="tmaxcloud.org",
+    storage_class="default"
 )
 
 if is_kafka_enabled == "true" then [
