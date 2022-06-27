@@ -122,7 +122,7 @@ modules:
     pvcSize: 10Gi
 
   ### grafana
-  grafana:
+  grafana-operator:
     enabled: true
     pvcSize: 10Gi
     version: 6.4.3
