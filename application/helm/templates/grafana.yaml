@@ -43,7 +43,7 @@ spec:
           - name: client_id
             value: {{ ternary grafana (printf "%s-grafana" $prefix) $isMaster }}
           - name: grafana_subdomain
-            value: {{ .Values.modules.grafana.subdomain }}
+            value: {{ .Values.modules.grafana-operator.subdomain }}
     path: manifest/grafana
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
