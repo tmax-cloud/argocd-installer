@@ -7,7 +7,11 @@ function (
 	ingress_domain="",
 	admin_user="test@test.co.kr",
 	is_master_cluster="true",
-	grafana_subdomain="grafana"
+	grafana_subdomain="grafana",
+	kube_rbac_proxy_image_repo="gcr.io/kubebuilder/kube-rbac-proxy",
+	kube_rbac_proxy_version="v0.8.0",
+	grafana_operator_image_repo="tmaxcloudck/grafana-operator",
+	grafana_operator_image_version="v0.0.2"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
