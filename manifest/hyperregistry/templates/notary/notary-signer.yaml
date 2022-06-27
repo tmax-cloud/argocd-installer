@@ -39,6 +39,9 @@ spec:
       automountServiceAccountToken: {{ .Values.notary.signer.automountServiceAccountToken | default false }}
       containers:
       - name: notary-signer
+        {{- if .Values.global.registry.is_offline }}
+        image: {{ .Values.global.registry.private_registry }}/{{ .Values.notary.signer.image.repository }}:{{ .Values.notary.signer.image.tag }}
+        {{- else }}
         image: {{ .Values.notary.signer.image.repository }}:{{ .Values.notary.signer.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:
