@@ -32,6 +32,8 @@ spec:
             value: {{ .Values.modules.grafana-operator.version }}
           - name: grafana_operator_image_repo
             value: {{ .Values.modules.grafana-operator.imageRepo }}
+          - name: kube_rbac_proxy_version
+            value: "v0.8.0"
           - name: ingress_domain
             value: {{ .Values.global.domain }}
           - name: is_master_cluster
