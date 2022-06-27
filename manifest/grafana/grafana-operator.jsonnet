@@ -15,6 +15,17 @@ local admin_info = if is_master_cluster == "true" then "" else "admin_user = " +
 
 [
 	{
+	  "apiVersion": "v1",
+	  "data": {
+		"controller_manager_config.yaml": "apiVersion: controller-runtime.sigs.k8s.io/v1alpha1\nkind: ControllerManagerConfig\nhealth:\n  healthProbeBindAddress: :8081\nmetrics:\n  bindAddress: 127.0.0.1:8080\nwebhook:\n  port: 9443\nleaderElection:\n  leaderElect: true\n  resourceName: 2c0156f0.integreatly.org\n"
+	  },
+	  "kind": "ConfigMap",
+	  "metadata": {
+		"name": "manager-config",
+		"namespace": "monitoring"
+	  }
+	},
+	{
 	  "apiVersion": "apps/v1",
 	  "kind": "Deployment",
 	  "metadata": {
