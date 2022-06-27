@@ -45,6 +45,7 @@ spec:
         image: {{ .Values.global.registry.private_registry }}/{{ .Values.redis.internal.image.repository }}:{{ .Values.redis.internal.image.tag }}
         {{- else }}
         image: {{ .Values.redis.internal.image.repository }}:{{ .Values.redis.internal.image.tag }}
+        {{- end }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:
           tcpSocket:
