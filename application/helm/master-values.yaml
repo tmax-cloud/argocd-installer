@@ -125,8 +125,8 @@ modules:
       adapter: v0.9.1
     pvcSize: 10Gi
 
-  ### grafana
-  grafana:
+  ### grafana-operator
+  grafana-operator:
     enabled: true
     pvcSize: 10Gi
     version: 6.4.3
