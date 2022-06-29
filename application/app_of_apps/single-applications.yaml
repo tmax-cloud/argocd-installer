@@ -63,9 +63,11 @@ spec:
           value: hyperregistry-notary
         - name: modules.hyperregistry.storageClass
           # Hyperregistry에서 postgres외의 pvc의 storage class로 변경
+          # aws의 경우 efs-sc-0, 그외에는 nfs
           value: nfs
         - name: modules.hyperregistry.storageClassDatabase
           # Hyperregistry에서 postgres의 pvc의 storage class로 변경
+          # aws의 경우 efs-sc-999, 그외에는 nfs
           value: nfs
     path: application/helm
     # 환경에 맞게 url 주소 변경 필요
