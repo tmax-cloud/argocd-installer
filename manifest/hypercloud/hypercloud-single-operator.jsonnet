@@ -44,7 +44,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "command": [
                             "/manager"
                         ],
-                        "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-single-operator:b5.0.25.16"]),
+                        "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-single-operator:b5.0.29.0"]),
                         "name": "manager",
                         "ports": [
                             {
