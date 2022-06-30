@@ -1,23 +1,18 @@
-{{- if .Values.modules.efk.enabled }}
+{{ if .Values.modules.efk.enabled }}
+{{ $isMaster := eq .Values.global.cluster "master" }}
+{{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
+{{ $module := "efk" }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   labels:
-    cluster: {{ .Values.spec.destination.label }}
-  {{- if eq .Values.spec.destination.label "master" }}
-  name: efk
-  {{- else }}
-  name: {{ .Values.spec.destination.clusterInfo }}-efk
-  {{- end }}
+    cluster: {{ ternary "master" $prefix $isMaster }}
+  name: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
   namespace: argocd
 spec:
   destination:
+    name: {{ .Values.global.clusterName }}
     namespace: kube-logging
-    {{- if eq .Values.spec.destination.type "name" }}
-    name: {{ .Values.spec.destination.clusterInfo }}
-    {{- else if eq .Values.spec.destination.type "server" }}
-    server: {{ .Values.spec.destination.clusterInfo }}
-    {{- end }}
   project: {{ .Values.spec.project }}
   source:
     directory:
@@ -53,13 +48,13 @@ spec:
             value: {{ .Values.global.domain }}
           - name: fluentd_image_tag
             value: {{ .Values.modules.efk.fluentd.version }}
-          - name: cluster_name
-            value: {{ .Values.spec.destination.label }}
-          {{- if ne .Values.spec.destination.label "master" }}
+          - name: is_master_cluster
+            value: "{{ $isMaster }}"
           - name: kibana_client_id
-            value: {{ .Values.spec.destination.label }}-kibana
-          {{- end }}
+            value: {{ ternary "kibana" (printf "%s-kibana" $prefix) $isMaster }}
+          - name: kibana_subdomain
+            value: {{ .Values.modules.efk.kibana.subdomain }}
     path: manifest/efk
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
-{{- end }}
+{{ end }}

@@ -10,7 +10,6 @@ function (
     kibana_image_tag="7.2.0",
     kibana_svc_type="ClusterIP",
     gatekeeper_image_tag="10.0.0",
-    cluster_name="master",
     kibana_client_id="kibana",
     tmax_client_secret="tmax_client_secret",
     hyperauth_url="172.23.4.105",
@@ -18,7 +17,9 @@ function (
     custom_domain_name="domain_name",
     encryption_key="AgXa7xRcoClDEU0ZDSH4X0XhL5Qy2Z2j",
     fluentd_image_tag="v1.4.2-debian-elasticsearch-1.1",
-    custom_clusterissuer="tmaxcloud-issuer"
+    custom_clusterissuer="tmaxcloud-issuer",
+    is_master_cluster="true",
+    kibana_subdomain="kibana"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -27,13 +28,6 @@ local kibana_image_path = "docker.elastic.co/kibana/kibana:" + kibana_image_tag;
 local gatekeeper_image_path = "quay.io/keycloak/keycloak-gatekeeper:" + gatekeeper_image_tag;
 local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fluentd_image_tag;
 local gatekeeper_enabled = if hyperauth_url != "" then true else false;
-local resource_uri = if cluster_name == "master" then "" else "/console/kibana";
-local single_kibana_cmdata = if cluster_name == "master" then "" else std.join("", 
-  [
-    "\nserver.basePath: '/console/kibana'",
-    "\nserver.rewriteBasePath: true"
-  ]
-);
 
 [
   {
@@ -284,11 +278,9 @@ local single_kibana_cmdata = if cluster_name == "master" then "" else std.join("
                 "--enable-refresh-tokens=true",
                 "--enable-metrics=true",
                 std.join("", ["--encryption-key=", encryption_key]),
-                std.join("", ["--resources=uri=", resource_uri, "/*|roles=", kibana_client_id, ":kibana-manager"]),
+                std.join("", ["--resources=uri=/*|roles=", kibana_client_id, ":kibana-manager"]),
                 "--verbose"
-              ] + if cluster_name != "master" then [
-                "--base-uri=/console/kibana"
-              ] else [],
+              ],
               "ports": [
                 {
                   "name": "service",
@@ -320,7 +312,6 @@ local single_kibana_cmdata = if cluster_name == "master" then "" else std.join("
         [
           "server.name: kibana",
           "\nserver.host: '0'",
-          single_kibana_cmdata,
           "\nelasticsearch.hosts: [ 'http://elasticsearch:9200' ]",
           "\nelasticsearch.requestTimeout: '100000ms'"
         ]
@@ -346,7 +337,7 @@ local single_kibana_cmdata = if cluster_name == "master" then "" else std.join("
         if hyperauth_url == "" then {
           "port": 5601,
           "name": "kibana"
-        } else if cluster_name != "master" || custom_domain_name == "" then {
+        } else if is_master_cluster == "false" || custom_domain_name == "" then {
           "port": 3000,
           "name": "gatekeeper"
         } else {
@@ -515,6 +506,54 @@ local single_kibana_cmdata = if cluster_name == "master" then "" else std.join("
           ]
         }
       }
+    }
+  },
+  {
+    "apiVersion": "networking.k8s.io/v1",
+    "kind": "Ingress",
+    "metadata": {
+      "name": "kibana",
+      "namespace": "kube-logging",
+      "labels": {
+        "ingress.tmaxcloud.org/name": "kibana"
+      },
+      "annotations": {
+        "traefik.ingress.kubernetes.io/router.entrypoints": "websecure",
+        "cert-manager.io/cluster-issuer": custom_clusterissuer
+      }
+    },
+    "spec": {
+      "ingressClassName": "tmax-cloud",
+      "rules": [
+        {
+          "host": std.join("", [kibana_subdomain, ".", custom_domain_name]),
+          "http": {
+            "paths": [
+              {
+                "backend": {
+                  "service": {
+                    "name": "kibana",
+                    "port": if hyperauth_url == "" then {
+                      "number": 5601
+                    } else {
+                      "number": 443
+                    }
+                  }
+                },
+                "path": "/",
+                "pathType": "Prefix"
+              }
+            ]
+          }
+        }
+      ],
+      "tls": [
+        {
+          "hosts": [
+            std.join("", [kibana_subdomain, ".", custom_domain_name])
+          ]
+        }
+      ]
     }
   }
 ]

@@ -5,7 +5,11 @@ function (
     istio_namespace="istio-system",
     knative_namespace="knative-serving",
     custom_domain_name="tmaxcloud.org",
-    notebook_svc_type="Ingress"
+    notebook_svc_type="Ingress",
+    tmax_client_secret="tmax_client_secret",
+    hyperauth_url="172.23.4.105",
+    hyperauth_realm="tmax",
+    console_subdomain="console"
 )
 
 local gatewaySelector = "ingressgateway";
@@ -28,8 +32,7 @@ local gatewaySelector = "ingressgateway";
         "rbac.authorization.kubeflow.org/aggregate-to-kubeflow-admin": "true"
         },
         "name": "kubeflow-istio-admin"
-    },
-    "rules": []
+    }
     },
     {
     "apiVersion": "rbac.authorization.k8s.io/v1",
@@ -257,4 +260,4 @@ local gatewaySelector = "ingressgateway";
         "mode": "OFF"
     }
     }
-]    
+]

@@ -5,7 +5,11 @@ function (
     istio_namespace="istio-system",
     knative_namespace="knative-serving",
     custom_domain_name="tmaxcloud.org",
-    notebook_svc_type="Ingress"
+    notebook_svc_type="Ingress",
+    tmax_client_secret="tmax_client_secret",
+    hyperauth_url="172.23.4.105",
+    hyperauth_realm="tmax",
+    console_subdomain="console"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -590,14 +594,6 @@ local katib_object_image_tag = "v0.11.0";
     "apiVersion": "v1",
     "kind": "ServiceAccount",
     "metadata": {
-      "name": "kubeflow-service-account",
-      "namespace": ai_devops_namespace
-    }
-  },
-  {
-    "apiVersion": "v1",
-    "kind": "ServiceAccount",
-    "metadata": {
       "name": "katib-cert-generator",
       "namespace": ai_devops_namespace
     }
@@ -617,6 +613,30 @@ local katib_object_image_tag = "v0.11.0";
       "name": "katib-ui",
       "namespace": ai_devops_namespace
     }
+  },
+  {
+    "apiVersion": "v1",
+    "kind": "Secret",
+    "metadata": {
+        "name": "katib-controller-token",
+        "namespace": ai_devops_namespace,
+        "annotations": {
+        "kubernetes.io/service-account.name": "katib-controller"
+        }
+    },
+    "type": "kubernetes.io/service-account-token"
+  },
+  {
+    "apiVersion": "v1",
+    "kind": "Secret",
+    "metadata": {
+        "name": "katib-ui-token",
+        "namespace": ai_devops_namespace,
+        "annotations": {
+        "kubernetes.io/service-account.name": "katib-ui"
+        }
+    },
+    "type": "kubernetes.io/service-account-token"
   },
   {
     "apiVersion": "rbac.authorization.k8s.io/v1",
@@ -893,32 +913,17 @@ local katib_object_image_tag = "v0.11.0";
   },
   {
     "apiVersion": "v1",
+    "data": {
+      "early-stopping": std.join("", ["{\n  \"medianstop\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/earlystopping-medianstop:v0.12.0", "\"\n  }\n}"]),
+      "metrics-collector-sidecar": std.join("", ["{\n  \"StdOut\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/file-metrics-collector:v0.12.0\"", "\n  },\n  \"File\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/file-metrics-collector:v0.12.0\"\n  },\n  \"TensorFlowEvent\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/tfevent-metrics-collector:v0.12.0\",\n    \"resources\": {\n      \"limits\": {\n        \"memory\": \"1Gi\"\n      }\n    }\n  }\n}"]),
+      "suggestion": std.join("", ["{\n  \"random\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/suggestion-hyperopt:v0.12.0\"\n  },\n  \"tpe\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/suggestion-hyperopt:v0.12.0\"\n  },\n  \"grid\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/suggestion-chocolate:v0.12.0\"\n  },\n  \"hyperband\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/suggestion-hyperband:v0.12.0\"\n  },\n  \"bayesianoptimization\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/suggestion-skopt:v0.12.0\"\n  },\n  \"cmaes\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/suggestion-goptuna:v0.12.0\"\n  },\n  \"sobol\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/suggestion-goptuna:v0.12.0\"\n  },\n  \"multivariate-tpe\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/suggestion-optuna:v0.12.0\"\n  },\n  \"enas\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/suggestion-enas:v0.12.0\",\n    \"resources\": {\n      \"limits\": {\n        \"memory\": \"200Mi\"\n      }\n    }\n  },\n  \"darts\": {\n    \"image\": \"", target_registry, "docker.io/kubeflowkatib/suggestion-darts:v0.12.0\"\n  }\n}"])
+    },
     "kind": "ConfigMap",
     "metadata": {
       "name": "katib-config",
       "namespace": ai_devops_namespace
-    },
-    "data": {
-      "metrics-collector-sidecar": "{\n  \"StdOut\": {\n    \"image\": \"docker.io/kubeflowkatib/file-metrics-collector:v0.12.0\"\n  },\n  \"File\": {\n    \"image\": \"docker.io/kubeflowkatib/file-metrics-collector:v0.12.0\"\n  },\n  \"TensorFlowEvent\": {\n    \"image\": \"docker.io/kubeflowkatib/tfevent-metrics-collector:v0.12.0\",\n    \"resources\": {\n      \"limits\": {\n        \"memory\": \"1Gi\"\n      }\n    }\n  }\n}",
-      "suggestion": "{\n  \"random\": {\n    \"image\": \"docker.io/kubeflowkatib/suggestion-hyperopt:v0.12.0\"\n  },\n  \"tpe\": {\n    \"image\": \"docker.io/kubeflowkatib/suggestion-hyperopt:v0.12.0\"\n  },\n  \"grid\": {\n    \"image\": \"docker.io/kubeflowkatib/suggestion-chocolate:v0.12.0\"\n  },\n  \"hyperband\": {\n    \"image\": \"docker.io/kubeflowkatib/suggestion-hyperband:v0.12.0\"\n  },\n  \"bayesianoptimization\": {\n    \"image\": \"docker.io/kubeflowkatib/suggestion-skopt:v0.12.0\"\n  },\n  \"cmaes\": {\n    \"image\": \"docker.io/kubeflowkatib/suggestion-goptuna:v0.12.0\"\n  },\n  \"sobol\": {\n    \"image\": \"docker.io/kubeflowkatib/suggestion-goptuna:v0.12.0\"\n  },\n  \"multivariate-tpe\": {\n    \"image\": \"docker.io/kubeflowkatib/suggestion-optuna:v0.12.0\"\n  },\n  \"enas\": {\n    \"image\": \"docker.io/kubeflowkatib/suggestion-enas:v0.12.0\",\n    \"resources\": {\n      \"limits\": {\n        \"memory\": \"200Mi\"\n      }\n    }\n  },\n  \"darts\": {\n    \"image\": \"docker.io/kubeflowkatib/suggestion-darts:v0.12.0\"\n  }\n}",
-      "early-stopping": "{\n  \"medianstop\": {\n    \"image\": \"docker.io/kubeflowkatib/earlystopping-medianstop:v0.12.0\"\n  }\n}"
     }
-  },
-  {
-    "apiVersion": "v1",
-    "data": {
-      "cluster-name": "",
-      "clusterDomain": "cluster.local",
-      "istio-namespace": istio_namespace,
-      "userid-header": "kubeflow-userid",
-      "userid-prefix": ""
-    },
-    "kind": "ConfigMap",
-    "metadata": {
-      "name": "kubeflow-config-mb6ktt4hf9",
-      "namespace": ai_devops_namespace
-    }
-  },
+  },  
   {
     "apiVersion": "v1",
     "kind": "ConfigMap",
@@ -1139,17 +1144,28 @@ local katib_object_image_tag = "v0.11.0";
                   "mountPath": "/tmp/cert",
                   "name": "cert",
                   "readOnly": true
+                },
+                {
+                  "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                  "name": "katib-controller-token",
+                  "readOnly": true
                 }
               ]
             }
           ],
-          "serviceAccountName": "katib-controller",
           "volumes": [
             {
               "name": "cert",
               "secret": {
                 "defaultMode": 420,
                 "secretName": "katib-webhook-cert"
+              }
+            },
+            {
+              "name": "katib-controller-token",
+              "secret": {
+                "defaultMode": 420,
+                "secretName": "katib-controller-token"
               }
             }
           ]
@@ -1225,7 +1241,6 @@ local katib_object_image_tag = "v0.11.0";
               ]
             }
           ],
-          "serviceAccountName": "kubeflow-service-account"
         }
       }
     }
@@ -1285,7 +1300,7 @@ local katib_object_image_tag = "v0.11.0";
                   "value": "katib"
                 }
               ],
-              "image": std.join("", [target_registry, "mysql:8.0.27"]),
+              "image": std.join("", [target_registry, "docker.io/library/mysql:8.0.27"]),
               "livenessProbe": {
                 "exec": {
                   "command": [
@@ -1335,7 +1350,6 @@ local katib_object_image_tag = "v0.11.0";
               ]
             }
           ],
-          "serviceAccountName": "kubeflow-service-account",
           "volumes": [
             {
               "name": "katib-mysql",
@@ -1400,13 +1414,40 @@ local katib_object_image_tag = "v0.11.0";
                   "containerPort": 8080,
                   "name": "ui"
                 }
+              ],
+              "volumeMounts": [
+                {
+                    "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                    "name": "katib-ui-token",
+                    "readOnly": true
+                }
               ]
             }
           ],
-          "serviceAccountName": "katib-ui"
+          "volumes": [            
+            {
+              "name": "katib-ui-token",
+              "secret": {
+                "defaultMode": 420,
+                "secretName": "katib-ui-token"
+              }
+            }
+          ]
         }
       }
     }
+  },
+  {
+    "apiVersion": "v1",
+    "kind": "Secret",
+    "metadata": {
+        "name": "katib-cert-generator-token",
+        "namespace": ai_devops_namespace,
+        "annotations": {
+        "kubernetes.io/service-account.name": "katib-cert-generator"
+        }
+    },
+    "type": "kubernetes.io/service-account-token"
   },
   {
     "apiVersion": "batch/v1",
@@ -1438,15 +1479,30 @@ local katib_object_image_tag = "v0.11.0";
               ],
               "image": std.join("", [target_registry, "docker.io/kubeflowkatib/cert-generator:", katib_object_image_tag]),
               "imagePullPolicy": "Always",
-              "name": "cert-generator"
+              "name": "cert-generator",
+              "volumeMounts": [
+                {
+                  "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                  "name": "katib-cert-generator-token",
+                  "readOnly": true
+                }
+              ]
             }
           ],
           "restartPolicy": "Never",
-          "serviceAccountName": "katib-cert-generator"
+          "volumes": [
+            {
+              "name": "katib-cert-generator-token",
+              "secret": {
+                "defaultMode": 420,
+                "secretName": "katib-cert-generator-token"
+              }
+            }
+          ]
         }
       }
     }
-  },
+  }, 
   {
     "apiVersion": "admissionregistration.k8s.io/v1",
     "kind": "MutatingWebhookConfiguration",
@@ -1565,4 +1621,4 @@ local katib_object_image_tag = "v0.11.0";
       }
     ]
   }
-]  
+]

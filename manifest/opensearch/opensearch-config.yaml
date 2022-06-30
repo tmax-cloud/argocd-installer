@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: opensearch-config
+  namespace: kube-logging
+  labels:
+    app: opensearch
+data:
+  opensearch.yml: |
+    cluster.name: "os-cluster"
+    network.host: "0.0.0.0"
+    discovery.seed_hosts: os-cluster-0.opensearch
+    cluster.initial_master_nodes: os-cluster-0
+    plugins.security.ssl.transport.pemkey_filepath: /usr/share/opensearch/config/certificates/tls.key
+    plugins.security.ssl.transport.pemcert_filepath: /usr/share/opensearch/config/certificates/tls.crt
+    plugins.security.ssl.transport.pemtrustedcas_filepath: /usr/share/opensearch/config/certificates/ca.crt
+    plugins.security.ssl.transport.enabled: true
+    plugins.security.ssl.transport.enforce_hostname_verification: false
+    plugins.security.ssl.http.enabled: true
+    plugins.security.ssl.http.pemkey_filepath: /usr/share/opensearch/config/certificates/tls.key
+    plugins.security.ssl.http.pemcert_filepath: /usr/share/opensearch/config/certificates/tls.crt
+    plugins.security.ssl.http.pemtrustedcas_filepath: /usr/share/opensearch/config/certificates/ca.crt
+    plugins.security.allow_unsafe_democertificates: true
+    plugins.security.allow_default_init_securityindex: true
+    plugins.security.restapi.roles_enabled: ["all_access", "security_rest_api_access"]
+    plugins.security.authcz.admin_dn:
+      - "CN=admin"
+    plugins.security.nodes_dn:
+      - "CN=opensearch"
+    compatibility.override_main_response_version: true
+    plugins.security.system_indices.indices:
+            [
+              ".opendistro-alerting-config",
+              ".opendistro-alerting-alert*",
+              ".opendistro-anomaly-results*",
+              ".opendistro-anomaly-detector*",
+              ".opendistro-anomaly-checkpoints",
+              ".opendistro-anomaly-detection-state",
+              ".opendistro-reports-*",
+              ".opendistro-notifications-*",
+              ".opendistro-notebooks",
+              ".opendistro-asynchronous-search-response*",
+            ]

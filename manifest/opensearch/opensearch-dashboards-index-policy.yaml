@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: os-policy
+  namespace: kube-logging
+  labels:
+    app: opensearch-dashboards
+data:
+  settings.sh: |
+    for ((i=0; i<11; i++))
+    do
+      is_success=`curl -XGET -k -u admin:admin "https://opensearch.kube-logging.svc:9200/" -I`
+
+      if [[ "$is_success" == *"200 OK"* ]]; then
+        curl -XPUT -u admin:admin -k -H 'Content-Type: application/json' 'https://opensearch.kube-logging.svc:9200/_plugins/_ism/policies/watch-history-ilm-policy' -d@/usr/share/opensearch-dashboards/index-policy.json
+        break
+      elif [ $i == 10 ]; then
+        echo "Timeout. Dashboard status is not ready"
+        exit 1
+      else
+        echo "waiting for Opensearch starts up..."
+        sleep 30s
+      fi
+    done
+  index-policy.json: |
+    {
+      "policy": {
+        "description": "Delete after 7 days from creation",
+        "default_state": "hot",
+        "states": [
+          {
+            "name": "hot",
+            "actions": [],
+            "transitions": [
+              {
+                "state_name": "delete",
+                "conditions": {
+                  "min_index_age": "7d"
+                }
+              }
+            ]
+          },
+          {
+            "name": "delete",
+            "actions": [
+              {
+                "delete": {}
+              }
+            ],
+            "transitions": []
+          }
+        ],
+        "ism_template": {
+           "index_patterns": ["logstash-*"],
+           "priority": 100
+        }
+      }
+    }

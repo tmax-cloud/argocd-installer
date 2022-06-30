@@ -1,24 +1,18 @@
-{{- if .Values.modules.cicd.enabled }}
+{{ if .Values.modules.cicd.enabled }}
+{{ $isMaster := eq .Values.global.cluster "master" }}
+{{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
+{{ $module := "cicd-operator" }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   labels:
-    cluster: {{ .Values.spec.destination.label }}
-    tekton: cicd-operator
-  {{- if eq .Values.spec.destination.label "master" }}
-  name: cicd-operator
-  {{- else }}
-  name: {{ .Values.spec.destination.clusterInfo }}-cicd-operator
-  {{- end }}
+    cluster: {{ ternary "master" $prefix $isMaster }}
+  name: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
   namespace: argocd
 spec:
   destination:
+    name: {{ .Values.global.clusterName }}
     namespace: cicd-system
-    {{- if eq .Values.spec.destination.type "name" }}
-    name: {{ .Values.spec.destination.clusterInfo }}
-    {{- else if eq .Values.spec.destination.type "server" }}
-    server: {{ .Values.spec.destination.clusterInfo }}
-    {{- end }}
   project: {{ .Values.spec.project }}
   source:
     directory:
@@ -30,7 +24,9 @@ spec:
             value: {{ .Values.global.privateRegistry }}
           - name: custom_domain
             value: {{ .Values.global.domain }}
+          - name: cicd_subdomain
+            value: {{ .Values.modules.cicd.subdomain }}
     path: manifest/cicd-operator
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
-{{- end }}
+{{ end }}

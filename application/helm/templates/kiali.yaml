@@ -1,24 +1,18 @@
-{{- if .Values.modules.serviceMesh.kiali.enabled }}
+{{ if .Values.modules.serviceMesh.kiali.enabled }}
+{{ $isMaster := eq .Values.global.cluster "master" }}
+{{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
+{{ $module := "kiali" }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   labels:
-    cluster: {{ .Values.spec.destination.label }}
-    serviceMesh: kiali
-  {{- if eq .Values.spec.destination.label "master" }}
-  name: kiali
-  {{- else }}
-  name: {{ .Values.spec.destination.clusterInfo }}-kiali
-  {{- end }}
+    cluster: {{ ternary "master" $prefix $isMaster }}
+  name: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
   namespace: argocd
 spec:
   destination:
+    name: {{ .Values.global.clusterName }}
     namespace: istio-system
-    {{- if eq .Values.spec.destination.type "name" }}
-    name: {{ .Values.spec.destination.clusterInfo }}
-    {{- else if eq .Values.spec.destination.type "server" }}
-    server: {{ .Values.spec.destination.clusterInfo }}
-    {{- end }}
   project: {{ .Values.spec.project }}
   source:
     directory:
@@ -32,7 +26,9 @@ spec:
             value: {{ .Values.global.keycloak.domain }}
           - name: CUSTOM_DOMAIN_NAME
             value: {{ .Values.global.domain }}
+          - name: kiali_subdomain
+            value: {{ .Values.modules.serviceMesh.kiali.subdomain }}
     path: manifest/service-mesh/kiali
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
-{{- end }}
+{{ end }}

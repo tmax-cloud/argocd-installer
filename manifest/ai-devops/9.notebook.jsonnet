@@ -5,7 +5,11 @@ function (
     istio_namespace="istio-system",
     knative_namespace="knative-serving",
     custom_domain_name="tmaxcloud.org",
-    notebook_svc_type="Ingress"
+    notebook_svc_type="Ingress",
+    tmax_client_secret="tmax_client_secret",
+    hyperauth_url="172.23.4.105",
+    hyperauth_realm="tmax",
+    console_subdomain="console"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -5365,8 +5369,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "rbac.authorization.kubeflow.org/aggregate-to-kubeflow-admin": "true"
         },
         "name": "notebook-controller-kubeflow-notebooks-admin"
-    },
-    "rules": []
+    }
     },
     {
     "apiVersion": "rbac.authorization.k8s.io/v1",
@@ -5547,27 +5550,13 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "namespace": ai_devops_namespace
         }
     ]
-    },
+    },    
     {
     "apiVersion": "v1",
     "data": {
-        "cluster-name": "",
-        "clusterDomain": "cluster.local",
-        "istio-namespace": istio_namespace,
-        "userid-header": "kubeflow-userid",
-        "userid-prefix": ""
-    },
-    "kind": "ConfigMap",
-    "metadata": {
-        "name": "kubeflow-config-mb6ktt4hf9",
-        "namespace": ai_devops_namespace
-    }
-    },
-    {
-    "apiVersion": "v1",
-    "data": {
-        "ISTIO_GATEWAY": "kubeflow/kubeflow-gateway",
-        "USE_ISTIO": "true"
+        "CLIENT_SECRET": tmax_client_secret,
+        "DISCOVERY_URL": std.join("", ["https://", hyperauth_url, "/auth/realms/", hyperauth_realm]),
+        "CUSTOM_DOMAIN": custom_domain_name
     },
     "kind": "ConfigMap",
     "metadata": {
@@ -5653,30 +5642,54 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             {
                 "env": [
                 {
-                    "name": "USE_ISTIO",
+                    "name": "CLIENT_SECRET",
                     "valueFrom": {
                     "configMapKeyRef": {
-                        "key": "USE_ISTIO",
+                        "key": "CLIENT_SECRET",
                         "name": "notebook-controller-config"
                     }
                     }
                 },
                 {
-                    "name": "ISTIO_GATEWAY",
+                    "name": "DISCOVERY_URL",
                     "valueFrom": {
                     "configMapKeyRef": {
-                        "key": "ISTIO_GATEWAY",
+                        "key": "DISCOVERY_URL",
+                        "name": "notebook-controller-config"
+                    }
+                    }
+                },
+                {
+                    "name": "CUSTOM_DOMAIN",
+                    "valueFrom": {
+                    "configMapKeyRef": {
+                        "key": "CUSTOM_DOMAIN",
                         "name": "notebook-controller-config"
                     }
                     }
                 }
                 ],
-                "image": std.join("", [target_registry, "docker.io/tmaxcloudck/notebook-controller-go:b0.1.0"]),
+                "image": std.join("", [target_registry, "docker.io/tmaxcloudck/notebook-controller-go:b0.2.1"]),
                 "imagePullPolicy": "Always",
-                "name": "notebook-controller"
+                "name": "notebook-controller",
+                "volumeMounts": [
+                    {
+                        "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                        "name": "notebook-controller-service-account-token",
+                        "readOnly": true
+                    }
+                ]
             }
             ],
-            "serviceAccountName": "notebook-controller-service-account"
+            "volumes": [
+                {
+                    "name": "notebook-controller-service-account-token",
+                    "secret": {
+                        "defaultMode": 420,
+                        "secretName": "notebook-controller-service-account-token"
+                    }
+                }
+            ]
         }
         }
     }
@@ -5740,11 +5753,11 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "selector": {
         "matchLabels": {
             "app.kubernetes.io/component": "notebook-controller-go",
-            "app.kubernetes.io/instance": "notebook-controller-go-b0.0.2",
+            "app.kubernetes.io/instance": "notebook-controller-go-b0.2.1",
             "app.kubernetes.io/managed-by": "kfctl",
             "app.kubernetes.io/name": "notebook-controller",
             "app.kubernetes.io/part-of": "hyperflow",
-            "app.kubernetes.io/version": "b0.0.2"
+            "app.kubernetes.io/version": "b0.2.1"
         }
         }
     }
@@ -5762,9 +5775,22 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "kind": "Notebook"
         },
         "title": "Tmax-KALE Notebook",
-        "yaml": "apiVersion: kubeflow.tmax.io/v1\nkind: Notebook\nmetadata:\n  labels:\n    app: kale-notebook\n  name: kale-notebook\nspec:\n  template:\n    spec:\n      containers:\n      - env: []\n        image: tmaxcloudck/kale-tekton-standalone:211231\n        name: demo\n        resources:\n          requests:\n            cpu: \"0.5\"\n            memory: 1.0Gi\n        volumeMounts:\n        - mountPath: /home/jovyan\n          name: demo-pvc\n        - mountPath: /dev/shm\n          name: dshm\n      serviceAccountName: default-editor\n      volumes:\n      - name: demo-pvc\n        persistentVolumeClaim:\n          claimName: demo-pvc\n      - emptyDir:\n          medium: Memory\n        name: dshm\n  volumeClaim:\n  - name: demo-pvc\n    size: 10Gi\n"
+        "yaml": "apiVersion: kubeflow.tmax.io/v1\nkind: Notebook\nmetadata:\n  labels:\n    app: demo-notebook\n  name: demo-notebook\nspec:\n  template:\n    spec:\n      containers:\n      - env: []\n        image: brightfly/kubeflow-jupyter-lab:tf2.0-cpu\n        name: demo\n        resources:\n          requests:\n            cpu: \"0.5\"\n            memory: 1.0Gi\n        volumeMounts:\n        - mountPath: /home/jovyan\n          name: demo-pvc\n        - mountPath: /dev/shm\n          name: dshm\n      volumes:\n      - name: demo-pvc\n        persistentVolumeClaim:\n          claimName: demo-pvc\n      - emptyDir:\n          medium: Memory\n        name: dshm\n  volumeClaim:\n  - name: demo-pvc\n    size: 10Gi\n"
     }
     },
+    {
+    "apiVersion": "v1",
+    "kind": "Secret",
+    "metadata": {
+        "name": "notebook-controller-service-account-token",
+        "namespace": ai_devops_namespace,
+        "annotations": {
+        "kubernetes.io/service-account.name": "notebook-controller-service-account"
+        }
+    },
+    "type": "kubernetes.io/service-account-token"
+    },
+
     if notebook_svc_type == "Ingress" then {        
         "apiVersion": "extensions/v1beta1",
         "kind": "Ingress",
@@ -5776,7 +5802,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "ingressClassName": "tmax-cloud",
             "rules": [
             {
-                "host": std.join("", ["console.", custom_domain_name]),
+                "host": std.join("", [console_subdomain, ".", custom_domain_name]),
                 "http": {
                 "paths": [
                     {
@@ -5794,7 +5820,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "tls": [
             {
                 "hosts": [
-                std.join("", ["console.", custom_domain_name])
+                std.join("", [console_subdomain, ".", custom_domain_name])
                 ]
             }
             ]

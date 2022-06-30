@@ -22,6 +22,7 @@ ingressroute:
     enabled: true
     ## need domain name
     name: tmaxcloud.org
+    subdomain: console
   ip:
     enabled: false
 

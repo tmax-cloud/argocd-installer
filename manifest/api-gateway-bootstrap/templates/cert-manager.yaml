@@ -1,15 +1,14 @@
 {{- if .Values.modules.certManager.enabled }}
+{{ $isMaster := eq .Values.global.cluster "master" }}
+{{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
+{{ $module := "cert-manager" }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   labels:
-    cluster: {{ .Values.spec.destination.label }}
+    cluster: {{ ternary "master" $prefix $isMaster }}
     gatewayBootstrap: cert-manager
-  {{- if eq .Values.spec.destination.label "master" }}
-  name: cert-manager
-  {{- else }}
-  name: {{ .Values.spec.destination.label }}-cert-manager
-  {{- end }}
+  name: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -17,11 +16,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "-1"
 spec:
   destination:
-    {{- if eq .Values.spec.destination.type "name" }}
-    name: {{ .Values.spec.destination.clusterInfo }}
-    {{- else if eq .Values.spec.destination.type "server" }}
-    server: {{ .Values.spec.destination.clusterInfo }}
-    {{- end }}
+    name: {{ .Values.global.clusterName }}
     namespace: cert-manager
   source:
     path: {{ .Values.modules.certManager.source.path }}
@@ -54,14 +49,11 @@ spec:
       limit: 3
 
 ---
+{{ $syncWave := "cert-manager-sync-wave" }}
 apiVersion: batch/v1
 kind: Job
 metadata:
-  {{- if eq .Values.spec.destination.label "master" }}
-  name: cert-manager-sync-wave
-  {{- else }}
-  name: {{ .Values.spec.destination.label }}-cert-manager-sync-wave
-  {{- end }}
+  name: {{ ternary $syncWave (printf "%s-%s" $prefix $syncWave) $isMaster }}
   namespace: argocd
   labels:
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}

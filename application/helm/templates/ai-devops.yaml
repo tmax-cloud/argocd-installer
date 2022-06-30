@@ -1,23 +1,18 @@
-{{- if .Values.modules.aiDevops.enabled }}
+{{ if .Values.modules.aiDevops.enabled }}
+{{ $isMaster := eq .Values.global.cluster "master" }}
+{{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
+{{ $module := "ai-devops" }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   labels:
-    cluster: {{ .Values.spec.destination.label }}
-  {{- if eq .Values.spec.destination.label "master" }}
-  name: ai-devops
-  {{- else }}
-  name: {{ .Values.spec.destination.label }}-ai-devops
-  {{- end }}
+    cluster: {{ ternary "master" $prefix $isMaster }}
+  name: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
   namespace: argocd
 spec:
   destination:
+    name: {{ .Values.global.clusterName }}
     namespace: {{ .Values.modules.aiDevops.namespace }}
-    {{- if eq .Values.spec.destination.type "name" }}
-    name: {{ .Values.spec.destination.clusterInfo }}
-    {{- else if eq .Values.spec.destination.type "server" }}
-    server: {{ .Values.spec.destination.clusterInfo }}
-    {{- end }}
   project: {{ .Values.spec.project }}
   source:
     directory:
@@ -35,7 +30,13 @@ spec:
             value: {{ .Values.global.domain }}
           - name: notebook_svc_type
             value: {{ .Values.modules.aiDevops.notebookSvcType }}
+          - name: tmax_client_secret
+            value: {{ .Values.global.keycloak.tmaxClientSecret }}
+          - name: hyperauth_url
+            value: {{ .Values.global.keycloak.domain }}
+          - name: console_subdomain
+            value: "{{ .Values.modules.gatewayBootstrap.console.subdomain }}"
     path: manifest/ai-devops
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
-{{- end }}
+{{ end }}

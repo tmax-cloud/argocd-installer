@@ -1,0 +1,14 @@
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: "{{ template "harbor.rbac.roleBinding" . }}"
+  namespace: {{ .Values.namespace }}
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+subjects:
+- kind: ServiceAccount
+  name: "{{ template "harbor.rbac.serviceAccount" . }}"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: "{{ template "harbor.rbac.role" . }}"

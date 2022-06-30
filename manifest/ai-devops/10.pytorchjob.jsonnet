@@ -5,7 +5,11 @@ function (
     istio_namespace="istio-system",
     knative_namespace="knative-serving",
     custom_domain_name="tmaxcloud.org",
-    notebook_svc_type="Ingress"
+    notebook_svc_type="Ingress",
+    tmax_client_secret="tmax_client_secret",
+    hyperauth_url="172.23.4.105",
+    hyperauth_realm="tmax",
+    console_subdomain="console"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -14,6 +18,9 @@ local target_registry = if is_offline == "false" then "" else private_registry +
     "apiVersion": "apiextensions.k8s.io/v1beta1",
     "kind": "CustomResourceDefinition",
     "metadata": {
+        "annotations": {
+            "argocd.argoproj.io/sync-options": "Replace=true"
+        }, 
         "name": "pytorchjobs.kubeflow.org"
     },
     "spec": {
@@ -6979,8 +6986,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "rbac.authorization.kubeflow.org/aggregate-to-kubeflow-admin": "true"
         },
         "name": "kubeflow-pytorchjobs-admin"
-    },
-    "rules": []
+    }
     },
     {
     "apiVersion": "rbac.authorization.k8s.io/v1",
@@ -7125,22 +7131,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "namespace": ai_devops_namespace
         }
     ]
-    },
-    {
-    "apiVersion": "v1",
-    "data": {
-        "cluster-name": "",
-        "clusterDomain": "cluster.local",
-        "istio-namespace": istio_namespace,
-        "userid-header": "kubeflow-userid",
-        "userid-prefix": ""
-    },
-    "kind": "ConfigMap",
-    "metadata": {
-        "name": "kubeflow-config-mb6ktt4hf9",
-        "namespace": ai_devops_namespace
-    }
-    },
+    },    
     {
     "apiVersion": "v1",
     "kind": "Service",
@@ -7238,10 +7229,25 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 }
                 ],
                 "image": std.join("", [target_registry, "gcr.io/kubeflow-images-public/pytorch-operator:vmaster-g518f9c76"]),
-                "name": "pytorch-operator"
+                "name": "pytorch-operator",
+                "volumeMounts": [
+                    {
+                        "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                        "name": "pytorch-operator-token",
+                        "readOnly": true
+                    }
+                ]
             }
             ],
-            "serviceAccountName": "pytorch-operator"
+            "volumes": [
+                {
+                    "name": "pytorch-operator-token",
+                    "secret": {
+                        "defaultMode": 420,
+                        "secretName": "pytorch-operator-token"
+                    }
+                }
+            ]
         }
         }
     }
@@ -7399,5 +7405,17 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         }
         }
     }
+    },
+    {
+    "apiVersion": "v1",
+    "kind": "Secret",
+    "metadata": {
+        "name": "pytorch-operator-token",
+        "namespace": ai_devops_namespace,
+        "annotations": {
+        "kubernetes.io/service-account.name": "pytorch-operator"
+        }
+    },
+    "type": "kubernetes.io/service-account-token"
     }
-]    
+]

@@ -3,13 +3,15 @@ spec:
     # description: select between 'name' or 'server'
     type: server
     clusterInfo: https://kubernetes.default.svc
-    label: master
   source:
     repoURL: https://github.com/tmax-cloud/argocd-installer
     targetRevision: main
   project: default
 
 global:
+  cluster: master
+  clusterName: in-cluster
+  clusterNamespace: default
   registry:
     is_offline: false
     private_registry: 172.22.6.2:5000
@@ -32,7 +34,7 @@ global:
         type: route53
         accessKeyID: accesskey
         accessKeySecret: secretkey
-        hostedZoneID: Z07854445SLZAKEQ0V9P
+        hostedZoneID: hostedzoneid
       environment: production
 
 modules:

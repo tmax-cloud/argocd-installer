@@ -1,17 +1,19 @@
 function(
     is_offline="false",
     private_registry="registry.tmaxcloud.org",
-    JAEGER_VERSION="1.9",
+    JAEGER_VERSION="1.27",
     cluster_name="master",
     tmax_client_secret="tmax_client_secret",
     HYPERAUTH_DOMAIN="hyperauth.domain",
     GATEKEER_VERSION="10.0.0",
     CUSTOM_DOMAIN_NAME="custom-domain",
     CUSTOM_CLUSTER_ISSUER="tmaxcloud-issuer",
+    jaeger_subdomain="jaeger",
+    storage_type="opensearch"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
-local REDIRECT_URL = "jaeger." + CUSTOM_DOMAIN_NAME;
+local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
 
 [
   {
@@ -133,10 +135,43 @@ local REDIRECT_URL = "jaeger." + CUSTOM_DOMAIN_NAME;
       }
     },
     "data": {
-      "span-storage-type": "elasticsearch",
-      "collector": "es:\n  server-urls: http://elasticsearch.kube-logging.svc.cluster.local:9200\ncollector:\n  zipkin:\n    http-port: 9411\n",
-      "query": "es:\n  server-urls: http://elasticsearch.kube-logging.svc.cluster.local:9200\n",
-      "agent": "collector:\n  host-port: \"jaeger-collector:14267\"\n"
+      "span-storage-type": "opensearch",
+      "collector": std.join("\n", 
+        [
+          "es:",
+          "  server-urls: https://opensearch.kube-logging.svc:9200",
+          "  tls:",
+          "    enabled: true",
+          "    ca: /ca/cert/ca.crt",
+          "    cert: /ca/cert/tls.crt",
+          "    key: /ca/cert/tls.key",
+          "  username: admin",
+          "  password: admin",
+          "collector:",
+          "  zipkin:",
+          "    host-port: 9411"
+        ]
+      ),
+      "query": std.join("\n",
+        [
+          "es:",
+          "  server-urls: https://opensearch.kube-logging.svc:9200",
+          "  tls:",
+          "    enabled: true",
+          "    ca: /ca/cert/ca.crt",
+          "    cert: /ca/cert/tls.crt",
+          "    key: /ca/cert/tls.key",
+          "  username: admin",
+          "  password: admin"
+        ]
+      ),
+      "agent": std.join("\n",
+        [
+          "reporter:",
+          "  grpc:",
+          "    host-port: \"jaeger-collector:14250\""
+        ]
+      )
     }
   },
   {
@@ -177,14 +212,14 @@ local REDIRECT_URL = "jaeger." + CUSTOM_DOMAIN_NAME;
           "serviceAccountName": "jaeger-service-account",
           "containers": [
             {
-              "image": std.join("", [target_registry, "docker.io/jaegertracing/jaeger-collector:",JAEGER_VERSION]),
+              "image": std.join("", [target_registry, "docker.io/jaegertracing/jaeger-collector:", JAEGER_VERSION]),
               "name": "jaeger-collector",
               "args": [
                 "--config-file=/conf/collector.yaml"
               ],
               "ports": [
                 {
-                  "containerPort": 14267,
+                  "containerPort": 14250,
                   "protocol": "TCP"
                 },
                 {
@@ -206,6 +241,11 @@ local REDIRECT_URL = "jaeger." + CUSTOM_DOMAIN_NAME;
                 {
                   "name": "jaeger-configuration-volume",
                   "mountPath": "/conf"
+                },
+                {
+                  "name": "jaeger-certs",
+                  "mountPath": "/ca/cert",
+                  "readOnly": true
                 }
               ],
               "env": [
@@ -222,6 +262,14 @@ local REDIRECT_URL = "jaeger." + CUSTOM_DOMAIN_NAME;
             }
           ],
           "volumes": [
+            {
+              "name": "jaeger-certs",
+              "secret":
+                {
+                  "defaultMode": 420,
+                  "secretName": "jaeger-secret"
+                }
+            },
             {
               "configMap": {
                 "name": "jaeger-configuration",
@@ -254,10 +302,10 @@ local REDIRECT_URL = "jaeger." + CUSTOM_DOMAIN_NAME;
     "spec": {
       "ports": [
         {
-          "name": "jaeger-collector-tchannel",
-          "port": 14267,
+          "name": "jaeger-collector-grpc",
+          "port": 14250,
           "protocol": "TCP",
-          "targetPort": 14267
+          "targetPort": 14250
         },
         {
           "name": "jaeger-collector-http",
@@ -348,7 +396,7 @@ local REDIRECT_URL = "jaeger." + CUSTOM_DOMAIN_NAME;
           "containers": [
             {
               "name": "gatekeeper",
-              "image": std.join("", [target_registry, "quay.io/keycloak/keycloak-gatekeeper:",GATEKEER_VERSION]),
+              "image": std.join("", [target_registry, "quay.io/keycloak/keycloak-gatekeeper:", GATEKEER_VERSION]),
               "imagePullPolicy": "Always",
               "args": [
                 "--client-id=jaeger",
@@ -406,11 +454,11 @@ local REDIRECT_URL = "jaeger." + CUSTOM_DOMAIN_NAME;
                   }
                 },
                 {
-                  "name": "QUERY_BASE_PATH",
+                  "name": "BASE_QUERY_PATH",
                   "value": "/api/jaeger"
                 }
               ],
-              "image": std.join("", [target_registry, "docker.io/jaegertracing/jaeger-query:",JAEGER_VERSION]),
+              "image": std.join("", [target_registry, "docker.io/jaegertracing/jaeger-query:", JAEGER_VERSION]),
               "imagePullPolicy": "IfNotPresent",
               "name": "jaeger-query",
               "ports": [
@@ -438,6 +486,11 @@ local REDIRECT_URL = "jaeger." + CUSTOM_DOMAIN_NAME;
                 {
                   "mountPath": "/conf",
                   "name": "jaeger-configuration-volume"
+                },
+                {
+                  "name": "secret",
+                  "mountPath": "/ca/cert",
+                  "readOnly": true
                 }
               ]
             }
@@ -450,8 +503,9 @@ local REDIRECT_URL = "jaeger." + CUSTOM_DOMAIN_NAME;
             {
               "name": "secret",
               "secret": {
+                "defaultMode": 420,
                 "secretName": "jaeger-secret"
-              },
+              }
             },
             {
               "name": "gatekeeper-files",
@@ -567,7 +621,7 @@ local REDIRECT_URL = "jaeger." + CUSTOM_DOMAIN_NAME;
         "spec": {
           "containers": [
             {
-              "image": std.join("", [target_registry, "docker.io/jaegertracing/jaeger-agent:",JAEGER_VERSION]),
+              "image": std.join("", [target_registry, "docker.io/jaegertracing/jaeger-agent:", JAEGER_VERSION]),
               "name": "jaeger-agent",
               "args": [
                 "--config-file=/conf/agent.yaml"
@@ -576,6 +630,11 @@ local REDIRECT_URL = "jaeger." + CUSTOM_DOMAIN_NAME;
                 {
                   "name": "jaeger-configuration-volume",
                   "mountPath": "/conf"
+                },
+                {
+                  "name": "jaeger-certs",
+                  "mountPath": "/ca/cert",
+                  "readOnly": true
                 }
               ],
               "ports": [
@@ -595,12 +654,28 @@ local REDIRECT_URL = "jaeger." + CUSTOM_DOMAIN_NAME;
                   "containerPort": 5778,
                   "protocol": "TCP"
                 }
-              ]
+              ],
+              "readinessProbe": {
+                "failureThreshold": 3,
+                "httpGet": {
+                  "path": "/",
+                  "port": 14271,
+                  "scheme": "HTTP"
+                }
+              }
             }
           ],
           "hostNetwork": true,
           "dnsPolicy": "ClusterFirstWithHostNet",
           "volumes": [
+            {
+              "name": "jaeger-certs",
+              "secret":
+                {
+                  "defaultMode": 420,
+                  "secretName": "jaeger-secret"
+                }
+            },
             {
               "configMap": {
                 "name": "jaeger-configuration",
@@ -634,5 +709,53 @@ local REDIRECT_URL = "jaeger." + CUSTOM_DOMAIN_NAME;
         ]
       ),
     },
+  },
+  {
+    "apiVersion": "networking.k8s.io/v1",
+    "kind": "Ingress",
+    "metadata": {
+      "name": "jaeger-ingress",
+      "namespace": "istio-system",
+      "labels": {
+        "app": "jaeger",
+        "app.kubernetes.io/name": "jaeger",
+        "app.kubernetes.io/component": "query",
+        "ingress.tmaxcloud.org/name": "jaeger"
+      },
+      "annotations": {
+        "traefik.ingress.kubernetes.io/router.entrypoints": "websecure"
+      }
+    },
+    "spec": {
+      "ingressClassName": "tmax-cloud",
+      "rules": [
+        {
+          "host": std.join("", [jaeger_subdomain, ".", CUSTOM_DOMAIN_NAME]),
+          "http": {
+            "paths": [
+              {
+                "backend": {
+                  "service": {
+                    "name": "jaeger-query",
+                    "port": {
+                      "number": 443
+                    }
+                  }
+                },
+                "path": "/",
+                "pathType": "Prefix"
+              }
+            ]
+          }
+        }
+      ],
+      "tls": [
+        {
+          "hosts": [
+            std.join("", [jaeger_subdomain, ".", CUSTOM_DOMAIN_NAME]),
+          ]
+        }
+      ]
+    }
   }
 ]
