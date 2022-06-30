@@ -62,6 +62,8 @@ modules:
     enabled: false
     svcType: Ingress
     subdomain: hyperauth
+    # master cluster를 위한 value, 수정 X
+    storageClass: default
 
   ### efk
   efk:
@@ -99,7 +101,10 @@ modules:
       svcType: ClusterIP
       subdomain: opensearch-dashboard
     fluentd:
-      version: v1.4.2-debian-elasticsearch-1.1
+      version: fluentd-v1.4.2-debian-elasticsearch-1.1
+      # master cluster를 위한 value, 수정 X
+      storageClass: default
+
 
   ### prometheus
   prometheus:
@@ -174,6 +179,8 @@ modules:
     mode: multi
     kafka:
       enabled: false
+    # master cluster를 위한 value, 수정 X
+    storageClass: default
 
   ### hyperregistry
   hyperregistry:
@@ -183,6 +190,7 @@ modules:
     notary:
       subdomain: hyperregistry-notary
     storageClass: nfs
+    storageClassDatabase: nfs
 
   ### tekton pipeline
   tektonPipeline:

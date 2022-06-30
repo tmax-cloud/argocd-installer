@@ -14,17 +14,18 @@ function (
     hyperauth_url="172.23.4.105",
     hyperauth_realm="tmax",
     custom_domain_name="domain_name",
-    fluentd_image_tag="v1.4.2-debian-elasticsearch-1.1",
+    fluentd_image_tag="fluentd-v1.4.2-debian-elasticsearch-1.1",
     custom_clusterissuer="tmaxcloud-issuer",
     is_master_cluster="true",
-    opensearch_subdomain="opensearch-dashboard"
+    opensearch_subdomain="opensearch-dashboard",
+    storageClass="default"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
 local os_image_path = "docker.io/opensearchproject/opensearch:" + os_image_tag;
 local busybox_image_path = "docker.io/busybox:" + busybox_image_tag;
 local dashboard_image_path = "docker.io/opensearchproject/opensearch-dashboards:" + dashboard_image_tag;
-local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fluentd_image_tag;
+local fluentd_image_path = "docker.io/tmaxcloudck/hypercloud:" + fluentd_image_tag;
 
 [
   {
@@ -117,12 +118,7 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
                   "mountPath": "/usr/share/opensearch/plugins/opensearch-security/securityconfig/config.yml",
                   "subPath": "config.yml",
                   "readOnly": true
-                },
-                {
-                  "name": "hyperauth-ca",
-                  "mountPath": "/usr/share/opensearch/config/certificates/hyperauth",
-                  "readOnly": true
-                } 
+                }
               ] else [],
               "env": [
                 {
@@ -189,12 +185,6 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
               "configMap": {
                 "name": "opensearch-securityconfig"
               }
-            },
-            {
-              "name": "hyperauth-ca",
-              "secret": {
-                "secretName": "hyperauth-ca"
-              }
             }
           ] else [],
           "initContainers": [
@@ -258,7 +248,11 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
                 "storage": os_volume_size
               }
             }
-          }
+          } + (
+            if storageClass != "default" then {
+              "storageClassName": storageClass
+            } else {}
+          )
         }
       ]
     }  
@@ -433,11 +427,6 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
             {
               "name": "fluentd",
               "image": std.join("",[target_registry, fluentd_image_path]),
-              "command": [
-                "/bin/bash", 
-                "-c", 
-                "gem install fluent-plugin-opensearch && fluentd -c /fluentd/etc/fluent.conf -p /fluentd/plugins --gemfile /fluentd/Gemfile"
-              ],
               "env": [
                 {
                   "name": "FLUENT_OPENSEARCH_HOST",
@@ -577,7 +566,7 @@ local fluentd_image_path = "docker.io/fluent/fluentd-kubernetes-daemonset:" + fl
       "namespace": "kube-logging"
     },
     "data": if hyperauth_url == "" then {
-      "opensearch-dashboards.yml": std.join("", 
+      "opensearch_dashboards.yml": std.join("", 
         [
           "server.name: dashboards", 
           "\nserver.host: '0.0.0.0'",

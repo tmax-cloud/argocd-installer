@@ -14,10 +14,11 @@ function (
     hyperauth_url="172.23.4.105",
     hyperauth_realm="tmax",
     custom_domain_name="domain_name",
-    fluentd_image_tag="v1.4.2-debian-elasticsearch-1.1",
+    fluentd_image_tag="fluentd-v1.4.2-debian-elasticsearch-1.1",
     custom_clusterissuer="tmaxcloud-issuer",
     is_master_cluster="true",
-    opensearch_subdomain="opensearch-dashboard"
+    opensearch_subdomain="opensearch-dashboard",
+    storageClass="default"
 )
 
 if hyperauth_url != "" then [
@@ -60,10 +61,6 @@ if hyperauth_url != "" then [
           "\n            subject_key: preferred_username",
           "\n            roles_key: roles",
           "\n            openid_connect_url: https://", hyperauth_url, "/auth/realms/", hyperauth_realm, "/.well-known/openid-configuration",
-          "\n            openid_connect_idp:",
-          "\n              enable_ssl: true",
-          "\n              verify_hostnames: false",
-          "\n              pemtrustedcas_filepath: /usr/share/opensearch/config/certificates/hyperauth/ca.crt",
           "\n        authentication_backend:",
           "\n          type: noop"
         ]

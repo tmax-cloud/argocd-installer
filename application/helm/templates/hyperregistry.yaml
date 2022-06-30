@@ -1,5 +1,5 @@
-{{ if .Values.modules.hyperregistry.enabled }}
 {{ $isMaster := eq .Values.global.cluster "master" }}
+{{ if (and .Values.modules.hyperregistry.enabled (not $isMaster)) }}
 {{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
 {{ $module := "hyperregistry" }}
 apiVersion: argoproj.io/v1alpha1
@@ -17,9 +17,9 @@ spec:
   source:
     helm:
       parameters:
-        - name: is_offline
+        - name: global.registry.is_offline
           value: "{{ .Values.global.network.disabled }}"
-        - name: private_registry
+        - name: global.registry.private_registry
           value: {{ .Values.global.privateRegistry }}
         - name: expose.ingress.hosts.domain
           value: {{ .Values.global.domain }}
@@ -29,6 +29,8 @@ spec:
           value: {{ .Values.modules.hyperregistry.notary.subdomain }}
         - name: storageClass
           value: {{ .Values.modules.hyperregistry.storageClass }}
+        - name: storageClassDatabase
+          value: {{ .Values.modules.hyperregistry.storageClassDatabase }}
     path: manifest/hyperregistry
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
