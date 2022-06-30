@@ -30,7 +30,7 @@ spec:
             value: {{ .Values.global.domain }}
           - name: hyperauth_subdomain
             value: {{ .Values.modules.hyperAuth.subdomain }}
-          - name: storageClass
+          - name: storage_class
             value: {{ .Values.modules.hyperAuth.storageClass }}
     path: manifest/hyperauth
     repoURL: {{ .Values.spec.source.repoURL }}

@@ -28,8 +28,20 @@ spec:
             value: "{{ .Values.modules.hyperCloud.kafka.enabled }}"
           - name: hyperauth_url
             value: {{ .Values.global.keycloak.domain }}
+          - name: hyperauth_client_secret
+            value: {{ .Values.global.keycloak.tmaxClientSecret }}
+          - name: console_subdomain
+            value: {{ .Values.modules.console.subdomain }}
+          - name: hyperauth_subdomain
+            value: {{ .Values.modules.hyperAuth.subdomain }}
+          - name: hyperregistry_enabled
+            value: "{{ .Values.modules.hyperregistry.enabled }}"
           - name: storageClass
             value: {{ .Values.modules.hyperCloud.storageClass }}
+          - name: aws_enabled
+            value: "{{ .Values.modules.capi.providers.aws.enabled }}"
+          - name: vsphere_enabled
+            value: "{{ .Values.modules.capi.providers.vsphere.enabled }}"
     path: manifest/hypercloud
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
