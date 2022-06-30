@@ -1,11 +1,12 @@
-function (
+function(
   is_offline="false",
   private_registry="registry.tmaxcloud.org",
   KIALI_VERSION="v1.21",
   HYPERAUTH_DOMAIN="hyperauth.domain",
   CUSTOM_DOMAIN_NAME="custom-domain",
   CUSTOM_CLUSTER_ISSUER="tmaxcloud-issuer",
-  kiali_subdomain="kiali"
+  kiali_subdomain="kiali",
+  client_id="kiali"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -541,31 +542,31 @@ local target_registry = if is_offline == "false" then "" else private_registry +
     }
   },
   {
-     "apiVersion": "cert-manager.io/v1",
-     "kind": "Certificate",
-     "metadata": {
-       "name": "kiali-cert",
-       "namespace": "istio-system"
-     },
-     "spec": {
-       "secretName": "kiali-secret",
-       "usages": [
-         "digital signature",
-         "key encipherment",
-         "server auth",
-         "client auth"
-       ],
-       "dnsNames": [
-           "tmax-cloud",
-           "kiali.istio-system.svc"
-       ],
-       "issuerRef": {
-         "kind": "ClusterIssuer",
-         "group": "cert-manager.io",
-         "name": CUSTOM_CLUSTER_ISSUER
-       }
-     }
-   },
+    "apiVersion": "cert-manager.io/v1",
+    "kind": "Certificate",
+    "metadata": {
+      "name": "kiali-cert",
+      "namespace": "istio-system"
+    },
+    "spec": {
+      "secretName": "kiali-secret",
+      "usages": [
+        "digital signature",
+        "key encipherment",
+        "server auth",
+        "client auth"
+      ],
+      "dnsNames": [
+          "tmax-cloud",
+          "kiali.istio-system.svc"
+      ],
+      "issuerRef": {
+        "kind": "ClusterIssuer",
+        "group": "cert-manager.io",
+        "name": CUSTOM_CLUSTER_ISSUER
+      }
+    }
+  },
   {
     "apiVersion": "networking.k8s.io/v1",
     "kind": "Ingress",

@@ -6,7 +6,7 @@ function (
   is_kafka_enabled="true",
   hyperauth_subdomain="hyperauth",
   hypercloud_domain_host="tmaxcloud.org",
-  storageClass="default"
+  storage_class="default"
 )
 
 local svcType = if hyperauth_svc_type == "Ingress" then "ClusterIP" else hyperauth_svc_type;
@@ -418,8 +418,8 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
         }
       }
     } + (
-      if storageClass != "default" then {
-        "storageClassName": storageClass
+      if storage_class != "default" then {
+        "storageClassName": storage_class
       } else {}
     )
   }
