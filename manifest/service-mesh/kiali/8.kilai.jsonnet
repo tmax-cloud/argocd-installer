@@ -5,7 +5,8 @@ function(
     HYPERAUTH_DOMAIN="hyperauth.domain",
     CUSTOM_DOMAIN_NAME="custom-domain",
     CUSTOM_CLUSTER_ISSUER="tmaxcloud-issuer",
-    kiali_subdomain="kiali"
+    kiali_subdomain="kiali",
+    client_id="kiali"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -299,7 +300,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "auth:\n",
         "  strategy: openid\n",
         "  openid:\n",
-        "    client_id: kiali\n",
+        "    client_id: ", client_id, "\n",
         "    issuer_url: https://", HYPERAUTH_DOMAIN, "/auth/realms/tmax\n",
         "    authorization_endpoint: https://", HYPERAUTH_DOMAIN, "/auth/realms/tmax/protocol/openid-connect/auth\n",
         "deployment:\n",
@@ -541,31 +542,31 @@ local target_registry = if is_offline == "false" then "" else private_registry +
     }
   },
   {
-     "apiVersion": "cert-manager.io/v1",
-     "kind": "Certificate",
-     "metadata": {
-       "name": "kiali-cert",
-       "namespace": "istio-system"
-     },
-     "spec": {
-       "secretName": "kiali-secret",
-       "usages": [
-         "digital signature",
-         "key encipherment",
-         "server auth",
-         "client auth"
-       ],
-       "dnsNames": [
-           "tmax-cloud",
-           "kiali.istio-system.svc"
-       ],
-       "issuerRef": {
-         "kind": "ClusterIssuer",
-         "group": "cert-manager.io",
-         "name": CUSTOM_CLUSTER_ISSUER
-       }
-     }
-   },
+    "apiVersion": "cert-manager.io/v1",
+    "kind": "Certificate",
+    "metadata": {
+      "name": "kiali-cert",
+      "namespace": "istio-system"
+    },
+    "spec": {
+      "secretName": "kiali-secret",
+      "usages": [
+        "digital signature",
+        "key encipherment",
+        "server auth",
+        "client auth"
+      ],
+      "dnsNames": [
+          "tmax-cloud",
+          "kiali.istio-system.svc"
+      ],
+      "issuerRef": {
+        "kind": "ClusterIssuer",
+        "group": "cert-manager.io",
+        "name": CUSTOM_CLUSTER_ISSUER
+      }
+    }
+  },
   {
     "apiVersion": "networking.k8s.io/v1",
     "kind": "Ingress",
