@@ -69,7 +69,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                                     "value": hyperregistry_enabled
                                 },
                             ],
-                            "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-multi-operator:b5.0.26.11"]),
+                            "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-multi-operator:b5.0.26.13"]),
                             "name": "manager",
                             "ports": [
                                 {
