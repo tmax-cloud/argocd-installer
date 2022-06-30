@@ -8,6 +8,7 @@ function(
     GATEKEER_VERSION="10.0.0",
     CUSTOM_DOMAIN_NAME="custom-domain",
     CUSTOM_CLUSTER_ISSUER="tmaxcloud-issuer",
+    jaeger_client_id="jaeger",
     jaeger_subdomain="jaeger",
     storage_type="opensearch"
 )
@@ -399,7 +400,7 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
               "image": std.join("", [target_registry, "quay.io/keycloak/keycloak-gatekeeper:", GATEKEER_VERSION]),
               "imagePullPolicy": "Always",
               "args": [
-                "--client-id=jaeger",
+                std.join("", ["--client-id=", jaeger_client_id]),
                 std.join("", ["--client-secret=", tmax_client_secret]),
                 "--listen=:3000",
                 "--upstream-url=http://127.0.0.1:16686",
@@ -417,7 +418,7 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
                 "--enable-metrics=true",
                 "--encryption-key=AgXa7xRcoClDEU0ZDSH4X0XhL5Qy2Z2j",
                 "--forbidden-page=/html/access-forbidden.html",
-                "--resources=uri=/*|roles=jaeger:jaeger-manager",
+                std.join("", ["--resources=uri=/*|roles=", jaeger_client_id, ":jaeger-manager"]),
                 "--enable-encrypted-token",
                 "--verbose"
               ],
