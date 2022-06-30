@@ -102,9 +102,17 @@ spec:
         status:
           description: "%clustermanagers.yaml.spec.validation.openAPIV3Schema.properties.status"
           properties:
+            argoReady:
+              type: "boolean"
+            authClientReady:
+              type: "boolean"
             controlPlaneEndpoint:
               type: "string"
             controlPlaneReady:
+              type: "boolean"
+            gatewayReady:
+              type: "boolean"
+            hyperregistryOidcReady:
               type: "boolean"
             masterRun:
               type: "integer"
@@ -155,11 +163,18 @@ spec:
                 - "systemUUID"
                 type: "object"
               type: "array"
+            openSearchReady:
+              type: "boolean"
             phase:
               type: "string"
+            prometheusReady:
+              description: "%clustermanagers.yaml.spec.validation.openAPIV3Schema.properties.status.properties.prometheusReady"
+              type: "boolean"
             provider:
               type: "string"
             ready:
+              type: "boolean"
+            traefikReady:
               type: "boolean"
             version:
               type: "string"
@@ -1014,7 +1029,7 @@ webhooks:
       namespace: hypercloud5-system
       path: /mutate-claim-tmax-io-v1alpha1-clusterclaim
   failurePolicy: Fail
-  name: mclusterclaim.kb.io
+  name: mutation.webhook.clusterclaim
   rules:
   - apiGroups:
     - claim.tmax.io
@@ -1042,7 +1057,7 @@ webhooks:
       namespace: hypercloud5-system
       path: /validate-claim-tmax-io-v1alpha1-clusterclaim
   failurePolicy: Fail
-  name: vclusterclaim.kb.io
+  name: validation.webhook.clusterclaim
   rules:
   - apiGroups:
     - claim.tmax.io
@@ -1064,7 +1079,7 @@ webhooks:
       namespace: hypercloud5-system
       path: /validate-cluster-tmax-io-v1alpha1-clustermanager
   failurePolicy: Fail
-  name: vclustermanager.kb.io
+  name: validation.webhook.clustermanager
   rules:
   - apiGroups:
     - cluster.tmax.io
@@ -1084,7 +1099,7 @@ webhooks:
       namespace: hypercloud5-system
       path: /validate-cluster-tmax-io-v1alpha1-clusterregistration
   failurePolicy: Fail
-  name: vclusterregistration.kb.io
+  name: validation.webhook.clusterregistration
   rules:
   - apiGroups:
     - cluster.tmax.io

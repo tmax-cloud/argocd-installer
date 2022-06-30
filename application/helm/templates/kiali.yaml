@@ -28,6 +28,8 @@ spec:
             value: {{ .Values.global.domain }}
           - name: kiali_subdomain
             value: {{ .Values.modules.serviceMesh.kiali.subdomain }}
+          - name: client_id
+            value: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
     path: manifest/service-mesh/kiali
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
