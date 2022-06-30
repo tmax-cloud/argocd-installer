@@ -4,13 +4,17 @@ function (
     hypercloud_hpcd_mode="multi",
     hypercloud_kafka_enabled="\"true\"",
     hyperauth_url="hyperauth.172.22.6.18.nip.io",
+    hyperauth_client_secret="tmax_client_secret",
+    domain="tmaxcloud.org",
+    hyperauth_subdomain="hyperauth",
+    console_subdomain="console",
+    hyperregistry_enabled="true",
     storageClass="default",
     aws_enabled="true",
     vsphere_enabled="true"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
-local domain = std.strReplace(hyperauth_url, "hyperauth.", "");
 
 [
     {
@@ -55,8 +59,20 @@ local domain = std.strReplace(hyperauth_url, "hyperauth.", "");
                                     "name": "HC_DOMAIN",
                                     "value": domain
                                 },
+                                {
+                                    "name": "AUTH_CLIENT_SECRET",
+                                    "value": hyperauth_client_secret
+                                },
+                                {
+                                    "name": "AUTH_SUBDOMAIN",
+                                    "value": hyperauth_subdomain
+                                },
+                                {
+                                    "name": "HYPERREGISTRY_ENABLED",
+                                    "value": hyperregistry_enabled
+                                },
                             ],
-                            "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-multi-operator:b5.0.26.6"]),
+                            "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-multi-operator:b5.0.26.13"]),
                             "name": "manager",
                             "ports": [
                                 {
@@ -68,7 +84,7 @@ local domain = std.strReplace(hyperauth_url, "hyperauth.", "");
                             "resources": {
                                 "limits": {
                                     "cpu": "100m",
-                                    "memory": "50Mi"
+                                    "memory": "100Mi"
                                 },
                                 "requests": {
                                     "cpu": "100m",

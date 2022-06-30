@@ -4,6 +4,11 @@ function (
     hypercloud_hpcd_mode="multi",
     hypercloud_kafka_enabled="\"true\"",
     hyperauth_url="hyperauth.172.22.6.18.nip.io",
+    hyperauth_client_secret="tmax_client_secret",
+    domain="tmaxcloud.org",    
+    hyperauth_subdomain="hyperauth",
+    console_subdomain="console",
+    hyperregistry_enabled="true",
     storageClass="default",
     aws_enabled="true",
     vsphere_enabled="true"
