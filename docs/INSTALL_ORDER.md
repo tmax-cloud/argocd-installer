@@ -1,8 +1,8 @@
 # Application 설치 순서
 1. api-gateway-bootstrap(cert-manager + api-gateway)
 2. strimzi kafka operator
-3. hyperauth + kafka
-4. efk
+3. hyperauth
+4. efk or opensearch
 5. prometheus
 6. grafana
 7. istio

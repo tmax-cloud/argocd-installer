@@ -1,0 +1,71 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: admin-cert
+  namespace: kube-logging
+spec:
+  secretName: admin-secret
+  commonName: admin
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS8
+    size: 2048
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+    - client auth
+  issuerRef:
+    kind: ClusterIssuer
+    group: cert-manager.io
+    name: tmaxcloud-issuer
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: opensearch-cert
+  namespace: kube-logging
+spec:
+  secretName: opensearch-secret
+  commonName: "opensearch"
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS8
+    size: 2048
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+    - client auth
+  dnsNames:
+    - "tmax-cloud"
+    - "opensearch.kube-logging.svc"
+  issuerRef:
+    kind: ClusterIssuer
+    group: cert-manager.io
+    name: tmaxcloud-issuer
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: dashboards-cert
+  namespace: kube-logging
+spec:
+  secretName: dashboards-secret
+  commonName: "dashboards"
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS8
+    size: 2048
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+    - client auth
+  dnsNames:
+    - "tmax-cloud"
+    - "dashboards.kube-logging.svc"
+  issuerRef:
+    kind: ClusterIssuer
+    group: cert-manager.io
+    name: tmaxcloud-issuer

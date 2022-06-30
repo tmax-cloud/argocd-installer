@@ -2,12 +2,16 @@ function (
     is_offline="false",
     private_registry="172.22.6.2:5000",
     hyperauth_svc_type="Ingress",
-    hyperauth_external_dns="hyperauth.172.22.6.18.nip.io",
-    hyperauth_external_ip="172.22.6.8"
+    hyperauth_external_ip="172.22.6.8",
+    is_kafka_enabled="true",
+    hyperauth_subdomain="hyperauth",
+    hypercloud_domain_host="tmaxcloud.org",
+    storage_class="default"
 )
 
 local svcType = if hyperauth_svc_type == "Ingress" then "ClusterIP" else hyperauth_svc_type;
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
+local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_host;
 
 [
   {
@@ -346,7 +350,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
           hyperauth_external_ip
         ]
       } else {}
-    ),
+    )
   },
   if hyperauth_svc_type == "Ingress" then {
     "apiVersion": "networking.k8s.io/v1",
@@ -393,5 +397,30 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         }
       ]
     }
-  } else {}
+  } else {},
+  {
+    "apiVersion": "v1",
+    "kind": "PersistentVolumeClaim",
+    "metadata": {
+      "name": "postgres-pvc",
+      "namespace": "hyperauth",
+      "labels": {
+        "app": "postgresql"
+      }
+    },
+    "spec": {
+      "accessModes": [
+        "ReadWriteOnce"
+      ],
+      "resources": {
+        "requests": {
+          "storage": "100Gi"
+        }
+      }
+    } + (
+      if storage_class != "default" then {
+        "storageClassName": storage_class
+      } else {}
+    )
+  }
 ]

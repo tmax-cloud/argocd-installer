@@ -12,9 +12,9 @@ spec:
   routes:
     - kind: Rule
       {{- if and .Values.ingressroute.domain.enabled }}
-      match: PathPrefix(`/`, `/static/`, `/api/resource/`, `/api/console/`) && Host(`{{ include "console.fullname" . }}.{{ .Values.ingressroute.domain.name }}`)
+      match: PathPrefix(`/`, `/static/`, `/api/resource/`, `/api/console/`) && Host(`{{ .Values.ingressroute.domain.subdomain }}.{{ .Values.ingressroute.domain.name }}`)
       {{- else if .Values.ingressroute.ip.enabled }}
-      match: PathPrefix(`/`, `/static/`, `/api/resource/`, `/api/console/`) && HostRegexp(`{{ include "console.fullname" . }}.{ip:.*}.nip.io`)
+      match: PathPrefix(`/`, `/static/`, `/api/resource/`, `/api/console/`) && HostRegexp(`{{ .Values.ingressroute.domain.subdomain }}.{ip:.*}.nip.io`)
       {{- else }}
       match: PathPrefix(`/`, `/static/`, `/api/resource/`, `/api/console/`)
       {{- end }}
@@ -26,9 +26,9 @@ spec:
           port: http
     - kind: Rule
       {{- if and .Values.ingressroute.domain.enabled }}
-      match: PathPrefix(`/api/hypercloud`, `/api/multi-hypercloud`,`/api/webhook`) && Host(`{{ include "console.fullname" . }}.{{ .Values.ingressroute.domain.name }}`)
+      match: PathPrefix(`/api/hypercloud`, `/api/multi-hypercloud`,`/api/webhook`) && Host(`{{ .Values.ingressroute.domain.subdomain }}.{{ .Values.ingressroute.domain.name }}`)
       {{- else if .Values.ingressroute.ip.enabled }}
-      match: PathPrefix(`/api/hypercloud`, `/api/multi-hypercloud`,`/api/webhook`) && HostRegexp(`{{ include "console.fullname" . }}.{ip:.*}.nip.io`)
+      match: PathPrefix(`/api/hypercloud`, `/api/multi-hypercloud`,`/api/webhook`) && HostRegexp(`{{ .Values.ingressroute.domain.subdomain }}.{ip:.*}.nip.io`)
       {{- else }}
       match: PathPrefix(`/api/hypercloud`, `/api/multi-hypercloud`,`/api/webhook`)
       {{- end }}
@@ -45,9 +45,9 @@ spec:
           serversTransport: insecure@file
     - kind: Rule
       {{- if and .Values.ingressroute.domain.enabled }}
-      match: PathPrefix(`/api/kubernetes`) && Host(`{{ include "console.fullname" . }}.{{ .Values.ingressroute.domain.name }}`)
+      match: PathPrefix(`/api/kubernetes`) && Host(`{{ .Values.ingressroute.domain.subdomain }}.{{ .Values.ingressroute.domain.name }}`)
       {{- else if .Values.ingressroute.ip.enabled }}
-      match: PathPrefix(`/api/kubernetes`) && HostRegexp(`{{ include "console.fullname" . }}.{ip:.*}.nip.io`)
+      match: PathPrefix(`/api/kubernetes`) && HostRegexp(`{{ .Values.ingressroute.domain.subdomain }}.{ip:.*}.nip.io`)
       {{- else }}
       match: PathPrefix(`/api/kubernetes`)
       {{- end }}
@@ -64,9 +64,9 @@ spec:
           serversTransport: kubernetes@file
     - kind: Rule
       {{- if and .Values.ingressroute.domain.enabled }}
-      match: PathPrefix(`/api/prometheus-tenancy/api`) && Host(`{{ include "console.fullname" . }}.{{ .Values.ingressroute.domain.name }}`)
+      match: PathPrefix(`/api/prometheus-tenancy/api`) && Host(`{{ .Values.ingressroute.domain.subdomain }}.{{ .Values.ingressroute.domain.name }}`)
       {{- else if .Values.ingressroute.ip.enabled }}
-      match: PathPrefix(`/api/prometheus-tenancy/api`) && HostRegexp(`{{ include "console.fullname" . }}.{ip:.*}.nip.io`)
+      match: PathPrefix(`/api/prometheus-tenancy/api`) && HostRegexp(`{{ .Values.ingressroute.domain.subdomain }}.{ip:.*}.nip.io`)
       {{- else }}
       match: PathPrefix(`/api/prometheus-tenancy/api`)
       {{- end }}
@@ -82,9 +82,9 @@ spec:
           scheme: http
     - kind: Rule
       {{- if and .Values.ingressroute.domain.enabled }}
-      match: PathPrefix(`/api/prometheus/api`) && Host(`{{ include "console.fullname" . }}.{{ .Values.ingressroute.domain.name }}`)
+      match: PathPrefix(`/api/prometheus/api`) && Host(`{{ .Values.ingressroute.domain.subdomain }}.{{ .Values.ingressroute.domain.name }}`)
       {{- else if .Values.ingressroute.ip.enabled }}
-      match: PathPrefix(`/api/prometheus/api`) && HostRegexp(`{{ include "console.fullname" . }}.{ip:.*}.nip.io`)
+      match: PathPrefix(`/api/prometheus/api`) && HostRegexp(`{{ .Values.ingressroute.domain.subdomain }}.{ip:.*}.nip.io`)
       {{- else }}
       match: PathPrefix(`/api/prometheus/api`)
       {{- end }}
@@ -100,9 +100,9 @@ spec:
           scheme: http
     - kind: Rule
       {{- if and .Values.ingressroute.domain.enabled }}
-      match: PathPrefix(`/api/alertmanager/api`) && Host(`{{ include "console.fullname" . }}.{{ .Values.ingressroute.domain.name }}`)
+      match: PathPrefix(`/api/alertmanager/api`) && Host(`{{ .Values.ingressroute.domain.subdomain }}.{{ .Values.ingressroute.domain.name }}`)
       {{- else if .Values.ingressroute.ip.enabled }}
-      match: PathPrefix(`/api/alertmanager/api`) && HostRegexp(`{{ include "console.fullname" . }}.{ip:.*}.nip.io`)
+      match: PathPrefix(`/api/alertmanager/api`) && HostRegexp(`{{ .Values.ingressroute.domain.subdomain }}.{ip:.*}.nip.io`)
       {{- else }}
       match: PathPrefix(`/api/alertmanager/api`)
       {{- end }}

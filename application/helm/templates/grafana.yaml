@@ -1,23 +1,18 @@
-{{- if .Values.modules.grafana.enabled }}
+{{ if .Values.modules.grafana.enabled }}
+{{ $isMaster := eq .Values.global.cluster "master" }}
+{{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
+{{ $module := "grafana" }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   labels:
-    cluster: {{ .Values.spec.destination.label }}
-  {{- if eq .Values.spec.destination.label "master" }}
-  name: grafana
-  {{- else }}
-  name: {{ .Values.spec.destination.clusterInfo }}-grafana
-  {{- end }}
+    cluster: {{ ternary "master" $prefix $isMaster }}
+  name: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
   namespace: argocd
 spec:
   destination:
+    name: {{ .Values.global.clusterName }}
     namespace: monitoring
-    {{- if eq .Values.spec.destination.type "name" }}
-    name: {{ .Values.spec.destination.clusterInfo }}
-    {{- else if eq .Values.spec.destination.type "server" }}
-    server: {{ .Values.spec.destination.clusterInfo }}
-    {{- end }}
   project: {{ .Values.spec.project }}
   source:
     directory:
@@ -39,15 +34,15 @@ spec:
             value: {{ .Values.modules.grafana.imageRepo }}
           - name: ingress_domain
             value: {{ .Values.global.domain }}
-          - name: cluster_name
-            value: {{ .Values.spec.destination.label }}
+          - name: is_master_cluster
+            value: "{{ $isMaster }}"
           - name: admin_user
             value: {{ .Values.global.adminUser }}
-          {{- if ne .Values.spec.destination.label "master" }}
           - name: client_id
-            value: {{ .Values.spec.destination.label }}-grafana
-          {{- end }}
+            value: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
+          - name: grafana_subdomain
+            value: {{ .Values.modules.grafana.subdomain }}
     path: manifest/grafana
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
-{{- end }}
+{{ end }}

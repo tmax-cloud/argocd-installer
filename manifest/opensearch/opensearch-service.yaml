@@ -1,0 +1,18 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: opensearch
+  namespace: kube-logging
+  labels:
+    app: opensearch
+spec:
+  type: ClusterIP
+  selector:
+    app: opensearch
+  ports:
+    - port: 9200
+      protocol: TCP
+      name: http
+    - port: 9300
+      protocol: TCP
+      name: transport

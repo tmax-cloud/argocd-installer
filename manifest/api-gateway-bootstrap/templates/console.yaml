@@ -1,15 +1,14 @@
 {{- if .Values.modules.console.enabled }}
+{{ $isMaster := eq .Values.global.cluster "master" }}
+{{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
+{{ $module := "console" }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   labels:
-    cluster: {{ .Values.spec.destination.label }}
+    cluster: {{ ternary "master" $prefix $isMaster }}
     gatewayBootstrap: console
-  {{- if eq .Values.spec.destination.label "master" }}
-  name: console
-  {{- else }}
-  name: {{ .Values.spec.destination.label }}-console
-  {{- end }}
+  name: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -17,12 +16,8 @@ metadata:
     argocd.argoproj.io/sync-wave: "3"
 spec:
   destination:
+    name: {{ .Values.global.clusterName }}
     namespace: api-gateway-system
-    {{- if eq .Values.spec.destination.type "name" }}
-    name: {{ .Values.spec.destination.clusterInfo }}
-    {{- else if eq .Values.spec.destination.type "server" }}
-    server: {{ .Values.spec.destination.clusterInfo }}
-  {{- end }}
   source:
     path: {{ .Values.modules.console.source.path }}
     repoURL: {{ .Values.spec.source.repoURL }}
@@ -41,6 +36,8 @@ spec:
           value: {{ .Values.global.console.mcMode | default true | quote }}
         - name: ingressroute.domain.name
           value: {{ .Values.global.domain | default "tmaxcloud.org" }}
+        - name: ingressroute.domain.subdomain
+          value: {{ .Values.modules.console.subdomain | default "console" }}
         {{- if .Values.global.registry.is_offline }}
         - name: image.repository
           value: {{ .Values.global.registry.private_registry }}/docker.io/tmaxcloudck/hypercloud-console
