@@ -3,7 +3,7 @@ name: console
 description: A Console based tmax cloud UI
 type: application
 version: 0.1.0
-appVersion: "5.0.65.0" # ims-281954
+appVersion: "5.0.69.0"
 keywords:
   - console
 home: https://www.tmaxcloud.com/#!/home
