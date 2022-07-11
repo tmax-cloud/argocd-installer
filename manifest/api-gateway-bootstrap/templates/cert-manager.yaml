@@ -43,7 +43,7 @@ spec:
     automated:
       prune: true
     syncOptions:
-      - CreateNamespace=true
+      {% comment %} - CreateNamespace=true {% endcomment %}
       - ApplyOutOfSyncOnly=true
     retry:
       limit: 3
