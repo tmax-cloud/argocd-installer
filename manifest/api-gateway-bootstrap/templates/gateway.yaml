@@ -10,8 +10,6 @@ metadata:
     gatewayBootstrap: gateway
   name: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
   namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
   annotations:
     argocd.argoproj.io/sync-wave: "0"
 spec:
@@ -67,7 +65,6 @@ spec:
     automated:
       prune: true
     syncOptions:
-      {% comment %} - CreateNamespace=true {% endcomment %}
       - ApplyOutOfSyncOnly=true
     retry:
       limit: 3
