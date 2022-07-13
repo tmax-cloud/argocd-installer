@@ -11,6 +11,7 @@ console:
     realm: tmax
     clientid: hypercloud5
   mcMode: true
+  chatbotEmbed: true
 
 service:
   type: ClusterIP
