@@ -1,4 +1,5 @@
 function (
+  timezone="UTC",
   is_offline="false",
   private_registry="172.22.6.2:5000",
   es_image_tag="7.2.1",
@@ -88,7 +89,12 @@ local gatekeeper_enabled = if hyperauth_url != "" then true else false;
                   "name": "data",
                   "mountPath": "/usr/share/elasticsearch/data"
                 }
-              ],
+              ] + if timezone != "UTC" then [
+                {
+                  "name": "timezone-config",
+                  "mountPath": "/etc/localtime"
+                }
+              ] else [],
               "env": [
                 {
                   "name": "cluster.name",
@@ -161,7 +167,16 @@ local gatekeeper_enabled = if hyperauth_url != "" then true else false;
               }
             }
           ]
-        }
+        } + if timezone != "UTC" then {
+          "volumes: [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", timezone])
+              }
+            }
+          ]
+        } else {}
       },
       "volumeClaimTemplates": [
         {
@@ -221,7 +236,14 @@ local gatekeeper_enabled = if hyperauth_url != "" then true else false;
                 "name": "kibana-config"
               }
             }
-          ],
+          ] + if timezone != "UTC" then [
+            {
+              "name": "timezone-config",
+              "hostPath": {
+                "path": std.join("", ["/usr/share/zoneinfo/", timezone])
+              }
+            }
+          ] else [],
           "containers": [
             {
               "name": "kibana",
@@ -253,7 +275,12 @@ local gatekeeper_enabled = if hyperauth_url != "" then true else false;
                   "name": "config",
                   "subPath": "kibana.yml"
                 }
-              ]
+              ] + if timezone != "UTC" then [
+                {
+                  "name": "timezone-config",
+                  "mountPath": "/etc/localtime"
+                }
+              ] else [],
             }
           ] + if gatekeeper_enabled then [
             {
@@ -462,7 +489,12 @@ local gatekeeper_enabled = if hyperauth_url != "" then true else false;
                   "mountPath": "/fluentd/etc/index_template.json",
                   "subPath": "index_template.json"
                 }
-              ]
+              ] + if timezone != "UTC" then [
+                {
+                  "name": "timezone-config",
+                  "mountPath": "/etc/localtime"
+                }
+              ] else []
             }
           ],
           "terminationGracePeriodSeconds": 30,
@@ -503,7 +535,14 @@ local gatekeeper_enabled = if hyperauth_url != "" then true else false;
                 ]
               }
             }
-          ]
+          ] + if timezone != "UTC" then [
+            {
+              "name": "timezone-config",
+              "hostPath": {
+                "path": std.join("", ["/usr/share/zoneinfo/", timezone])
+              }
+            }
+          ] else []
         }
       }
     }
