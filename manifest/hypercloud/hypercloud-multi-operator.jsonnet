@@ -11,7 +11,8 @@ function (
   hyperregistry_enabled="true",
   storageClass="default",
   aws_enabled="true",
-  vsphere_enabled="true"
+  vsphere_enabled="true",
+  time_zone="UTC"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -102,7 +103,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                   "name": "hypercloud-multi-operator-controller-manager-token",
                   "readOnly": true
                 }
-              ]
+              ] + (
+                if time_zone != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  }
+                ] else []
+              )
             },
             {
               "args": [
@@ -155,7 +163,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "secretName": "hypercloud-multi-operator-controller-manager-token"
               }
             }
-          ]
+          ] + (
+            if time_zone != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                }
+              }
+            ] else []
+          )
         }
       }
     }
