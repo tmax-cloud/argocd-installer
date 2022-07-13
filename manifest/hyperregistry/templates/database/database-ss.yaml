@@ -59,6 +59,10 @@ spec:
 {{ toYaml .Values.database.internal.initContainer.migrator.resources | indent 10 }}
 {{- end }}
         volumeMounts:
+          {{- if ne .Values.global.time_zone "UTC" }}
+          - name: timezone-config
+            mountPath: /etc/localtime
+          {{- end }}
           - name: database-data
             mountPath: /var/lib/postgresql/data
             subPath: {{ $database.subPath }}
@@ -80,6 +84,10 @@ spec:
 {{ toYaml .Values.database.internal.initContainer.permissions.resources | indent 10 }}
 {{- end }}
         volumeMounts:
+          {{- if ne .Values.global.time_zone "UTC" }}
+          - name: timezone-config
+            mountPath: /etc/localtime
+          {{- end }}
           - name: database-data
             mountPath: /var/lib/postgresql/data
             subPath: {{ $database.subPath }}
@@ -116,12 +124,21 @@ spec:
           - name: PGDATA
             value: "/var/lib/postgresql/data/pgdata"
         volumeMounts:
+        {{- if ne .Values.global.time_zone "UTC" }}
+        - name: timezone-config
+          mountPath: /etc/localtime
+        {{- end }}
         - name: database-data
           mountPath: /var/lib/postgresql/data
           subPath: {{ $database.subPath }}
         - name: shm-volume
           mountPath: /dev/shm
       volumes:
+      {{- if ne .Values.global.time_zone "UTC" }}
+      - name: timezone-config
+        hostPath: 
+          path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.global.time_zone }}
+      {{- end }}
       - name: shm-volume
         emptyDir:
           medium: Memory
