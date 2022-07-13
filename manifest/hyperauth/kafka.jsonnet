@@ -1,12 +1,12 @@
 function (
   is_offline="false",
-    private_registry="172.22.6.2:5000",
-    hyperauth_svc_type="Ingress",
-    hyperauth_external_ip="172.22.6.8",
-    is_kafka_enabled="true",
-    hyperauth_subdomain="hyperauth",
-    hypercloud_domain_host="tmaxcloud.org",
-    storage_class="default"
+  private_registry="172.22.6.2:5000",
+  hyperauth_svc_type="Ingress",
+  hyperauth_external_ip="172.22.6.8",
+  is_kafka_enabled="true",
+  hyperauth_subdomain="hyperauth",
+  hypercloud_domain_host="tmaxcloud.org",
+  storage_class="default"
 )
 
 if is_kafka_enabled == "true" then [
