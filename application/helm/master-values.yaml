@@ -202,6 +202,7 @@ modules:
     notary:
       subdomain: hyperregistry-notary
     storageClass: nfs
+    storageClassDatabase: nfs
 
   ### tekton pipeline
   tektonPipeline:

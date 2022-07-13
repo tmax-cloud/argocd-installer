@@ -62,7 +62,12 @@ spec:
           # Hyperregistry notary가 사용할 subdomain으로 변경
           value: hyperregistry-notary
         - name: modules.hyperregistry.storageClass
-          # Hyperregistry notary가 사용할 storage class로 변경
+          # Hyperregistry에서 postgres외의 pvc의 storage class로 변경
+          # aws의 경우 efs-sc-0, 그외에는 nfs
+          value: nfs
+        - name: modules.hyperregistry.storageClassDatabase
+          # Hyperregistry에서 postgres의 pvc의 storage class로 변경
+          # aws의 경우 efs-sc-999, 그외에는 nfs
           value: nfs
         - name: modules.gitlab.subdomain
           # gitlab이 사용할 subdomain으로 변경

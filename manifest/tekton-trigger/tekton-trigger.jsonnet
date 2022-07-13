@@ -1,6 +1,6 @@
-function(
-    is_offline="false",
-    private_registry="registry.tmaxcloud.org"
+function (
+  is_offline="false",
+  private_registry="registry.tmaxcloud.org"
 )
 
 local gcr_registry = if is_offline == "false" then "" else private_registry + "/";

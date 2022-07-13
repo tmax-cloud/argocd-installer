@@ -1,0 +1,28 @@
+{{ $isMaster := eq .Values.global.cluster "master" }}
+{{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
+
+{{- if .Values.modules.certManager.enabled }}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    cluster: {{ ternary "master" $prefix $isMaster }}
+    gatewayBootstrap: cert-manager
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+  name: cert-manager
+{{- end }}
+
+{{- if .Values.modules.gateway.enabled }}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    cluster: {{ ternary "master" $prefix $isMaster }}
+    gatewayBootstrap: gateway
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+  name: api-gateway-system
+{{- end }}

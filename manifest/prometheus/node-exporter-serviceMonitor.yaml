@@ -13,6 +13,10 @@ spec:
   - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
     interval: 15s
     port: https
+    relabelings:
+    - sourceLabels:
+      - __meta_kubernetes_pod_node_name
+      targetLabel: instance
     scheme: https
     tlsConfig:
       insecureSkipVerify: true

@@ -50,6 +50,8 @@ spec:
             value: "{{ $isMaster }}"
           - name: opensearch_subdomain
             value: {{ .Values.modules.opensearch.dashboard.subdomain }}
+          - name: opensearch_client_id
+            value: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
           - name: storageClass
             value: {{ .Values.modules.opensearch.fluentd.storageClass }}
     path: manifest/opensearch
