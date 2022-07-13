@@ -148,6 +148,10 @@ spec:
           mountPath: /tmp/shared
         - name: gitlab-account-secret
           mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        {{- if ne .Values.global.timezone "UTC" }}
+        - name: timezone-config
+          mountPath: /etc/localtime
+        {{- end }}
         resources:
           limits:
             cpu: 1
@@ -213,6 +217,10 @@ spec:
           mountPath: /tmp/shared
         - name: gitlab-account-secret
           mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        {{- if ne .Values.global.timezone "UTC" }}
+        - name: timezone-config
+          mountPath: /etc/localtime
+        {{- end }}
         resources:
           limits:
             cpu: 1
@@ -229,6 +237,11 @@ spec:
               /opt/gitlab/bin/gitlab-healthcheck --fail --max-time 10
           periodSeconds: 150
       volumes:
+      {{- if ne .Values.global.timezone "UTC" }}
+      - name: timezone-config
+        hostPath:
+          path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.global.time_zone }}
+      {{- end }}
       - name: gitlab-account-secret
         secret:
           defaultMode: 420

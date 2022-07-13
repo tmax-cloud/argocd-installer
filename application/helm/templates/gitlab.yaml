@@ -25,6 +25,8 @@ spec:
           value: {{ .Values.global.domain }}
         - name: ingress.hosts.subdomain
           value: {{ .Values.modules.gitlab.subdomain }}
+        - name: timezone
+          value: {{ .Values.global.timeZone }}
     path: manifest/gitlab
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
