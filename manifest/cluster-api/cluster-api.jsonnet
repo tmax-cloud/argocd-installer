@@ -1,6 +1,7 @@
 function (
   is_offline="false",
-  private_registry="172.22.6.2:5000"
+  private_registry="172.22.6.2:5000",
+  time_zone="UTC"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -94,7 +95,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                   "name": "capi-controller-manager-token",
                   "readOnly": true
                 }
-              ]
+              ] + (
+                if time_zone != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  }
+                ] else []
+              )
             }
           ],
           "serviceAccountName": "capi-controller-manager",
@@ -113,7 +121,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "secretName": "capi-controller-manager-token"
               }
             }
-          ]
+          ] + (
+            if time_zone != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                }
+              }
+            ] else []
+          )
         }
       }
     }
@@ -216,7 +233,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "name": "capi-controller-manager-token",
                 "readOnly": true
               }
-            ]
+            ] + (
+              if time_zone != "UTC" then [
+                {
+                  "name": "timezone-config",
+                  "mountPath": "/etc/localtime"
+                }
+              ] else []
+            )
           }
           ],
           "serviceAccountName": "capi-controller-manager",
@@ -242,7 +266,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "secretName": "capi-controller-manager-token"
               }
             }
-          ]
+          ] + (
+            if time_zone != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                }
+              }
+            ] else []
+          )
         }
       }
     }
@@ -316,7 +349,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                   "name": "capi-kubeadm-bootstrap-controller-manager-token",
                   "readOnly": true
                 }
-              ]
+              ] + (
+                if time_zone != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  }
+                ] else []
+              )
             }
           ],
           "serviceAccountName": "capi-kubeadm-bootstrap-controller-manager",
@@ -335,7 +375,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "secretName": "capi-kubeadm-bootstrap-controller-manager-token"
               }
             }
-          ]
+          ] + (
+            if time_zone != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                }
+              }
+            ] else []
+          )
         }
       }
     }
@@ -421,7 +470,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                   "name": "capi-kubeadm-bootstrap-controller-manager-token",
                   "readOnly": true
                 }
-              ]
+              ] + (
+                if time_zone != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  }
+                ] else []
+              )
             }
           ],
           "serviceAccountName": "capi-kubeadm-bootstrap-controller-manager",
@@ -447,7 +503,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "secretName": "capi-kubeadm-bootstrap-controller-manager-token"
               }
             }
-          ]
+          ] + (
+            if time_zone != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                }
+              }
+            ] else []
+          )
         }
       }
     }
@@ -520,7 +585,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "name": "capi-kubeadm-control-plane-controller-manager-token",
                 "readOnly": true
               }
-            ]
+            ] + (
+                if time_zone != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  }
+                ] else []
+              )
           }
           ],
           "serviceAccountName": "capi-kubeadm-control-plane-controller-manager",
@@ -539,7 +611,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "secretName": "capi-kubeadm-control-plane-controller-manager-token"
               }
             }
-          ]
+          ] + (
+            if time_zone != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                }
+              }
+            ] else []
+          )
         }
       }
     }
@@ -624,7 +705,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                   "name": "capi-kubeadm-control-plane-controller-manager-token",
                   "readOnly": true
                 }
-              ]
+              ] + (
+                if time_zone != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  }
+                ] else []
+              )
             }
           ],
           "serviceAccountName": "capi-kubeadm-control-plane-controller-manager",
@@ -650,7 +738,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "secretName": "capi-kubeadm-control-plane-controller-manager-token"
               }
             }
-          ]
+          ] + (
+            if time_zone != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                }
+              }
+            ] else []
+          )
         }
       }
     }

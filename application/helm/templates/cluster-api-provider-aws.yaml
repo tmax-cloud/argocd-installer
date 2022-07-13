@@ -23,6 +23,8 @@ spec:
             value: {{ .Values.global.privateRegistry }}
           - name: credentials
             value : {{ .Values.modules.capi.providers.aws.credentials }}
+          - name: time_zone
+            value: {{ .Values.global.timeZone }}
     path: manifest/cluster-api-provider-aws
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
