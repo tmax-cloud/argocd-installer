@@ -1,19 +1,12 @@
 ---
-apiVersion: "apiextensions.k8s.io/v1beta1"
+apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.3.0"
+    controller-gen.kubebuilder.io/version: "v0.7.0"
   creationTimestamp: null
   name: "rolebindingclaims.claim.tmax.io"
 spec:
-  additionalPrinterColumns:
-  - JSONPath: ".status.status"
-    name: "Status"
-    type: "string"
-  - JSONPath: ".status.reason"
-    name: "Reason"
-    type: "string"
   group: "claim.tmax.io"
   names:
     kind: "RoleBindingClaim"
@@ -23,90 +16,96 @@ spec:
     - "rbc"
     singular: "rolebindingclaim"
   scope: "Namespaced"
-  subresources:
-    status: {}
-  validation:
-    openAPIV3Schema:
-      description: "%rolebindingclaims.yaml.spec.validation.openAPIV3Schema"
-      properties:
-        apiVersion:
-          description: "%rolebindingclaims.yaml.spec.validation.openAPIV3Schema.properties.apiVersion"
-          type: "string"
-        kind:
-          description: "%rolebindingclaims.yaml.spec.validation.openAPIV3Schema.properties.kind"
-          type: "string"
-        metadata:
-          type: "object"
-        roleRef:
-          description: "%rolebindingclaims.yaml.spec.validation.openAPIV3Schema.properties.roleRef"
-          properties:
-            apiGroup:
-              description: "%rolebindingclaims.yaml.spec.validation.openAPIV3Schema.properties.roleRef.properties.apiGroup"
-              type: "string"
-            kind:
-              description: "%rolebindingclaims.yaml.spec.validation.openAPIV3Schema.properties.roleRef.properties.kind"
-              type: "string"
-            name:
-              description: "%rolebindingclaims.yaml.spec.validation.openAPIV3Schema.properties.roleRef.properties.name"
-              type: "string"
-          required:
-          - "apiGroup"
-          - "kind"
-          - "name"
-          type: "object"
-        status:
-          description: "%rolebindingclaims.yaml.spec.validation.openAPIV3Schema.properties.status"
-          properties:
-            lastTransitionTime:
-              description: "%rolebindingclaims.yaml.spec.validation.openAPIV3Schema.properties.status.properties.lastTransitionTime"
-              format: "date-time"
-              type: "string"
-            message:
-              description: "%rolebindingclaims.yaml.spec.validation.openAPIV3Schema.properties.status.properties.message"
-              type: "string"
-            reason:
-              description: "%rolebindingclaims.yaml.spec.validation.openAPIV3Schema.properties.status.properties.reason"
-              type: "string"
-            status:
-              description: "%rolebindingclaims.yaml.spec.validation.openAPIV3Schema.properties.status.properties.status"
-              enum:
-              - "Awaiting"
-              - "Approved"
-              - "Rejected"
-              - "Error"
-              - "Role Binding Deleted"
-              type: "string"
-          type: "object"
-        subjects:
-          description: "%rolebindingclaims.yaml.spec.validation.openAPIV3Schema.properties.subjects"
-          items:
-            description: "%rolebindingclaims.yaml.spec.validation.openAPIV3Schema.properties.subjects.items"
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: ".status.status"
+      name: "Status"
+      type: "string"
+    - jsonPath: ".status.reason"
+      name: "Reason"
+      type: "string"
+    name: "v1alpha1"
+    schema:
+      openAPIV3Schema:
+        description: "%rolebindingclaims.yaml.spec.versions.schema.openAPIV3Schema"
+        properties:
+          apiVersion:
+            description: "%rolebindingclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.apiVersion"
+            type: "string"
+          kind:
+            description: "%rolebindingclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.kind"
+            type: "string"
+          metadata:
+            type: "object"
+          roleRef:
+            description: "%rolebindingclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.roleRef"
             properties:
               apiGroup:
-                description: "%rolebindingclaims.yaml.spec.validation.openAPIV3Schema.properties.subjects.items.properties.apiGroup"
+                description: "%rolebindingclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.roleRef.properties.apiGroup"
                 type: "string"
               kind:
-                description: "%rolebindingclaims.yaml.spec.validation.openAPIV3Schema.properties.subjects.items.properties.kind"
+                description: "%rolebindingclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.roleRef.properties.kind"
                 type: "string"
               name:
-                description: "%rolebindingclaims.yaml.spec.validation.openAPIV3Schema.properties.subjects.items.properties.name"
-                type: "string"
-              namespace:
-                description: "%rolebindingclaims.yaml.spec.validation.openAPIV3Schema.properties.subjects.items.properties.namespace"
+                description: "%rolebindingclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.roleRef.properties.name"
                 type: "string"
             required:
+            - "apiGroup"
             - "kind"
             - "name"
             type: "object"
-          type: "array"
-      required:
-      - "roleRef"
-      type: "object"
-  version: "v1alpha1"
-  versions:
-  - name: "v1alpha1"
+          status:
+            description: "%rolebindingclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.status"
+            properties:
+              lastTransitionTime:
+                description: "%rolebindingclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.lastTransitionTime"
+                format: "date-time"
+                type: "string"
+              message:
+                description: "%rolebindingclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.message"
+                type: "string"
+              reason:
+                description: "%rolebindingclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.reason"
+                type: "string"
+              status:
+                description: "%rolebindingclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.status"
+                enum:
+                - "Awaiting"
+                - "Approved"
+                - "Rejected"
+                - "Error"
+                - "Role Binding Deleted"
+                type: "string"
+            type: "object"
+          subjects:
+            description: "%rolebindingclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.subjects"
+            items:
+              description: "%rolebindingclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.subjects.items"
+              properties:
+                apiGroup:
+                  description: "%rolebindingclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.subjects.items.properties.apiGroup"
+                  type: "string"
+                kind:
+                  description: "%rolebindingclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.subjects.items.properties.kind"
+                  type: "string"
+                name:
+                  description: "%rolebindingclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.subjects.items.properties.name"
+                  type: "string"
+                namespace:
+                  description: "%rolebindingclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.subjects.items.properties.namespace"
+                  type: "string"
+              required:
+              - "kind"
+              - "name"
+              type: "object"
+            type: "array"
+        required:
+        - "roleRef"
+        type: "object"
     served: true
     storage: true
+    subresources:
+      status: {}
 status:
   acceptedNames:
     kind: ""
@@ -114,24 +113,14 @@ status:
   conditions: []
   storedVersions: []
 ---
-apiVersion: "apiextensions.k8s.io/v1beta1"
+apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: "hypercloud5-system/hypercloud-single-operator-serving-cert"
-    controller-gen.kubebuilder.io/version: "v0.3.0"
+    controller-gen.kubebuilder.io/version: "v0.7.0"
   name: "namespaceclaims.claim.tmax.io"
 spec:
-  additionalPrinterColumns:
-  - JSONPath: ".resourceName"
-    name: "ResourceName"
-    type: "string"
-  - JSONPath: ".status.status"
-    name: "Status"
-    type: "string"
-  - JSONPath: ".status.reason"
-    name: "Reason"
-    type: "string"
   group: "claim.tmax.io"
   names:
     kind: "NamespaceClaim"
@@ -141,71 +130,80 @@ spec:
     - "nsc"
     singular: "namespaceclaim"
   scope: "Cluster"
-  subresources:
-    status: {}
-  validation:
-    openAPIV3Schema:
-      description: "%namespaceclaims.yaml.spec.validation.openAPIV3Schema"
-      properties:
-        apiVersion:
-          description: "%namespaceclaims.yaml.spec.validation.openAPIV3Schema.properties.apiVersion"
-          type: "string"
-        kind:
-          description: "%namespaceclaims.yaml.spec.validation.openAPIV3Schema.properties.kind"
-          type: "string"
-        metadata:
-          type: "object"
-        resourceName:
-          description: "%namespaceclaims.yaml.spec.validation.openAPIV3Schema.properties.resourceName"
-          type: "string"
-        spec:
-          description: "%namespaceclaims.yaml.spec.validation.openAPIV3Schema.properties.spec"
-          properties:
-            hard:
-              additionalProperties:
-                anyOf:
-                - type: "integer"
-                - type: "string"
-                pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\\
-                  +|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
-                x-kubernetes-int-or-string: true
-              description: "%namespaceclaims.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.hard"
-              type: "object"
-          required:
-          - "hard"
-          type: "object"
-        status:
-          description: "%namespaceclaims.yaml.spec.validation.openAPIV3Schema.properties.status"
-          properties:
-            lastTransitionTime:
-              description: "%namespaceclaims.yaml.spec.validation.openAPIV3Schema.properties.status.properties.lastTransitionTime"
-              format: "date-time"
-              type: "string"
-            message:
-              description: "%namespaceclaims.yaml.spec.validation.openAPIV3Schema.properties.status.properties.message"
-              type: "string"
-            reason:
-              description: "%namespaceclaims.yaml.spec.validation.openAPIV3Schema.properties.status.properties.reason"
-              type: "string"
-            status:
-              description: "%namespaceclaims.yaml.spec.validation.openAPIV3Schema.properties.status.properties.status"
-              enum:
-              - "Awaiting"
-              - "Approved"
-              - "Rejected"
-              - "Error"
-              - "Namespace Deleted"
-              type: "string"
-          type: "object"
-      required:
-      - "resourceName"
-      - "spec"
-      type: "object"
-  version: "v1alpha1"
   versions:
-  - name: "v1alpha1"
+  - additionalPrinterColumns:
+    - jsonPath: ".resourceName"
+      name: "ResourceName"
+      type: "string"
+    - jsonPath: ".status.status"
+      name: "Status"
+      type: "string"
+    - jsonPath: ".status.reason"
+      name: "Reason"
+      type: "string"
+    name: "v1alpha1"
+    schema:
+      openAPIV3Schema:
+        description: "%namespaceclaims.yaml.spec.versions.schema.openAPIV3Schema"
+        properties:
+          apiVersion:
+            description: "%namespaceclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.apiVersion"
+            type: "string"
+          kind:
+            description: "%namespaceclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.kind"
+            type: "string"
+          metadata:
+            type: "object"
+          resourceName:
+            description: "%namespaceclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.resourceName"
+            type: "string"
+          spec:
+            description: "%namespaceclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec"
+            properties:
+              hard:
+                additionalProperties:
+                  anyOf:
+                  - type: "integer"
+                  - type: "string"
+                  pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\\
+                    +|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                  x-kubernetes-int-or-string: true
+                description: "%namespaceclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.hard"
+                type: "object"
+            required:
+            - "hard"
+            type: "object"
+          status:
+            description: "%namespaceclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.status"
+            properties:
+              lastTransitionTime:
+                description: "%namespaceclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.lastTransitionTime"
+                format: "date-time"
+                type: "string"
+              message:
+                description: "%namespaceclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.message"
+                type: "string"
+              reason:
+                description: "%namespaceclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.reason"
+                type: "string"
+              status:
+                description: "%namespaceclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.status"
+                enum:
+                - "Awaiting"
+                - "Approved"
+                - "Rejected"
+                - "Error"
+                - "Namespace Deleted"
+                type: "string"
+            type: "object"
+        required:
+        - "resourceName"
+        - "spec"
+        type: "object"
     served: true
     storage: true
+    subresources:
+      status: {}
 status:
   acceptedNames:
     kind: ""
@@ -213,21 +211,14 @@ status:
   conditions: []
   storedVersions: []
 ---
-apiVersion: "apiextensions.k8s.io/v1beta1"
+apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: "hypercloud5-system/hypercloud-single-operator-serving-cert"
-    controller-gen.kubebuilder.io/version: "v0.3.0"
+    controller-gen.kubebuilder.io/version: "v0.7.0"
   name: "resourcequotaclaims.claim.tmax.io"
 spec:
-  additionalPrinterColumns:
-  - JSONPath: ".status.status"
-    name: "Status"
-    type: "string"
-  - JSONPath: ".status.reason"
-    name: "Reason"
-    type: "string"
   group: "claim.tmax.io"
   names:
     kind: "ResourceQuotaClaim"
@@ -237,67 +228,73 @@ spec:
     - "rqc"
     singular: "resourcequotaclaim"
   scope: "Namespaced"
-  subresources:
-    status: {}
-  validation:
-    openAPIV3Schema:
-      description: "%resourcequotaclaims.yaml.spec.validation.openAPIV3Schema"
-      properties:
-        apiVersion:
-          description: "%resourcequotaclaims.yaml.spec.validation.openAPIV3Schema.properties.apiVersion"
-          type: "string"
-        kind:
-          description: "%resourcequotaclaims.yaml.spec.validation.openAPIV3Schema.properties.kind"
-          type: "string"
-        metadata:
-          type: "object"
-        spec:
-          description: "%resourcequotaclaims.yaml.spec.validation.openAPIV3Schema.properties.spec"
-          properties:
-            hard:
-              additionalProperties:
-                anyOf:
-                - type: "integer"
-                - type: "string"
-                pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\\
-                  +|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
-                x-kubernetes-int-or-string: true
-              description: "%resourcequotaclaims.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.hard"
-              type: "object"
-          required:
-          - "hard"
-          type: "object"
-        status:
-          description: "%resourcequotaclaims.yaml.spec.validation.openAPIV3Schema.properties.status"
-          properties:
-            lastTransitionTime:
-              description: "%resourcequotaclaims.yaml.spec.validation.openAPIV3Schema.properties.status.properties.lastTransitionTime"
-              format: "date-time"
-              type: "string"
-            message:
-              description: "%resourcequotaclaims.yaml.spec.validation.openAPIV3Schema.properties.status.properties.message"
-              type: "string"
-            reason:
-              description: "%resourcequotaclaims.yaml.spec.validation.openAPIV3Schema.properties.status.properties.reason"
-              type: "string"
-            status:
-              description: "%resourcequotaclaims.yaml.spec.validation.openAPIV3Schema.properties.status.properties.status"
-              enum:
-              - "Awaiting"
-              - "Approved"
-              - "Rejected"
-              - "Error"
-              - "Resource Quota Deleted"
-              type: "string"
-          type: "object"
-      required:
-      - "spec"
-      type: "object"
-  version: "v1alpha1"
   versions:
-  - name: "v1alpha1"
+  - additionalPrinterColumns:
+    - jsonPath: ".status.status"
+      name: "Status"
+      type: "string"
+    - jsonPath: ".status.reason"
+      name: "Reason"
+      type: "string"
+    name: "v1alpha1"
+    schema:
+      openAPIV3Schema:
+        description: "%resourcequotaclaims.yaml.spec.versions.schema.openAPIV3Schema"
+        properties:
+          apiVersion:
+            description: "%resourcequotaclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.apiVersion"
+            type: "string"
+          kind:
+            description: "%resourcequotaclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.kind"
+            type: "string"
+          metadata:
+            type: "object"
+          spec:
+            description: "%resourcequotaclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec"
+            properties:
+              hard:
+                additionalProperties:
+                  anyOf:
+                  - type: "integer"
+                  - type: "string"
+                  pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\\
+                    +|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                  x-kubernetes-int-or-string: true
+                description: "%resourcequotaclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.hard"
+                type: "object"
+            required:
+            - "hard"
+            type: "object"
+          status:
+            description: "%resourcequotaclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.status"
+            properties:
+              lastTransitionTime:
+                description: "%resourcequotaclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.lastTransitionTime"
+                format: "date-time"
+                type: "string"
+              message:
+                description: "%resourcequotaclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.message"
+                type: "string"
+              reason:
+                description: "%resourcequotaclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.reason"
+                type: "string"
+              status:
+                description: "%resourcequotaclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.status"
+                enum:
+                - "Awaiting"
+                - "Approved"
+                - "Rejected"
+                - "Error"
+                - "Resource Quota Deleted"
+                type: "string"
+            type: "object"
+        required:
+        - "spec"
+        type: "object"
     served: true
     storage: true
+    subresources:
+      status: {}
 status:
   acceptedNames:
     kind: ""
@@ -496,14 +493,17 @@ spec:
     name: tmaxcloud-issuer
   secretName: hypercloud-single-operator-webhook-server-cert
 ---
-apiVersion: admissionregistration.k8s.io/v1beta1
+apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: hypercloud5-system/hypercloud-single-operator-serving-cert
   name: hypercloud-single-operator-validating-webhook-configuration
 webhooks:
-- clientConfig:
+- admissionReviewVersions:
+  - v1beta1
+  - v1
+  clientConfig:
     service:
       name: hypercloud-single-operator-webhook-service
       namespace: hypercloud5-system
@@ -521,7 +521,11 @@ webhooks:
     resources:
     - namespaceclaims
     - namespaceclaims/status
-- clientConfig:
+  sideEffects: NoneOnDryRun
+- admissionReviewVersions:
+  - v1beta1
+  - v1
+  clientConfig:
     service:
       name: hypercloud-single-operator-webhook-service
       namespace: hypercloud5-system
@@ -539,7 +543,11 @@ webhooks:
     resources:
     - resourcequotaclaims
     - resourcequotaclaims/status
-- clientConfig:
+  sideEffects: NoneOnDryRun
+- admissionReviewVersions:
+  - v1beta1
+  - v1
+  clientConfig:
     service:
       name: hypercloud-single-operator-webhook-service
       namespace: hypercloud5-system
@@ -556,3 +564,4 @@ webhooks:
     - UPDATE
     resources:
     - rolebindingclaims/status
+  sideEffects: NoneOnDryRun
