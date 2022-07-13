@@ -127,6 +127,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "mountPath": "/etc/localtime"
                   }
                 ] else []
+              )
             }
           ],
           "securityContext": {
