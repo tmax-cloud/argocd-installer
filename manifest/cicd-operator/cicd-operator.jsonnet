@@ -1,8 +1,8 @@
-function(
-    is_offline = "false",
-    private_registry = "registry.tmaxcloud.org",
-    custom_domain = "tmaxcloud.org",
-    cicd_subdomain = "cicd-webhook"
+function (
+  is_offline = "false",
+  private_registry = "registry.tmaxcloud.org",
+  custom_domain = "tmaxcloud.org",
+  cicd_subdomain = "cicd-webhook"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";

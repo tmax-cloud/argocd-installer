@@ -1,24 +1,24 @@
 function (
-    is_offline="false",
-    private_registry="172.22.6.2:5000",
-    os_image_tag="1.2.3",
-    busybox_image_tag="1.32.0",
-    os_resource_limit_memory="8Gi",
-    os_resource_request_memory="5Gi",
-    os_jvm_heap="-Xms4g -Xmx4g",
-    os_volume_size="50Gi",
-    dashboard_image_tag="1.2.0",
-    dashboard_svc_type="ClusterIP",
-    opensearch_client_id="opensearch",
-    tmax_client_secret="tmax_client_secret",
-    hyperauth_url="172.23.4.105",
-    hyperauth_realm="tmax",
-    custom_domain_name="domain_name",
-    fluentd_image_tag="fluentd-v1.4.2-debian-elasticsearch-1.1",
-    custom_clusterissuer="tmaxcloud-issuer",
-    is_master_cluster="true",
-    opensearch_subdomain="opensearch-dashboard",
-    storageClass="default"
+  is_offline="false",
+  private_registry="172.22.6.2:5000",
+  os_image_tag="1.2.3",
+  busybox_image_tag="1.32.0",
+  os_resource_limit_memory="8Gi",
+  os_resource_request_memory="5Gi",
+  os_jvm_heap="-Xms4g -Xmx4g",
+  os_volume_size="50Gi",
+  dashboard_image_tag="1.2.0",
+  dashboard_svc_type="ClusterIP",
+  opensearch_client_id="opensearch",
+  tmax_client_secret="tmax_client_secret",
+  hyperauth_url="172.23.4.105",
+  hyperauth_realm="tmax",
+  custom_domain_name="domain_name",
+  fluentd_image_tag="fluentd-v1.4.2-debian-elasticsearch-1.1",
+  custom_clusterissuer="tmaxcloud-issuer",
+  is_master_cluster="true",
+  opensearch_subdomain="opensearch-dashboard",
+  storageClass="default"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -103,6 +103,11 @@ local fluentd_image_path = "docker.io/tmaxcloudck/hypercloud:" + fluentd_image_t
                   "readOnly": true
                 },
                 {
+                  "name": "roles",
+                  "mountPath": "/usr/share/opensearch/plugins/opensearch-security/securityconfig/roles.yml",
+                  "subPath": "roles.yml"
+                },
+                {
                   "name": "role-mapping",
                   "mountPath": "/usr/share/opensearch/plugins/opensearch-security/securityconfig/roles_mapping.yml",
                   "subPath": "roles_mapping.yml"
@@ -165,6 +170,12 @@ local fluentd_image_path = "docker.io/tmaxcloudck/hypercloud:" + fluentd_image_t
               "name": "admin-cert",
               "secret": {
                 "secretName": "admin-secret"
+              }
+            },
+            {
+              "name": "roles",
+              "configMap": {
+                "name": "os-role"
               }
             },
             {
@@ -566,159 +577,42 @@ local fluentd_image_path = "docker.io/tmaxcloudck/hypercloud:" + fluentd_image_t
       "namespace": "kube-logging"
     },
     "data": if hyperauth_url == "" then {
-      "opensearch_dashboards.yml": std.join("", 
+      "opensearch_dashboards.yml": std.join("\n", 
         [
           "server.name: dashboards", 
-          "\nserver.host: '0.0.0.0'",
-          "\nopensearch.username: admin",
-          "\nopensearch.password: admin",
-          "\nopensearch.ssl.verificationMode: none",
-          "\nopensearch.requestTimeout: '100000ms'"
+          "server.host: '0.0.0.0'",
+          "opensearch.username: admin",
+          "opensearch.password: admin",
+          "opensearch.ssl.verificationMode: none",
+          "opensearch.requestTimeout: '100000ms'"
         ]
       )
     } else {
-      "opensearch_dashboards.yml": std.join("",
+      "opensearch_dashboards.yml": std.join("\n",
         [
-          "server.name: dashboards", 
-          "\nserver.host: '0.0.0.0'", 
-          "\nserver.ssl.enabled: true", 
-          "\nserver.ssl.certificate: /usr/share/opensearch-dashboards/config/certificates/tls.crt",
-          "\nserver.ssl.key: /usr/share/opensearch-dashboards/config/certificates/tls.key",
-          "\nopensearch.hosts: ['https://opensearch.kube-logging.svc:9200']",
-          "\nopensearch.username: admin",
-          "\nopensearch.password: admin",
-          "\nopensearch.ssl.certificateAuthorities: [/usr/share/opensearch-dashboards/config/certificates/ca.crt]",
-          "\nopensearch.ssl.verificationMode: full",
-          "\nopensearch.requestHeadersWhitelist: ['Authorization', 'security_tenant', 'securitytenant']",
-          "\nopensearch_security.multitenancy.enabled: true",
-          "\nopensearch_security.multitenancy.tenants.enable_global: true",
-          "\nopensearch_security.multitenancy.tenants.enable_private: true",
-          "\nopensearch_security.multitenancy.tenants.preferred: ['Private', 'Global']",
-          "\nopensearch_security.multitenancy.enable_filter: false",
-          "\nopensearch_security.auth.type: openid", 
-          "\nopensearch_security.openid.connect_url: https://", hyperauth_url, "/auth/realms/", hyperauth_realm, "/.well-known/openid-configuration",
-          "\nopensearch_security.openid.client_id: ", opensearch_client_id, 
-          "\nopensearch_security.openid.client_secret: ", tmax_client_secret, 
-          "\nopensearch_security.openid.base_redirect_url: https://", opensearch_subdomain, ".", custom_domain_name,
-          "\nopensearch_security.openid.verify_hostnames: false", 
-          "\nopensearch_security.cookie.secure: false"
-        ]
-      )
-    }
-  },
-  {
-    "apiVersion": "v1",
-    "kind": "ConfigMap",
-    "metadata": {
-      "name": "os-role-mapping",
-      "namespace": "kube-logging"
-    },
-    "data": {
-      "roles_mapping.yml": std.join("",
-        [
-          "_meta:",
-          "\n  type: 'rolesmapping'",
-          "\n  config_version: 2",
-          "\n ",
-          "\nall_access:",
-          "\n  reserved: false",
-          "\n  backend_roles:",
-          "\n  - 'opensearch-admin'",
-          "\n  description: 'Maps admin to all_access'",
-          "\n ",
-          "\nown_index:",
-          "\n  reserved: false",
-          "\n  users:",
-          "\n  - '*'",
-          "\n  description: 'Allow full access to an index named like the username'",
-          "\n ",
-          "\nlogstash:",
-          "\n  reserved: false",
-          "\n  backend_roles:",
-          "\n  - 'logstash'",
-          "\n ",
-          "\nkibana_user:",
-          "\n  reserved: false",
-          "\n  backend_roles:",
-          "\n  - 'kibanauser'",
-          "\n  description: 'Maps kibanauser to kibana_user'",
-          "\n ",
-          "\nreadall:",
-          "\n  reserved: false",
-          "\n  backend_roles:",
-          "\n  - 'readall'",
-          "\n ",
-          "\nmanage_snapshots:",
-          "\n  reserved: false",
-          "\n  backend_roles:",
-          "\n  - 'snapshotrestore'",
-          "\n ",
-          "\nkibana_server:",
-          "\n  reserved: true",
-          "\n  users:",
-          "\n  - 'kibanaserver'"
-        ]
-      )
-    }
-  },
-  {
-    "apiVersion": "v1",
-    "kind": "ConfigMap",
-    "metadata": {
-      "name": "os-users",
-      "namespace": "kube-logging"
-    },
-    "data": {
-      "internal_users.yml": std.join("",
-        [
-          "_meta:",
-          "\n  type: 'internalusers'",
-          "\n  config_version: 2",
-          "\n ",
-          "\nadmin:",
-          "\n  hash: '$2a$12$VcCDgh2NDk07JGN0rjGbM.Ad41qVR/YFJcgHp0UGns5JDymv..TOG'",
-          "\n  reserved: true",
-          "\n  backend_roles:",
-          "\n  - 'opensearch-admin'",
-          "\n  description: 'Demo admin user'",
-          "\n ",
-          "\nkibanaserver:",
-          "\n  hash: '$2a$12$4AcgAt3xwOWadA5s5blL6ev39OXDNhmOesEoo33eZtrq2N0YrU3H.'",
-          "\n  reserved: true",
-          "\n  description: 'Demo OpenSearch Dashboards user'",
-          "\n ",
-          "\nkibanaro:",
-          "\n  hash: '$2a$12$JJSXNfTowz7Uu5ttXfeYpeYE0arACvcwlPBStB1F.MI7f0U9Z4DGC'",
-          "\n  reserved: false",
-          "\n  backend_roles:",
-          "\n  - 'kibanauser'",
-          "\n  - 'readall'",
-          "\n  attributes:",
-          "\n    attribute1: 'value1'",
-          "\n    attribute2: 'value2'",
-          "\n    attribute3: 'value3'",
-          "\n  description: 'Demo OpenSearch Dashboards read only user'",
-          "\n ",
-          "\nlogstash:",
-          "\n  hash: '$2a$12$u1ShR4l4uBS3Uv59Pa2y5.1uQuZBrZtmNfqB3iM/.jL0XoV9sghS2'",
-          "\n  reserved: false",
-          "\n  backend_roles:",
-          "\n  - 'logstash'",
-          "\n  description: 'Demo logstash user'",
-          "\n ",
-          "\nreadall:",
-          "\n  hash: '$2a$12$ae4ycwzwvLtZxwZ82RmiEunBbIPiAmGZduBAjKN0TXdwQFtCwARz2'",
-          "\n  reserved: false",
-          "\n  backend_roles:",
-          "\n  - 'readall'",
-          "\n  description: 'Demo readall user'",
-          "\n ",
-          "\nsnapshotrestore:",
-          "\n  hash: '$2y$12$DpwmetHKwgYnorbgdvORCenv4NAK8cPUg8AI6pxLCuWf/ALc0.v7W'",
-          "\n  reserved: false",
-          "\n  backend_roles:",
-          "\n  - 'snapshotrestore'",
-          "\n  description: 'Demo snapshotrestore user'"
+          "server.name: dashboards",
+          "server.host: '0.0.0.0'",
+          "server.ssl.enabled: true",
+          "server.ssl.certificate: /usr/share/opensearch-dashboards/config/certificates/tls.crt",
+          "server.ssl.key: /usr/share/opensearch-dashboards/config/certificates/tls.key",
+          "opensearch.hosts: ['https://opensearch.kube-logging.svc:9200']",
+          "opensearch.username: admin",
+          "opensearch.password: admin",
+          "opensearch.ssl.certificateAuthorities: [/usr/share/opensearch-dashboards/config/certificates/ca.crt]",
+          "opensearch.ssl.verificationMode: full",
+          "opensearch.requestHeadersWhitelist: ['Authorization', 'security_tenant', 'securitytenant']",
+          "opensearch_security.multitenancy.enabled: true",
+          "opensearch_security.multitenancy.tenants.enable_global: true",
+          "opensearch_security.multitenancy.tenants.enable_private: true",
+          "opensearch_security.multitenancy.tenants.preferred: ['Private', 'Global']",
+          "opensearch_security.multitenancy.enable_filter: false",
+          "opensearch_security.auth.type: openid",
+          std.join("", ["opensearch_security.openid.connect_url: https://", hyperauth_url, "/auth/realms/", hyperauth_realm, "/.well-known/openid-configuration"]),
+          std.join("", ["opensearch_security.openid.client_id: ", opensearch_client_id]),
+          std.join("", ["opensearch_security.openid.client_secret: ", tmax_client_secret]),
+          std.join("", ["opensearch_security.openid.base_redirect_url: https://", opensearch_subdomain, ".", custom_domain_name]),
+          "opensearch_security.openid.verify_hostnames: false",
+          "opensearch_security.cookie.secure: false"
         ]
       )
     }

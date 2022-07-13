@@ -1,25 +1,25 @@
 function (
-    is_offline="false",
-    private_registry="172.22.6.2:5000",
-    es_image_tag="7.2.1",
-    busybox_image_tag="1.32.0",
-    es_resource_limit_memory="8Gi",
-    es_resource_request_memory="5Gi",
-    es_jvm_heap="-Xms4g -Xmx4g",
-    es_volume_size="50Gi",
-    kibana_image_tag="7.2.0",
-    kibana_svc_type="ClusterIP",
-    gatekeeper_image_tag="10.0.0",
-    kibana_client_id="kibana",
-    tmax_client_secret="tmax_client_secret",
-    hyperauth_url="172.23.4.105",
-    hyperauth_realm="tmax",
-    custom_domain_name="domain_name",
-    encryption_key="AgXa7xRcoClDEU0ZDSH4X0XhL5Qy2Z2j",
-    fluentd_image_tag="v1.4.2-debian-elasticsearch-1.1",
-    custom_clusterissuer="tmaxcloud-issuer",
-    is_master_cluster="true",
-    kibana_subdomain="kibana"
+  is_offline="false",
+  private_registry="172.22.6.2:5000",
+  es_image_tag="7.2.1",
+  busybox_image_tag="1.32.0",
+  es_resource_limit_memory="8Gi",
+  es_resource_request_memory="5Gi",
+  es_jvm_heap="-Xms4g -Xmx4g",
+  es_volume_size="50Gi",
+  kibana_image_tag="7.2.0",
+  kibana_svc_type="ClusterIP",
+  gatekeeper_image_tag="10.0.0",
+  kibana_client_id="kibana",
+  tmax_client_secret="tmax_client_secret",
+  hyperauth_url="172.23.4.105",
+  hyperauth_realm="tmax",
+  custom_domain_name="domain_name",
+  encryption_key="AgXa7xRcoClDEU0ZDSH4X0XhL5Qy2Z2j",
+  fluentd_image_tag="v1.4.2-debian-elasticsearch-1.1",
+  custom_clusterissuer="tmaxcloud-issuer",
+  is_master_cluster="true",
+  kibana_subdomain="kibana"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -225,7 +225,7 @@ local gatekeeper_enabled = if hyperauth_url != "" then true else false;
           "containers": [
             {
               "name": "kibana",
-              "image": std.join("",[target_registry, kibana_image_path]),
+              "image": std.join("", [target_registry, kibana_image_path]),
               "resources": {
                 "limits": {
                   "cpu": "500m",
@@ -308,12 +308,12 @@ local gatekeeper_enabled = if hyperauth_url != "" then true else false;
       "namespace": "kube-logging"
     },
     "data": {
-      "kibana.yml": std.join("", 
+      "kibana.yml": std.join("\n", 
         [
           "server.name: kibana",
-          "\nserver.host: '0'",
-          "\nelasticsearch.hosts: [ 'http://elasticsearch:9200' ]",
-          "\nelasticsearch.requestTimeout: '100000ms'"
+          "server.host: '0'",
+          "elasticsearch.hosts: [ 'http://elasticsearch:9200' ]",
+          "elasticsearch.requestTimeout: '100000ms'"
         ]
       )
     }
