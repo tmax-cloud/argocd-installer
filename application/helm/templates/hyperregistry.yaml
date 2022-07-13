@@ -17,6 +17,8 @@ spec:
   source:
     helm:
       parameters:
+        - name: global.time_zone
+          value: {{ .Values.global.timeZone }}
         - name: global.registry.is_offline
           value: "{{ .Values.global.network.disabled }}"
         - name: global.registry.private_registry

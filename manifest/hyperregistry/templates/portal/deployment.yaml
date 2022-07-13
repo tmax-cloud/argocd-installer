@@ -69,6 +69,10 @@ spec:
         ports:
         - containerPort: {{ template "harbor.portal.containerPort" . }}
         volumeMounts:
+        {{- if ne .Values.global.time_zone "UTC" }}
+        - name: timezone-config
+          mountPath: /etc/localtime
+        {{- end }}
         - name: portal-config
           mountPath: /etc/nginx/nginx.conf
           subPath: nginx.conf
@@ -77,6 +81,11 @@ spec:
           mountPath: /etc/harbor/ssl/portal
         {{- end }}
       volumes:
+      {{- if ne .Values.global.time_zone "UTC" }}
+      - name: timezone-config
+        hostPath: 
+          path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.global.time_zone }}
+      {{- end }}
       - name: portal-config
         configMap:
           name: "{{ template "harbor.portal" . }}"
