@@ -1,4 +1,5 @@
 function (
+    time_zone="UTC",
     is_offline="false",
     private_registry="172.22.6.2:5000",
     ai_devops_namespace="kubeflow",
@@ -22222,7 +22223,14 @@ local kfserving_image_tag = "v0.5.1";
                 "name": "kfserving-controller-manager-token",
                 "readOnly": true
               }
-            ]
+            ] + (
+                if time_zone != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  }
+                ] else []
+              )
           },
           {
             "args": [
@@ -22245,7 +22253,14 @@ local kfserving_image_tag = "v0.5.1";
                 "name": "kfserving-controller-manager-token",
                 "readOnly": true
               }
-            ]
+            ] + (
+                if time_zone != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  }
+                ] else []
+              )
           }
         ],
         "terminationGracePeriodSeconds": 10,
@@ -22264,7 +22279,16 @@ local kfserving_image_tag = "v0.5.1";
               "secretName": "kfserving-controller-manager-token"
             }
           }
-        ]
+        ] + (
+            if time_zone != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                }
+              }
+            ] else []
+          )
       }
     }
   }
