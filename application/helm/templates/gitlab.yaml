@@ -1,7 +1,7 @@
-{{ if .Values.modules.tektonTrigger.enabled }}
 {{ $isMaster := eq .Values.global.cluster "master" }}
+{{ if (and .Values.modules.gitlab.enabled (not $isMaster)) }}
 {{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
-{{ $module := "tekton-trigger" }}
+{{ $module := "gitlab" }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -12,19 +12,22 @@ metadata:
 spec:
   destination:
     name: {{ .Values.global.clusterName }}
-    namespace: tekton-pipelines
+    namespace: gitlab-system
   project: {{ .Values.spec.project }}
   source:
-    directory:
-      jsonnet:
-        tlas:
-          - name: is_offline
-            value: "{{ .Values.global.network.disabled }}"
-          - name: private_registry
-            value: {{ .Values.global.privateRegistry }}
-          - name: timezone
-            value: {{ .Values.global.timeZone }}            
-    path: manifest/tekton-trigger
+    helm:
+      parameters:
+        - name: is_offline
+          value: "{{ .Values.global.network.disabled }}"
+        - name: private_registry
+          value: {{ .Values.global.privateRegistry }}
+        - name: ingress.hosts.domain
+          value: {{ .Values.global.domain }}
+        - name: ingress.hosts.subdomain
+          value: {{ .Values.modules.gitlab.subdomain }}
+        - name: timezone
+          value: {{ .Values.global.timeZone }}
+    path: manifest/gitlab
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
 {{ end }}

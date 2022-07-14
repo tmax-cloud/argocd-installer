@@ -26,6 +26,8 @@ spec:
             value: {{ .Values.global.domain }}
           - name: cicd_subdomain
             value: {{ .Values.modules.cicd.subdomain }}
+          - name: timezone
+            value: {{ .Values.global.timeZone }}                     
     path: manifest/cicd-operator
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
