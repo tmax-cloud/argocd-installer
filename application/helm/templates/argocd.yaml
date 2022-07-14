@@ -26,15 +26,17 @@ spec:
         - name: ingress.hosts.subdomain
           value: {{ .Values.modules.argocd.subdomain }}
         - name: dex.replicas
-          value: {{ .Values.modules.argocd.subdomain }}
+          value: {{ .Values.modules.argocd.dex.replicas }}
         - name: repoServer.replicas
-          value: {{ .Values.modules.argocd.subdomain }}
+          value: {{ .Values.modules.argocd.repoServer.replicas }}
         - name: redis.replicas
-          value: {{ .Values.modules.argocd.subdomain }}
+          value: {{ .Values.modules.argocd.redis.replicas }}
         - name: argocdServer.replicas
-          value: {{ .Values.modules.argocd.subdomain }}
+          value: {{ .Values.modules.argocd.argocdServer.replicas }}
         - name: controller.replicas
-          value: {{ .Values.modules.argocd.subdomain }}
+          value: {{ .Values.modules.argocd.controller.replicas }}
+        - name: timezone
+          value: {{ .Values.global.timeZone }}
     path: manifest/argocd
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}

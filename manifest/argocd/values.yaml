@@ -40,4 +40,5 @@ ingress:
     secretName:
   enableTraefik: false
 
+timezone:
 
