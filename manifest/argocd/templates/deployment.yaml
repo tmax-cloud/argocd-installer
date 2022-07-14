@@ -45,6 +45,10 @@ spec:
           readOnlyRootFilesystem: true
           runAsNonRoot: true
         volumeMounts:
+        {{- if ne .Values.timezone "UTC" }}
+        - name: timezone-config
+          mountPath: /etc/localtime
+        {{- end }}
         - mountPath: /shared
           name: static-files
         - mountPath: /tmp
@@ -65,6 +69,10 @@ spec:
         imagePullPolicy: Always
         name: copyutil
         volumeMounts:
+        {{- if ne .Values.timezone "UTC" }}
+        - name: timezone-config
+          mountPath: /etc/localtime
+        {{- end }}
         - mountPath: /shared
           name: static-files
         - mountPath: /tmp
@@ -73,6 +81,11 @@ spec:
           name: argocd-dex-server-secret
       serviceAccountName: argocd-dex-server
       volumes:
+      {{- if ne .Values.timezone "UTC" }}
+      - name: timezone-config
+        hostPath: 
+          path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.timezone }}
+      {{- end }}
       - emptyDir: {}
         name: static-files
       - emptyDir: {}
@@ -129,10 +142,24 @@ spec:
         name: redis
         ports:
         - containerPort: 6379
+        volumeMounts:
+        {{- if ne .Values.timezone "UTC" }}
+        - name: timezone-config
+          mountPath: /etc/localtime
+        {{- end }}
       securityContext:
         runAsNonRoot: true
         runAsUser: 999
+      
+      
+      
       serviceAccountName: argocd-redis
+      volumes:
+      {{- if ne .Values.timezone "UTC" }}
+      - name: timezone-config
+        hostPath: 
+          path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.timezone }}
+      {{- end }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -284,6 +311,10 @@ spec:
           readOnlyRootFilesystem: true
           runAsNonRoot: true
         volumeMounts:
+        {{- if ne .Values.timezone "UTC" }}
+        - name: timezone-config
+          mountPath: /etc/localtime
+        {{- end }}
         - mountPath: /app/config/ssh
           name: ssh-known-hosts
         - mountPath: /app/config/tls
@@ -313,9 +344,18 @@ spec:
         {{- end }}
         name: copyutil
         volumeMounts:
+        {{- if ne .Values.timezone "UTC" }}
+        - name: timezone-config
+          mountPath: /etc/localtime
+        {{- end }}
         - mountPath: /var/run/argocd
           name: var-files
       volumes:
+      {{- if ne .Values.timezone "UTC" }}
+      - name: timezone-config
+        hostPath: 
+          path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.timezone }}
+      {{- end }}
       - configMap:
           name: argocd-ssh-known-hosts-cm
         name: ssh-known-hosts
@@ -567,6 +607,10 @@ spec:
           readOnlyRootFilesystem: true
           runAsNonRoot: true
         volumeMounts:
+        {{- if ne .Values.timezone "UTC" }}
+        - name: timezone-config
+          mountPath: /etc/localtime
+        {{- end }}
         - mountPath: /app/config/ssh
           name: ssh-known-hosts
         - mountPath: /app/config/tls
@@ -581,6 +625,11 @@ spec:
           name: argocd-server-secret
       serviceAccountName: argocd-server
       volumes:
+      {{- if ne .Values.timezone "UTC" }}
+      - name: timezone-config
+        hostPath: 
+          path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.timezone }}
+      {{- end }}
       - emptyDir: {}
         name: plugins-home
       - emptyDir: {}
