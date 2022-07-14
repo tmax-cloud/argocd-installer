@@ -42,6 +42,8 @@ spec:
             value: {{ .Values.modules.prometheus.pvcSize }}
           - name: prometheus_version
             value: {{ .Values.modules.prometheus.versions.prometheus }}
+          - name: timezone
+            value: {{ .Values.global.timeZone }}
     path: manifest/prometheus
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
