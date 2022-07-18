@@ -26,6 +26,8 @@ spec:
       valueFiles:
         - {{ .Values.modules.console.source.helm.valueFiles }}
       parameters:
+        - name: console.timeZone
+          value: {{ .Values.global.timeZone | default "UTC" }}
         - name: console.auth.hyperauth
           value: {{ .Values.global.hyperauth.address | default "hyperauth.org"}}
         - name: console.auth.realm

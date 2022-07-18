@@ -28,6 +28,12 @@ spec:
         - {{ .Values.modules.gateway.source.helm.valueFiles }}
       {{- end }}
       parameters:
+      {{- if not (eq .Values.global.timeZone "UTC") }}
+        - name: traefik.env[0].name
+          value: TZ
+        - name: traefik.env[0].value
+          value: {{ .Values.global.timeZone }}
+      {{- end }}
       {{- if .Values.global.tls.acme.enabled }}
         - name: tls.acme.enabled
           value: "true"
