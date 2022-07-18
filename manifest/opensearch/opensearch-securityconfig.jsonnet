@@ -1,4 +1,5 @@
 function (
+  timezone="UTC",
   is_offline="false",
   private_registry="172.22.6.2:5000",
   os_image_tag="1.2.3",
