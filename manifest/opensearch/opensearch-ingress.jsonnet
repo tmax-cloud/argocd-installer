@@ -30,7 +30,7 @@ function (
       "name": "dashboards",
       "namespace": "kube-logging",
       "labels": {
-        "ingress.tmaxcloud.org/name": "dashboards"
+        "ingress.tmaxcloud.org/name": "opensearch-dashboards"
       },
       "annotations": {
         "traefik.ingress.kubernetes.io/router.entrypoints": "websecure",
