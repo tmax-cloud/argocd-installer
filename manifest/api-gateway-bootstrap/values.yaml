@@ -9,6 +9,7 @@ spec:
   project: default
 
 global:
+  timeZone: UTC
   cluster: master
   clusterName: in-cluster
   clusterNamespace: default

@@ -39,9 +39,10 @@ traefik:
   tolerations:
     - key: "node-role.kubernetes.io/master"
       operator: Exists
-  env:
-    - name: TZ
-      value: Asia/Seoul
+  env: []
+#  env:
+#    - name: TZ
+#      value: Asia/Seoul
   additionalVolumeMounts: []
   #  - name: gateway-confi
   # For instance when using a logshipper for access logs
