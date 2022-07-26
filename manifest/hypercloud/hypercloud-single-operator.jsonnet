@@ -11,7 +11,11 @@ function (
   hyperregistry_enabled="true",
   storageClass="default",
   aws_enabled="true",
-  vsphere_enabled="true"
+  vsphere_enabled="true",
+  multi_operator_log_level="info",
+  single_operator_log_level="info",
+  api_server_log_level="INFO",
+  postgres_log_level="WARNING",
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -44,12 +48,13 @@ local target_registry = if is_offline == "false" then "" else private_registry +
           {
             "args": [
               "--metrics-addr=127.0.0.1:8080",
-              "--enable-leader-election"
+              "--enable-leader-election",
+              std.join("", ["-zap-log-level=", single_operator_log_level])   
             ],
             "command": [
               "/manager"
             ],
-            "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-single-operator:b5.0.25.16"]),
+            "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-single-operator:b5.0.29.1"]),
             "name": "manager",
             "ports": [
               {

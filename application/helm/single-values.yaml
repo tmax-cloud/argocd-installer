@@ -181,6 +181,14 @@ modules:
       enabled: false
     # master cluster를 위한 value, 수정 X
     storageClass: default
+    multiOperator:
+      logLevel: info
+    singleOperator:
+      logLevel: info
+    apiServer:
+      logLevel: INFO
+    postgres:
+      logLevel: WARNING 
 
   ### hyperregistry
   hyperregistry:
