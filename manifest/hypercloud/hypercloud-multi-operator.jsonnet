@@ -50,7 +50,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
               "args": [
                 "--metrics-addr=127.0.0.1:8080",
                 "--enable-leader-election",
-                std.join("", ["-zap-log-level=", multi_operator_log_level])
+                std.join("", ["--zap-log-level=", multi_operator_log_level])
               ],
               "command": [
                 "/manager"
