@@ -3,6 +3,7 @@ function (
   // 이름을 다르게 사용할시 application/helm/templates의 모듈 application yaml에서도 이름을 변경
   is_offline="false",
   private_registry="registry.hypercloud.org",
+  // 모듈에서 여러 jsonnet 파일을 작성할 경우 모든 파일에 동일하게 변수들을 선언해주어야 함
   // 추가적인 변수 예시
   example_var="example_val",
   example_flag="true/false"
