@@ -11,7 +11,11 @@ function (
   hyperregistry_enabled="true",
   storageClass="default",
   aws_enabled="true",
-  vsphere_enabled="true"
+  vsphere_enabled="true",
+  multi_operator_log_level="info",
+  single_operator_log_level="info",
+  api_server_log_level="INFO",
+  postgres_log_level="WARNING",
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -48,8 +52,11 @@ local target_registry = if is_offline == "false" then "" else private_registry +
           "containers": [
             {
               "name": "hypercloud5-api-server",
-              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-api-server:b5.0.26.16"]),
+              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-api-server:b5.0.29.2"]),
               "imagePullPolicy": "IfNotPresent",
+              "args": [
+                std.join("", ["--log-level=", api_server_log_level])
+                ],
               "env": [
                 {
                   "name": "TZ",

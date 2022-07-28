@@ -42,6 +42,14 @@ spec:
             value: "{{ .Values.modules.capi.providers.aws.enabled }}"
           - name: vsphere_enabled
             value: "{{ .Values.modules.capi.providers.vsphere.enabled }}"
+          - name: multi_operator_log_level
+            value: "{{ .Values.modules.hyperCloud.multiOperator.logLevel }}"
+          - name: single_operator_log_level
+            value: "{{ .Values.modules.hyperCloud.singleOperator.logLevel }}"
+          - name: api_server_log_level
+            value: "{{ .Values.modules.hyperCloud.apiServer.logLevel }}"
+          - name: postgres_log_level
+            value: "{{ .Values.modules.hyperCloud.postgres.logLevel }}"
     path: manifest/hypercloud
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
