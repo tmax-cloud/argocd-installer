@@ -186,10 +186,10 @@ modules:
     # default로 주는 경우 default storage class를 사용
     # default를 사용하지 않고 싶은 경우에는 storage class이름을 기입
     storageClass: default
-    # multi-operator의 경우, info, debug, error, 1 이상의 integer value 기입 가능(대소문자 유의)
+    # multi-operator의 경우, info, debug, error 기입 가능(대소문자 유의)
     multiOperator:
       logLevel: info
-    # single-operator의 경우, info, debug, error, 1 이상의 integer value 기입 가능(대소문자 유의)
+    # single-operator의 경우, info, debug, error 기입 가능(대소문자 유의)
     singleOperator:
       logLevel: info
     # hypercloud api server의 경우, TRACE, DEBUG, INFO, WARN, ERROR, FATAL 기입 가능(대소문자 유의)

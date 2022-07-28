@@ -181,10 +181,10 @@ modules:
       enabled: false
     # master cluster를 위한 value, 수정 X
     storageClass: default
-    # multi-operator의 경우, info, debug, error, 1 이상의 integer value 기입 가능(대소문자 유의)
+    # multi-operator의 경우, info, debug, error 기입 가능(대소문자 유의)
     multiOperator:
       logLevel: info
-    # single-operator의 경우, info, debug, error, 1 이상의 integer value 기입 가능(대소문자 유의)
+    # single-operator의 경우, info, debug, error 기입 가능(대소문자 유의)
     singleOperator:
       logLevel: info
     # hypercloud api server의 경우, TRACE, DEBUG, INFO, WARN, ERROR, FATAL 기입 가능(대소문자 유의)
