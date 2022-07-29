@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: promscale
+  namespace: monitoring
+  labels:
+    app: promscale
+spec:
+  type: NodePort
+  ports:
+    - name: http-promscale
+      port: 9201
+      targetPort: 9201
+    - name: http-postgre
+      port: 5432
+      targetPort: 5432
+  selector:
+    app: promscale

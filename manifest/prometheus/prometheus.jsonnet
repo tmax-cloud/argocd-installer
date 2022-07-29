@@ -16,7 +16,11 @@ function (
   node_exporter_version="v1.2.2",
   prometheus_adapter_version="v0.9.1",
   prometheus_pvc="10Gi",
-  prometheus_version="v2.30.3"
+  prometheus_version="v2.30.3",
+  promscale_image_repo="timescale/promscale",
+  promscale_version="0.6.2",
+  postgres_image_repo="timescale/timescaledb-ha",
+  postgres_version="pg13.4-ts2.4-latest"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -667,6 +671,17 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         ]
       },
       "enableFeatures": [],
+	  "remoteRead": [
+        {
+          "url": "http://promscale.monitoring.svc.cluster.local:9201/read",
+          "readRecent": true
+        }
+      ],
+      "remoteWrite": [
+        {
+          "url": "http://promscale.monitoring.svc.cluster.local:9201/write"
+        }
+      ],
       "externalLabels": {},
       "image": std.join("",
         [
@@ -727,6 +742,165 @@ local target_registry = if is_offline == "false" then "" else private_registry +
       "serviceMonitorNamespaceSelector": {},
       "serviceMonitorSelector": {},
       "version": "2.30.3"
+    }
+  },
+  {
+    "apiVersion": "apps/v1",
+    "kind": "Deployment",
+    "metadata": {
+      "name": "promscale-connector",
+      "namespace": "monitoring"
+    },
+    "spec": {
+      "selector": {
+        "matchLabels": {
+          "app": "promscale"
+        }
+      },
+      "replicas": 1,
+      "template": {
+        "metadata": {
+          "labels": {
+            "app": "promscale"
+          }
+        },
+        "spec": {
+          "containers": [
+            {
+              "name": "promscale-connector",
+              "imagePullPolicy": "Always",
+              "image": std.join("",
+                [
+                  target_registry,
+                  promscale_image_repo,
+                  ":",
+                  promscale_version
+                ],
+              "args": [
+                "-db-user=$USER_ID",
+                "-db-host=$(PROMSCALE_DB_HOST)",
+                "-db-port=5432",
+                "-db-name=postgres",
+                "-db-password=1234",
+                "-db-ssl-mode=disable"
+              ],
+              "ports": [
+                {
+                  "containerPort": 9201
+                }
+              ],
+              "env": [
+                {
+                  "name": "PROMSCALE_DB_PORT",
+                  "value": "5432"
+                },
+                {
+                  "name": "PROMSCALE_LEADER_ELECTION_PG_ADVISORY_LOCK_ID",
+                  "value": "1"
+                },
+                {
+                  "name": "PROMSCALE_LEADER_ELECTION_PG_ADVISORY_LOCK_PROMETHEUS_TIMEOUT",
+                  "value": "30s"
+                },
+                {
+                  "name": "PROMSCALE_LOG_LEVEL",
+                  "value": "info"
+                },
+                {
+                  "name": "PROMSCALE_DB_HOST",
+                  "value": "promscale.monitoring.svc"
+                },
+                {
+                  "name": "PROMSCALE_DB_PASSWORD",
+                  "valueFrom": {
+                    "secretKeyRef": {
+                      "name": "postgres-secret",
+                      "key": "POSTGRES_PASSWORD"
+                    }
+                  }
+                },
+                {
+                  "name": "PROMSCALE_WEB_TELEMETRY_PATH",
+                  "value": "/metrics-text"
+                },
+                {
+                  "name": "PROMSCALE_DB_SSL_MODE",
+                  "value": "allow"
+                },
+                {
+                  "name": "POSTGRES_DB",
+                  "value": "postgres"
+                },
+                {
+                  "name": "POSTGRES_DB_USER",
+                  "value": "postgres"
+                }
+              ]
+            },
+            {
+              "name": "postgres",
+              "image": std.join("",
+                [
+                  target_registry,
+                  postgres_image_repo,
+                  ":",
+                  postgres_version
+                ],
+              "imagePullPolicy": "IfNotPresent",
+              "args": [
+                "-c",
+                "shared_buffers=256MB",
+                "-c",
+                "max_connections=1000"
+              ],
+              "ports": [
+                {
+                  "containerPort": 5432
+                }
+              ],
+              "env": [
+                {
+                  "name": "TZ",
+                  "value": "Asia/Seoul"
+                },
+                {
+                  "name": "POSTGRES_USER",
+                  "value": "postgres"
+                },
+                {
+                  "name": "POSTGRES_PASSWORD",
+                  "valueFrom": {
+                    "secretKeyRef": {
+                      "name": "postgres-secret",
+                      "key": "POSTGRES_PASSWORD"
+                    }
+                  }
+                }
+              ],
+              "resources": {
+                "requests": {
+                  "cpu": "500m",
+                  "memory": "4Gi"
+                }
+              },
+              "volumeMounts": [
+                {
+                  "mountPath": "/var/lib/postgresql/data",
+                  "name": "data"
+                }
+              ]
+            }
+          ],
+          "volumes": [
+            {
+              "name": "data",
+              "persistentVolumeClaim": {
+                "claimName": "postgres-pv-claim"
+              }
+            }
+          ]
+        }
+      }
     }
   }
 ]
