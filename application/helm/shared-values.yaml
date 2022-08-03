@@ -8,6 +8,10 @@ spec:
     targetRevision: HEAD
     
 global:
+  k8s:
+    # 설치하고자 하는 쿠베 환경의 버전
+    # version list : 1.19, 1.22    
+    version: 1.19
   network:
     # 폐쇄망일경우 true
     disabled: false

@@ -28,6 +28,8 @@ spec:
             value: {{ .Values.global.keycloak.domain }}
           - name: CUSTOM_DOMAIN_NAME
             value: {{ .Values.global.domain }}
+          - name: jaeger_client_id
+            value: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
           - name: jaeger_subdomain
             value: {{ .Values.modules.serviceMesh.jaeger.subdomain }}
     path: manifest/service-mesh/jaeger
