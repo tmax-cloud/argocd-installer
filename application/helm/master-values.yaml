@@ -33,6 +33,9 @@ modules:
           accessKeyID: accesskey
           accessKeySecret: secretkey
           hostedZoneID: hostedzoneid
+        # acme를 통한 인증서 발급의 경우, rate limit이 존재하므로 테스트를 위한 설정값이 따로 존재함
+        # 자세한 내용은 https://letsencrypt.org/docs/staging-environment/#rate-limits 참조
+        # staging / production 중 택1하여 기입하여야 하며, 각각 테스트용 / 운영용을 의미함
         environment: production
     certManager:
       enabled: true
