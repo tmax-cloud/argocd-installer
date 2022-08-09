@@ -109,8 +109,8 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             {
               "name": "capi-controller-manager-token",
               "secret": {
-              "defaultMode": 420,
-              "secretName": "capi-controller-manager-token"
+                "defaultMode": 420,
+                "secretName": "capi-controller-manager-token"
               }
             }
           ]

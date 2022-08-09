@@ -2,10 +2,10 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   labels:
-    # {{ cluster namespace }}-{{ cluster name}}로 변경
+    # {{ cluster namespace }}-{{ cluster name }}로 변경
     cluster: single
     appType: app-of-apps
-  # {{ cluster namespace }}-{{ cluster name}}-applications로 변경
+  # {{ cluster namespace }}-{{ cluster name }}-applications로 변경
   name: single-applications
   namespace: argocd
 spec:
