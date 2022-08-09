@@ -13,8 +13,11 @@ argocd에서 loki-promtail 배포를 하기 위해서는 application/loki.yaml�
 - name: loki_image_tag
   value: "Loki image"
   
-- name: os_volume_size
-  value: "Volume size for OpenSearch"
+- name: storage_class
+  value: "StorageClassName for Loki PVC" 
+  
+- name: loki_volume_size
+  value: "Volume size for Loki"
   
 - name: promtail_image_tag
   value: "Promtail image"
@@ -29,7 +32,9 @@ argocd에서 loki-promtail 배포를 하기 위해서는 application/loki.yaml�
   value: 172.22.6.2:5000
 - name: loki_image_tag
   value: 2.6.0
-- name: os_volume_size
+- name: storage_class
+  value: default
+- name: loki_volume_size
   value: 50Gi
 - name: loki_image_tag
   value: 2.6.0
