@@ -164,8 +164,9 @@ local promtail_image_path = "docker.io/grafana/promtail:" + promtail_image_tag;
               "image": std.join("",[target_registry, promtail_image_path]),
               "imagePullPolicy": "IfNotPresent",
               "args": [
-                "-config.file=/etc/promtail/promtail-config.yaml"
-              ]
+                "-config.file=/etc/promtail/promtail-config.yaml",
+                "--client.external-labels=hostname=$(HOSTNAME)"
+              ],
               "env": [
                 {
                   "name": "HOSTNAME",
