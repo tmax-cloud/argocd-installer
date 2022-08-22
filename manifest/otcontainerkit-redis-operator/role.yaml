@@ -42,6 +42,8 @@ rules:
   - pods
   - services
   - configmaps
+  - persistentvolumes
+  - persistentvolumeclaims
   verbs:
   - create
   - delete

@@ -1,6 +1,7 @@
 function (
   is_offline="false",
   private_registry="172.22.6.2:5000",
+  log_level="info",
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -38,9 +39,10 @@ local target_registry = if is_offline == "false" then "" else private_registry +
               "/manager"
             ],
             "args": [
-              "--leader-elect"
+              "--leader-elect",
+              std.join("", ["--zap-log-level=", log_level])
             ],
-            "image": std.join("", [target_registry, "quay.io/opstree/redis-operator:v0.9.0"]),
+            "image": std.join("", [target_registry, "docker.io/tmaxcloudck/redis-operator:0.9.0"]),
             "imagePullPolicy": "Always",
             "name": "manager",
             "securityContext": {
