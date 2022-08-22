@@ -208,6 +208,8 @@ modules:
   cicd:
     enabled: false
     subdomain: cicd-webhook
+    logLevel: error
+  # debug, info, error 기입 가능 (대소문자 유의)
 
   ### redis-operator
   redis:
