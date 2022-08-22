@@ -121,7 +121,13 @@ spec:
           subPath: {{ $database.subPath }}
         - name: shm-volume
           mountPath: /dev/shm
+        - name: database-log-config
+          mountPath: /docker-entrypoint-initdb.d/initial-loglevel.sql
+          subPath: initial-loglevel.sql
       volumes:
+      - name: database-log-config
+        configMap: 
+          name: "{{ template "harbor.database" . }}"
       - name: shm-volume
         emptyDir:
           medium: Memory

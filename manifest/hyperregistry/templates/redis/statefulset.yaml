@@ -65,12 +65,17 @@ spec:
         - name: data
           mountPath: /var/lib/redis
           subPath: {{ $redis.subPath }}
-      {{- if not .Values.persistence.enabled }}
+        - name: redis-config
+          mountPath: /etc/redis.conf
+          subPath: redis.conf
       volumes:
+      - name: redis-config
+        configMap:
+          name: "{{ template "harbor.redis" . }}"
+      {{- if not .Values.persistence.enabled }}
       - name: data
         emptyDir: {}
       {{- else if $redis.existingClaim }}
-      volumes:
       - name: data
         persistentVolumeClaim:
           claimName: {{ $redis.existingClaim }}

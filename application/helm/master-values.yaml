@@ -199,6 +199,18 @@ modules:
       subdomain: hyperregistry
     notary:
       subdomain: hyperregistry-notary
+    # core, chartmuseum, jobservice, notary-server, notary-signer, registry, trivy의 경우 다음 아래의 로그레벨 설정으로 debug, info, warning, error, fatal 기입 가능 (대소문자 유의)
+    mains:
+      logLevel: error
+    # redis의 경우 debug, verbose, notice, warning 기입 가능 (대소문자 유의, warning은 error 급) 
+    redis:
+      logLevel: warning
+    # database(postgres)의 경우 DEBUG5, DEBUG4, DEBUG3, DEBUG2, DEBUG1, INFO, NOTICE, WARNING, ERROR, LOG, FATAL, PANIC 기입 가능(대소문자 유의)
+    database:
+      logLevel: ERROR
+    # portal의 경우 debug, info, notice, warn, error, crit, alert, emerg 기입 가능 (대소문자 유의)
+    portal:
+      logLevel: error
     storageClass: nfs
     storageClassDatabase: nfs
 
@@ -223,6 +235,8 @@ modules:
   ### image validating webhook
   imageValidatingWebhook:
     enabled: true
+    # debug, info, error 기입 가능 (대소문자 유의)
+    logLevel: error
 
   ### ai-devops
   aiDevops:
