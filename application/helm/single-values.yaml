@@ -218,9 +218,10 @@ modules:
     enabled: false
     version: 0.1.4
     clusterTsb:
-      version: 0.1.4
+      version: 0.1.5
     templateOperator:
-      version: 0.2.7
+      version: 0.2.8
+    logLevel: error
 
   ### catalog controller
   catalogController:

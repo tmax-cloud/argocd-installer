@@ -227,6 +227,7 @@ modules:
       version: 0.1.4
     templateOperator:
       version: 0.2.7
+    logLevel: error
 
   ### catalog controller
   catalogController:

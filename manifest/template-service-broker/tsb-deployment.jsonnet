@@ -1,9 +1,10 @@
 function (
   is_offline = "false",
   private_registry="registry.tmaxcloud.org",
-  template_operator_version = "0.2.6",
-  cluster_tsb_version = "0.1.3",
-  tsb_version = "0.1.3",
+  template_operator_version = "0.2.8",
+  cluster_tsb_version = "0.1.5",
+  tsb_version = "0.1.5",
+  log_level="error",
   time_zone="UTC"
 )
 
@@ -49,7 +50,8 @@ local target_registry = if is_offline == "false" then "" else private_registry +
               "/manager"
             ],
             "args": [
-              "--enable-leader-election"
+              "--enable-leader-election",
+              std.join("", ["--zap-log-level=", log_level])
             ],
             "volumeMounts": [
             ] + (
@@ -111,6 +113,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
               "image": std.join("", [target_registry, "docker.io/tmaxcloudck/cluster-tsb:", cluster_tsb_version]),
               "name": "cluster-tsb",
               "imagePullPolicy": "Always",
+<<<<<<< HEAD
               "volumeMounts": [
               ] + (
                   if time_zone != "UTC" then [
@@ -120,6 +123,11 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     }
                   ] else []
               )
+=======
+              "args": [
+                std.join("", ["--zap-log-level=", log_level])
+              ],
+>>>>>>> [temmplate-service-broker] Loglevel 설정
             }
           ]
         }
@@ -167,6 +175,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "image": std.join("", [target_registry, "docker.io/tmaxcloudck/tsb:", tsb_version]),
             "name": "tsb",
             "imagePullPolicy": "Always",
+<<<<<<< HEAD
             "volumeMounts": [
               ] + (
                   if time_zone != "UTC" then [
@@ -176,6 +185,11 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     }
                   ] else []
               )
+=======
+            "args": [
+              std.join("", ["--zap-log-level=", log_level])
+            ],
+>>>>>>> [temmplate-service-broker] Loglevel 설정
           }
         ]
         }
