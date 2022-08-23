@@ -39,6 +39,11 @@ global:
       environment: production
 
 modules:
+  namespace:
+    source:
+      path: manifest/api-gateway/namespace
+
+
   certManager:
     syncWaitTime: 60
     enabled: true
