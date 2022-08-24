@@ -5,7 +5,7 @@ function(
   cluster_name="master",
   tmax_client_secret="tmax_client_secret",
   HYPERAUTH_DOMAIN="hyperauth.domain",
-  GATEKEER_VERSION="10.0.0",
+  GATEKEEPER_VERSION="v1.0.2",
   CUSTOM_DOMAIN_NAME="custom-domain",
   CUSTOM_CLUSTER_ISSUER="tmaxcloud-issuer",
   jaeger_client_id="jaeger",
@@ -400,7 +400,7 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
           "containers": [
             {
               "name": "gatekeeper",
-              "image": std.join("", [target_registry, "quay.io/keycloak/keycloak-gatekeeper:", GATEKEER_VERSION]),
+              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/gatekeeper:", GATEKEEPER_VERSION]),
               "imagePullPolicy": "Always",
               "args": [
                 std.join("", ["--client-id=", jaeger_client_id]),
