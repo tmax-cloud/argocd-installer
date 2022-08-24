@@ -12,7 +12,7 @@ metadata:
 spec:
   destination:
     name: {{ .Values.global.clusterName }}
-    namespace: template
+    namespace: helm-ns
   project: {{ .Values.spec.project }}
   source:
     directory:
