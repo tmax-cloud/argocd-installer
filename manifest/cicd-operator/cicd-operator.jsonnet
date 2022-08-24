@@ -118,7 +118,7 @@ local cicd_domain = std.join("", [cicd_subdomain, ".", custom_domain]);
               "args": [
                 std.join("", ["--zap-log-level=", log_level])
               ],
-              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/cicd-blocker:v0.4.3"]),
+              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/cicd-blocker:v0.4.10"]),
               "imagePullPolicy": "Always",
               "name": "manager",
               "resources": {
