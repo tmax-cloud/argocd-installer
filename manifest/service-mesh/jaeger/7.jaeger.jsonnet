@@ -11,7 +11,9 @@ function(
   jaeger_client_id="jaeger",
   jaeger_subdomain="jaeger",
   storage_type="opensearch",
-  jaeger_log_level="info",
+  jaeger_collector_log_level="info",
+  jaeger_agent_log_level="info",
+  jaeger_query_log_level="info",
   gatekeeper_log_level="info"
 )
 
@@ -219,7 +221,7 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
               "name": "jaeger-collector",
               "args": [
                 "--config-file=/conf/collector.yaml",
-                std.join("", ["--log-level=", jaeger_log_level])
+                std.join("", ["--log-level=", jaeger_collector_log_level])
               ],
               "ports": [
                 {
@@ -446,7 +448,7 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
             {
               "args": [
                 "--config-file=/conf/query.yaml",
-                std.join("", ["--log-level=", jaeger_log_level])
+                std.join("", ["--log-level=", jaeger_query_log_level])
               ],
               "env": [
                 {
@@ -630,7 +632,7 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
               "name": "jaeger-agent",
               "args": [
                 "--config-file=/conf/agent.yaml",
-                std.join("", ["--log-level=", jaeger_log_level])
+                std.join("", ["--log-level=", jaeger_agent_log_level])
               ],
               "volumeMounts": [
                 {
