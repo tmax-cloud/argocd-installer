@@ -137,6 +137,14 @@ modules:
     ### istio
     istio:
       enabled: false
+      # :(scope) 를 기준으로 앞, default, all, authn, cache, citadelclient, configmapcontroller, googleca, model, rbac, sds, secretfetcher, stsclient, stsserver, token, validation, vault
+      # :(scope) 를 기준으로 뒤, debug, info, warn, error, fatal, none 
+      istiodPilotDiscoveryLoglevel: default:info
+      # :(scope) 를 기준으로 앞, default, all, authn, cache, citadelclient, configmapcontroller, googleca, model, rbac, sds, secretfetcher, stsclient, stsserver, token, validation, vault
+      # :(scope) 를 기준으로 뒤, debug, info, warn, error, fatal, none 
+      ingressgatewayPilotAgentLoglevel: default:info
+      # none, error, warn, info, debug
+      envoyProxyLoglevel: warning
 
     ### jaeger
     jaeger:
