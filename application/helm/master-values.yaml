@@ -159,6 +159,7 @@ modules:
     kiali:
       enabled: false
       subdomain: kiali
+      kialiLoglevel: "3"
 
   ### cluster-api
   capi:
