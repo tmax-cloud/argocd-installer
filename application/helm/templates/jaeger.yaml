@@ -32,6 +32,10 @@ spec:
             value: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
           - name: jaeger_subdomain
             value: {{ .Values.modules.serviceMesh.jaeger.subdomain }}
+          - name: jaeger_log_level
+            value: {{ .Values.modules.serviceMesh.jaeger.jaegerLoglevel }}
+          - name: gatekeeper_log_level
+            value: {{ .Values.modules.serviceMesh.jaeger.gatekeeperLoglevel }}
     path: manifest/service-mesh/jaeger
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}

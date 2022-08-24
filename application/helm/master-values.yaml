@@ -146,6 +146,8 @@ modules:
     jaeger:
       enabled: false
       subdomain: jaeger
+      jaegerLoglevel: info
+      gatekeeperLoglevel: info
 
     ### kiali
     kiali:

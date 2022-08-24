@@ -10,7 +10,9 @@ function(
   CUSTOM_CLUSTER_ISSUER="tmaxcloud-issuer",
   jaeger_client_id="jaeger",
   jaeger_subdomain="jaeger",
-  storage_type="opensearch"
+  storage_type="opensearch",
+  jaeger_log_level="info",
+  gatekeeper_log_level="info"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -216,7 +218,8 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
               "image": std.join("", [target_registry, "docker.io/jaegertracing/jaeger-collector:", JAEGER_VERSION]),
               "name": "jaeger-collector",
               "args": [
-                "--config-file=/conf/collector.yaml"
+                "--config-file=/conf/collector.yaml",
+                std.join("", ["--log-level=", jaeger_log_level])
               ],
               "ports": [
                 {
@@ -442,7 +445,8 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
             },
             {
               "args": [
-                "--config-file=/conf/query.yaml"
+                "--config-file=/conf/query.yaml",
+                std.join("", ["--log-level=", jaeger_log_level])
               ],
               "env": [
                 {
@@ -625,7 +629,8 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
               "image": std.join("", [target_registry, "docker.io/jaegertracing/jaeger-agent:", JAEGER_VERSION]),
               "name": "jaeger-agent",
               "args": [
-                "--config-file=/conf/agent.yaml"
+                "--config-file=/conf/agent.yaml",
+                std.join("", ["--log-level=", jaeger_log_level])
               ],
               "volumeMounts": [
                 {
