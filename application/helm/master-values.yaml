@@ -178,6 +178,7 @@ modules:
   ### catalog controller
   catalogController:
     enabled: false
+    vLevel: 0
 
   ### hypercloud
   hyperCloud:
