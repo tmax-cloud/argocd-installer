@@ -41,7 +41,7 @@ local cicd_domain = std.join("", [cicd_subdomain, ".", custom_domain]);
                 "/controller"
               ],
               "args": [
-                "--zap-log-level=error"
+                std.join("", ["--zap-log-level=", log_level])
               ],
               "image": std.join("", [target_registry, "docker.io/tmaxcloudck/cicd-operator:v0.4.10"]),
               "imagePullPolicy": "Always",
@@ -115,7 +115,7 @@ local cicd_domain = std.join("", [cicd_subdomain, ".", custom_domain]);
                 "/blocker"
               ],
               "args": [
-                "--zap-log-level=error"
+                std.join("", ["--zap-log-level=", log_level])
               ],
               "image": std.join("", [target_registry, "docker.io/tmaxcloudck/cicd-blocker:v0.4.3"]),
               "imagePullPolicy": "Always",
