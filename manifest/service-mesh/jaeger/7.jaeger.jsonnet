@@ -423,7 +423,7 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
                 "--forbidden-page=/html/access-forbidden.html",
                 std.join("", ["--resources=uri=/*|roles=", jaeger_client_id, ":jaeger-manager"]),
                 "--enable-encrypted-token",
-                "--verbose"
+                std.join("", ["--log-level=", gatekeeper_log_level])
               ],
               "ports": [
                 {
