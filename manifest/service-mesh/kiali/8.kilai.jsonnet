@@ -300,7 +300,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "auth:",
         "  strategy: openid",
         "  openid:",
-        "    client_id: kiali",
+        std.join("", ["    client_id: ", client_id]),
         std.join("", ["    issuer_url: https://", HYPERAUTH_DOMAIN, "/auth/realms/tmax"]),
         std.join("", ["    authorization_endpoint: https://", HYPERAUTH_DOMAIN, "/auth/realms/tmax/protocol/openid-connect/auth"]),
         "deployment:",
