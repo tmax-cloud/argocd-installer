@@ -32,6 +32,8 @@ spec:
             value: {{ .Values.modules.hyperAuth.subdomain }}
           - name: storage_class
             value: {{ .Values.modules.hyperAuth.storageClass }}
+          - name: LOG_LEVEL
+            value: {{ .Values.modules.hyperAuth.LOG_LEVEL }}
     path: manifest/hyperauth
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
