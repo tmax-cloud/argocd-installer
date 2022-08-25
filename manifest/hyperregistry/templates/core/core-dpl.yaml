@@ -102,6 +102,13 @@ spec:
           - name: INTERNAL_TLS_TRUST_CA_PATH
             value: /etc/harbor/ssl/core/ca.crt
          {{- end }}
+         {{- if .Values.OIDC.enabled }}
+          - name: CONFIG_OVERWRITE_JSON
+            valueFrom:
+              configMapKeyRef:
+                name: "{{ template "harbor.core" . }}"
+                key: config_overwrite.json
+         {{- end }}
         ports:
         - containerPort: {{ template "harbor.core.containerPort" . }}
         volumeMounts:
