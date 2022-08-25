@@ -2,7 +2,8 @@ function (
   is_offline = "false",
   private_registry = "registry.tmaxcloud.org",
   custom_domain = "tmaxcloud.org",
-  cicd_subdomain = "cicd-webhook"
+  cicd_subdomain = "cicd-webhook",
+  log_level = "error"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -40,7 +41,10 @@ local cicd_domain = std.join("", [cicd_subdomain, ".", custom_domain]);
               "command": [
                 "/controller"
               ],
-              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/cicd-operator:v0.4.3"]),
+              "args": [
+                std.join("", ["--zap-log-level=", log_level])
+              ],
+              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/cicd-operator:v0.4.10"]),
               "imagePullPolicy": "Always",
               "name": "manager",
               "resources": {
@@ -111,7 +115,10 @@ local cicd_domain = std.join("", [cicd_subdomain, ".", custom_domain]);
               "command": [
                 "/blocker"
               ],
-              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/cicd-blocker:v0.4.3"]),
+              "args": [
+                std.join("", ["--zap-log-level=", log_level])
+              ],
+              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/cicd-blocker:v0.4.10"]),
               "imagePullPolicy": "Always",
               "name": "manager",
               "resources": {

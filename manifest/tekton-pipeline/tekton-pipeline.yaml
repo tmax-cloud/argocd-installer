@@ -1594,7 +1594,7 @@ data:
   # Common configuration for all knative codebase
   zap-logger-config: |
     {
-      "level": "info",
+      "level": "error",
       "development": false,
       "sampling": {
         "initial": 100,
