@@ -99,6 +99,7 @@ modules:
 
   ### argocd
   argocd:
+    enabled: true
     subdomain: argocd
     dex:
       replicas: 1

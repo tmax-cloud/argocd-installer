@@ -574,7 +574,7 @@ local fluentd_image_path = "docker.io/tmaxcloudck/hypercloud:" + fluentd_image_t
             }
           ] + if timezone != "UTC" then [
             {
-              "name": "timezone=config",
+              "name": "timezone-config",
               "hostPath": {
                 "path": std.join("", ["/usr/share/zoneinfo/", timezone])
               }

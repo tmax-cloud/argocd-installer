@@ -223,7 +223,6 @@ local gcr_registry = if is_offline == "false" then "" else private_registry + "/
                 "name": "config-registry-cert"
               }
             }
-          ]
           ] + if timezone != "UTC" then [
             {
               "name": "timezone-config",

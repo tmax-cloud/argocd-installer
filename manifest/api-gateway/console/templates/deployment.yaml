@@ -69,7 +69,7 @@ spec:
       volumes:
         - name: timezone-config
           hostPath:
-            path: "/usr/share/zoneinfo/{{ .Values.timeZone }}"
+            path: "/usr/share/zoneinfo/{{ .Values.console.timeZone }}"
       {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:

@@ -23,7 +23,7 @@ spec:
         - name: global.clusterNamespace
           value: {{ .Values.global.clusterNamespace }}
         - name: global.timeZone
-          value: UTC
+          value: {{ .Values.global.timeZone }}
         - name: global.console.mcMode
           value: "{{ .Values.modules.gatewayBootstrap.console.multiCluster.enabled }}"
         - name: global.svc_type

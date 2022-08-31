@@ -240,7 +240,7 @@ spec:
       {{- if ne .Values.global.timezone "UTC" }}
       - name: timezone-config
         hostPath:
-          path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.global.time_zone }}
+          path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.global.timezone }}
       {{- end }}
       - name: gitlab-account-secret
         secret:

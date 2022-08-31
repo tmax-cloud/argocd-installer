@@ -95,6 +95,7 @@ modules:
 
   ### argocd
   argocd:
+    enabled: false
     subdomain: argocd
     dex:
       replicas: 1

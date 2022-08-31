@@ -53,10 +53,6 @@ local target_registry = if is_offline == "false" then "" else private_registry +
               "imagePullPolicy": "IfNotPresent",
               "env": [
                 {
-                  "name": "TZ",
-                  "value": "Asia/Seoul"
-                },
-                {
                   "name": "HC_MODE",
                   "value": hypercloud_hpcd_mode
                 },

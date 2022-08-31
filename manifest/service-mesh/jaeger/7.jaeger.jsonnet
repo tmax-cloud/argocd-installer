@@ -295,7 +295,7 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
               {
                 "name": "timezone-config",
                 "hostPath": {
-                  "path": std.join("", ["/usr/share/zoneinfo", time_zone])
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
                 }
               }
             ] else []
@@ -560,7 +560,7 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
               {
                 "name": "timezone-config",
                 "hostPath": {
-                  "path": std.join("", ["/usr/share/zoneinfo", time_zone])
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
                 }
               }
             ] else []
@@ -737,7 +737,7 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
               {
                 "name": "timezone-config",
                 "hostPath": {
-                  "path": std.join("", ["/usr/share/zoneinfo", time_zone])
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
                 }
               }
             ] else []
