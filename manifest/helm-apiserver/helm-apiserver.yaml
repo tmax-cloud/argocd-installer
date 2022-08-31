@@ -106,3 +106,25 @@ spec:
     namespace: helm-ns
     name: helm-apiserver
   version: v1
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: helm-apiserver-cert
+  namespace: helm-ns
+spec:
+  secretName: helm-apiserver-cert
+  isCA: false
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+    - client auth
+  dnsNames:
+    - helm-apiserver.helm-ns.svc
+    - helm-apiserver.helm-ns
+    - helm-apiserver.helm-ns.svc.cluster.local
+  issuerRef:
+    kind: ClusterIssuer
+    group: cert-manager.io
+    name: tmaxcloud-issuer
