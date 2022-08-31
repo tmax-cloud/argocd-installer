@@ -65,10 +65,6 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
                       "key": "DB_PASSWORD"
                     }
                   }
-                },
-                {
-                  "name": "TZ",
-                  "value": "Asia/Seoul"
                 }
               ],
               "resources": {
@@ -254,10 +250,6 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
                 {
                   "name": "KEYCLOAK_WELCOME_THEME",
                   "value": "tmax"
-                },
-                {
-                  "name": "TZ",
-                  "value": "Asia/Seoul"
                 },
                 {
                   "name": "NAMESPACE",

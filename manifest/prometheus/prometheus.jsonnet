@@ -100,12 +100,12 @@ local target_registry = if is_offline == "false" then "" else private_registry +
               "securityContext": {
                 "allowPrivilegeEscalation": false
               },
-			  “volumeMounts”: [
+			  "volumeMounts": [
 				] + (
-				  if (( variable_name )) != “UTC” then [
+				  if timezone != "UTC" then [
 					{
-					  “name”: “timezone-config”,
-					  “mountPath”: “/etc/localtime”
+					  "name": "timezone-config",
+					  "mountPath": "/etc/localtime"
 					}
 				  ] else []
 				)
@@ -149,17 +149,17 @@ local target_registry = if is_offline == "false" then "" else private_registry +
               }
             }
           ],
-		  “volumes”: [
+		  "volumes": [
 			] + (
-			  if (( variable_name )) != “UTC” then [
+			  if timezone != "UTC" then [
 				{
-				  “name”: “timezone-config”,
-				  “hostPath”: {
-					“path”: std.join(“”, [“/usr/share/zoneinfo/”, (( variable_name ))])
+				  "name": "timezone-config",
+				  "hostPath": {
+					"path": std.join("", ["/usr/share/zoneinfo/", timezone])
 				   }
 				 }
 			  ] else []
-			)
+			),
           "nodeSelector": {
             "kubernetes.io/os": "linux"
           },
@@ -214,18 +214,18 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                    "mountPath": "/etc/localtime"
                  }
                ] else []
-             )
-      “volumes”: [
+             ),
+      "volumes": [
         ] + (
-            if (( variable_name )) != “UTC” then [
+            if timezone != "UTC" then [
             {
-              “name”: “timezone-config”,
-              “hostPath”: {
-                “path”: std.join(“”, [“/usr/share/zoneinfo/”, (( variable_name ))])
+              "name": "timezone-config",
+              "hostPath": {
+                "path": std.join("", ["/usr/share/zoneinfo/", timezone])
                }
             }
           ] else []
-        )
+        ),
       "replicas": 3,
       "resources": {
         "limits": {
@@ -311,12 +311,12 @@ local target_registry = if is_offline == "false" then "" else private_registry +
               "securityContext": {
                 "runAsUser": 65534
               },
-			  “volumeMounts”: [
+			  "volumeMounts": [
 				] + (
-				  if (( variable_name )) != “UTC” then [
+				  if timezone != "UTC" then [
 					{
-					  “name”: “timezone-config”,
-					  “mountPath”: “/etc/localtime”
+					  "name": "timezone-config",
+					  "mountPath": "/etc/localtime"
 					}
 				  ] else []
 				)
@@ -402,13 +402,13 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "kubernetes.io/os": "linux"
           },
           "serviceAccountName": "kube-state-metrics",
-		  “volumes”: [
+		  "volumes": [
 			] + (
-				if (( variable_name )) != “UTC” then [
+				if timezone != "UTC" then [
 				{
-				  “name”: “timezone-config”,
-				  “hostPath”: {
-					“path”: std.join(“”, [“/usr/share/zoneinfo/”, (( variable_name ))])
+				  "name": "timezone-config",
+				  "hostPath": {
+					"path": std.join("", ["/usr/share/zoneinfo/", timezone])
 				   }
 				}
 			  ] else []
@@ -583,11 +583,11 @@ local target_registry = if is_offline == "false" then "" else private_registry +
               "name": "root"
             }
             ] + (
-				if (( variable_name )) != “UTC” then [
+				if timezone != "UTC" then [
 				{
-					“name”: “timezone-config”,
-					“hostPath”: {
-					  “path”: std.join(“”, [“/usr/share/zoneinfo/”, (( variable_name ))])
+					"name": "timezone-config",
+					"hostPath": {
+					  "path": std.join("", ["/usr/share/zoneinfo/", timezone])
 					 }
 				  }
 				] else []
@@ -722,16 +722,15 @@ local target_registry = if is_offline == "false" then "" else private_registry +
               "name": "config"
             }
 			] + (
-            if (( variable_name )) != “UTC” then [
+            if timezone != "UTC" then [
             {
-                “name”: “timezone-config”,
-                “hostPath”: {
-                  “path”: std.join(“”, [“/usr/share/zoneinfo/”, (( variable_name ))])
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", timezone])
                  }
               }
             ] else []
-            )
-          ]
+            ),
         }
       }
     }
@@ -793,18 +792,18 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                    "mountPath": "/etc/localtime"
                  }
                ] else []
-             )
-      “volumes”: [
+             ),
+      "volumes": [
         ] + (
-            if (( variable_name )) != “UTC” then [
+            if timezone != "UTC" then [
             {
-              “name”: “timezone-config”,
-              “hostPath”: {
-                “path”: std.join(“”, [“/usr/share/zoneinfo/”, (( variable_name ))])
+              "name": "timezone-config",
+              "hostPath": {
+                "path": std.join("", ["/usr/share/zoneinfo/", timezone])
                }
             }
           ] else []
-        )
+        ),
 			 
       "nodeSelector": {
         "kubernetes.io/os": "linux"

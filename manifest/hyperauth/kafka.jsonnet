@@ -6,7 +6,8 @@ function (
   is_kafka_enabled="true",
   hyperauth_subdomain="hyperauth",
   hypercloud_domain_host="tmaxcloud.org",
-  storage_class="default"
+  storage_class="default",
+  timezone_setting="UTC"
 )
 
 if is_kafka_enabled == "true" then [

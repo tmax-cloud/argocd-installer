@@ -168,7 +168,7 @@ local gatekeeper_enabled = if hyperauth_url != "" then true else false;
             }
           ]
         } + if timezone != "UTC" then {
-          "volumes: [
+          "volumes": [
               {
                 "name": "timezone-config",
                 "hostPath": {

@@ -106,7 +106,7 @@ local gcr_registry = if is_offline == "false" then "" else private_registry + "/
                 "runAsUser": 65532
               }
             } + (
-            if time_zone != "UTC" then {
+            if timezone != "UTC" then {
               "volumeMounts": [
                 {
                   "name": "timezone-config",
