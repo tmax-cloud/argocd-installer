@@ -14,6 +14,11 @@ global:
   clusterNamespace: cluster-namespace
 
 modules:
+  ###gitlab
+  gitlab:
+    enabled: true
+    subdomain: gitlab
+      
   ### gateway-bootstrap
   gatewayBootstrap:
     enabled: true
@@ -87,7 +92,7 @@ modules:
       version: 10.0.0
     fluentd:
       version: v1.4.2-debian-elasticsearch-1.1
-  
+
   ### opensearch
   opensearch:
     enabled: false
@@ -158,10 +163,10 @@ modules:
         credentials: "credential"
       vsphere:
         enabled: false
-        credentials: 
+        credentials:
           username: "user"
           password: "password"
-  
+
   ### template service broker
   tsb:
     enabled: false
@@ -174,7 +179,7 @@ modules:
   ### catalog controller
   catalogController:
     enabled: false
-  
+
   ### hypercloud
   hyperCloud:
     enabled: false
@@ -216,7 +221,7 @@ modules:
   ### image validating webhook
   imageValidatingWebhook:
     enabled: false
-    
+
   ### ai-devops
   aiDevops:
     enabled: false
