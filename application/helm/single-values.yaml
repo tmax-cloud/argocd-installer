@@ -14,6 +14,11 @@ global:
   clusterNamespace: cluster-namespace
 
 modules:
+  ###gitlab
+  gitlab:
+    enabled: true
+    subdomain: gitlab
+      
   ### gateway-bootstrap
   gatewayBootstrap:
     enabled: true
@@ -30,6 +35,9 @@ modules:
           accessKeyID: accesskey
           accessKeySecret: secretkey
           hostedZoneID: hostedzoneid
+        # acme를 통한 인증서 발급의 경우, rate limit이 존재하므로 테스트를 위한 설정값이 따로 존재함
+        # 자세한 내용은 https://letsencrypt.org/docs/staging-environment/#rate-limits 참조
+        # staging / production 중 택1하여 기입하여야 하며, 각각 테스트용 / 운영용을 의미함
         environment: production
     certManager:
       enabled: true
@@ -84,7 +92,7 @@ modules:
       version: 10.0.0
     fluentd:
       version: v1.4.2-debian-elasticsearch-1.1
-  
+
   ### argocd
   argocd:
     subdomain: argocd
@@ -172,10 +180,10 @@ modules:
         credentials: "credential"
       vsphere:
         enabled: false
-        credentials: 
+        credentials:
           username: "user"
           password: "password"
-  
+
   ### template service broker
   tsb:
     enabled: false
@@ -188,6 +196,17 @@ modules:
   ### catalog controller
   catalogController:
     enabled: false
+
+  ### helm-apiserver
+  helmApiserver:
+    enabled: true
+    version: 0.0.1
+    subdomain: helm
+    # default로 주는 경우 default storage class를 사용
+    # default를 사용하지 않고 싶은 경우에는 storage class이름을 기입
+    storageClass: default
+    # 지정 가능: fatal(0), error(1), warn(2), info(3), debug(4), trace(5)
+    logLevel: error
   
   ### hypercloud
   hyperCloud:
@@ -230,7 +249,7 @@ modules:
   ### image validating webhook
   imageValidatingWebhook:
     enabled: false
-    
+
   ### ai-devops
   aiDevops:
     enabled: false

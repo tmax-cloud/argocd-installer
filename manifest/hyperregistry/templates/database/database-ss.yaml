@@ -59,6 +59,10 @@ spec:
 {{ toYaml .Values.database.internal.initContainer.migrator.resources | indent 10 }}
 {{- end }}
         volumeMounts:
+          {{- if ne .Values.global.time_zone "UTC" }}
+          - name: timezone-config
+            mountPath: /etc/localtime
+          {{- end }}
           - name: database-data
             mountPath: /var/lib/postgresql/data
             subPath: {{ $database.subPath }}
@@ -67,7 +71,11 @@ spec:
       # use this init container to correct the permission
       # as "fsGroup" applied before the init container running, the container has enough permission to execute the command
       - name: "data-permissions-ensurer"
+        {{- if .Values.global.registry.is_offline }}
+        image: {{ .Values.global.registry.private_registry }}/{{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
+        {{- else }}
         image: {{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
+        {{- end }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         command: ["/bin/sh"]
         args: ["-c", "chmod -R 700 /var/lib/postgresql/data/pgdata || true"]
@@ -76,12 +84,20 @@ spec:
 {{ toYaml .Values.database.internal.initContainer.permissions.resources | indent 10 }}
 {{- end }}
         volumeMounts:
+          {{- if ne .Values.global.time_zone "UTC" }}
+          - name: timezone-config
+            mountPath: /etc/localtime
+          {{- end }}
           - name: database-data
             mountPath: /var/lib/postgresql/data
             subPath: {{ $database.subPath }}
       containers:
       - name: database
+        {{- if .Values.global.registry.is_offline }}
+        image: {{ .Values.global.registry.private_registry }}/{{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
+        {{- else }}
         image: {{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
+        {{- end }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:
           exec:
@@ -108,12 +124,21 @@ spec:
           - name: PGDATA
             value: "/var/lib/postgresql/data/pgdata"
         volumeMounts:
+        {{- if ne .Values.global.time_zone "UTC" }}
+        - name: timezone-config
+          mountPath: /etc/localtime
+        {{- end }}
         - name: database-data
           mountPath: /var/lib/postgresql/data
           subPath: {{ $database.subPath }}
         - name: shm-volume
           mountPath: /dev/shm
       volumes:
+      {{- if ne .Values.global.time_zone "UTC" }}
+      - name: timezone-config
+        hostPath: 
+          path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.global.time_zone }}
+      {{- end }}
       - name: shm-volume
         emptyDir:
           medium: Memory

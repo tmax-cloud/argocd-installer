@@ -28,6 +28,8 @@ spec:
             value: {{ .Values.modules.tsb.clusterTsb.version }}
           - name: tsb_version
             value: {{ .Values.modules.tsb.version }}
+          - name: time_zone
+            value: {{ .Values.global.timeZone }}
     path: manifest/template-service-broker
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}

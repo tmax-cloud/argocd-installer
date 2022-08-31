@@ -1,6 +1,7 @@
-function(
-    is_offline="false",
-    private_registry="registry.tmaxcloud.org"
+function (
+  is_offline="false",
+  private_registry="registry.tmaxcloud.org",
+  time_zone="UTC"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -33,7 +34,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
           "containers": [
             {
               "name": "webhook",
-              "image": std.join("",[target_registry,"docker.io/tmaxcloudck/image-validation-webhook:v5.0.4"]),
+              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/image-validation-webhook:v5.0.4"]),
               "imagePullPolicy": "Always",
               "volumeMounts": [
                 {
@@ -41,9 +42,17 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                   "name": "webhook-certs",
                   "readOnly": true
                 }
-              ]
+              ] + (
+                if time_zone != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  },
+                ] else []
+              )
             }
           ],
+          "serviceAccountName": "image-validation-webhook",
           "volumes": [
             {
               "name": "webhook-certs",
@@ -51,8 +60,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "secretName": "image-validation-webhook-cert"
               }
             }
-          ],
-          "serviceAccountName": "image-validation-webhook"
+          ] + (
+            if time_zone != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                }
+              }
+            ] else []
+          )
         }
       }
     }

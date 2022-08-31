@@ -1,4 +1,5 @@
 function (
+    time_zone="UTC",
     is_offline="false",
     private_registry="172.22.6.2:5000",
     ai_devops_namespace="kubeflow",
@@ -1150,7 +1151,14 @@ local katib_object_image_tag = "v0.11.0";
                   "name": "katib-controller-token",
                   "readOnly": true
                 }
-              ]
+              ] + (
+                if time_zone != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  }
+                ] else []
+              )
             }
           ],
           "volumes": [
@@ -1168,7 +1176,16 @@ local katib_object_image_tag = "v0.11.0";
                 "secretName": "katib-controller-token"
               }
             }
-          ]
+          ] + (
+            if time_zone != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                }
+              }
+            ] else []
+          )        
         }
       }
     }
@@ -1347,7 +1364,14 @@ local katib_object_image_tag = "v0.11.0";
                   "mountPath": "/var/lib/mysql",
                   "name": "katib-mysql"
                 }
-              ]
+              ] + (
+                if time_zone != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  }
+                ] else []
+              )
             }
           ],
           "volumes": [
@@ -1357,7 +1381,16 @@ local katib_object_image_tag = "v0.11.0";
                 "claimName": "katib-mysql"
               }
             }
-          ]
+          ] + (
+            if time_zone != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                }
+              }
+            ] else []
+          )
         }
       }
     }
@@ -1421,7 +1454,14 @@ local katib_object_image_tag = "v0.11.0";
                     "name": "katib-ui-token",
                     "readOnly": true
                 }
-              ]
+              ] + (
+                if time_zone != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  }
+                ] else []
+              )
             }
           ],
           "volumes": [            
@@ -1432,7 +1472,16 @@ local katib_object_image_tag = "v0.11.0";
                 "secretName": "katib-ui-token"
               }
             }
-          ]
+          ] + (
+            if time_zone != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                }
+              }
+            ] else []
+          )
         }
       }
     }
@@ -1486,7 +1535,14 @@ local katib_object_image_tag = "v0.11.0";
                   "name": "katib-cert-generator-token",
                   "readOnly": true
                 }
-              ]
+              ] + (
+                if time_zone != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  }
+                ] else []
+              )
             }
           ],
           "restartPolicy": "Never",
@@ -1498,7 +1554,16 @@ local katib_object_image_tag = "v0.11.0";
                 "secretName": "katib-cert-generator-token"
               }
             }
-          ]
+          ] + (
+            if time_zone != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                }
+              }
+            ] else []
+          )
         }
       }
     }

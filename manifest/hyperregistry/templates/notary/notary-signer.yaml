@@ -39,7 +39,11 @@ spec:
       automountServiceAccountToken: {{ .Values.notary.signer.automountServiceAccountToken | default false }}
       containers:
       - name: notary-signer
+        {{- if .Values.global.registry.is_offline }}
+        image: {{ .Values.global.registry.private_registry }}/{{ .Values.notary.signer.image.repository }}:{{ .Values.notary.signer.image.tag }}
+        {{- else }}
         image: {{ .Values.notary.signer.image.repository }}:{{ .Values.notary.signer.image.tag }}
+        {{- end }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:
           httpGet:
@@ -67,6 +71,10 @@ spec:
         - name: NOTARY_SIGNER_DEFAULTALIAS
           value: defaultalias
         volumeMounts:
+        {{- if ne .Values.global.time_zone "UTC" }}
+        - name: timezone-config
+          mountPath: /etc/localtime
+        {{- end }}
         - name: config
           mountPath: /etc/notary/signer-config.postgres.json
           subPath: signer.json
@@ -77,6 +85,11 @@ spec:
           mountPath: /etc/ssl/notary/tls.key
           subPath: tls.key
       volumes:
+      {{- if ne .Values.global.time_zone "UTC" }}
+      - name: timezone-config
+        hostPath: 
+          path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.global.time_zone }}
+      {{- end }}
       - name: config
         secret:
           secretName: "{{ template "harbor.notary-server" . }}"

@@ -1,0 +1,23 @@
+{{ $isMaster := eq .Values.global.cluster "master" }}
+{{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
+{{ $module := "namespaces" }}
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  labels:
+    cluster: {{ ternary "master" $prefix $isMaster }}
+    gatewayBootstrap: namespaces
+  name: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+spec:
+  destination:
+    name: {{ .Values.global.clusterName }}
+  source:
+    path: {{ .Values.modules.namespace.source.path }}
+    repoURL: {{ .Values.spec.source.repoURL }}
+  project: {{ .Values.spec.project }}

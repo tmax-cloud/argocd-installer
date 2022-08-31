@@ -39,6 +39,16 @@ traefik:
   tolerations:
     - key: "node-role.kubernetes.io/master"
       operator: Exists
+  env: []
+#  env:
+#    - name: TZ
+#      value: Asia/Seoul
+  additionalVolumeMounts: []
+  #  - name: gateway-confi
+  # For instance when using a logshipper for access logs
+  # - name: traefik-logs
+  #   mountPath: /var/log/traefik
+  additionalVolumes: []
 
 tls:
   domain: tmaxcloud.test
