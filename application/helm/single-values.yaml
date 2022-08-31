@@ -93,6 +93,23 @@ modules:
     fluentd:
       version: v1.4.2-debian-elasticsearch-1.1
 
+  ### argocd
+  argocd:
+    subdomain: argocd
+    dex:
+      replicas: 1
+    repoServer:
+      replicas: 1
+    redis:
+      replicas: 1
+    argocdServer:
+      replicas: 1
+    controller:
+      replicas: 1
+    ingress:
+      enableTraefik: true
+      secretName:
+      
   ### opensearch
   opensearch:
     enabled: false
