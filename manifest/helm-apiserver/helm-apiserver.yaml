@@ -6,6 +6,8 @@ metadata:
 apiVersion: v1
 kind: Service
 metadata:
+  annotations:
+    traefik.ingress.kubernetes.io/service.serverstransport: insecure@file
   name: helm-apiserver
   namespace: helm-ns
 spec:
@@ -58,6 +60,18 @@ rules:
   resources:
   - secrets
   - configmaps
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - update
+  - watch
+  - delete
+- apiGroups:
+  - helmapi.tmax.io
+  resources:
+  - "*"
   verbs:
   - create
   - get
