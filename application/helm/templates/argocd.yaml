@@ -1,5 +1,5 @@
 {{ $isMaster := eq .Values.global.cluster "master" }}
-{{ if (and .Values.modules.argocd.enabled (not $isMaster)) }}
+{{ if .Values.modules.argocd.enabled }}
 {{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
 {{ $module := "argocd" }}
 apiVersion: argoproj.io/v1alpha1
@@ -40,4 +40,4 @@ spec:
     path: manifest/argocd
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
-{{ end }
+{{ end }}
