@@ -21,3 +21,10 @@ spec:
     path: {{ .Values.modules.namespace.source.path }}
     repoURL: {{ .Values.spec.source.repoURL }}
   project: {{ .Values.spec.project }}
+  syncPolicy:
+    automated:
+      prune: true
+    retry:
+      limit: 3
+    syncOptions:
+      - ApplyOutOfSyncOnly=true

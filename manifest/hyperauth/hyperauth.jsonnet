@@ -181,7 +181,16 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
                 "secretName": "hyperauth-admin-token"
               },
             },
-          ],
+          ]+ (
+            if timezone_setting != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", timezone_setting])
+                }
+              }
+            ] else []
+          ),
           "containers": [
             {
               "name": "hyperauth",
@@ -311,7 +320,14 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
                   "name": "hyperauth-admin-token",
                   "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
                 }
-              ],
+              ]+ (
+                if timezone_setting != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  }
+                ] else []
+              ),
               "readinessProbe": {
                 "httpGet": {
                   "path": "/auth/realms/master",
