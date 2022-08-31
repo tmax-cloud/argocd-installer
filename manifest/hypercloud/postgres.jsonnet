@@ -11,7 +11,8 @@ function (
   hyperregistry_enabled="true",
   storageClass="default",
   aws_enabled="true",
-  vsphere_enabled="true"
+  vsphere_enabled="true",
+  time_zone="UTC"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -87,7 +88,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                   "mountPath": "/docker-entrypoint-initdb.d",
                   "name": "initdbsql"
                 }
-              ]
+              ] + (
+                if time_zone != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  }
+                ] else []
+              )
             }
           ],
           "serviceAccountName": "hypercloud5-admin",
@@ -110,7 +118,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 ]
               }
             }
-          ]
+          ]+ (
+            if time_zone != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                }
+              }
+            ] else []
+          )
         }
       }
     }
