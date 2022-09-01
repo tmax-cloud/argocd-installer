@@ -412,9 +412,25 @@ local gcr_registry = if is_offline == "false" then "" else private_registry + "/
                 "periodSeconds": 10,
                 "timeoutSeconds": 5
               }
-            }
+            } + if timezone != "UTC" then {
+              "volumeMounts": [
+                {
+                  "name": "timezone-config",
+                  "mountPath": "/etc/localtime"
+                }
+              ],
+            },
           ]
-        }
+        } + if timezone != "UTC" then {
+          "volumes":[
+            {
+              "name": "timezone-config",
+              "hostPath": {
+                "path": std.join("", ["/usr/share/zoneinfo/", timezone])
+              },
+            },
+          ],
+        },
       }
     }
   }
