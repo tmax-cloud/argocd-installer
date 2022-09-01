@@ -1256,9 +1256,25 @@ local katib_object_image_tag = "v0.11.0";
                   "name": "api"
                 }
               ]
-            }
+            } + if time_zone != "UTC" then {
+              "volumeMounts": [
+                {
+                  "name": "timezone-config",
+                  "mountPath": "/etc/localtime"
+                }
+              ],
+            },
           ],
-        }
+        } + if time_zone != "UTC" then {
+          "volumes":[
+            {
+              "name": "timezone-config",
+              "hostPath": {
+                "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+              },
+            },
+          ],
+        },
       }
     }
   },
