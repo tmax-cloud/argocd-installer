@@ -34,6 +34,9 @@ csiConfig: []
 # 5 for trace level verbosity.
 logLevel: 0
 
+# Set timeZone # UTC (default),  # Asia/Seoul
+timeZone: UTC
+
 nodeplugin:
   name: nodeplugin
   # if you are using ceph-fuse client set this value to OnDelete

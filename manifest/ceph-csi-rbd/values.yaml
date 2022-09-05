@@ -46,6 +46,9 @@ encryptionKMSConfig: {}
 # 5 for trace level verbosity.
 logLevel: 0
 
+# Set timeZone # UTC (default),  # Asia/Seoul
+timeZone: UTC
+
 nodeplugin:
   name: nodeplugin
   # set user created priorityclassName for csi plugin pods. default is

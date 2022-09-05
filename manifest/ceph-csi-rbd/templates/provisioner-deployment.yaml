@@ -64,6 +64,10 @@ spec:
             - name: ADDRESS
               value: "unix:///csi/{{ .Values.provisionerSocketFile }}"
           volumeMounts:
+            {{- if ne .Values.timeZone "UTC" }}
+            - name: timezone-config
+              mountPath: /etc/localtime
+            {{- end }}
             - name: socket-dir
               mountPath: /csi
           resources:
@@ -83,6 +87,10 @@ spec:
             - name: ADDRESS
               value: "unix:///csi/{{ .Values.provisionerSocketFile }}"
           volumeMounts:
+            {{- if ne .Values.timeZone "UTC" }}
+            - name: timezone-config
+              mountPath: /etc/localtime
+            {{- end }}
             - name: socket-dir
               mountPath: /csi
           resources:
@@ -102,6 +110,10 @@ spec:
           securityContext:
             privileged: true
           volumeMounts:
+            {{- if ne .Values.timeZone "UTC" }}
+            - name: timezone-config
+              mountPath: /etc/localtime
+            {{- end }}
             - name: socket-dir
               mountPath: /csi
           resources:
@@ -119,6 +131,10 @@ spec:
             - name: ADDRESS
               value: "unix:///csi/{{ .Values.provisionerSocketFile }}"
           volumeMounts:
+            {{- if ne .Values.timeZone "UTC" }}
+            - name: timezone-config
+              mountPath: /etc/localtime
+            {{- end }}
             - name: socket-dir
               mountPath: /csi
           resources:
@@ -164,6 +180,10 @@ spec:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
           volumeMounts:
+            {{- if ne .Values.timeZone "UTC" }}
+            - name: timezone-config
+              mountPath: /etc/localtime
+            {{- end }}
             - name: socket-dir
               mountPath: /csi
             - mountPath: /dev
@@ -203,6 +223,10 @@ spec:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
           volumeMounts:
+            {{- if ne .Values.timeZone "UTC" }}
+            - name: timezone-config
+              mountPath: /etc/localtime
+            {{- end }}
             - name: ceph-csi-config
               mountPath: /etc/ceph-csi-config/
             - name: keys-tmp-dir
@@ -229,12 +253,21 @@ spec:
                 fieldRef:
                   fieldPath: status.podIP
           volumeMounts:
+            {{- if ne .Values.timeZone "UTC" }}
+            - name: timezone-config
+              mountPath: /etc/localtime
+            {{- end }}
             - name: socket-dir
               mountPath: /csi
           resources:
 {{ toYaml .Values.nodeplugin.plugin.resources | indent 12 }}
 {{- end }}
       volumes:
+        {{- if ne .Values.timeZone "UTC" }}
+        - name: timezone-config
+          hostPath:
+            path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.timeZone }}
+        {{- end }}
         - name: socket-dir
           emptyDir: {
             medium: "Memory"

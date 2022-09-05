@@ -19,6 +19,8 @@ spec:
       parameters:
         - name: storageClass.clusterID
           value: {{ .Values.modules.cephfs.clusterId }}
+        - name: timeZone
+          value: {{ .Values.global.timeZone }}
         {{- if .Values.global.network.disabled }}
         - name: nodeplugin.registrar.image.repository
           value: "{{ .Values.global.privateRegistry }}/csi-node-driver-registrar"

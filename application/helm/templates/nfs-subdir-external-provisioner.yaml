@@ -21,6 +21,8 @@ spec:
           value: {{ .Values.modules.nfs.server }}
         - name: nfs.path
           value: {{ .Values.modules.nfs.path }}
+        - name: timeZone
+          value: {{ .Values.global.timeZone }}
         {{- if .Values.global.network.disabled }}
         - name: image.repository
           value: "{{ .Values.global.privateRegistry }}/nfs-subdir-external-provisioner"

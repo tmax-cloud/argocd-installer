@@ -54,6 +54,10 @@ spec:
                 fieldRef:
                   fieldPath: spec.nodeName
           volumeMounts:
+            {{- if ne .Values.timeZone "UTC" }}
+            - name: timezone-config
+              mountPath: /etc/localtime
+            {{- end }}
             - name: socket-dir
               mountPath: /csi
             - name: registration-dir
@@ -98,6 +102,10 @@ spec:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
           volumeMounts:
+            {{- if ne .Values.timeZone "UTC" }}
+            - name: timezone-config
+              mountPath: /etc/localtime
+            {{- end }}
             - name: socket-dir
               mountPath: /csi
             - mountPath: /dev
@@ -144,12 +152,21 @@ spec:
                 fieldRef:
                   fieldPath: status.podIP
           volumeMounts:
+            {{- if ne .Values.timeZone "UTC" }}
+            - name: timezone-config
+              mountPath: /etc/localtime
+            {{- end }}
             - name: socket-dir
               mountPath: /csi
           resources:
 {{ toYaml .Values.nodeplugin.plugin.resources | indent 12 }}
 {{- end }}
       volumes:
+        {{- if ne .Values.timeZone "UTC" }}
+        - name: timezone-config
+          hostPath:
+            path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.timeZone }}
+        {{- end }}
         - name: socket-dir
           hostPath:
             path: "{{ .Values.kubeletDir }}/plugins/{{ .Values.driverName }}"

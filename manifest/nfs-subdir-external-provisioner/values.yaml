@@ -15,6 +15,9 @@ nfs:
   # Reclaim policy for the main nfs volume
   reclaimPolicy: Retain
 
+# Set timeZone # UTC (default),  # Asia/Seoul
+timeZone: UTC
+
 # For creating the StorageClass automatically:
 storageClass:
   create: true
