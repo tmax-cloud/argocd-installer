@@ -128,7 +128,7 @@ spec:
               name: argocd-cmd-params-cm
               optional: true
         {{- if .Values.global.registry.is_offline }}
-        image: {{ .Values.global.private_registry }}/{{ .Values.image.argocdServer.repository }}:{{ .Values.image.argocdServer.tag }}
+        image: {{ .Values.global.registry.private_registry }}/{{ .Values.image.argocdServer.repository }}:{{ .Values.image.argocdServer.tag }}
         {{- else }}
         image: {{ .Values.image.argocdServer.repository }}:{{ .Values.image.argocdServer.tag }}
         {{- end }}

@@ -7,7 +7,7 @@ replicas: 1
 global:
     registry:
       is_offline: false
-      private_registry:
+      private_registry: test-registry.com
 
 image:
   redis:
