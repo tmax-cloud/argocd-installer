@@ -46,7 +46,7 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if not (eq .Values.timeZone "UTC") }}
+          {{- if not (eq .Values.console.timeZone "UTC") }}
           volumeMounts:
             - mountPath: /etc/localtime
               name: timezone-config
@@ -65,7 +65,7 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-      {{- if not (eq .Values.timeZone "UTC") }}
+      {{- if not (eq .Values.console.timeZone "UTC") }}
       volumes:
         - name: timezone-config
           hostPath:

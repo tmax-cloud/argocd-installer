@@ -169,7 +169,7 @@ spec:
         workingDir: /home/argocd
       serviceAccountName: argocd-application-controller
       volumes:
-      {{- if ne .Values.global.timezone "UTC" }}
+      {{- if ne .Values.timezone "UTC" }}
       - name: timezone-config
         hostPath:
           path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.timezone }}
