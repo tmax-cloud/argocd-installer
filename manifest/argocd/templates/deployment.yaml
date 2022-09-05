@@ -30,7 +30,7 @@ spec:
         - /shared/argocd-dex
         - rundex
         {{- if .Values.global.registry.is_offline }}
-        image: {{ .Values.global.private_registry }}/{{ .Values.image.dex.repository }}:{{ .Values.image.dex.tag }}
+        image: {{ .Values.global.registry.private_registry }}/{{ .Values.image.dex.repository }}:{{ .Values.image.dex.tag }}
         {{- else }}
         image: {{ .Values.image.dex.repository }}:{{ .Values.image.dex.tag }}
         {{- end }}
@@ -62,7 +62,7 @@ spec:
         - /usr/local/bin/argocd
         - /shared/argocd-dex
         {{- if .Values.global.registry.is_offline }}
-        image: {{ .Values.global.private_registry }}/{{ .Values.image.argocdServer.repository }}:{{ .Values.image.argocdServer.tag }}
+        image: {{ .Values.global.registry.private_registry }}/{{ .Values.image.argocdServer.repository }}:{{ .Values.image.argocdServer.tag }}
         {{- else }}
         image: {{ .Values.image.argocdServer.repository }}:{{ .Values.image.argocdServer.tag }}
         {{- end }}
@@ -134,7 +134,7 @@ spec:
         - --appendonly
         - "no"
         {{- if .Values.global.registry.is_offline }}
-        image: {{ .Values.global.private_registry }}/{{ .Values.image.redis.repository }}:{{ .Values.image.redis.tag }}
+        image: {{ .Values.global.registry.private_registry }}/{{ .Values.image.redis.repository }}:{{ .Values.image.redis.tag }}
         {{- else }}
         image: {{ .Values.image.redis.repository }}:{{ .Values.image.redis.tag }}
         {{- end }}
@@ -281,7 +281,7 @@ spec:
         - name: HELM_DATA_HOME
           value: /helm-working-dir
         {{- if .Values.global.registry.is_offline }}
-        image: {{ .Values.global.private_registry }}/{{ .Values.image.argocdServer.repository }}:{{ .Values.image.argocdServer.tag }}
+        image: {{ .Values.global.registry.private_registry }}/{{ .Values.image.argocdServer.repository }}:{{ .Values.image.argocdServer.tag }}
         {{- else }}
         image: {{ .Values.image.argocdServer.repository }}:{{ .Values.image.argocdServer.tag }}
         {{- end }}
@@ -338,7 +338,7 @@ spec:
         - /usr/local/bin/argocd
         - /var/run/argocd/argocd-cmp-server
         {{- if .Values.global.registry.is_offline }}
-        image: {{ .Values.global.private_registry }}/{{ .Values.image.argocdServer.repository }}:{{ .Values.image.argocdServer.tag }}
+        image: {{ .Values.global.registry.private_registry }}/{{ .Values.image.argocdServer.repository }}:{{ .Values.image.argocdServer.tag }}
         {{- else }}
         image: {{ .Values.image.argocdServer.repository }}:{{ .Values.image.argocdServer.tag }}
         {{- end }}
@@ -578,7 +578,7 @@ spec:
               name: argocd-cmd-params-cm
               optional: true
         {{- if .Values.global.registry.is_offline }}
-        image: {{ .Values.global.private_registry }}/{{ .Values.image.argocdServer.repository }}:{{ .Values.image.argocdServer.tag }}
+        image: {{ .Values.global.registry.private_registry }}/{{ .Values.image.argocdServer.repository }}:{{ .Values.image.argocdServer.tag }}
         {{- else }}
         image: {{ .Values.image.argocdServer.repository }}:{{ .Values.image.argocdServer.tag }}
         {{- end }}
