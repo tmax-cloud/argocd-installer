@@ -40,5 +40,5 @@ ingress:
     secretName:
   enableTraefik: false
 
-timezone: ""
+timezone: "UTC"
 

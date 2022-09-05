@@ -20,6 +20,7 @@ spec:
   source:
     path: {{ .Values.modules.namespace.source.path }}
     repoURL: {{ .Values.spec.source.repoURL }}
+    targetRevision: {{ .Values.spec.source.targetRevision }}
   project: {{ .Values.spec.project }}
   syncPolicy:
     automated:
