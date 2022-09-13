@@ -24,6 +24,7 @@ global:
     clientid: hypercloud5
   console:
     mcMode: true
+    chatbotEmbed: true
   tls:
     selfsigned:
       enabled: true
