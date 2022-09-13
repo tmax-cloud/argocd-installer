@@ -10,8 +10,6 @@ metadata:
     gatewayBootstrap: jwt-decode-auth
   name: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
   namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
   annotations:
     argocd.argoproj.io/sync-wave: "2"
 spec:
@@ -26,6 +24,8 @@ spec:
       valueFiles:
         - {{ .Values.modules.jwtDecodeAuth.source.helm.valueFiles }}
       parameters:
+        - name: timeZone
+          value: {{ .Values.global.timeZone | default "UTC" }}
         - name: hyperauth.address
           value: {{ .Values.global.hyperauth.address | default "hyperauth.org"}}
         - name: hyperauth.realm

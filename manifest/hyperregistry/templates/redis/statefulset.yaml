@@ -41,7 +41,11 @@ spec:
       terminationGracePeriodSeconds: 120
       containers:
       - name: redis
+        {{- if .Values.global.registry.is_offline }}
+        image: {{ .Values.global.registry.private_registry }}/{{ .Values.redis.internal.image.repository }}:{{ .Values.redis.internal.image.tag }}
+        {{- else }}
         image: {{ .Values.redis.internal.image.repository }}:{{ .Values.redis.internal.image.tag }}
+        {{- end }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         livenessProbe:
           tcpSocket:
@@ -58,15 +62,23 @@ spec:
 {{ toYaml .Values.redis.internal.resources | indent 10 }}
 {{- end }}
         volumeMounts:
+        {{- if ne .Values.global.time_zone "UTC" }}
+        - name: timezone-config
+          mountPath: /etc/localtime
+        {{- end }}
         - name: data
           mountPath: /var/lib/redis
           subPath: {{ $redis.subPath }}
-      {{- if not .Values.persistence.enabled }}
       volumes:
+      {{- if ne .Values.global.time_zone "UTC" }}
+      - name: timezone-config
+        hostPath: 
+          path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.global.time_zone }}
+      {{- end }}
+      {{- if not .Values.persistence.enabled }}
       - name: data
         emptyDir: {}
       {{- else if $redis.existingClaim }}
-      volumes:
       - name: data
         persistentVolumeClaim:
           claimName: {{ $redis.existingClaim }}

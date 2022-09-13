@@ -47,6 +47,11 @@ spec:
             {{- end }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
+          {{- if not (eq .Values.console.timeZone "UTC") }}
+          volumeMounts:
+            - mountPath: /etc/localtime
+              name: timezone-config
+          {{- end }}
           ports:
             - name: http
               containerPort: 31303
@@ -61,6 +66,12 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      {{- if not (eq .Values.console.timeZone "UTC") }}
+      volumes:
+        - name: timezone-config
+          hostPath:
+            path: "/usr/share/zoneinfo/{{ .Values.console.timeZone }}"
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

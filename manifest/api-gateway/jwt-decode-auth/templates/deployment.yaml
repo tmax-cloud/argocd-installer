@@ -64,12 +64,23 @@ spec:
               readOnly: true
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if not (eq .Values.timeZone "UTC") }}
+          volumeMounts:
+            - mountPath: /etc/localtime
+              name: timezone-config
+          {{- end }}
           ports:
             - name: http
               containerPort: 8080
               protocol: TCP
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      {{- if not (eq .Values.timeZone "UTC") }}
+      volumes:
+        - name: timezone-config
+          hostPath:
+            path: "/usr/share/zoneinfo/{{ .Values.timeZone }}"
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

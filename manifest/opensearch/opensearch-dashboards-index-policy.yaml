@@ -51,8 +51,8 @@ data:
           }
         ],
         "ism_template": {
-           "index_patterns": ["logstash-*"],
-           "priority": 100
+          "index_patterns": ["logstash-*"],
+          "priority": 100
         }
       }
     }

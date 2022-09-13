@@ -1,4 +1,5 @@
 function (
+    time_zone="UTC",
     is_offline="false",
     private_registry="172.22.6.2:5000",
     ai_devops_namespace="kubeflow",
@@ -15,54 +16,55 @@ function (
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
 local knative_serving_image_tag = "v0.14.3";
 local knative_istio_image_tag = "v0.14.1";
-[    
-    {
+
+[
+  {
     "apiVersion": "v1",
     "kind": "Namespace",
     "metadata": {
-        "labels": {
+      "labels": {
         "app.kubernetes.io/component": "knative-serving-install",
         "app.kubernetes.io/name": "knative-serving-install",
         "kustomize.component": "knative",
         "serving.knative.dev/release": "v0.14.3"
-        },
-        "name": knative_namespace
+      },
+      "name": knative_namespace
     }
-    },
-    {
+  },
+  {
     "apiVersion": "apiextensions.k8s.io/v1beta1",
     "kind": "CustomResourceDefinition",
     "metadata": {
-        "labels": {
+      "labels": {
         "app.kubernetes.io/component": "knative-serving-install",
         "app.kubernetes.io/name": "knative-serving-install",
         "knative.dev/crd-install": "true",
         "kustomize.component": "knative"
-        },
-        "name": "images.caching.internal.knative.dev"
+      },
+      "name": "images.caching.internal.knative.dev"
     },
     "spec": {
-        "group": "caching.internal.knative.dev",
-        "names": {
+      "group": "caching.internal.knative.dev",
+      "names": {
         "categories": [
-            "knative-internal",
-            "caching"
+          "knative-internal",
+          "caching"
         ],
         "kind": "Image",
         "plural": "images",
         "shortNames": [
-            "img"
+          "img"
         ],
         "singular": "image"
-        },
-        "scope": "Namespaced",
-        "subresources": {
+      },
+      "scope": "Namespaced",
+      "subresources": {
         "status": {}
-        },
-        "version": "v1alpha1"
+      },
+      "version": "v1alpha1"
     }
-    },
-    {
+  },
+  {
     "apiVersion": "apiextensions.k8s.io/v1beta1",
     "kind": "CustomResourceDefinition",
     "metadata": {
@@ -1514,7 +1516,14 @@ local knative_istio_image_tag = "v0.14.1";
                         "name": "controller-token",
                         "readOnly": true
                     }
-                ]
+                ] + (
+                if time_zone != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  }
+                ] else []
+              )
             }
             ],
             "terminationGracePeriodSeconds": 300,
@@ -1526,7 +1535,16 @@ local knative_istio_image_tag = "v0.14.1";
                         "secretName": "controller-token"
                     }
                 }
-            ]
+            ] + (
+            if time_zone != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                }
+              }
+            ] else []
+          )
         }
         }
     }
@@ -1657,7 +1675,14 @@ local knative_istio_image_tag = "v0.14.1";
                         "name": "controller-token",
                         "readOnly": true
                     }
-                ]
+                ] + (
+                if time_zone != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  }
+                ] else []
+              )
             }
             ],
             "volumes": [
@@ -1668,7 +1693,16 @@ local knative_istio_image_tag = "v0.14.1";
                         "secretName": "controller-token"
                     }
                 }
-            ]
+            ] + (
+            if time_zone != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                }
+              }
+            ] else []
+          )
         }
         }
     }
@@ -1764,7 +1798,14 @@ local knative_istio_image_tag = "v0.14.1";
                         "name": "controller-token",
                         "readOnly": true
                     }
-                ]
+                ] + (
+                if time_zone != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  }
+                ] else []
+              )
             }
             ],
             "volumes": [
@@ -1775,7 +1816,16 @@ local knative_istio_image_tag = "v0.14.1";
                         "secretName": "controller-token"
                     }
                 }
-            ]
+            ] + (
+            if time_zone != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                }
+              }
+            ] else []
+          )
         }
         }
     }
@@ -1881,7 +1931,14 @@ local knative_istio_image_tag = "v0.14.1";
                         "name": "controller-token",
                         "readOnly": true
                     }
-                ]
+                ] + (
+                if time_zone != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  }
+                ] else []
+              )
             }
             ],
             "volumes": [
@@ -1892,7 +1949,16 @@ local knative_istio_image_tag = "v0.14.1";
                         "secretName": "controller-token"
                     }
                 }
-            ]
+            ] + (
+            if time_zone != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                }
+              }
+            ] else []
+          )
         }
         }
     }
@@ -1990,7 +2056,14 @@ local knative_istio_image_tag = "v0.14.1";
                         "name": "controller-token",
                         "readOnly": true
                     }
-                ]
+                ] + (
+                if time_zone != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  }
+                ] else []
+              )
             }
             ],
             "volumes": [
@@ -2001,7 +2074,16 @@ local knative_istio_image_tag = "v0.14.1";
                         "secretName": "controller-token"
                     }
                 }
-            ]
+            ] + (
+            if time_zone != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                }
+              }
+            ] else []
+          )
         }
         }
     }
@@ -2103,7 +2185,14 @@ local knative_istio_image_tag = "v0.14.1";
                         "name": "controller-token",
                         "readOnly": true
                     }
-                ]
+                ] + (
+                if time_zone != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  }
+                ] else []
+              )
             }
             ],
             "volumes": [
@@ -2114,7 +2203,16 @@ local knative_istio_image_tag = "v0.14.1";
                         "secretName": "controller-token"
                     }
                 }
-            ]
+            ] + (
+            if time_zone != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                }
+              }
+            ] else []
+          )
         }
         }
     }

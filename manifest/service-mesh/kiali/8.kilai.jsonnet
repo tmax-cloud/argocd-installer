@@ -1,11 +1,13 @@
 function(
-    is_offline="false",
-    private_registry="registry.tmaxcloud.org",
-    KIALI_VERSION="v1.21",
-    HYPERAUTH_DOMAIN="hyperauth.domain",
-    CUSTOM_DOMAIN_NAME="custom-domain",
-    CUSTOM_CLUSTER_ISSUER="tmaxcloud-issuer",
-    kiali_subdomain="kiali"
+  is_offline="false",
+  private_registry="registry.tmaxcloud.org",
+  KIALI_VERSION="v1.21",
+  HYPERAUTH_DOMAIN="hyperauth.domain",
+  CUSTOM_DOMAIN_NAME="custom-domain",
+  CUSTOM_CLUSTER_ISSUER="tmaxcloud-issuer",
+  kiali_subdomain="kiali",
+  client_id="kiali",
+  time_zone="UTC"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -288,38 +290,38 @@ local target_registry = if is_offline == "false" then "" else private_registry +
       }
     },
     "data": {
-      "config.yaml": std.join("",
+      "config.yaml": std.join("\n",
       [
-        "istio_component_namespaces:\n",
-        "  grafana: monitoring\n",
-        "  tracing: istio-system\n",
-        "  pilot: istio-system\n",
-        "  prometheus: monitoring\n",
-        "istio_namespace: istio-system\n",
-        "auth:\n",
-        "  strategy: openid\n",
-        "  openid:\n",
-        "    client_id: kiali\n",
-        "    issuer_url: https://", HYPERAUTH_DOMAIN, "/auth/realms/tmax\n",
-        "    authorization_endpoint: https://", HYPERAUTH_DOMAIN, "/auth/realms/tmax/protocol/openid-connect/auth\n",
-        "deployment:\n",
-        "  accessible_namespaces: ['**']\n",
-        "login_token:\n",
-        "  signing_key: wl5oStULbP\n",
-        "server:\n",
-        "  port: 20001\n",
-        "  web_root: /api/kiali\n",
-        "external_services:\n",
-        "  istio:\n",
-        "    url_service_version: http://istio-pilot.istio-system:8080/version\n",
-        "  tracing:\n",
-        "    url:\n",
-        "    in_cluster_url: http://tracing/api/jaeger\n",
-        "  grafana:\n",
-        "    url:\n",
-        "    in_cluster_url: http://grafana.monitoring:3000\n",
-        "  prometheus:\n",
-        "    url: http://prometheus-k8s.monitoring:9090\n"
+        "istio_component_namespaces:",
+        "  grafana: monitoring",
+        "  tracing: istio-system",
+        "  pilot: istio-system",
+        "  prometheus: monitoring",
+        "istio_namespace: istio-system",
+        "auth:",
+        "  strategy: openid",
+        "  openid:",
+        std.join("", ["    client_id: ", client_id]),
+        std.join("", ["    issuer_url: https://", HYPERAUTH_DOMAIN, "/auth/realms/tmax"]),
+        std.join("", ["    authorization_endpoint: https://", HYPERAUTH_DOMAIN, "/auth/realms/tmax/protocol/openid-connect/auth"]),
+        "deployment:",
+        "  accessible_namespaces: ['**']",
+        "login_token:",
+        "  signing_key: wl5oStULbP",
+        "server:",
+        "  port: 20001",
+        "  web_root: /api/kiali",
+        "external_services:",
+        "  istio:",
+        "    url_service_version: http://istio-pilot.istio-system:8080/version",
+        "  tracing:",
+        "    url:",
+        "    in_cluster_url: http://tracing/api/jaeger",
+        "  grafana:",
+        "    url:",
+        "    in_cluster_url: http://grafana.monitoring:3000",
+        "  prometheus:",
+        "    url: http://prometheus-k8s.monitoring:9090"
         ]
       )
     }
@@ -486,7 +488,13 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                   "mountPath": "/kiali-secret",
                   "name": "kiali-secret"
                 }
-              ]
+              ] + ( if time_zone != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  }
+                ] else []
+              )
             }
           ],
           "serviceAccountName": "kiali-service-account",
@@ -511,7 +519,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "secretName": "kiali"
               }
             }
-          ]
+          ] + (
+            if time_zone != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                }
+              }
+            ] else []
+          )
         }
       }
     }
@@ -541,31 +558,31 @@ local target_registry = if is_offline == "false" then "" else private_registry +
     }
   },
   {
-     "apiVersion": "cert-manager.io/v1",
-     "kind": "Certificate",
-     "metadata": {
-       "name": "kiali-cert",
-       "namespace": "istio-system"
-     },
-     "spec": {
-       "secretName": "kiali-secret",
-       "usages": [
-         "digital signature",
-         "key encipherment",
-         "server auth",
-         "client auth"
-       ],
-       "dnsNames": [
-           "tmax-cloud",
-           "kiali.istio-system.svc"
-       ],
-       "issuerRef": {
-         "kind": "ClusterIssuer",
-         "group": "cert-manager.io",
-         "name": CUSTOM_CLUSTER_ISSUER
-       }
-     }
-   },
+    "apiVersion": "cert-manager.io/v1",
+    "kind": "Certificate",
+    "metadata": {
+      "name": "kiali-cert",
+      "namespace": "istio-system"
+    },
+    "spec": {
+      "secretName": "kiali-secret",
+      "usages": [
+        "digital signature",
+        "key encipherment",
+        "server auth",
+        "client auth"
+      ],
+      "dnsNames": [
+          "tmax-cloud",
+          "kiali.istio-system.svc"
+      ],
+      "issuerRef": {
+        "kind": "ClusterIssuer",
+        "group": "cert-manager.io",
+        "name": CUSTOM_CLUSTER_ISSUER
+      }
+    }
+  },
   {
     "apiVersion": "networking.k8s.io/v1",
     "kind": "Ingress",

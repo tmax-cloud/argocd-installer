@@ -8,6 +8,7 @@ fullnameOverride: "console"
 replicaCount: 1
 
 console:
+  timeZone: "UTC"
   auth:
     hyperauth: hyperauth.ckcloud.org
     realm: tmax

@@ -11,6 +11,7 @@ cert-manager:
   extraArgs:
     - "--dns01-recursive-nameservers=8.8.8.8:53"
     - "--dns01-recursive-nameservers-only"
+    - "--enable-certificate-owner-ref=true"
 #  image:
 #    repository: imageName:Tag
 #  cainjector:

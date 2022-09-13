@@ -2,6 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+timeZone: "UTC"
 nameOverride: "jwt-decode-auth"
 fullnameOverride: "jwt-decode-auth"
 hyperauth:
@@ -23,6 +24,9 @@ image:
 imagePullSecrets: []
 #imagePullSecrets:
 #  - name: regcred
+
+#nameOverride: ""
+#fullnameOverride: "jwt-decode-auth"
 
 serviceAccount:
   # Specifies whether a service account should be created

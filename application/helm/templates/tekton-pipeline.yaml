@@ -20,6 +20,8 @@ spec:
         tlas:
           - name: is_offline
             value: "{{ .Values.global.network.disabled }}"
+          - name: timezone
+            value: {{ .Values.global.timeZone }}                     
           - name: private_registry
             value: {{ .Values.global.privateRegistry }}
     path: manifest/tekton-pipeline

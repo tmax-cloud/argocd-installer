@@ -8,24 +8,9 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-   - port: 5432
+    - port: 5432
   selector:
-   app: postgres
----
-
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: postgres-data
-  namespace: hypercloud5-system
-spec:
-  #storageClassName: csi-cephfs-sc
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 10Gi
-
+    app: postgres
 ---
 
 apiVersion: v1
