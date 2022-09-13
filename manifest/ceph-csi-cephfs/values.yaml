@@ -283,8 +283,8 @@ kubeletDir: /var/lib/kubelet
 # Name of the csi-driver
 driverName: cephfs.csi.ceph.com
 # Name of the configmap used for state
-configMapName: ceph-csi-config
+configMapName: cephfs-csi-config
 # Key to use in the Configmap if not config.json
 # configMapKey:
 # Use an externally provided configmap
-externallyManagedConfigmap: true
+externallyManagedConfigmap: false
