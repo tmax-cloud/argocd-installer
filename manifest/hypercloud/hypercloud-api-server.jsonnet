@@ -397,14 +397,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
           "      path: /api/health",
           "      port: 3000",
           "  versionProbe:",
-          "- name: Kibana",
+          "- name: OpenSearch",
           "  namespace: kube-logging",
           "  selector:",
           "    matchLabels:",
           "      statusLabel:",
-          "      - app=kibana",
+          "      - app=opensearch",
           "      versionLabel:",
-          "      - app=kibana",
+          "      - app=opensearch",
           "  readinessProbe:",
           "  versionProbe:"
         ]
