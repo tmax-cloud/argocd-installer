@@ -68,6 +68,10 @@ modules:
   strimziKafka:
     enabled: false
 
+  ### service-binding-operator
+  serviceBinding:
+    enabled: true
+    
   ### hyperauth
   hyperAuth:
     enabled: true
