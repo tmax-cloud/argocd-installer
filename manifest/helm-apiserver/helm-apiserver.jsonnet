@@ -52,6 +52,10 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                             {
                                 "mountPath": "/tmp",
                                 "name": "helm-apiserver-data"
+                            },
+                            {
+                                "mountPath": "/tmp/cert",
+                                "name": "helm-apiserver-cert"
                             }
                         ] + (
                             if time_zone != "UTC" then [
@@ -71,6 +75,12 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "name": "helm-apiserver-data",
                         "persistentVolumeClaim": {
                             "claimName": "helm-apiserver-pvc"
+                        }
+                    },
+                    {
+                        "name": "helm-apiserver-cert",
+                        "secret": {
+                            "secretName": "helm-apiserver-cert"
                         }
                     }
                 ] + (
@@ -122,6 +132,13 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     ]
                 }
             }
+        ],
+        "tls": [
+            {
+                "hosts": [
+                    std.join("", [helm_subdomain, ".", hypercloud_domain_host])
+                ]
+            }
         ]
     }
 },
@@ -141,8 +158,11 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "volumeMode": "Filesystem",
         "accessModes": [
             "ReadWriteMany"
-        ],
+        ], 
+    } + (
+      if storage_class != "default" then {
         "storageClassName": storage_class
-    }
+      } else {}
+    )
 }
 ]
