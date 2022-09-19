@@ -23,9 +23,9 @@ spec:
           - name: private_registry
             value: {{ .Values.global.privateRegistry }}
           - name: tmax_client_secret
-            value: {{ .Values.global.keycloak.tmaxClientSecret }}
+            value: {{ .Values.modules.hyperAuth.tmaxClientSecret }}
           - name: HYPERAUTH_DOMAIN
-            value: {{ .Values.global.keycloak.domain }}
+            value: {{ printf "%s.%s" .Values.modules.hyperAuth.subdomain .Values.global.domain }}
           - name: CUSTOM_DOMAIN_NAME
             value: {{ .Values.global.domain }}
           - name: jaeger_client_id

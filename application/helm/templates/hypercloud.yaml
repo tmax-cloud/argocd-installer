@@ -27,9 +27,9 @@ spec:
           - name: hypercloud_kafka_enabled
             value: "{{ .Values.modules.hyperCloud.kafka.enabled }}"
           - name: hyperauth_url
-            value: {{ .Values.global.keycloak.domain }}
+            value: {{ printf "%s.%s" .Values.modules.hyperAuth.subdomain .Values.global.domain }}
           - name: hyperauth_client_secret
-            value: {{ .Values.global.keycloak.tmaxClientSecret }}
+            value: {{ .Values.modules.hyperAuth.tmaxClientSecret }}
           - name: console_subdomain
             value: {{ .Values.modules.gatewayBootstrap.console.subdomain }}
           - name: hyperauth_subdomain

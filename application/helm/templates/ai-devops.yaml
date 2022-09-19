@@ -33,9 +33,9 @@ spec:
           - name: notebook_svc_type
             value: {{ .Values.modules.aiDevops.notebookSvcType }}
           - name: tmax_client_secret
-            value: {{ .Values.global.keycloak.tmaxClientSecret }}
+            value: {{ .Values.modules.hyperAuth.tmaxClientSecret }}
           - name: hyperauth_url
-            value: {{ .Values.global.keycloak.domain }}
+            value: {{ printf "%s.%s" .Values.modules.hyperAuth.subdomain .Values.global.domain }}
           - name: console_subdomain
             value: "{{ .Values.modules.gatewayBootstrap.console.subdomain }}"
     path: manifest/ai-devops

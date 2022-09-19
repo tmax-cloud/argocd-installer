@@ -15,8 +15,4 @@ global:
   network:
     # 폐쇄망일경우 true
     disabled: false
-  domain: testdomain.com
-  keycloak:
-    domain: testauth.testdomain.com
-    # Do not change value of tmaxClientSecret!
-    tmaxClientSecret: tmax_client_secret
+ 

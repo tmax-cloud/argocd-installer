@@ -6,12 +6,12 @@ spec:
   project: default
 
 global:
-  # 마스터와 다르게 싱글의 경우 값변경이 필요하지 않음
   privateRegistry: test-registry.com
   adminUser: test@test.co.kr
   cluster: single
   clusterName: cluster-name
   clusterNamespace: cluster-namespace
+  domain: singletestdomain.com
 
 modules:
   ###gitlab
@@ -76,6 +76,8 @@ modules:
     subdomain: hyperauth
     # master cluster를 위한 value, 수정 X
     storageClass: default
+    # do not edit tmaxClientSecret!
+    tmaxClientSecret: tmax_client_secret
 
   ### efk
   efk:

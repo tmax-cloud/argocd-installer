@@ -23,7 +23,7 @@ spec:
           - name: private_registry
             value: {{ .Values.global.privateRegistry }}
           - name: HYPERAUTH_DOMAIN
-            value: {{ .Values.global.keycloak.domain }}
+            value: {{ printf "%s.%s" .Values.modules.hyperAuth.subdomain .Values.global.domain }}
           - name: CUSTOM_DOMAIN_NAME
             value: {{ .Values.global.domain }}
           - name: kiali_subdomain
