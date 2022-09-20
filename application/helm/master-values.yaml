@@ -159,7 +159,7 @@ modules:
     pvcSize: 10Gi
 
   ### grafana-operator
-  grafana-operator:
+  grafanaOperator:
     enabled: true
     pvcSize: 10Gi
     version: v0.0.2
