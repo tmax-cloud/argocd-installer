@@ -3,7 +3,7 @@ function (
 	private_registry="172.22.6.2:5000",
 	client_id="grafana",
 	tmax_client_secret="tmax_client_secret",
-	kube_rbac_proxy_image_repo=""
+	kube_rbac_proxy_image_repo="",
 	kube_rbac_proxy_version="",
 	grafana_operator_image_repo="",
 	grafana_operator_version="v0.0.2",
@@ -11,7 +11,9 @@ function (
 	ingress_domain="",
 	admin_user="test@test.co.kr",
 	is_master_cluster="true",
-	grafana_subdomain="grafana"
+	grafana_subdomain="grafana",
+  	timezone="UTC",
+	grafana_pvc_size = "10Gi"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -56,8 +58,7 @@ local admin_info = if is_master_cluster == "true" then "" else "admin_user = " +
 				"image":  std.join("",
 						[
 							target_registry,
-							brancz_image_repo,
-							"/kube-rbac-proxy:",
+							"gcr.io/kubebuilder/kube-rbac-proxy:",
 							kube_rbac_proxy_version
 						],
 				),
@@ -119,8 +120,16 @@ local admin_info = if is_master_cluster == "true" then "" else "admin_user = " +
 					"name": "webhook-tls",
 					"mountPath": "/run/secrets/tls",
 					"readOnly": true
-				  }
-				],
+				  },
+				] + (
+				  if timezone != "UTC" then [
+				{
+				"name": "timezone-config",
+				"mountPath": "/etc/localtime"
+				}
+				  ] else []
+				)
+				,
 				"imagePullPolicy": "Always",
 				"livenessProbe": {
 				  "httpGet": {
@@ -170,7 +179,20 @@ local admin_info = if is_master_cluster == "true" then "" else "admin_user = " +
 				  "secretName": "grafana-webhook"
 				}
 			  }
-			]
+			]+ (
+			  if timezone != "UTC" then [
+				{
+				  "name": "timezone-config",
+				  "hostPath": {
+					"path": std.join("", [
+						"/usr/share/zoneinfo/",
+						 timezone
+						 ]
+					)
+				   }
+				 }
+			  ] else []
+			),
 		  }
 		}
 	  }
@@ -202,7 +224,12 @@ local admin_info = if is_master_cluster == "true" then "" else "admin_user = " +
 		},
 		"config": {
 		  "server": {
-			"domain": std.join("",grafana_subdomain, ".", ingress_domain)
+			"domain": std.join("", [
+				grafana_subdomain, 
+				".", 
+				ingress_domain
+				]
+			),
 			"root_url": "http://%(domain)s/api/grafana/",
 			"serve_from_sub_path": true,
 			"http_port": "3000"
@@ -227,9 +254,9 @@ local admin_info = if is_master_cluster == "true" then "" else "admin_user = " +
 			"client_secret": tmax_client_secret,
 			"scopes": "openid profile email",
 			"email_attribute_path": "email",
-			"auth_url": std.join("","https://",keycloak_addr, "/auth/realms/tmax/protocol/openid-connect/auth"),
-			"token_url": std.join("","https://",keycloak_addr, "/auth/realms/tmax/protocol/openid-connect/token"),
-			"api_url": std.join("","https://",keycloak_addr, "/auth/realms/tmax/protocol/openid-connect/userinfo"),
+			"auth_url": std.join("", ["https://", keycloak_addr, "/auth/realms/tmax/protocol/openid-connect/auth" ]),
+			"token_url": std.join("", ["https://", keycloak_addr, "/auth/realms/tmax/protocol/openid-connect/token" ]),
+			"api_url": std.join("", ["https://", keycloak_addr, "/auth/realms/tmax/protocol/openid-connect/userinfo" ]),
 			"tls_skip_verify_insecure": true
 		  },
 		  "security": {

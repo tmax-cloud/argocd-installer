@@ -26,7 +26,7 @@ spec:
             value: {{ .Values.modules.hyperAuth.tmaxClientSecret }}
           - name: keycloak_addr
             value: {{ printf "%s.%s" .Values.modules.hyperAuth.subdomain .Values.global.domain }}
-          - name: grafana_pvc
+          - name: grafana_pvc_size
             value: {{ .Values.modules.grafanaOperator.pvcSize }}
           - name: grafana_operator_version
             value: {{ .Values.modules.grafanaOperator.version }}
