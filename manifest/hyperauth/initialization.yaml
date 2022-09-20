@@ -8,19 +8,43 @@ kind: ServiceAccount
 metadata:
   name: hyperauth-admin
   namespace: hyperauth
+automountServiceAccountToken: false
+secrets:
+- name: hyperauth-admin-token
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: hyperauth-admin-token
+  namespace: hyperauth
+  annotations:
+    kubernetes.io/service-account.name: hyperauth-admin
+type: kubernetes.io/service-account-token
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: hyperauth-pod-checker
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - "pods"
+  verbs:
+   - "list"
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: hyperauth-admin
+  name: hyperauth-pod-checker
 subjects:
 - kind: ServiceAccount
   name: hyperauth-admin
   namespace: hyperauth
 roleRef:
   kind: ClusterRole
-  name: cluster-admin
   apiGroup: rbac.authorization.k8s.io
+  name: hyperauth-pod-checker
 ---
 apiVersion: v1
 kind: Secret
@@ -121,7 +145,7 @@ data:
       "refreshTokenMaxReuse": 2,
       "accessTokenLifespan": 3600,
       "accessTokenLifespanForImplicitFlow": 54000,
-      "ssoSessionIdleTimeout": 1800,
+      "ssoSessionIdleTimeout": 36000,
       "ssoSessionMaxLifespan": 108000,
       "ssoSessionIdleTimeoutRememberMe": 0,
       "ssoSessionMaxLifespanRememberMe": 0,
@@ -505,6 +529,22 @@ data:
           ],
           "opensearch": [
             {
+              "id": "27269eda-debb-4860-8675-df7b1beb462e",
+              "name": "opensearch-developer",
+              "composite": false,
+              "clientRole": true,
+              "containerId": "e6c53d6c-4cba-4167-bf0d-1c34471df723",
+              "attributes": {}
+            },
+            {
+              "id": "3d7f19c7-fc93-47ff-95a7-c0a7b68c1b62",
+              "name": "opensearch-guest",
+              "composite": false,
+              "clientRole": true,
+              "containerId": "e6c53d6c-4cba-4167-bf0d-1c34471df723",
+              "attributes": {}
+            },
+            {
               "id": "599d7d05-decd-48b2-97c7-5c7dadc5d3a9",
               "name": "opensearch-admin",
               "composite": false,
@@ -699,33 +739,62 @@ data:
           "emailVerified" : true,
           "email" : "hc-admin@tmax.co.kr",
           "attributes" : {
-            "lastPasswordUpdateTime" : [ "1643953675016" ]
+            "lastPasswordUpdateTime" : [
+              "1643953675016"
+            ]
           },
-          "credentials" : [ {
-            "id" : "1455bc09-78b7-461f-8deb-b78810c3fc78",
-            "type" : "password",
-            "createdDate" : 1643953675008,
-            "secretData" : "{\"value\":\"LXZUPqifjsYk5wIj61Kh3dhJcvVAMCkeKEIqN16BB3VthZmWiz/SyOvYC+QcY7TluVnbkd1DGVHbGVJPhfCE4w==\",\"salt\":\"nu+LFEu2kV/ZlKwtj2PYyw==\"}",
-            "credentialData" : "{\"hashIterations\":27500,\"algorithm\":\"pbkdf2-sha256\"}"
-          } ],
+          "credentials" : [
+            {
+              "id" : "1455bc09-78b7-461f-8deb-b78810c3fc78",
+              "type" : "password",
+              "createdDate" : 1643953675008,
+              "secretData" : "{\"value\":\"LXZUPqifjsYk5wIj61Kh3dhJcvVAMCkeKEIqN16BB3VthZmWiz/SyOvYC+QcY7TluVnbkd1DGVHbGVJPhfCE4w==\",\"salt\":\"nu+LFEu2kV/ZlKwtj2PYyw==\"}",
+              "credentialData" : "{\"hashIterations\":27500,\"algorithm\":\"pbkdf2-sha256\"}"
+            }
+          ],
           "disableableCredentialTypes" : [ ],
           "requiredActions" : [ ],
-          "realmRoles" : [ "admin" ],
+          "realmRoles" : [
+            "admin"
+          ],
           "clientRoles" : {
-            "opensearch" : [ "opensearch-admin" ],
-            "notebook-gatekeeper" : [ "notebook-gatekeeper-manager" ],
-            "kibana" : [ "kibana-manager" ],
-            "account" : [ "manage-account", "view-profile" ],
-            "jaeger" : [ "jaeger-manager" ]
+            "opensearch" : [
+              "opensearch-admin"
+            ],
+            "notebook-gatekeeper" : [
+              "notebook-gatekeeper-manager"
+            ],
+            "kibana" : [
+              "kibana-manager"
+            ],
+            "account" : [
+              "manage-account",
+              "view-profile"
+            ],
+            "jaeger" : [
+              "jaeger-manager"
+            ]
           },
-          "clientConsents" : [ {
-            "clientId" : "kiali",
-            "grantedClientScopes" : [ "profile", "group", "email", "user_name", "kiali", "roles" ],
-            "createdDate" : 1643953191260,
-            "lastUpdatedDate" : 1643953191276
-          } ],
+          "clientConsents" : [
+            {
+              "clientId" : "kiali",
+              "grantedClientScopes" : [
+                "profile",
+                "group",
+                "email",
+                "user_name",
+                "kiali",
+                "roles"
+              ],
+              "createdDate" : 1643953191260,
+              "lastUpdatedDate" : 1643953191276
+            }
+          ],
           "notBefore" : 0,
-          "groups" : [ "/argocd-admin", "/hypercloud5" ]
+          "groups" : [
+            "/argocd-admin",
+            "/hypercloud5"
+          ]
         },
         {
           "id": "3fc4854d-a416-48fc-bd54-dfa6f92be66a",
@@ -2007,6 +2076,40 @@ data:
       ],
       "clientScopes": [
         {
+          "id": "a52b4fc5-038e-4df7-bed1-09c4c2d07dda",
+          "name": "role_list",
+          "description": "SAML role list",
+          "protocol": "saml",
+          "attributes": {
+            "consent.screen.text": "${samlRoleListScopeConsentText}",
+            "display.on.consent.screen": "true"
+          },
+          "protocolMappers": [
+            {
+              "id": "310eb8c8-1e07-43b8-9d42-604061c3c162",
+              "name": "role list",
+              "protocol": "saml",
+              "protocolMapper": "saml-role-list-mapper",
+              "consentRequired": false,
+              "config": {
+                "single": "false",
+                "attribute.nameformat": "Basic",
+                "attribute.name": "Role"
+              }
+            }
+          ]
+        },
+        {
+          "id": "36ba7aa9-7efb-4095-be7a-151c8545da36",
+          "name": "offline_access",
+          "description": "OpenID Connect built-in scope: offline_access",
+          "protocol": "openid-connect",
+          "attributes": {
+            "consent.screen.text": "${offlineAccessScopeConsentText}",
+            "display.on.consent.screen": "true"
+          }
+        },
+        {
           "id": "824524e2-eb6e-478e-aa54-eccdecd577dd",
           "name": "groups",
           "protocol": "openid-connect",
@@ -2582,40 +2685,6 @@ data:
               }
             }
           ]
-        },
-        {
-          "id": "a52b4fc5-038e-4df7-bed1-09c4c2d07dda",
-          "name": "role_list",
-          "description": "SAML role list",
-          "protocol": "saml",
-          "attributes": {
-            "consent.screen.text": "${samlRoleListScopeConsentText}",
-            "display.on.consent.screen": "true"
-          },
-          "protocolMappers": [
-            {
-              "id": "310eb8c8-1e07-43b8-9d42-604061c3c162",
-              "name": "role list",
-              "protocol": "saml",
-              "protocolMapper": "saml-role-list-mapper",
-              "consentRequired": false,
-              "config": {
-                "single": "false",
-                "attribute.nameformat": "Basic",
-                "attribute.name": "Role"
-              }
-            }
-          ]
-        },
-        {
-          "id": "36ba7aa9-7efb-4095-be7a-151c8545da36",
-          "name": "offline_access",
-          "description": "OpenID Connect built-in scope: offline_access",
-          "protocol": "openid-connect",
-          "attributes": {
-            "consent.screen.text": "${offlineAccessScopeConsentText}",
-            "display.on.consent.screen": "true"
-          }
         }
       ],
       "defaultDefaultClientScopes": [
@@ -2736,6 +2805,25 @@ data:
       "adminEventsDetailsEnabled": false,
       "identityProviders": [
         {
+          "alias": "naver",
+          "internalId": "5ae237a9-d802-4fe5-9b22-aee19dfe4bd0",
+          "providerId": "naver",
+          "enabled": false,
+          "updateProfileFirstLoginMode": "on",
+          "trustEmail": false,
+          "storeToken": false,
+          "addReadTokenRoleOnCreate": false,
+          "authenticateByDefault": false,
+          "linkOnly": false,
+          "firstBrokerLoginFlowAlias": "first broker login",
+          "config": {
+            "syncMode": "IMPORT",
+            "clientSecret": "**********",
+            "clientId": "asdf",
+            "useJwksUrl": "true"
+          }
+        },
+        {
           "alias": "kakao",
           "internalId": "76acf1b0-707d-4ae4-b311-406d42de4605",
           "providerId": "kakao",
@@ -2752,25 +2840,6 @@ data:
             "syncMode": "IMPORT",
             "clientSecret": "**********",
             "clientId": "509e0e7b08758d0bdbc64de18f0d3c18",
-            "useJwksUrl": "true"
-          }
-        },
-        {
-          "alias": "naver",
-          "internalId": "5ae237a9-d802-4fe5-9b22-aee19dfe4bd0",
-          "providerId": "naver",
-          "enabled": false,
-          "updateProfileFirstLoginMode": "on",
-          "trustEmail": false,
-          "storeToken": false,
-          "addReadTokenRoleOnCreate": false,
-          "authenticateByDefault": false,
-          "linkOnly": false,
-          "firstBrokerLoginFlowAlias": "first broker login",
-          "config": {
-            "syncMode": "IMPORT",
-            "clientSecret": "**********",
-            "clientId": "asdf",
             "useJwksUrl": "true"
           }
         }
@@ -2790,6 +2859,14 @@ data:
             }
           },
           {
+            "id": "aa46e927-c74f-4cc1-beec-038ecedcf324",
+            "name": "Full Scope Disabled",
+            "providerId": "scope",
+            "subType": "anonymous",
+            "subComponents": {},
+            "config": {}
+          },
+          {
             "id": "aa2d4c92-d45f-4bfa-951d-832d522e1213",
             "name": "Allowed Protocol Mapper Types",
             "providerId": "allowed-protocol-mappers",
@@ -2797,24 +2874,16 @@ data:
             "subComponents": {},
             "config": {
               "allowed-protocol-mapper-types": [
-                "saml-user-attribute-mapper",
-                "oidc-full-name-mapper",
                 "oidc-address-mapper",
+                "oidc-full-name-mapper",
                 "saml-user-property-mapper",
-                "saml-role-list-mapper",
                 "oidc-usermodel-attribute-mapper",
+                "saml-user-attribute-mapper",
                 "oidc-sha256-pairwise-sub-mapper",
-                "oidc-usermodel-property-mapper"
+                "oidc-usermodel-property-mapper",
+                "saml-role-list-mapper"
               ]
             }
-          },
-          {
-            "id": "aa46e927-c74f-4cc1-beec-038ecedcf324",
-            "name": "Full Scope Disabled",
-            "providerId": "scope",
-            "subType": "anonymous",
-            "subComponents": {},
-            "config": {}
           },
           {
             "id": "835aa658-0eb9-4900-9b72-0ea46a90f041",
@@ -2837,13 +2906,13 @@ data:
             "config": {
               "allowed-protocol-mapper-types": [
                 "saml-user-attribute-mapper",
+                "oidc-usermodel-property-mapper",
                 "saml-user-property-mapper",
+                "oidc-address-mapper",
                 "oidc-sha256-pairwise-sub-mapper",
                 "saml-role-list-mapper",
-                "oidc-usermodel-property-mapper",
-                "oidc-address-mapper",
-                "oidc-usermodel-attribute-mapper",
-                "oidc-full-name-mapper"
+                "oidc-full-name-mapper",
+                "oidc-usermodel-attribute-mapper"
               ]
             }
           },

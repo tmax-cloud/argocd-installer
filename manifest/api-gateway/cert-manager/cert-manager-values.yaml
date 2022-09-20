@@ -11,6 +11,7 @@ cert-manager:
   extraArgs:
     - "--dns01-recursive-nameservers=8.8.8.8:53"
     - "--dns01-recursive-nameservers-only"
+    - "--enable-certificate-owner-ref=true"
 #  image:
 #    repository: imageName:Tag
 #  cainjector:
@@ -51,7 +52,6 @@ rootCA:
     ## kubectl create secret docker-registry regcred --docker-username=tmaxcloudck --docker-password=$PASSWD -n cert-manager
     #  imagePullSecrets:
     #    - name: regcred
-
 ## kubectl create ns cert-manager
 #  resources: {}
 #  resources:

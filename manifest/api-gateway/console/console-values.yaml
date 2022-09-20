@@ -11,6 +11,7 @@ console:
     realm: tmax
     clientid: hypercloud5
   mcMode: true
+  chatbotEmbed: true
 
 service:
   type: ClusterIP
@@ -30,7 +31,7 @@ image:
   repository: docker.io/tmaxcloudck/hypercloud-console
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "5.0.49.0"
+  tag: "5.0.69.0"
 #imagePullSecrets: []
 imagePullSecrets:
   - name: regcred

@@ -1,6 +1,7 @@
 function (
-    is_offline="false",
-    private_registry="172.22.6.2:5000",
+  is_offline="false",
+  private_registry="172.22.6.2:5000",
+  time_zone="UTC"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -46,7 +47,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
               "name": "strimzi-cluster-operator"
             }
           }
-        ],
+        ] + (
+            if time_zone != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                }
+              }
+            ] else []
+          ),
         "containers": [
           {
             "name": "strimzi-cluster-operator",
@@ -69,7 +79,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "name": "co-config-volume",
                 "mountPath": "/opt/strimzi/custom-config/"
               }
-            ],
+            ] + (
+                if time_zone != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  }
+                ] else []
+              ),
             "env": [
               {
                 "name": "STRIMZI_NAMESPACE",

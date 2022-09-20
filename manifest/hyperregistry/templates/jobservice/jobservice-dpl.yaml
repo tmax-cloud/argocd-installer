@@ -100,6 +100,10 @@ spec:
         ports:
         - containerPort: {{ template "harbor.jobservice.containerPort" . }}
         volumeMounts:
+        {{- if ne .Values.global.time_zone "UTC" }}
+        - name: timezone-config
+          mountPath: /etc/localtime
+        {{- end }}
         - name: jobservice-config
           mountPath: /etc/jobservice/config.yml
           subPath: config.yml
@@ -114,6 +118,11 @@ spec:
 {{ include "harbor.caBundleVolumeMount" . | indent 8 }}
         {{- end }}
       volumes:
+      {{- if ne .Values.global.time_zone "UTC" }}
+      - name: timezone-config
+        hostPath: 
+          path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.global.time_zone }}
+      {{- end }}
       - name: jobservice-config
         configMap:
           name: "{{ template "harbor.jobservice" . }}"

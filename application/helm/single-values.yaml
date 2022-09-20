@@ -6,14 +6,19 @@ spec:
   project: default
 
 global:
-  # 마스터와 다르게 싱글의 경우 값변경이 필요하지 않음
   privateRegistry: test-registry.com
   adminUser: test@test.co.kr
   cluster: single
   clusterName: cluster-name
   clusterNamespace: cluster-namespace
+  domain: singletestdomain.com
 
 modules:
+  ###gitlab
+  gitlab:
+    enabled: true
+    subdomain: gitlab
+      
   ### gateway-bootstrap
   gatewayBootstrap:
     enabled: true
@@ -30,6 +35,9 @@ modules:
           accessKeyID: accesskey
           accessKeySecret: secretkey
           hostedZoneID: hostedzoneid
+        # acme를 통한 인증서 발급의 경우, rate limit이 존재하므로 테스트를 위한 설정값이 따로 존재함
+        # 자세한 내용은 https://letsencrypt.org/docs/staging-environment/#rate-limits 참조
+        # staging / production 중 택1하여 기입하여야 하며, 각각 테스트용 / 운영용을 의미함
         environment: production
     certManager:
       enabled: true
@@ -57,6 +65,10 @@ modules:
   strimziKafka:
     enabled: false
 
+  ### service-binding-operator
+  serviceBinding:
+    enabled: false
+
   ### hyperauth
   hyperAuth:
     enabled: false
@@ -64,6 +76,8 @@ modules:
     subdomain: hyperauth
     # master cluster를 위한 value, 수정 X
     storageClass: default
+    # do not edit tmaxClientSecret!
+    tmaxClientSecret: tmax_client_secret
 
   ### efk
   efk:
@@ -84,7 +98,25 @@ modules:
       version: 10.0.0
     fluentd:
       version: v1.4.2-debian-elasticsearch-1.1
-  
+
+  ### argocd
+  argocd:
+    enabled: false
+    subdomain: argocd
+    dex:
+      replicas: 1
+    repoServer:
+      replicas: 1
+    redis:
+      replicas: 1
+    argocdServer:
+      replicas: 1
+    controller:
+      replicas: 1
+    ingress:
+      enableTraefik: true
+      secretName:
+      
   ### opensearch
   opensearch:
     enabled: false
@@ -155,10 +187,10 @@ modules:
         credentials: "credential"
       vsphere:
         enabled: false
-        credentials: 
+        credentials:
           username: "user"
           password: "password"
-  
+
   ### template service broker
   tsb:
     enabled: false
@@ -171,6 +203,17 @@ modules:
   ### catalog controller
   catalogController:
     enabled: false
+
+  ### helm-apiserver
+  helmApiserver:
+    enabled: true
+    version: 0.0.1
+    subdomain: helm
+    # default로 주는 경우 default storage class를 사용
+    # default를 사용하지 않고 싶은 경우에는 storage class이름을 기입
+    storageClass: default
+    # 지정 가능: fatal(0), error(1), warn(2), info(3), debug(4), trace(5)
+    logLevel: error
   
   ### hypercloud
   hyperCloud:
@@ -213,7 +256,7 @@ modules:
   ### image validating webhook
   imageValidatingWebhook:
     enabled: false
-    
+
   ### ai-devops
   aiDevops:
     enabled: false
@@ -224,3 +267,25 @@ modules:
       imagePullSecrets: []
 #      imagePullSecrets:
 #        - name: regcred
+
+  ### nfs-subdir-external-provisioner
+  nfs:
+    enabled: false
+    # nfs provisioner가 사용할 nfs server, ex: 192.168.7.16
+    server: 192.168.7.16
+    # nfs provisioner가 사용할 nfs server의 path, ex: /mnt/nfs-shared-dir
+    path: /nfs-storage
+
+  ### ceph-csi-cephfs
+  cephfs:
+    enabled: false
+    # 사용 위해 ceph-csi namespace에 configmap(csi-config-map), secret(csi-cephfs-secret) 생성 필요
+    # csi-config-map 에서 명시한 clusterID(fsid)
+    clusterId: 50611be6-33b3-11eb-a5cb-0894ef32cba4
+
+  ### ceph-csi-rbd
+  rbd:
+    enabled: false
+    # 사용 위해 ceph-csi namespace에 configmap(csi-config-map), secret(csi-rbd-secret) 생성 필요
+    # csi-config-map 에서 명시한 clusterID(fsid)
+    clusterId: 50611be6-33b3-11eb-a5cb-0894ef32cba4

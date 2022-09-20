@@ -1,9 +1,10 @@
 function (
-    is_offline = "false",
-    private_registry="registry.tmaxcloud.org",
-    template_operator_version = "0.2.6",
-    cluster_tsb_version = "0.1.3",
-    tsb_version = "0.1.3"
+  is_offline = "false",
+  private_registry="registry.tmaxcloud.org",
+  template_operator_version = "0.2.6",
+  cluster_tsb_version = "0.1.3",
+  tsb_version = "0.1.3",
+  time_zone="UTC"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -31,6 +32,17 @@ local target_registry = if is_offline == "false" then "" else private_registry +
       },
       "spec": {
         "serviceAccountName": "template-operator",
+        "volumes": [
+        ] + (
+            if time_zone != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                }
+              }
+            ] else []
+          ),
         "containers": [
           {
             "command": [
@@ -39,6 +51,15 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "args": [
               "--enable-leader-election"
             ],
+            "volumeMounts": [
+            ] + (
+                if time_zone != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  }
+                ] else []
+              ),
             "image": std.join("", [target_registry, "docker.io/tmaxcloudck/template-operator:", template_operator_version]),
             "imagePullPolicy": "Always",
             "name": "manager"
@@ -50,37 +71,57 @@ local target_registry = if is_offline == "false" then "" else private_registry +
     }
   },
   {
-  "apiVersion": "apps/v1",
-  "kind": "Deployment",
-  "metadata": {
-    "labels": {
-      "app": "cluster-template-service-broker"
-    },
-    "name": "cluster-template-service-broker",
-    "namespace": "cluster-tsb-ns"
-  },
-  "spec": {
-    "replicas": 1,
-    "selector": {
-      "matchLabels": {
+    "apiVersion": "apps/v1",
+    "kind": "Deployment",
+    "metadata": {
+      "labels": {
         "app": "cluster-template-service-broker"
-      }
+      },
+      "name": "cluster-template-service-broker",
+      "namespace": "cluster-tsb-ns"
     },
-    "template": {
-      "metadata": {
-        "labels": {
+    "spec": {
+      "replicas": 1,
+      "selector": {
+        "matchLabels": {
           "app": "cluster-template-service-broker"
         }
       },
-      "spec": {
-        "serviceAccountName": "cluster-tsb-sa",
-        "containers": [
-          {
-            "image": std.join("", [target_registry, "docker.io/tmaxcloudck/cluster-tsb:", cluster_tsb_version]),
-            "name": "cluster-tsb",
-            "imagePullPolicy": "Always"
+      "template": {
+        "metadata": {
+          "labels": {
+            "app": "cluster-template-service-broker"
           }
-         ]
+        },
+        "spec": {
+          "serviceAccountName": "cluster-tsb-sa",
+          "volumes": [
+          ] + (
+              if time_zone != "UTC" then [
+                {
+                  "name": "timezone-config",
+                  "hostPath": {
+                    "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                  }
+                }
+              ] else []
+            ),
+          "containers": [
+            {
+              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/cluster-tsb:", cluster_tsb_version]),
+              "name": "cluster-tsb",
+              "imagePullPolicy": "Always",
+              "volumeMounts": [
+              ] + (
+                  if time_zone != "UTC" then [
+                    {
+                      "name": "timezone-config",
+                      "mountPath": "/etc/localtime"
+                    }
+                  ] else []
+              )
+            }
+          ]
         }
       }
     }
@@ -110,11 +151,31 @@ local target_registry = if is_offline == "false" then "" else private_registry +
       },
       "spec": {
         "serviceAccountName": "tsb-sa",
+        "volumes": [
+          ] + (
+              if time_zone != "UTC" then [
+                {
+                  "name": "timezone-config",
+                  "hostPath": {
+                    "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                  }
+                }
+              ] else []
+            ),
         "containers": [
           {
             "image": std.join("", [target_registry, "docker.io/tmaxcloudck/tsb:", tsb_version]),
             "name": "tsb",
-            "imagePullPolicy": "Always"
+            "imagePullPolicy": "Always",
+            "volumeMounts": [
+              ] + (
+                  if time_zone != "UTC" then [
+                    {
+                      "name": "timezone-config",
+                      "mountPath": "/etc/localtime"
+                    }
+                  ] else []
+              )
           }
         ]
         }

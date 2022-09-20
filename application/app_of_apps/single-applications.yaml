@@ -2,10 +2,10 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   labels:
-    # {{ cluster namespace }}-{{ cluster name}}로 변경
+    # {{ cluster namespace }}-{{ cluster name }}로 변경
     cluster: single
     appType: app-of-apps
-  # {{ cluster namespace }}-{{ cluster name}}-applications로 변경
+  # {{ cluster namespace }}-{{ cluster name }}-applications로 변경
   name: single-applications
   namespace: argocd
 spec:
@@ -69,6 +69,21 @@ spec:
           # Hyperregistry에서 postgres의 pvc의 storage class로 변경
           # aws의 경우 efs-sc-999, 그외에는 nfs
           value: nfs
+        - name: modules.gitlab.subdomain
+          # gitlab이 사용할 subdomain으로 변경
+          value: gitlab
+        - name: modules.nfs.server
+          # nfs provisioner가 사용할 nfs server, ex: 192.168.7.16
+          value: 192.168.7.16
+        - name: modules.nfs.path
+          # nfs provisioner가 사용할 nfs server의 path, ex: /mnt/nfs-shared-dir
+          value: /nfs-storage
+        - name: modules.cephfs.clusterId
+          # csi-config-map 에서 명시한 clusterID(fsid)
+          value: 50611be6-33b3-11eb-a5cb-0894ef32cba4
+        - name: modules.rbd.clusterId
+          # csi-config-map 에서 명시한 clusterID(fsid)
+          value: 50611be6-33b3-11eb-a5cb-0894ef32cba4
     path: application/helm
     # 환경에 맞게 url 주소 변경 필요
     repoURL: https://github.com/tmax-cloud/argocd-installer

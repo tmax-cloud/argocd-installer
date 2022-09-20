@@ -9,6 +9,7 @@ spec:
   project: default
 
 global:
+  timeZone: UTC
   cluster: master
   clusterName: in-cluster
   clusterNamespace: default
@@ -23,6 +24,7 @@ global:
     clientid: hypercloud5
   console:
     mcMode: true
+    chatbotEmbed: true
   tls:
     selfsigned:
       enabled: true
@@ -38,8 +40,13 @@ global:
       environment: production
 
 modules:
+  namespace:
+    source:
+      path: manifest/api-gateway/namespace
+
 
   certManager:
+    syncWaitTime: 60
     enabled: true
     source:
       path: manifest/api-gateway/cert-manager
@@ -47,10 +54,11 @@ modules:
         valueFiles: cert-manager-values.yaml
     job:
       imagePullSecrets: []
-#      imagePullSecrets:
-#        - name: regcred
+  #      imagePullSecrets:
+  #        - name: regcred
 
   gateway:
+    syncWaitTime: 60
     enabled: true
     source:
       path: manifest/api-gateway/gateway
@@ -58,10 +66,11 @@ modules:
         valueFiles: gateway-values.yaml
     job:
       imagePullSecrets: []
-#      imagePullSecrets:
-#        - name: regcred
+  #      imagePullSecrets:
+  #        - name: regcred
 
   jwtDecodeAuth:
+    syncWaitTime: 60
     enabled: true
     source:
       path: manifest/api-gateway/jwt-decode-auth
@@ -69,8 +78,8 @@ modules:
         valueFiles: jwt-decode-auth-values.yaml
     job:
       imagePullSecrets: []
-#      imagePullSecrets:
-#        - name: regcred
+  #      imagePullSecrets:
+  #        - name: regcred
 
   console:
     ## when installing on single-cluster, enabled: false

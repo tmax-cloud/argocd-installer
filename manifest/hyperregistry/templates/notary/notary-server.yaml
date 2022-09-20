@@ -70,6 +70,10 @@ spec:
         - name: DB_URL
           value: {{ template "harbor.database.notaryServer" . }}
         volumeMounts:
+        {{- if ne .Values.global.time_zone "UTC" }}
+        - name: timezone-config
+          mountPath: /etc/localtime
+        {{- end }}
         - name: config
           mountPath: /etc/notary/server-config.postgres.json
           subPath: server.json
@@ -80,6 +84,11 @@ spec:
           mountPath: /etc/ssl/notary/ca.crt
           subPath: ca.crt
       volumes:
+      {{- if ne .Values.global.time_zone "UTC" }}
+      - name: timezone-config
+        hostPath: 
+          path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.global.time_zone }}
+      {{- end }}
       - name: config
         secret:
           secretName: "{{ template "harbor.notary-server" . }}"

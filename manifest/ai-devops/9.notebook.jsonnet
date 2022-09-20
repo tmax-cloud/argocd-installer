@@ -1,4 +1,5 @@
 function (
+    time_zone="UTC",
     is_offline="false",
     private_registry="172.22.6.2:5000",
     ai_devops_namespace="kubeflow",
@@ -5678,7 +5679,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "name": "notebook-controller-service-account-token",
                         "readOnly": true
                     }
-                ]
+                ] + (
+                if time_zone != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  }
+                ] else []
+              )
             }
             ],
             "volumes": [
@@ -5689,7 +5697,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "secretName": "notebook-controller-service-account-token"
                     }
                 }
-            ]
+            ] + (
+            if time_zone != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                }
+              }
+            ] else []
+          )
         }
         }
     }

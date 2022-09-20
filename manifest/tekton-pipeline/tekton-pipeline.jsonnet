@@ -1,6 +1,8 @@
-function(
-    is_offline="false",
-    private_registry="registry.tmaxcloud.org"
+function (
+  is_offline="false",
+  private_registry="registry.tmaxcloud.org",
+  timezone="UTC"
+
 )
 
 local gcr_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -102,7 +104,12 @@ local gcr_registry = if is_offline == "false" then "" else private_registry + "/
                   "name": "config-registry-cert",
                   "mountPath": "/etc/config-registry-cert"
                 }
-              ],
+              ] + if timezone != "UTC" then [
+                {
+                  "name": "timezone-config",
+                  "mountPath": "/etc/localtime"
+                }
+              ] else [],
               "env": [
                 {
                   "name": "SYSTEM_NAMESPACE",
@@ -216,7 +223,14 @@ local gcr_registry = if is_offline == "false" then "" else private_registry + "/
                 "name": "config-registry-cert"
               }
             }
-          ]
+          ] + if timezone != "UTC" then [
+            {
+              "name": "timezone-config",
+              "hostPath": {
+                "path": std.join("", ["/usr/share/zoneinfo/", timezone])
+              }
+            }
+          ] else []          
         }
       }
     }
@@ -398,9 +412,25 @@ local gcr_registry = if is_offline == "false" then "" else private_registry + "/
                 "periodSeconds": 10,
                 "timeoutSeconds": 5
               }
-            }
+            } + if timezone != "UTC" then {
+              "volumeMounts": [
+                {
+                  "name": "timezone-config",
+                  "mountPath": "/etc/localtime"
+                }
+              ],
+            } else {},
           ]
-        }
+        } + if timezone != "UTC" then {
+          "volumes":[
+            {
+              "name": "timezone-config",
+              "hostPath": {
+                "path": std.join("", ["/usr/share/zoneinfo/", timezone])
+              },
+            },
+          ],
+        } else {},
       }
     }
   }

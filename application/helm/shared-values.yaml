@@ -8,11 +8,11 @@ spec:
     targetRevision: HEAD
     
 global:
+  # 현재 지원하는 timeZone value
+  # UTC (default)
+  # Asia/Seoul
+  timeZone: UTC
   network:
     # 폐쇄망일경우 true
     disabled: false
-  domain: testdomain.com
-  keycloak:
-    domain: testauth.testdomain.com
-    # Do not change value of tmaxClientSecret!
-    tmaxClientSecret: tmax_client_secret
+ 
