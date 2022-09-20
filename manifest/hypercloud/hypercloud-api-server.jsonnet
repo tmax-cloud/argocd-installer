@@ -49,7 +49,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
           "containers": [
             {
               "name": "hypercloud5-api-server",
-              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-api-server:b5.0.26.16"]),
+              "image": std.join("", [ target_registry, "docker.io/tmaxcloudck/hypercloud-api-server:b5.0.29.0" ]),
               "imagePullPolicy": "IfNotPresent",
               "env": [
                 {
@@ -122,159 +122,20 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                   "mountPath": "/run/secrets/token",
                   "readOnly": true
                 },
-                "spec": {
-                    "serviceAccount": "hypercloud5-admin",
-                    "containers": [
-                        {
-                            "name": "hypercloud5-api-server",
-                            "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-api-server:b5.0.29.0"]),
-                            "imagePullPolicy": "IfNotPresent",
-                            "env": [
-                                {
-                                    "name": "TZ",
-                                    "value": "Asia/Seoul"
-                                },
-                                {
-                                    "name": "HC_MODE",
-                                    "value": hypercloud_hpcd_mode
-                                },
-                                {
-                                    "name": "INVITATION_TOKEN_EXPIRED_DATE",
-                                    "value": "7days"
-                                },
-                                {
-                                    "name": "GODEBUG",
-                                    "value": "x509ignoreCN=0"
-                                },
-                                {
-                                    "name": "SIDECAR_IMAGE",
-                                    "value": "fluent/fluent-bit:1.5-debug"
-                                },
-                                {
-                                    "name": "KAFKA_ENABLED",
-                                    "value": hypercloud_kafka_enabled
-                                },
-                                {
-                                    "name": "KAFKA_GROUP_ID",
-                                    "value":"hypercloud-api-server"
-                                }
-                            ],
-                            "ports": [
-                                {
-                                    "containerPort": 443,
-                                    "name": "https"
-                                }
-                            ],
-                            "resources": {
-                                "limits": {
-                                    "cpu": "500m",
-                                    "memory": "500Mi"
-                                },
-                                "requests": {
-                                    "cpu": "300m",
-                                    "memory": "100Mi"
-                                }
-                            },
-                            "volumeMounts": [
-                                {
-                                    "name": "version-config",
-                                    "mountPath": "/go/src/version/version.config",
-                                    "subPath": "version.config"
-                                },
-                                {
-                                    "name": "kafka",
-                                    "mountPath": "/go/src/etc/ssl",
-                                    "readOnly": true
-                                },
-                                {
-                                    "name": "hypercloud5-api-server-certs",
-                                    "mountPath": "/run/secrets/tls",
-                                    "readOnly": true
-                                },
-                                {
-                                    "name": "token-secret",
-                                    "mountPath": "/run/secrets/token",
-                                    "readOnly": true
-                                },
-                                {
-                                    "name": "smtp-secret",
-                                    "mountPath": "/run/secrets/smtp",
-                                    "readOnly": true
-                                },
-                                {
-                                    "name": "html",
-                                    "mountPath": "/run/configs/html",
-                                    "readOnly": true
-                                },
-                                {
-                                    "name": "hypercloud5-api-server-service-account-token",
-                                    "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
-                                    "readOnly": true
-                                }
-                            ]
-                        }
-                    ],
-                    "volumes": [
-                        {
-                            "name": "html",
-                            "configMap": {
-                                "name": "html-config"
-                            }
-                        },
-                        {
-                            "name": "version-config",
-                            "configMap": {
-                                "name": "version-config"
-                            }
-                        },
-                        {
-                            "name": "hypercloud5-api-server-certs",
-                            "secret": {
-                                "secretName": "hypercloud5-api-server-certs"
-                            }
-                        },
-                        {
-                            "name": "smtp-secret",
-                            "secret": {
-                                "secretName": "smtp-secret",
-                                "items": [
-                                    {
-                                        "key": "SMTP_USERNAME",
-                                        "path": "username"
-                                    },
-                                    {
-                                        "key": "SMTP_PASSWORD",
-                                        "path": "password"
-                                    }
-                                ]
-                            }
-                        },
-                        {
-                            "name": "kafka",
-                            "secret": {
-                                "secretName": "hypercloud-kafka-secret"
-                            }
-                        },
-                        {
-                            "name": "token-secret",
-                            "secret": {
-                                "secretName": "token-secret",
-                                "items": [
-                                    {
-                                        "key": "ACCESS_TOKEN",
-                                        "path": "accessSecret"
-                                    }
-                                ]
-                            }
-                        },
-                        {
-                            "name": "hypercloud5-api-server-service-account-token",
-                            "secret": {
-                                "secretName": "hypercloud5-api-server-service-account-token",
-                                "defaultMode": 420
-                            }
-                        }
-                    ]
+                {
+                  "name": "smtp-secret",
+                  "mountPath": "/run/secrets/smtp",
+                  "readOnly": true
+                },
+                {
+                  "name": "html",
+                  "mountPath": "/run/configs/html",
+                  "readOnly": true
+                },
+                {
+                  "name": "hypercloud5-api-server-service-account-token",
+                  "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                  "readOnly": true
                 }
               ] + (
                 if time_zone != "UTC" then [
