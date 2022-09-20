@@ -13,6 +13,20 @@ data:
 
     [prod]
     httpport = {{ ternary "8443" "8080" .Values.internalTLS.enabled }}
+  config_overwrite.json: |+
+    {
+      "auth_mode": "oidc_auth",
+      "oidc_name": "hyperregistry",
+      "oidc_endpoint": "https://{{ .Values.OIDC.config.hyperauthUrl }}/auth/realms/tmax",
+      "oidc_client_id": "{{ .Values.OIDC.config.clientId }}",
+      "oidc_client_secret": "{{ .Values.OIDC.config.clientSecret }}",
+      "oidc_groups_claim": "group",
+      "oidc_admin_group": "{{ .Values.OIDC.config.adminGroupName }}",
+      "oidc_scope": "openid",
+      "oidc_verify_cert": "false",
+      "oidc_auto_onboard": "true",
+      "oidc_user_claim": "preferred_username"
+    }
   PORT: "{{ ternary "8443" "8080" .Values.internalTLS.enabled }}"
   DATABASE_TYPE: "postgresql"
   POSTGRESQL_HOST: "{{ template "harbor.database.host" . }}"

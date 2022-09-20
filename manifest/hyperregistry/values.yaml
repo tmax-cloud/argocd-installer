@@ -8,6 +8,14 @@ global:
 fullnameOverride: "hyperregistry-harbor"
 nameOverride: ""
 
+OIDC:
+  enabled: true 
+  config:
+    clientId: hyperregistry
+    clientSecret: tmax_client_secret
+    hyperauthUrl: hyperauth_domain
+    adminGroupName: hypercloud5
+
 expose:
   # Set the way how to expose the service. Set the type as "ingress",
   # "clusterIP", "nodePort" or "loadBalancer" and fill the information

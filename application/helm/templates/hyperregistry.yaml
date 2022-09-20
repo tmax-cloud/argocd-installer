@@ -1,5 +1,5 @@
 {{ $isMaster := eq .Values.global.cluster "master" }}
-{{ if (and .Values.modules.hyperregistry.enabled (not $isMaster)) }}
+{{ if .Values.modules.hyperregistry.enabled }}
 {{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
 {{ $module := "hyperregistry" }}
 apiVersion: argoproj.io/v1alpha1
@@ -33,6 +33,14 @@ spec:
           value: {{ .Values.modules.hyperregistry.storageClass }}
         - name: storageClassDatabase
           value: {{ .Values.modules.hyperregistry.storageClassDatabase }}
+        - name: OIDC.config.clientId
+          value: {{ ternary "hyperregistry" (printf "%s-hyperregistry" $prefix) $isMaster }}
+        - name: OIDC.config.clientSecret
+          value: {{ .Values.global.keycloak.tmaxClientSecret }}
+        - name: OIDC.config.hyperauthUrl
+          value: {{ .Values.global.keycloak.domain }}
+        - name: OIDC.config.adminGroupName
+          value: {{ ternary "hypercloud5" (printf "%s-hyperregistry" $prefix) $isMaster }}
     path: manifest/hyperregistry
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
