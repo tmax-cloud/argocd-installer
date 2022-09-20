@@ -5,7 +5,7 @@ image:
   tag: ""
   pullPolicy: IfNotPresent
 
-#fullnameOverride: "api-gateway"
+fullnameOverride: "traefik"
 #
 # Configure the deployment
 #

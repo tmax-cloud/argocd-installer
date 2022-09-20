@@ -13,6 +13,7 @@ global:
   cluster: master
   clusterName: in-cluster
   clusterNamespace: default
+  domain: mastertestdomain.com
 
 modules:
   ###gitlab
@@ -80,6 +81,8 @@ modules:
     # default로 주는 경우 default storage class를 사용
     # default를 사용하지 않고 싶은 경우에는 storage class이름을 기입
     storageClass: default
+    # do not edit tmaxClientSecret!
+    tmaxClientSecret: tmax_client_secret
 
   ### efk
   efk:

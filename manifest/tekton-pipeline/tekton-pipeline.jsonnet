@@ -419,7 +419,7 @@ local gcr_registry = if is_offline == "false" then "" else private_registry + "/
                   "mountPath": "/etc/localtime"
                 }
               ],
-            },
+            } else {},
           ]
         } + if timezone != "UTC" then {
           "volumes":[
@@ -430,7 +430,7 @@ local gcr_registry = if is_offline == "false" then "" else private_registry + "/
               },
             },
           ],
-        },
+        } else {},
       }
     }
   }
