@@ -145,7 +145,7 @@ data:
       "refreshTokenMaxReuse": 2,
       "accessTokenLifespan": 3600,
       "accessTokenLifespanForImplicitFlow": 54000,
-      "ssoSessionIdleTimeout": 1800,
+      "ssoSessionIdleTimeout": 36000,
       "ssoSessionMaxLifespan": 108000,
       "ssoSessionIdleTimeoutRememberMe": 0,
       "ssoSessionMaxLifespanRememberMe": 0,
