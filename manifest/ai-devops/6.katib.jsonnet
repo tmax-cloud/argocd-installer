@@ -1263,7 +1263,7 @@ local katib_object_image_tag = "v0.11.0";
                   "mountPath": "/etc/localtime"
                 }
               ],
-            },
+            } else {},
           ],
         } + if time_zone != "UTC" then {
           "volumes":[
@@ -1274,7 +1274,7 @@ local katib_object_image_tag = "v0.11.0";
               },
             },
           ],
-        },
+        } else{},
       }
     }
   },
