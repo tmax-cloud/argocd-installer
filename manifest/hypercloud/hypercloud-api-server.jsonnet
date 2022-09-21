@@ -8,11 +8,11 @@ function (
   domain="tmaxcloud.org",
   hyperauth_subdomain="hyperauth",
   console_subdomain="console",
-  hyperregistry_enabled="true",
   storageClass="default",
   aws_enabled="true",
   vsphere_enabled="true",
-  time_zone="UTC"
+  time_zone="UTC",
+  multi_operator_log_level="info",
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";

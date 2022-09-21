@@ -224,6 +224,10 @@ modules:
       enabled: false
     # master cluster를 위한 value, 수정 X
     storageClass: default
+    
+    # multi-operator의 경우, info, debug, error 기입 가능(대소문자 유의)
+    multiOperator:
+      logLevel: info
 
   ### hyperregistry
   hyperregistry:
