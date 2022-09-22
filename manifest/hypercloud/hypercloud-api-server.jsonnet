@@ -12,7 +12,19 @@ function (
   storageClass="default",
   aws_enabled="true",
   vsphere_enabled="true",
-  time_zone="UTC"
+  time_zone="UTC",
+  timescaledb_audit_chunk_time_interval="7 days",
+  timescaledb_audit_retention_policy="1 years",
+  timescaledb_event_chunk_time_interval="1 days",
+  timescaledb_event_retention_policy="1 months",
+  timescaledb_metering_hour_chunk_time_interval="1 days",
+  timescaledb_metering_hour_retention_policy="1 months",
+  timescaledb_metering_day_chunk_time_interval="1 months",
+  timescaledb_metering_day_retention_policy="1 years",
+  timescaledb_metering_month_chunk_time_interval="1 years",
+  timescaledb_metering_month_retention_policy="1 years",
+  timescaledb_metering_year_retention_policy="1 years",
+  timescaledb_metering_year_retention_policy="10 years"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -49,7 +61,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
           "containers": [
             {
               "name": "hypercloud5-api-server",
-              "image": std.join("", [ target_registry, "docker.io/tmaxcloudck/hypercloud-api-server:b5.0.29.0" ]),
+              "image": std.join("", [ target_registry, "docker.io/tmaxcloudck/hypercloud-api-server:b5.0.34.0" ]),
               "imagePullPolicy": "IfNotPresent",
               "env": [
                 {
