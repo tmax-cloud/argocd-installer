@@ -13,6 +13,9 @@ function (
   aws_enabled="true",
   vsphere_enabled="true",
   time_zone="UTC",
+  single_operator_log_level="info",
+  api_server_log_level="INFO",
+  timescaledb_log_level="WARNING",
   timescaledb_audit_chunk_time_interval="7 days",
   timescaledb_audit_retention_policy="1 years",
   timescaledb_event_chunk_time_interval="1 days",
@@ -57,7 +60,8 @@ local target_registry = if is_offline == "false" then "" else private_registry +
           {
             "args": [
               "--metrics-addr=127.0.0.1:8080",
-              "--enable-leader-election"
+              "--enable-leader-election",
+              std.join("", ["--zap-log-level=", single_operator_log_level])
             ],
             "command": [
               "/manager"

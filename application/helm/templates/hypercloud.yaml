@@ -46,6 +46,12 @@ spec:
             value: {{ .Values.global.timeZone }}
           - name: domain
             value: {{ .Values.global.domain }}
+          - name: single_operator_log_level
+            value: "{{ .Values.modules.hyperCloud.singleOperator.logLevel }}"
+          - name: api_server_log_level
+            value: "{{ .Values.modules.hyperCloud.apiServer.logLevel }}"
+          - name: timescaledb_log_level
+            value: "{{ .Values.modules.hyperCloud.timescaledb.logLevel }}"
           - name: timescaledb_audit_chunk_time_interval
             value: {{ .Values.modules.hyperCloud.timescaledb.audit.chunk }}
           - name: timescaledb_audit_retention_policy

@@ -13,6 +13,9 @@ function (
   aws_enabled="true",
   vsphere_enabled="true",
   time_zone="UTC",
+  single_operator_log_level="info",
+  api_server_log_level="INFO",
+  timescaledb_log_level="WARNING",
   timescaledb_audit_chunk_time_interval="7 days",
   timescaledb_audit_retention_policy="1 years",
   timescaledb_event_chunk_time_interval="1 days",
@@ -63,6 +66,9 @@ local target_registry = if is_offline == "false" then "" else private_registry +
               "name": "hypercloud5-api-server",
               "image": std.join("", [ target_registry, "docker.io/tmaxcloudck/hypercloud-api-server:b5.0.34.0" ]),
               "imagePullPolicy": "IfNotPresent",
+              "args": [
+                std.join("", ["--log-level=", api_server_log_level])
+                ],
               "env": [
                 {
                   "name": "HC_MODE",
