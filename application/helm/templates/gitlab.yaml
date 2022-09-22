@@ -1,5 +1,5 @@
 {{ $isMaster := eq .Values.global.cluster "master" }}
-{{ if (and .Values.modules.gitlab.enabled (not $isMaster)) }}
+{{ if .Values.modules.gitlab.enabled }}
 {{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
 {{ $module := "gitlab" }}
 apiVersion: argoproj.io/v1alpha1
