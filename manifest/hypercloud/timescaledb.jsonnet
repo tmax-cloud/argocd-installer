@@ -159,10 +159,6 @@ local target_registry = if is_offline == "false" then "" else private_registry +
               ],
               env: [
                 {
-                  name: 'TZ',
-                  value: 'Asia/Seoul',
-                },
-                {
                   name: 'PATRONI_admin_OPTIONS',
                   value: 'createrole,createdb',
                 },
@@ -365,10 +361,6 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "set -e\n[ $CPUS -eq 0 ]   && CPUS=\"${RESOURCES_CPU_LIMIT}\"\n[ $MEMORY -eq 0 ] && MEMORY=\"${RESOURCES_MEMORY_LIMIT}\"\n\nif [ -f \"${PGDATA}/postgresql.base.conf\" ] && ! grep \"${INCLUDE_DIRECTIVE}\" postgresql.base.conf -qxF; then\n  echo \"${INCLUDE_DIRECTIVE}\" >> \"${PGDATA}/postgresql.base.conf\"\nfi\n\ntouch \"${TSTUNE_FILE}\"\ntimescaledb-tune -quiet -pg-version 11 -conf-path \"${TSTUNE_FILE}\" -cpus \"${CPUS}\" -memory \"${MEMORY}MB\" \\\n   -yes\n\n# If there is a dedicated WAL Volume, we want to set max_wal_size to 60% of that volume\n# If there isn't a dedicated WAL Volume, we set it to 20% of the data volume\nif [ \"${RESOURCES_WAL_VOLUME}\" = \"0\" ]; then\n  WALMAX=\"${RESOURCES_DATA_VOLUME}\"\n  WALPERCENT=20\nelse\n  WALMAX=\"${RESOURCES_WAL_VOLUME}\"\n  WALPERCENT=60\nfi\n\nWALMAX=$(numfmt --from=auto ${WALMAX})\n\n# Wal segments are 16MB in size, in this way we get a \"nice\" number of the nearest\n# 16MB\nWALMAX=$(( $WALMAX / 100 * $WALPERCENT / 16777216 * 16 ))\nWALMIN=$(( $WALMAX / 2 ))\n\necho \"max_wal_size=${WALMAX}MB\" >> \"${TSTUNE_FILE}\"\necho \"min_wal_size=${WALMIN}MB\" >> \"${TSTUNE_FILE}\"\n",
               ],
               env: [
-                {
-                  name: 'TZ',
-                  value: 'Asia/Seoul',
-                },
                 {
                   name: 'TSTUNE_FILE',
                   value: '/var/run/postgresql/timescaledb.conf',
