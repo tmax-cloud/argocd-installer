@@ -34,8 +34,6 @@ spec:
             value: {{ .Values.modules.gatewayBootstrap.console.subdomain }}
           - name: hyperauth_subdomain
             value: {{ .Values.modules.hyperAuth.subdomain }}
-          - name: hyperregistry_enabled
-            value: "{{ .Values.modules.hyperregistry.enabled }}"
           - name: storageClass
             value: {{ .Values.modules.hyperCloud.storageClass }}
           - name: aws_enabled
@@ -46,6 +44,8 @@ spec:
             value: {{ .Values.global.timeZone }}
           - name: domain
             value: {{ .Values.global.domain }}
+          - name: multi_operator_log_level
+            value: "{{ .Values.modules.hyperCloud.multiOperator.logLevel }}"
           - name: single_operator_log_level
             value: "{{ .Values.modules.hyperCloud.singleOperator.logLevel }}"
           - name: api_server_log_level

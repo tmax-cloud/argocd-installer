@@ -13,6 +13,7 @@ function (
   aws_enabled="true",
   vsphere_enabled="true",
   time_zone="UTC",
+  multi_operator_log_level="info",
   single_operator_log_level="info",
   api_server_log_level="INFO",
   timescaledb_log_level="WARNING",

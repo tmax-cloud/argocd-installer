@@ -8,11 +8,11 @@ function (
   domain="tmaxcloud.org",
   hyperauth_subdomain="hyperauth",
   console_subdomain="console",
-  hyperregistry_enabled="true",
   storageClass="default",
   aws_enabled="true",
   vsphere_enabled="true",
   time_zone="UTC",
+  multi_operator_log_level="info",
   single_operator_log_level="info",
   api_server_log_level="INFO",
   timescaledb_log_level="WARNING",
@@ -62,7 +62,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
               "args": [
                 "--metrics-addr=127.0.0.1:8080",
                 "--enable-leader-election",
-                "--zap-log-level=info"
+                std.join("", ["--zap-log-level=", multi_operator_log_level])
               ],
               "command": [
                 "/manager"
@@ -81,7 +81,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                   "value": hyperauth_subdomain
                 },
               ],
-              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-multi-operator:b5.0.31.1"]),
+              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-multi-operator:b5.0.34.0"]),
               "name": "manager",
               "ports": [
                 {
