@@ -64,7 +64,8 @@ function (
         {
           "hosts": [
             std.join("", [opensearch_subdomain, ".", custom_domain_name])
-          ]
+          ],
+          "secretName": "dashboards-secret"
         }
       ]
     }
