@@ -130,7 +130,7 @@ providers:
       # - "default"
     # IP used for Kubernetes Ingress endpoints
     publishedService:
-      enabled: ture
+      enabled: true
       # Published Kubernetes Service to copy status from. Format: namespace/servicename
       # By default this Traefik service
       # pathOverride: ""
