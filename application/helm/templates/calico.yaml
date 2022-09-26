@@ -1,0 +1,39 @@
+{{ $isMaster := eq .Values.global.cluster "master" }}
+{{ if (and .Values.modules.calico.enabled (not $isMaster)) }}
+{{ $isMaster := eq .Values.global.cluster "master" }}
+{{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
+{{ $module := "calico" }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  labels:
+    cluster: {{ ternary "master" $prefix $isMaster }}
+  name: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
+  namespace: argocd
+spec:
+  destination:
+    name: {{ .Values.global.clusterName }}
+    namespace: kube-system
+  project: {{ .Values.spec.project }}
+  source:
+    directory:      
+      jsonnet:
+        tlas:
+          - name: is_offline
+            value: "{{ .Values.global.network.disabled }}"
+          - name: private_registry
+            value: {{ .Values.global.privateRegistry }}
+    path: manifest/calico
+    repoURL: {{ .Values.spec.source.repoURL }}
+    targetRevision: {{ .Values.spec.source.targetRevision }}
+    # helm:
+    #  parameters:
+    #    - name: global.registry.is_offline
+    #      ## string이 아니면 에러가 나기 때문에 "" 지우면 안됨
+    #      value: "{{ .Values.global.network.disabled }}"
+    #    - name: global.registry.private_registry
+    #      value: {{ .Values.global.privateRegistry }}
+    # path: manifest/calico
+    # repoURL: {{ .Values.spec.source.repoURL }}
+    # targetRevision: {{ .Values.spec.source.targetRevision }}
+{{ end }}

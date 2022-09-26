@@ -13,6 +13,21 @@ function (
   vsphere_enabled="true",
   time_zone="UTC",
   multi_operator_log_level="info",
+  single_operator_log_level="info",
+  api_server_log_level="INFO",
+  timescaledb_log_level="WARNING",
+  timescaledb_audit_chunk_time_interval="7 days",
+  timescaledb_audit_retention_policy="1 years",
+  timescaledb_event_chunk_time_interval="1 days",
+  timescaledb_event_retention_policy="1 months",
+  timescaledb_metering_hour_chunk_time_interval="1 days",
+  timescaledb_metering_hour_retention_policy="1 months",
+  timescaledb_metering_day_chunk_time_interval="1 months",
+  timescaledb_metering_day_retention_policy="1 years",
+  timescaledb_metering_month_chunk_time_interval="1 years",
+  timescaledb_metering_month_retention_policy="1 years",
+  timescaledb_metering_year_retention_policy="1 years",
+  timescaledb_metering_year_retention_policy="10 years"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";

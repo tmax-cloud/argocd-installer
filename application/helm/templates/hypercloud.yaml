@@ -46,6 +46,36 @@ spec:
             value: {{ .Values.global.domain }}
           - name: multi_operator_log_level
             value: "{{ .Values.modules.hyperCloud.multiOperator.logLevel }}"
+          - name: single_operator_log_level
+            value: "{{ .Values.modules.hyperCloud.singleOperator.logLevel }}"
+          - name: api_server_log_level
+            value: "{{ .Values.modules.hyperCloud.apiServer.logLevel }}"
+          - name: timescaledb_log_level
+            value: "{{ .Values.modules.hyperCloud.timescaledb.logLevel }}"
+          - name: timescaledb_audit_chunk_time_interval
+            value: {{ .Values.modules.hyperCloud.timescaledb.audit.chunk }}
+          - name: timescaledb_audit_retention_policy
+            value: {{ .Values.modules.hyperCloud.timescaledb.audit.retention }}
+          - name: timescaledb_event_chunk_time_interval
+            value: {{ .Values.modules.hyperCloud.timescaledb.event.chunk }}
+          - name: timescaledb_event_retention_policy
+            value: {{ .Values.modules.hyperCloud.timescaledb.event.retention }}
+          - name: timescaledb_metering_hour_chunk_time_interval
+            value: {{ .Values.modules.hyperCloud.timescaledb.metering_hour.chunk }}
+          - name: timescaledb_metering_hour_retention_policy
+            value: {{ .Values.modules.hyperCloud.timescaledb.metering_hour.retention }}
+          - name: timescaledb_metering_day_chunk_time_interval
+            value: {{ .Values.modules.hyperCloud.timescaledb.metering_day.chunk }}
+          - name: timescaledb_metering_day_retention_policy
+            value: {{ .Values.modules.hyperCloud.timescaledb.metering_day.retention }}
+          - name: timescaledb_metering_month_chunk_time_interval
+            value: {{ .Values.modules.hyperCloud.timescaledb.metering_month.chunk }}
+          - name: timescaledb_metering_month_retention_policy
+            value: {{ .Values.modules.hyperCloud.timescaledb.metering_month.retention }}
+          - name: timescaledb_metering_year_retention_policy
+            value: {{ .Values.modules.hyperCloud.timescaledb.metering_year.retention }}
+          - name: timescaledb_metering_year_retention_policy
+            value: {{ .Values.modules.hyperCloud.timescaledb.metering_year.retention }}
     path: manifest/hypercloud
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
