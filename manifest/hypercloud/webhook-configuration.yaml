@@ -168,7 +168,7 @@ webhooks:
         values: ["api-server"]
       - key: app
         operator: NotIn
-        values: ["postgres"]
+        values: ["timescaledb"]
     failurePolicy: Fail
   - name: hypercloud.mutating.inject.pod
     objectSelector:

@@ -230,6 +230,35 @@ modules:
     # default로 주는 경우 default storage class를 사용
     # default를 사용하지 않고 싶은 경우에는 storage class이름을 기입
     storageClass: default
+    # single-operator의 경우, info, debug, error 기입 가능(대소문자 유의)
+    singleOperator:
+      logLevel: info
+    # hypercloud api server의 경우, TRACE, DEBUG, INFO, WARN, ERROR, FATAL 기입 가능(대소문자 유의)
+    apiServer:
+      logLevel: INFO
+    # timescaledb.<테이블 이름>.chunk : 청크 테이블이 생성되는 시간 단위
+    # timescaledb.<테이블 이름>.retention : 청크 테이블 보관 기간
+    timescaledb:
+      # timescaledb의 경우, DEBUG5, DEBUG4, DEBUG3, DEBUG2, DEBUG1, INFO, NOTICE, WARNING, ERROR, LOG, FATAL, PANIC 기입 가능(대소문자 유의)
+      logLevel: WARNING
+      audit:
+        chunk: "7 days"
+        retention: "1 years"
+      event:
+        chunk: "1 days"
+        retention: "1 months"
+      metering_hour:
+        chunk: "1 days"
+        retention: "1 months"
+      metering_day:
+        chunk: "1 months"
+        retention: "1 years"
+      metering_month:
+        chunk: "1 years"
+        retention: "1 years"
+      metering_year:
+        chunk: "1 years"
+        retention: "10 years"
 
   ### hyperregistry
   # single cluster 설치용 변수
