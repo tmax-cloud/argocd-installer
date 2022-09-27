@@ -16,6 +16,10 @@ global:
   domain: mastertestdomain.com
 
 modules:
+  ###calico
+  calico:
+    enabled: false
+
   ###gitlab
   gitlab:
     enabled: true
