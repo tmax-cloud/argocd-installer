@@ -69,7 +69,7 @@ modules:
 
   ### strimzi-kafka-operator
   strimziKafka:
-    enabled: false
+    enabled: true
 
   ### service-binding-operator
   serviceBinding:
@@ -126,7 +126,7 @@ modules:
      
   ### opensearch
   opensearch:
-    enabled: false
+    enabled: true
     os:
       version: 1.2.3
       limitMemory: 8Gi
@@ -172,16 +172,16 @@ modules:
   serviceMesh:
     ### istio
     istio:
-      enabled: false
+      enabled: true
 
     ### jaeger
     jaeger:
-      enabled: false
+      enabled: true
       subdomain: jaeger
 
     ### kiali
     kiali:
-      enabled: false
+      enabled: true
       subdomain: kiali
 
   ### cluster-api
@@ -189,18 +189,18 @@ modules:
     enabled: true
     providers:
       aws:
-        enabled: false
+        enabled: true
         # description: ...
         credentials: "credential"
       vsphere:
-        enabled: false
+        enabled: true
         credentials:
           username: "user"
           password: "password"
 
   ### template service broker
   tsb:
-    enabled: false
+    enabled: true
     version: 0.1.4
     clusterTsb:
       version: 0.1.4
@@ -209,7 +209,7 @@ modules:
 
   ### catalog controller
   catalogController:
-    enabled: false
+    enabled: true
 
   ### helm-apiserver
   helmApiserver:
@@ -228,7 +228,7 @@ modules:
     # description: 'single' or 'multi'
     mode: multi
     kafka:
-      enabled: false
+      enabled: true
     # default로 주는 경우 default storage class를 사용
     # default를 사용하지 않고 싶은 경우에는 storage class이름을 기입
     storageClass: default
@@ -270,7 +270,7 @@ modules:
   # single cluster 설치용 변수
   # enabled: true로 변경 X
   hyperregistry:
-    enabled: false
+    enabled: true
     core:
       subdomain: hyperregistry
     notary:
@@ -280,21 +280,21 @@ modules:
 
   ### tekton pipeline
   tektonPipeline:
-    enabled: false
+    enabled: true
     #namespace: tekton-pipelines
 
   ### tekton trigger
   tektonTrigger:
-    enabled: false
+    enabled: true
 
   ### cicd operator
   cicd:
-    enabled: false
+    enabled: true
     subdomain: cicd-webhook
 
   ### redis-operator
   redis:
-    enabled: false
+    enabled: true
 
   ### image validating webhook
   imageValidatingWebhook:
@@ -302,7 +302,7 @@ modules:
 
   ### ai-devops
   aiDevops:
-    enabled: false
+    enabled: true
     namespace: "kubeflow"
     knativeNamespace: "knative-serving"
     notebookSvcType: "Ingress"

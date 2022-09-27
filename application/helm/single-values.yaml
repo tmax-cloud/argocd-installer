@@ -65,7 +65,7 @@ modules:
 
   ### strimzi-kafka-operator
   strimziKafka:
-    enabled: false
+    enabled: true
 
   ### service-binding-operator
   serviceBinding:
@@ -121,7 +121,7 @@ modules:
       
   ### opensearch
   opensearch:
-    enabled: false
+    enabled: true
     os:
       version: 1.2.3
       limitMemory: 8Gi
@@ -167,16 +167,16 @@ modules:
   serviceMesh:
     ### istio
     istio:
-      enabled: false
+      enabled: true
 
     ### jaeger
     jaeger:
-      enabled: false
+      enabled: true
       subdomain: jaeger
 
     ### kiali
     kiali:
-      enabled: false
+      enabled: true
       subdomain: kiali
 
   ### cluster-api
@@ -208,7 +208,7 @@ modules:
 
   ### helm-apiserver
   helmApiserver:
-    enabled: true
+    enabled: false
     version: 0.0.1
     subdomain: helm
     # default로 주는 경우 default storage class를 사용
@@ -272,21 +272,21 @@ modules:
 
   ### tekton pipeline
   tektonPipeline:
-    enabled: false
+    enabled: true
     #namespace: tekton-pipelines
 
   ### tekton trigger
   tektonTrigger:
-    enabled: false
+    enabled: true
 
   ### cicd operator
   cicd:
-    enabled: false
+    enabled: true
     subdomain: cicd-webhook
 
   ### redis-operator
   redis:
-    enabled: false
+    enabled: true
 
   ### image validating webhook
   imageValidatingWebhook:
@@ -305,7 +305,7 @@ modules:
 
   ### nfs-subdir-external-provisioner
   nfs:
-    enabled: false
+    enabled: true
     # nfs provisioner가 사용할 nfs server, ex: 192.168.7.16
     server: 192.168.7.16
     # nfs provisioner가 사용할 nfs server의 path, ex: /mnt/nfs-shared-dir
@@ -313,14 +313,14 @@ modules:
 
   ### ceph-csi-cephfs
   cephfs:
-    enabled: false
+    enabled: true
     # 사용 위해 ceph-csi namespace에 configmap(csi-config-map), secret(csi-cephfs-secret) 생성 필요
     # csi-config-map 에서 명시한 clusterID(fsid)
     clusterId: 50611be6-33b3-11eb-a5cb-0894ef32cba4
 
   ### ceph-csi-rbd
   rbd:
-    enabled: false
+    enabled: true
     # 사용 위해 ceph-csi namespace에 configmap(csi-config-map), secret(csi-rbd-secret) 생성 필요
     # csi-config-map 에서 명시한 clusterID(fsid)
     clusterId: 50611be6-33b3-11eb-a5cb-0894ef32cba4
