@@ -17,7 +17,6 @@ modules:
   ###calico
   calico:
     enabled: true
-    subdomain: calico
 
   ###gitlab
   gitlab:
@@ -63,8 +62,6 @@ modules:
       enabled: true
       # default 30
       syncWaitTime: 30
-    monitoringIngressroute:
-      enabled: true
 
   ### strimzi-kafka-operator
   strimziKafka:

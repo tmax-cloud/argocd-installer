@@ -16,7 +16,11 @@ if is_kafka_enabled == "true" then [
     "kind": "Kafka",
     "metadata": {
       "name": "kafka",
-      "namespace": "hyperauth"
+      "namespace": "hyperauth",
+      // kafka crd 없이 dry-run 방식으로 생성
+      "annotations": {
+        "argocd.argoproj.io/sync-options": "SkipDryRunOnMissingResource=true"
+      },
     },
     "spec": {
       "kafka": {
