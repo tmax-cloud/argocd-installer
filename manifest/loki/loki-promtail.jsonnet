@@ -202,7 +202,12 @@ local promtail_image_path = "docker.io/grafana/promtail:" + promtail_image_tag;
                   "mountPath": "/etc/promtail/promtail-config.yaml",
                   "subPath": "promtail-config.yaml"
                 }
-              ]
+              ] + if timezone != "UTC" then [
+                {
+                  "name": "timezone-config",
+                  "mountPath": "/etc/localtime"
+                }
+              ] else []
             }
           ],
           "terminationGracePeriodSeconds": 30,
@@ -225,7 +230,15 @@ local promtail_image_path = "docker.io/grafana/promtail:" + promtail_image_tag;
                 "name": "promtail-config"
               }
             }
-          ]
+          ] + if timezone != "UTC" then [
+            {
+              "name": "timezone=config",
+              "name": "timezone-config",
+              "hostPath": {
+                "path": std.join("", ["/usr/share/zoneinfo/", timezone])
+              }
+            }
+          ] else []
         }
       }
     }
