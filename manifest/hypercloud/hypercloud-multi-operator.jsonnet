@@ -8,10 +8,26 @@ function (
   domain="tmaxcloud.org",
   hyperauth_subdomain="hyperauth",
   console_subdomain="console",
-  hyperregistry_enabled="true",
   storageClass="default",
   aws_enabled="true",
-  vsphere_enabled="true"
+  vsphere_enabled="true",
+  time_zone="UTC",
+  multi_operator_log_level="info",
+  single_operator_log_level="info",
+  api_server_log_level="INFO",
+  timescaledb_log_level="WARNING",
+  timescaledb_audit_chunk_time_interval="7 days",
+  timescaledb_audit_retention_policy="1 years",
+  timescaledb_event_chunk_time_interval="1 days",
+  timescaledb_event_retention_policy="1 months",
+  timescaledb_metering_hour_chunk_time_interval="1 days",
+  timescaledb_metering_hour_retention_policy="1 months",
+  timescaledb_metering_day_chunk_time_interval="1 months",
+  timescaledb_metering_day_retention_policy="1 years",
+  timescaledb_metering_month_chunk_time_interval="1 years",
+  timescaledb_metering_month_retention_policy="1 years",
+  timescaledb_metering_year_retention_policy="1 years",
+  timescaledb_metering_year_retention_policy="10 years"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -45,16 +61,13 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             {
               "args": [
                 "--metrics-addr=127.0.0.1:8080",
-                "--enable-leader-election"
+                "--enable-leader-election",
+                std.join("", ["--zap-log-level=", multi_operator_log_level])
               ],
               "command": [
                 "/manager"
               ],
               "env": [
-                {
-                  "name": "TZ",
-                  "value": "Asia/Seoul"
-                },
                 {
                   "name": "HC_DOMAIN",
                   "value": domain
@@ -67,12 +80,8 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                   "name": "AUTH_SUBDOMAIN",
                   "value": hyperauth_subdomain
                 },
-                {
-                  "name": "HYPERREGISTRY_ENABLED",
-                  "value": hyperregistry_enabled
-                },
               ],
-              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-multi-operator:b5.0.26.13"]),
+              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-multi-operator:b5.0.34.0"]),
               "name": "manager",
               "ports": [
                 {
@@ -102,7 +111,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                   "name": "hypercloud-multi-operator-controller-manager-token",
                   "readOnly": true
                 }
-              ]
+              ] + (
+                if time_zone != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  }
+                ] else []
+              )
             },
             {
               "args": [
@@ -155,7 +171,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "secretName": "hypercloud-multi-operator-controller-manager-token"
               }
             }
-          ]
+          ] + (
+            if time_zone != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                }
+              }
+            ] else []
+          )
         }
       }
     }
@@ -213,23 +238,23 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         }
       },
       {
-      "apiVersion": "infrastructure.cluster.x-k8s.io/v1alpha3",
-      "kind": "AWSCluster",
-      "metadata": {
-        "name": "${ClusterName}",
-        "namespace": "default"
-      },
-      "spec": {
-        "region": "${Region}",
-        "sshKeyName": "${SshKey}"
-      }
+        "apiVersion": "infrastructure.cluster.x-k8s.io/v1alpha3",
+        "kind": "AWSCluster",
+        "metadata": {
+          "name": "${ClusterName}",
+          "namespace": "default"
+        },
+        "spec": {
+          "region": "${Region}",
+          "sshKeyName": "${SshKey}"
+        }
       },
       {
         "apiVersion": "controlplane.cluster.x-k8s.io/v1alpha3",
         "kind": "KubeadmControlPlane",
         "metadata": {
-            "name": "${ClusterName}-control-plane",
-            "namespace": "default"
+          "name": "${ClusterName}-control-plane",
+          "namespace": "default"
         },
         "spec": {
           "infrastructureTemplate": {
@@ -241,10 +266,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "clusterConfiguration": {
               "apiServer": {
                 "extraArgs": {
+                  "audit-policy-file": "/etc/kubernetes/pki/audit-policy.yaml",
+                  "audit-webhook-config-file": "/etc/kubernetes/pki/audit-webhook-config",
+                  "audit-webhook-mode": "batch",
                   "cloud-provider": "aws",
+                  "oidc-ca-file": "/etc/kubernetes/pki/hyperauth.crt",
                   "oidc-client-id": "hypercloud5",
                   "oidc-groups-claim": "group",
-                  "oidc-issuer-url": std.join("", ["https://", hyperauth_url, "/auth/realms/tmax"]),
+                  "oidc-issuer-url": "${HYPERAUTH_URL}",
                   "oidc-username-claim": "preferred_username",
                   "oidc-username-prefix": "-"
                 }
@@ -255,6 +284,26 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 }
               }
             },
+            "files": [
+              {
+                "content": "${HYPERAUTH_CERT}\n",
+                "owner": "root:root",
+                "path": "/etc/kubernetes/pki/hyperauth.crt",
+                "permissions": "0644"
+              },
+              {
+                "content": "${AUDIT_WEBHOOK_CONFIG}\n",
+                "owner": "root:root",
+                "path": "/etc/kubernetes/pki/audit-webhook-config",
+                "permissions": "0644"
+              },
+              {
+                "content": "${AUDIT_POLICY}\n",
+                "owner": "root:root",
+                "path": "/etc/kubernetes/pki/audit-policy.yaml",
+                "permissions": "0644"
+              }
+            ],
             "initConfiguration": {
               "nodeRegistration": {
                 "kubeletExtraArgs": {
@@ -275,8 +324,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
               "mkdir -p $HOME/.kube",
               "cp /etc/kubernetes/admin.conf $HOME/.kube/config",
               "chown $USER:$USER $HOME/.kube/config",
-              "kubectl apply -f https://docs.projectcalico.org/archive/v3.16/manifests/calico.yaml",
-              "kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.41.0/deploy/static/provider/aws/deploy.yaml"
+              "kubectl apply -f https://docs.projectcalico.org/archive/v3.16/manifests/calico.yaml"
             ]
           },
           "replicas": "${MasterNum}",
@@ -621,10 +669,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "clusterConfiguration": {
               "apiServer": {
                 "extraArgs": {
+                  "audit-policy-file": "/etc/kubernetes/pki/audit-policy.yaml",
+                  "audit-webhook-config-file": "/etc/kubernetes/pki/audit-webhook-config",
+                  "audit-webhook-mode": "batch",
                   "cloud-provider": "external",
+                  "oidc-ca-file": "/etc/kubernetes/pki/hyperauth.crt",
                   "oidc-client-id": "hypercloud5",
                   "oidc-groups-claim": "group",
-                  "oidc-issuer-url": std.join("", ["https://", hyperauth_url, "/auth/realms/tmax"]),
+                  "oidc-issuer-url": "${HYPERAUTH_URL}",
                   "oidc-username-claim": "preferred_username",
                   "oidc-username-prefix": "-"
                 }
@@ -637,57 +689,28 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             },
             "files": [
               {
-                "content": std.join("\n",
-                  [
-                    "apiVersion: v1",
-                    "kind: Pod",
-                    "metadata:",
-                    "  creationTimestamp: null",
-                    "  name: kube-vip",
-                    "  namespace: kube-system",
-                    "spec:",
-                    "  containers:",
-                    "  - args:",
-                    "    - start",
-                    "    env:",
-                    "    - name: vip_arp",
-                    "      value: \"true\"",
-                    "    - name: vip_leaderelection",
-                    "      value: \"true\"",
-                    "    - name: vip_address",
-                    "      value: ${VcenterKcpIp}",
-                    "    - name: vip_interface",
-                    "      value: eth0",
-                    "    - name: vip_leaseduration",
-                    "      value: \"15\"",
-                    "    - name: vip_renewdeadline",
-                    "      value: \"10\"",
-                    "    - name: vip_retryperiod",
-                    "      value: \"2\"",
-                    "    image: plndr/kube-vip:0.3.2",
-                    "    imagePullPolicy: IfNotPresent",
-                    "    name: kube-vip",
-                    "    resources: {}",
-                    "    securityContext:",
-                    "      capabilities:",
-                    "        add:",
-                    "        - NET_ADMIN",
-                    "        - SYS_TIME",
-                    "    volumeMounts:",
-                    "    - mountPath: /etc/kubernetes/admin.conf",
-                    "      name: kubeconfig",
-                    "  hostNetwork: true",
-                    "  volumes:",
-                    "  - hostPath:",
-                    "      path: /etc/kubernetes/admin.conf",
-                    "      type: FileOrCreate",
-                    "    name: kubeconfig",
-                    "status: {}"
-                  ]
-                ),
+                "content": "apiVersion: v1\nkind: Pod\nmetadata:\n  creationTimestamp: null\n  name: kube-vip\n  namespace: kube-system\nspec:\n  containers:\n  - args:\n    - start\n    env:\n    - name: vip_arp\n      value: \"true\"\n    - name: vip_leaderelection\n      value: \"true\"\n    - name: vip_address\n      value: ${VcenterKcpIp}\n    - name: vip_interface\n      value: eth0\n    - name: vip_leaseduration\n      value: \"15\"\n    - name: vip_renewdeadline\n      value: \"10\"\n    - name: vip_retryperiod\n      value: \"2\"\n    image: plndr/kube-vip:0.3.2\n    imagePullPolicy: IfNotPresent\n    name: kube-vip\n    resources: {}\n    securityContext:\n      capabilities:\n        add:\n        - NET_ADMIN\n        - SYS_TIME\n    volumeMounts:\n    - mountPath: /etc/kubernetes/admin.conf\n      name: kubeconfig\n  hostNetwork: true\n  volumes:\n  - hostPath:\n      path: /etc/kubernetes/admin.conf\n      type: FileOrCreate\n    name: kubeconfig\nstatus: {}\n",
                 "owner": "root:root",
                 "path": "/etc/kubernetes/manifests/kube-vip.yaml"
               },
+              {
+                "content": "${HYPERAUTH_CERT}\n",
+                "owner": "root:root",
+                "path": "/etc/kubernetes/pki/hyperauth.crt",
+                "permissions": "0644"
+              },
+              {
+                "content": "${AUDIT_WEBHOOK_CONFIG}\n",
+                "owner": "root:root",
+                "path": "/etc/kubernetes/pki/audit-webhook-config",
+                "permissions": "0644"
+              },
+              {
+                "content": "${AUDIT_POLICY}\n",
+                "owner": "root:root",
+                "path": "/etc/kubernetes/pki/audit-policy.yaml",
+                "permissions": "0644"
+              }
             ],
             "initConfiguration": {
               "nodeRegistration": {
@@ -718,8 +741,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
               "mkdir -p $HOME/.kube",
               "cp /etc/kubernetes/admin.conf $HOME/.kube/config",
               "chown $USER:$USER $HOME/.kube/config",
-              "kubectl apply -f https://docs.projectcalico.org/archive/v3.16/manifests/calico.yaml",
-              "kubectl apply -f https://github.com/tmax-cloud/capi-template-ingress/releases/download/v0.41.0/ingress-nodeport.yaml"
+              "kubectl apply -f https://docs.projectcalico.org/archive/v3.16/manifests/calico.yaml"
             ],
             "useExperimentalRetryJoin": true,
             "users": [
@@ -727,8 +749,8 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "name": "root",
                 "sshAuthorizedKeys": [
                   ""
-              ],
-              "sudo": "ALL=(ALL) NOPASSWD:ALL"
+                ],
+                "sudo": "ALL=(ALL) NOPASSWD:ALL"
               }
             ]
           },
@@ -872,129 +894,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
           "namespace": "${Namespace}"
         },
         "stringData": {
-          "data": std.join("\n",
-            [
-              "apiVersion: v1",
-              "kind: ServiceAccount",
-              "metadata:",
-              "  name: vsphere-csi-controller",
-              "  namespace: kube-system"
-            ]
-          )
+          "data": "apiVersion: v1\nkind: ServiceAccount\nmetadata:\n  name: vsphere-csi-controller\n  namespace: kube-system\n"
         },
         "type": "addons.cluster.x-k8s.io/resource-set"
       },
       {
         "apiVersion": "v1",
         "data": {
-          "data": std.join("\n",
-            [
-              "apiVersion: rbac.authorization.k8s.io/v1",
-              "kind: ClusterRole",
-              "metadata:",
-              "  name: vsphere-csi-controller-role",
-              "rules:",
-              "- apiGroups:",
-              "  - storage.k8s.io",
-              "  resources:",
-              "  - csidrivers",
-              "  verbs:",
-              "  - create",
-              "  - delete",
-              "- apiGroups:",
-              "  - \"\"",
-              "  resources:",
-              "  - nodes",
-              "  - pods",
-              "  - secrets",
-              "  - configmaps",
-              "  verbs:",
-              "  - get",
-              "  - list",
-              "  - watch",
-              "- apiGroups:",
-              "  - \"\"",
-              "  resources:",
-              "  - persistentvolumes",
-              "  verbs:",
-              "  - get",
-              "  - list",
-              "  - watch",
-              "  - update",
-              "  - create",
-              "  - delete",
-              "  - patch",
-              "- apiGroups:",
-              "  - storage.k8s.io",
-              "  resources:",
-              "  - volumeattachments",
-              "  verbs:",
-              "  - get",
-              "  - list",
-              "  - watch",
-              "  - update",
-              "  - patch",
-              "- apiGroups:",
-              "  - storage.k8s.io",
-              "  resources:",
-              "  - volumeattachments/status",
-              "  verbs:",
-              "  - patch",
-              "- apiGroups:",
-              "  - \"\"",
-              "  resources:",
-              "  - persistentvolumeclaims",
-              "  verbs:",
-              "  - get",
-              "  - list",
-              "  - watch",
-              "  - update",
-              "- apiGroups:",
-              "  - storage.k8s.io",
-              "  resources:",
-              "  - storageclasses",
-              "  - csinodes",
-              "  verbs:",
-              "  - get",
-              "  - list",
-              "  - watch",
-              "- apiGroups:",
-              "  - \"\"",
-              "  resources:",
-              "  - events",
-              "  verbs:",
-              "  - list",
-              "  - watch",
-              "  - create",
-              "  - update",
-              "  - patch",
-              "- apiGroups:",
-              "  - coordination.k8s.io",
-              "  resources:",
-              "  - leases",
-              "  verbs:",
-              "  - get",
-              "  - watch",
-              "  - list",
-              "  - delete",
-              "  - update",
-              "  - create",
-              "- apiGroups:",
-              "  - snapshot.storage.k8s.io",
-              "  resources:",
-              "  - volumesnapshots",
-              "  verbs:",
-              "  - get",
-              "  - list",
-              "- apiGroups:",
-              "  - snapshot.storage.k8s.io",
-              "  resources:",
-              "  - volumesnapshotcontents",
-              "  verbs:",
-              "  - get",
-              "  - list"
-            ]
-          )
+          "data": "apiVersion: rbac.authorization.k8s.io/v1\nkind: ClusterRole\nmetadata:\n  name: vsphere-csi-controller-role\nrules:\n- apiGroups:\n  - storage.k8s.io\n  resources:\n  - csidrivers\n  verbs:\n  - create\n  - delete\n- apiGroups:\n  - \"\"\n  resources:\n  - nodes\n  - pods\n  - secrets\n  - configmaps\n  verbs:\n  - get\n  - list\n  - watch\n- apiGroups:\n  - \"\"\n  resources:\n  - persistentvolumes\n  verbs:\n  - get\n  - list\n  - watch\n  - update\n  - create\n  - delete\n  - patch\n- apiGroups:\n  - storage.k8s.io\n  resources:\n  - volumeattachments\n  verbs:\n  - get\n  - list\n  - watch\n  - update\n  - patch\n- apiGroups:\n  - storage.k8s.io\n  resources:\n  - volumeattachments/status\n  verbs:\n  - patch\n- apiGroups:\n  - \"\"\n  resources:\n  - persistentvolumeclaims\n  verbs:\n  - get\n  - list\n  - watch\n  - update\n- apiGroups:\n  - storage.k8s.io\n  resources:\n  - storageclasses\n  - csinodes\n  verbs:\n  - get\n  - list\n  - watch\n- apiGroups:\n  - \"\"\n  resources:\n  - events\n  verbs:\n  - list\n  - watch\n  - create\n  - update\n  - patch\n- apiGroups:\n  - coordination.k8s.io\n  resources:\n  - leases\n  verbs:\n  - get\n  - watch\n  - list\n  - delete\n  - update\n  - create\n- apiGroups:\n  - snapshot.storage.k8s.io\n  resources:\n  - volumesnapshots\n  verbs:\n  - get\n  - list\n- apiGroups:\n  - snapshot.storage.k8s.io\n  resources:\n  - volumesnapshotcontents\n  verbs:\n  - get\n  - list\n"
         },
         "kind": "ConfigMap",
         "metadata": {
@@ -1005,22 +912,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
       {
         "apiVersion": "v1",
         "data": {
-          "data": std.join("\n",
-            [
-              "apiVersion: rbac.authorization.k8s.io/v1",
-              "kind: ClusterRoleBinding",
-              "metadata:",
-              "  name: vsphere-csi-controller-binding",
-              "roleRef:",
-              "  apiGroup: rbac.authorization.k8s.io",
-              "  kind: ClusterRole",
-              "  name: vsphere-csi-controller-role",
-              "subjects:",
-              "- kind: ServiceAccount",
-              "  name: vsphere-csi-controller",
-              "  namespace: kube-system"
-            ]
-          )
+          "data": "apiVersion: rbac.authorization.k8s.io/v1\nkind: ClusterRoleBinding\nmetadata:\n  name: vsphere-csi-controller-binding\nroleRef:\n  apiGroup: rbac.authorization.k8s.io\n  kind: ClusterRole\n  name: vsphere-csi-controller-role\nsubjects:\n- kind: ServiceAccount\n  name: vsphere-csi-controller\n  namespace: kube-system\n"
         },
         "kind": "ConfigMap",
         "metadata": {
@@ -1036,46 +928,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
           "namespace": "${Namespace}"
         },
         "stringData": {
-          "data": std.join("\n",
-            [
-              "apiVersion: v1",
-              "kind: Secret",
-              "metadata:",
-              "  name: csi-vsphere-config",
-              "  namespace: kube-system",
-              "stringData:",
-              "  csi-vsphere.conf: |+",
-              "    [Global]",
-              "    cluster-id = \"${Namespace}/${ClusterName}\"",
-              "",
-              "    [VirtualCenter \"${VcenterIp}\"]",
-              "    insecure-flag = \"true\"",
-              "    user = \"${VcenterId}\"",
-              "    password = \"${VcenterPassword}\"",
-              "    datacenters = \"${VcenterDataCenter}\"",
-              "",
-              "    [Network]",
-              "    public-network = \"${VcenterNetwork}\"",
-              "",
-              "type: Opaque"
-            ]
-          )
+          "data": "apiVersion: v1\nkind: Secret\nmetadata:\n  name: csi-vsphere-config\n  namespace: kube-system\nstringData:\n  csi-vsphere.conf: |+\n    [Global]\n    cluster-id = \"${Namespace}/${ClusterName}\"\n    [VirtualCenter \"${VcenterIp}\"]\n    insecure-flag = \"true\"\n    user = \"${VcenterId}\"\n    password = \"${VcenterPassword}\"\n    datacenters = \"${VcenterDataCenter}\"\n    [Network]\n    public-network = \"${VcenterNetwork}\"\ntype: Opaque\n"
         },
         "type": "addons.cluster.x-k8s.io/resource-set"
       },
       {
         "apiVersion": "v1",
         "data": {
-          "data": std.join("\n",
-            [
-              "apiVersion: storage.k8s.io/v1",
-              "kind: CSIDriver",
-              "metadata:",
-              "  name: csi.vsphere.vmware.com",
-              "spec:",
-              "  attachRequired: true"
-            ]
-          )
+          "data": "apiVersion: storage.k8s.io/v1\nkind: CSIDriver\nmetadata:\n  name: csi.vsphere.vmware.com\nspec:\n  attachRequired: true\n"
         },
         "kind": "ConfigMap",
         "metadata": {
@@ -1086,135 +946,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
       {
         "apiVersion": "v1",
         "data": {
-          "data": std.join("\n",
-            [
-              "apiVersion: apps/v1",
-              "kind: DaemonSet",
-              "metadata:",
-              "  name: vsphere-csi-node",
-              "  namespace: kube-system",
-              "spec:",
-              "  selector:",
-              "    matchLabels:",
-              "      app: vsphere-csi-node",
-              "  template:",
-              "    metadata:",
-              "      labels:",
-              "        app: vsphere-csi-node",
-              "        role: vsphere-csi",
-              "    spec:",
-              "      containers:",
-              "      - args:",
-              "        - --v=5",
-              "        - --csi-address=$(ADDRESS)",
-              "        - --kubelet-registration-path=$(DRIVER_REG_SOCK_PATH)",
-              "        env:",
-              "        - name: ADDRESS",
-              "          value: /csi/csi.sock",
-              "        - name: DRIVER_REG_SOCK_PATH",
-              "          value: /var/lib/kubelet/plugins/csi.vsphere.vmware.com/csi.sock",
-              "        image: quay.io/k8scsi/csi-node-driver-registrar:v2.0.1",
-              "        lifecycle:",
-              "          preStop:",
-              "            exec:",
-              "              command:",
-              "              - /bin/sh",
-              "              - -c",
-              "              - rm -rf /registration/csi.vsphere.vmware.com-reg.sock /csi/csi.sock",
-              "        name: node-driver-registrar",
-              "        resources: {}",
-              "        securityContext:",
-              "          privileged: true",
-              "        volumeMounts:",
-              "        - mountPath: /csi",
-              "          name: plugin-dir",
-              "        - mountPath: /registration",
-              "          name: registration-dir",
-              "      - env:",
-              "        - name: CSI_ENDPOINT",
-              "          value: unix:///csi/csi.sock",
-              "        - name: X_CSI_MODE",
-              "          value: node",
-              "        - name: X_CSI_SPEC_REQ_VALIDATION",
-              "          value: \"false\"",
-              "        - name: VSPHERE_CSI_CONFIG",
-              "          value: /etc/cloud/csi-vsphere.conf",
-              "        - name: LOGGER_LEVEL",
-              "          value: PRODUCTION",
-              "        - name: X_CSI_LOG_LEVEL",
-              "          value: INFO",
-              "        - name: NODE_NAME",
-              "          valueFrom:",
-              "            fieldRef:",
-              "              fieldPath: spec.nodeName",
-              "        image: gcr.io/cloud-provider-vsphere/csi/release/driver:v2.1.0",
-              "        livenessProbe:",
-              "          failureThreshold: 3",
-              "          httpGet:",
-              "            path: /healthz",
-              "            port: healthz",
-              "          initialDelaySeconds: 10",
-              "          periodSeconds: 5",
-              "          timeoutSeconds: 3",
-              "        name: vsphere-csi-node",
-              "        ports:",
-              "        - containerPort: 9808",
-              "          name: healthz",
-              "          protocol: TCP",
-              "        resources: {}",
-              "        securityContext:",
-              "          allowPrivilegeEscalation: true",
-              "          capabilities:",
-              "            add:",
-              "            - SYS_ADMIN",
-              "          privileged: true",
-              "        volumeMounts:",
-              "        - mountPath: /etc/cloud",
-              "          name: vsphere-config-volume",
-              "        - mountPath: /csi",
-              "          name: plugin-dir",
-              "        - mountPath: /var/lib/kubelet",
-              "          mountPropagation: Bidirectional",
-              "          name: pods-mount-dir",
-              "        - mountPath: /dev",
-              "          name: device-dir",
-              "      - args:",
-              "        - --csi-address=/csi/csi.sock",
-              "        image: quay.io/k8scsi/livenessprobe:v2.1.0",
-              "        name: liveness-probe",
-              "        resources: {}",
-              "        volumeMounts:",
-              "        - mountPath: /csi",
-              "          name: plugin-dir",
-              "      dnsPolicy: Default",
-              "      tolerations:",
-              "      - effect: NoSchedule",
-              "        operator: Exists",
-              "      - effect: NoExecute",
-              "        operator: Exists",
-              "      volumes:",
-              "      - name: vsphere-config-volume",
-              "        secret:",
-              "          secretName: csi-vsphere-config",
-              "      - hostPath:",
-              "          path: /var/lib/kubelet/plugins_registry",
-              "          type: Directory",
-              "        name: registration-dir",
-              "      - hostPath:",
-              "          path: /var/lib/kubelet/plugins/csi.vsphere.vmware.com/",
-              "          type: DirectoryOrCreate",
-              "        name: plugin-dir",
-              "      - hostPath:",
-              "          path: /var/lib/kubelet",
-              "          type: Directory",
-              "        name: pods-mount-dir",
-              "      - hostPath:",
-              "          path: /dev",
-              "        name: device-dir",
-              "  updateStrategy:",
-              "    type: RollingUpdate"
-            ]
-          )
+          "data": "apiVersion: apps/v1\nkind: DaemonSet\nmetadata:\n  name: vsphere-csi-node\n  namespace: kube-system\nspec:\n  selector:\n    matchLabels:\n      app: vsphere-csi-node\n  template:\n    metadata:\n      labels:\n        app: vsphere-csi-node\n        role: vsphere-csi\n    spec:\n      containers:\n      - args:\n        - --v=5\n        - --csi-address=$(ADDRESS)\n        - --kubelet-registration-path=$(DRIVER_REG_SOCK_PATH)\n        env:\n        - name: ADDRESS\n          value: /csi/csi.sock\n        - name: DRIVER_REG_SOCK_PATH\n          value: /var/lib/kubelet/plugins/csi.vsphere.vmware.com/csi.sock\n        image: quay.io/k8scsi/csi-node-driver-registrar:v2.0.1\n        lifecycle:\n          preStop:\n            exec:\n              command:\n              - /bin/sh\n              - -c\n              - rm -rf /registration/csi.vsphere.vmware.com-reg.sock /csi/csi.sock\n        name: node-driver-registrar\n        resources: {}\n        securityContext:\n          privileged: true\n        volumeMounts:\n        - mountPath: /csi\n          name: plugin-dir\n        - mountPath: /registration\n          name: registration-dir\n      - env:\n        - name: CSI_ENDPOINT\n          value: unix:///csi/csi.sock\n        - name: X_CSI_MODE\n          value: node\n        - name: X_CSI_SPEC_REQ_VALIDATION\n          value: \"false\"\n        - name: VSPHERE_CSI_CONFIG\n          value: /etc/cloud/csi-vsphere.conf\n        - name: LOGGER_LEVEL\n          value: PRODUCTION\n        - name: X_CSI_LOG_LEVEL\n          value: INFO\n        - name: NODE_NAME\n          valueFrom:\n            fieldRef:\n              fieldPath: spec.nodeName\n        image: gcr.io/cloud-provider-vsphere/csi/release/driver:v2.1.0\n        livenessProbe:\n          failureThreshold: 3\n          httpGet:\n            path: /healthz\n            port: healthz\n          initialDelaySeconds: 10\n          periodSeconds: 5\n          timeoutSeconds: 3\n        name: vsphere-csi-node\n        ports:\n        - containerPort: 9808\n          name: healthz\n          protocol: TCP\n        resources: {}\n        securityContext:\n          allowPrivilegeEscalation: true\n          capabilities:\n            add:\n            - SYS_ADMIN\n          privileged: true\n        volumeMounts:\n        - mountPath: /etc/cloud\n          name: vsphere-config-volume\n        - mountPath: /csi\n          name: plugin-dir\n        - mountPath: /var/lib/kubelet\n          mountPropagation: Bidirectional\n          name: pods-mount-dir\n        - mountPath: /dev\n          name: device-dir\n      - args:\n        - --csi-address=/csi/csi.sock\n        image: quay.io/k8scsi/livenessprobe:v2.1.0\n        name: liveness-probe\n        resources: {}\n        volumeMounts:\n        - mountPath: /csi\n          name: plugin-dir\n      dnsPolicy: Default\n      tolerations:\n      - effect: NoSchedule\n        operator: Exists\n      - effect: NoExecute\n        operator: Exists\n      volumes:\n      - name: vsphere-config-volume\n        secret:\n          secretName: csi-vsphere-config\n      - hostPath:\n          path: /var/lib/kubelet/plugins_registry\n          type: Directory\n        name: registration-dir\n      - hostPath:\n          path: /var/lib/kubelet/plugins/csi.vsphere.vmware.com/\n          type: DirectoryOrCreate\n        name: plugin-dir\n      - hostPath:\n          path: /var/lib/kubelet\n          type: Directory\n        name: pods-mount-dir\n      - hostPath:\n          path: /dev\n        name: device-dir\n  updateStrategy:\n    type: RollingUpdate\n"
         },
         "kind": "ConfigMap",
         "metadata": {
@@ -1225,127 +957,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
       {
         "apiVersion": "v1",
         "data": {
-          "data": std.join("\n",
-            [
-              "apiVersion: apps/v1",
-              "kind: Deployment",
-              "metadata:",
-              "  name: vsphere-csi-controller",
-              "  namespace: kube-system",
-              "spec:",
-              "  replicas: 1",
-              "  selector:",
-              "    matchLabels:",
-              "      app: vsphere-csi-controller",
-              "  template:",
-              "    metadata:",
-              "      labels:",
-              "        app: vsphere-csi-controller",
-              "        role: vsphere-csi",
-              "    spec:",
-              "      containers:",
-              "      - args:",
-              "        - --v=4",
-              "        - --timeout=300s",
-              "        - --csi-address=$(ADDRESS)",
-              "        - --leader-election",
-              "        env:",
-              "        - name: ADDRESS",
-              "          value: /csi/csi.sock",
-              "        image: quay.io/k8scsi/csi-attacher:v3.0.0",
-              "        name: csi-attacher",
-              "        resources: {}",
-              "        volumeMounts:",
-              "        - mountPath: /csi",
-              "          name: socket-dir",
-              "      - env:",
-              "        - name: CSI_ENDPOINT",
-              "          value: unix:///var/lib/csi/sockets/pluginproxy/csi.sock",
-              "        - name: X_CSI_MODE",
-              "          value: controller",
-              "        - name: VSPHERE_CSI_CONFIG",
-              "          value: /etc/cloud/csi-vsphere.conf",
-              "        - name: LOGGER_LEVEL",
-              "          value: PRODUCTION",
-              "        - name: X_CSI_LOG_LEVEL",
-              "          value: INFO",
-              "        image: gcr.io/cloud-provider-vsphere/csi/release/driver:v2.1.0",
-              "        livenessProbe:",
-              "          failureThreshold: 3",
-              "          httpGet:",
-              "            path: /healthz",
-              "            port: healthz",
-              "          initialDelaySeconds: 10",
-              "          periodSeconds: 5",
-              "          timeoutSeconds: 3",
-              "        name: vsphere-csi-controller",
-              "        ports:",
-              "        - containerPort: 9808",
-              "          name: healthz",
-              "          protocol: TCP",
-              "        resources: {}",
-              "        volumeMounts:",
-              "        - mountPath: /etc/cloud",
-              "          name: vsphere-config-volume",
-              "          readOnly: true",
-              "        - mountPath: /var/lib/csi/sockets/pluginproxy/",
-              "          name: socket-dir",
-              "      - args:",
-              "        - --csi-address=$(ADDRESS)",
-              "        env:",
-              "        - name: ADDRESS",
-              "          value: /var/lib/csi/sockets/pluginproxy/csi.sock",
-              "        image: quay.io/k8scsi/livenessprobe:v2.1.0",
-              "        name: liveness-probe",
-              "        resources: {}",
-              "        volumeMounts:",
-              "        - mountPath: /var/lib/csi/sockets/pluginproxy/",
-              "          name: socket-dir",
-              "      - args:",
-              "        - --leader-election",
-              "        env:",
-              "        - name: X_CSI_FULL_SYNC_INTERVAL_MINUTES",
-              "          value: \"30\"",
-              "        - name: LOGGER_LEVEL",
-              "          value: PRODUCTION",
-              "        - name: VSPHERE_CSI_CONFIG",
-              "          value: /etc/cloud/csi-vsphere.conf",
-              "        image: gcr.io/cloud-provider-vsphere/csi/release/syncer:v2.1.0",
-              "        name: vsphere-syncer",
-              "        resources: {}",
-              "        volumeMounts:",
-              "        - mountPath: /etc/cloud",
-              "          name: vsphere-config-volume",
-              "          readOnly: true",
-              "      - args:",
-              "        - --v=4",
-              "        - --timeout=300s",
-              "        - --csi-address=$(ADDRESS)",
-              "        - --leader-election",
-              "        - --default-fstype=ext4",
-              "        env:",
-              "        - name: ADDRESS",
-              "          value: /csi/csi.sock",
-              "        image: quay.io/k8scsi/csi-provisioner:v2.0.0",
-              "        name: csi-provisioner",
-              "        resources: {}",
-              "        volumeMounts:",
-              "        - mountPath: /csi",
-              "          name: socket-dir",
-              "      dnsPolicy: Default",
-              "      serviceAccountName: vsphere-csi-controller",
-              "      tolerations:",
-              "      - effect: NoSchedule",
-              "        key: node-role.kubernetes.io/master",
-              "        operator: Exists",
-              "      volumes:",
-              "      - name: vsphere-config-volume",
-              "        secret:",
-              "          secretName: csi-vsphere-config",
-              "      - emptyDir: {}",
-              "        name: socket-dir"
-            ]
-          )
+          "data": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: vsphere-csi-controller\n  namespace: kube-system\nspec:\n  replicas: 1\n  selector:\n    matchLabels:\n      app: vsphere-csi-controller\n  template:\n    metadata:\n      labels:\n        app: vsphere-csi-controller\n        role: vsphere-csi\n    spec:\n      containers:\n      - args:\n        - --v=4\n        - --timeout=300s\n        - --csi-address=$(ADDRESS)\n        - --leader-election\n        env:\n        - name: ADDRESS\n          value: /csi/csi.sock\n        image: quay.io/k8scsi/csi-attacher:v3.0.0\n        name: csi-attacher\n        resources: {}\n        volumeMounts:\n        - mountPath: /csi\n          name: socket-dir\n      - env:\n        - name: CSI_ENDPOINT\n          value: unix:///var/lib/csi/sockets/pluginproxy/csi.sock\n        - name: X_CSI_MODE\n          value: controller\n        - name: VSPHERE_CSI_CONFIG\n          value: /etc/cloud/csi-vsphere.conf\n        - name: LOGGER_LEVEL\n          value: PRODUCTION\n        - name: X_CSI_LOG_LEVEL\n          value: INFO\n        image: gcr.io/cloud-provider-vsphere/csi/release/driver:v2.1.0\n        livenessProbe:\n          failureThreshold: 3\n          httpGet:\n            path: /healthz\n            port: healthz\n          initialDelaySeconds: 10\n          periodSeconds: 5\n          timeoutSeconds: 3\n        name: vsphere-csi-controller\n        ports:\n        - containerPort: 9808\n          name: healthz\n          protocol: TCP\n        resources: {}\n        volumeMounts:\n        - mountPath: /etc/cloud\n          name: vsphere-config-volume\n          readOnly: true\n        - mountPath: /var/lib/csi/sockets/pluginproxy/\n          name: socket-dir\n      - args:\n        - --csi-address=$(ADDRESS)\n        env:\n        - name: ADDRESS\n          value: /var/lib/csi/sockets/pluginproxy/csi.sock\n        image: quay.io/k8scsi/livenessprobe:v2.1.0\n        name: liveness-probe\n        resources: {}\n        volumeMounts:\n        - mountPath: /var/lib/csi/sockets/pluginproxy/\n          name: socket-dir\n      - args:\n        - --leader-election\n        env:\n        - name: X_CSI_FULL_SYNC_INTERVAL_MINUTES\n          value: \"30\"\n        - name: LOGGER_LEVEL\n          value: PRODUCTION\n        - name: VSPHERE_CSI_CONFIG\n          value: /etc/cloud/csi-vsphere.conf\n        image: gcr.io/cloud-provider-vsphere/csi/release/syncer:v2.1.0\n        name: vsphere-syncer\n        resources: {}\n        volumeMounts:\n        - mountPath: /etc/cloud\n          name: vsphere-config-volume\n          readOnly: true\n      - args:\n        - --v=4\n        - --timeout=300s\n        - --csi-address=$(ADDRESS)\n        - --leader-election\n        - --default-fstype=ext4\n        env:\n        - name: ADDRESS\n          value: /csi/csi.sock\n        image: quay.io/k8scsi/csi-provisioner:v2.0.0\n        name: csi-provisioner\n        resources: {}\n        volumeMounts:\n        - mountPath: /csi\n          name: socket-dir\n      dnsPolicy: Default\n      serviceAccountName: vsphere-csi-controller\n      tolerations:\n      - effect: NoSchedule\n        key: node-role.kubernetes.io/master\n        operator: Exists\n      volumes:\n      - name: vsphere-config-volume\n        secret:\n          secretName: csi-vsphere-config\n      - emptyDir: {}\n        name: socket-dir\n"
         },
         "kind": "ConfigMap",
         "metadata": {
@@ -1356,17 +968,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
       {
         "apiVersion": "v1",
         "data": {
-          "data": std.join("\n",
-            [
-              "apiVersion: v1",
-              "data:",
-              "  csi-migration: \"false\"",
-              "kind: ConfigMap",
-              "metadata:",
-              "  name: internal-feature-states.csi.vsphere.vmware.com",
-              "  namespace: kube-system"
-            ]
-          )
+          "data": "apiVersion: v1\ndata:\n  csi-migration: \"false\"\nkind: ConfigMap\nmetadata:\n  name: internal-feature-states.csi.vsphere.vmware.com\n  namespace: kube-system\n"
         },
         "kind": "ConfigMap",
         "metadata": {

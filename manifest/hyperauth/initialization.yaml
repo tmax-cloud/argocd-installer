@@ -8,19 +8,43 @@ kind: ServiceAccount
 metadata:
   name: hyperauth-admin
   namespace: hyperauth
+automountServiceAccountToken: false
+secrets:
+- name: hyperauth-admin-token
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: hyperauth-admin-token
+  namespace: hyperauth
+  annotations:
+    kubernetes.io/service-account.name: hyperauth-admin
+type: kubernetes.io/service-account-token
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: hyperauth-pod-checker
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - "pods"
+  verbs:
+   - "list"
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: hyperauth-admin
+  name: hyperauth-pod-checker
 subjects:
 - kind: ServiceAccount
   name: hyperauth-admin
   namespace: hyperauth
 roleRef:
   kind: ClusterRole
-  name: cluster-admin
   apiGroup: rbac.authorization.k8s.io
+  name: hyperauth-pod-checker
 ---
 apiVersion: v1
 kind: Secret
@@ -121,7 +145,7 @@ data:
       "refreshTokenMaxReuse": 2,
       "accessTokenLifespan": 3600,
       "accessTokenLifespanForImplicitFlow": 54000,
-      "ssoSessionIdleTimeout": 1800,
+      "ssoSessionIdleTimeout": 36000,
       "ssoSessionMaxLifespan": 108000,
       "ssoSessionIdleTimeoutRememberMe": 0,
       "ssoSessionMaxLifespanRememberMe": 0,

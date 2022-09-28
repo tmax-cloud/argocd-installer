@@ -1,10 +1,20 @@
 global:
+  # time_zone: "Asia/Seoul"
+  time_zone: "UTC"
   registry:
     is_offline: false
     private_registry: 172.22.6.2:5000
 
 fullnameOverride: "hyperregistry-harbor"
 nameOverride: ""
+
+OIDC:
+  enabled: true 
+  config:
+    clientId: hyperregistry
+    clientSecret: tmax_client_secret
+    hyperauthUrl: hyperauth_domain
+    adminGroupName: hypercloud5
 
 expose:
   # Set the way how to expose the service. Set the type as "ingress",

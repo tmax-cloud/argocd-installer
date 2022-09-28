@@ -1,6 +1,7 @@
 function (
   is_offline="false",
   private_registry="172.22.6.2:5000",
+  time_zone="UTC",
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -64,12 +65,33 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "memory": "100Mi"
               }
             },
-          },
+          } + (
+            if time_zone != "UTC" then {
+              "volumeMounts": [
+                {
+                  "name": "timezone-config",
+                  "mountPath": "/etc/localtime"
+                }
+              ]
+            } else {}
+          )
         ],
+        
         "terminationGracePeriodSeconds": 10,
         "serviceAccount": "redis-operator",
         "serviceAccountName": "redis-operator"
-      }
+      } + (
+          if time_zone != "UTC" then {
+            "volumes": [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                }
+              }
+            ]
+          } else {}
+        )
     },
   }
 }

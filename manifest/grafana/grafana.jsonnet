@@ -1,4 +1,5 @@
 function (
+  timezone="UTC",
   is_offline="false",
   private_registry="172.22.6.2:5000",
   client_id="grafana",
@@ -154,6 +155,7 @@ local admin_info = if is_master_cluster == "true" then "" else "admin_user = " +
             ],
             "imagePullPolicy": "IfNotPresent",
             "volumeMounts": [
+
               {
                 "name": "grafana-storage",
                 "mountPath": "/var/lib/grafana"
@@ -178,6 +180,15 @@ local admin_info = if is_master_cluster == "true" then "" else "admin_user = " +
                 "name": "grafana-dashboard-hyperauth",
                 "mountPath": "/grafana-dashboard-definitions/0/hyperauth"
               }
+			  ] + (
+				  if timezone != "UTC" then [
+            {
+              "name": "timezone-config",
+              "mountPath": "/etc/localtime"
+            }
+				  ] else []
+				),
+        }
             ],
             "terminationMessagePolicy": "File",
             "image": std.join("",
@@ -188,8 +199,7 @@ local admin_info = if is_master_cluster == "true" then "" else "admin_user = " +
                 grafana_version
               ]
             )
-          }
-        ],
+          },
         "serviceAccount": "grafana",
         "volumes": [
           {
@@ -233,7 +243,16 @@ local admin_info = if is_master_cluster == "true" then "" else "admin_user = " +
               "defaultMode": 420
             }
           }
-        ],
+		  ] + (
+			  if timezone != "UTC" then [
+				{
+				  "name": "timezone-config",
+				  "hostPath": {
+					"path": std.join("", ["/usr/share/zoneinfo/", timezone])
+				   }
+				 }
+			  ] else []
+			),
         "dnsPolicy": "ClusterFirst"
       }
     },
@@ -246,8 +265,7 @@ local admin_info = if is_master_cluster == "true" then "" else "admin_user = " +
     },
     "revisionHistoryLimit": 10,
     "progressDeadlineSeconds": 600
-    }
-  },
+    },
   {
     "apiVersion": "networking.k8s.io/v1",
     "kind": "Ingress",

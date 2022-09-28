@@ -3,7 +3,7 @@ kind: "CustomResourceDefinition"
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: "hypercloud5-system/hypercloud-multi-operator-serving-cert"
-    controller-gen.kubebuilder.io/version: "v0.3.0"
+    controller-gen.kubebuilder.io/version: "v0.6.2"
   name: "clustermanagers.cluster.tmax.io"
 spec:
   additionalPrinterColumns:
@@ -47,6 +47,7 @@ spec:
     shortNames:
     - "clm"
     singular: "clustermanager"
+  preserveUnknownFields: false
   scope: "Namespaced"
   subresources:
     status: {}
@@ -102,6 +103,8 @@ spec:
         status:
           description: "%clustermanagers.yaml.spec.validation.openAPIV3Schema.properties.status"
           properties:
+            applicationLink:
+              type: "string"
             argoReady:
               type: "boolean"
             authClientReady:
@@ -112,7 +115,7 @@ spec:
               type: "boolean"
             gatewayReady:
               type: "boolean"
-            hyperregistryOidcReady:
+            gatewayReadyMigration:
               type: "boolean"
             masterRun:
               type: "integer"
@@ -250,7 +253,7 @@ kind: "CustomResourceDefinition"
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: "hypercloud5-system/hypercloud-multi-operator-serving-cert"
-    controller-gen.kubebuilder.io/version: "v0.3.0"
+    controller-gen.kubebuilder.io/version: "v0.6.2"
   name: "clusterclaims.claim.tmax.io"
 spec:
   additionalPrinterColumns:
@@ -271,6 +274,7 @@ spec:
     shortNames:
     - "cc"
     singular: "clusterclaim"
+  preserveUnknownFields: false
   scope: "Namespaced"
   subresources:
     status: {}
@@ -408,6 +412,7 @@ spec:
               - "Rejected"
               - "Error"
               - "ClusterDeleted"
+              - "Cluster Deleted"
               type: "string"
             reason:
               type: "string"
@@ -432,7 +437,7 @@ kind: "CustomResourceDefinition"
 metadata:
   annotations:
     cert-manager.io/inject-ca-from: "hypercloud5-system/hypercloud-multi-operator-serving-cert"
-    controller-gen.kubebuilder.io/version: "v0.3.0"
+    controller-gen.kubebuilder.io/version: "v0.6.2"
   name: "clusterregistrations.cluster.tmax.io"
 spec:
   additionalPrinterColumns:
@@ -455,6 +460,7 @@ spec:
     shortNames:
     - "clr"
     singular: "clusterregistration"
+  preserveUnknownFields: false
   scope: "Namespaced"
   subresources:
     status: {}
@@ -487,6 +493,8 @@ spec:
         status:
           description: "%clusterregistrations.yaml.spec.validation.openAPIV3Schema.properties.status"
           properties:
+            clusterValidated:
+              type: "boolean"
             masterNum:
               type: "integer"
             masterRun:
@@ -546,6 +554,8 @@ spec:
               type: "boolean"
             reason:
               type: "string"
+            secretReady:
+              type: "boolean"
             version:
               type: "string"
             workerNum:
@@ -632,6 +642,7 @@ rules:
   resources:
   - namespaces
   - secrets
+  - serviceaccounts
   verbs:
   - create
   - delete
@@ -639,6 +650,18 @@ rules:
   - list
   - patch
   - post
+  - update
+  - watch
+- apiGroups:
+  - argoproj.io
+  resources:
+  - applications
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
   - update
   - watch
 - apiGroups:
@@ -1002,6 +1025,7 @@ spec:
   dnsNames:
   - hypercloud-multi-operator-webhook-service.hypercloud5-system.svc
   - hypercloud-multi-operator-webhook-service.hypercloud5-system.svc.cluster.local
+  #isCA: false
   issuerRef:
     group: cert-manager.io
     kind: ClusterIssuer
@@ -1064,6 +1088,7 @@ webhooks:
     apiVersions:
     - v1alpha1
     operations:
+    - CREATE
     - UPDATE
     - DELETE
     resources:
@@ -1108,6 +1133,10 @@ webhooks:
     operations:
     - CREATE
     - UPDATE
+    - DELETE
     resources:
     - clusterregistrations
   sideEffects: NoneOnDryRun
+
+
+
