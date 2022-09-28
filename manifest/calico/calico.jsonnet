@@ -3689,7 +3689,11 @@ function(
                 {
                   "name": "FELIX_HEALTHENABLED",
                   "value": "true"
-                }
+                },
+                {
+                  "name": "FELIX_IPTABLESBACKEND",
+                  "value": iptablesBackend
+                },
               ],
               "securityContext": {
                 "privileged": true
@@ -3970,7 +3974,6 @@ function(
       "name": "default"
     },
     "spec": {
-      "iptablesBackend": iptablesBackend,
       "vxlanPort": vxlanPort,
       "vxlanVNI": vxlanVNI
     }
