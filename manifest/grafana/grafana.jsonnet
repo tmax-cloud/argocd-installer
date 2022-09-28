@@ -6,7 +6,7 @@ function (
   tmax_client_secret="tmax_client_secret",
   keycloak_addr="",
   grafana_pvc="10Gi",
-  grafana_version="6.4.3",
+  grafana_version="8.2.2",
   grafana_image_repo="grafana/grafana",
   ingress_domain="",
   admin_user="test@test.co.kr",

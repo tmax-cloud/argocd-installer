@@ -6,7 +6,7 @@ function (
 	kube_rbac_proxy_image_repo="",
 	kube_rbac_proxy_version="",
 	grafana_operator_image_repo="",
-	grafana_operator_version="v0.0.2",
+	grafana_operator_version="v0.0.7",
 	keycloak_addr="",
 	ingress_domain="",
 	admin_user="test@test.co.kr",
