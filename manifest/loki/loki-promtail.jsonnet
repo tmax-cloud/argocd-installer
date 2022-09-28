@@ -134,7 +134,7 @@ local promtail_image_path = "docker.io/grafana/promtail:" + promtail_image_tag;
     "kind": "DaemonSet",
     "metadata": {
       "name": "promtail",
-      "namespace": "kube-system",
+      "namespace": "monitoring",
       "labels": {
         "app": "promtail"
       }
