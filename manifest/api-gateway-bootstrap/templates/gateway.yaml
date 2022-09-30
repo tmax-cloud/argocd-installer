@@ -72,8 +72,6 @@ spec:
       prune: true
     syncOptions:
       - ApplyOutOfSyncOnly=true
-    retry:
-      limit: 3
 ---
 {{ $syncWave := "gateway-sync-wave" }}
 apiVersion: batch/v1

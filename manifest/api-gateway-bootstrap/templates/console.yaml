@@ -50,8 +50,6 @@ spec:
   syncPolicy:
     automated:
       prune: true
-    retry:
-      limit: 3
     syncOptions:
       - ApplyOutOfSyncOnly=true
 {{- end }}
