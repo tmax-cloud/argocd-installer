@@ -209,7 +209,7 @@ modules:
   ### helm-apiserver
   helmApiserver:
     enabled: false
-    version: 0.0.1
+    version: 0.0.3
     subdomain: helm
     # default로 주는 경우 default storage class를 사용
     # default를 사용하지 않고 싶은 경우에는 storage class이름을 기입
