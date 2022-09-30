@@ -154,9 +154,6 @@
           "clusterConfiguration": {
             "apiServer": {
               "extraArgs": {
-                "audit-policy-file": "/etc/kubernetes/pki/audit-policy.yaml",
-                "audit-webhook-config-file": "/etc/kubernetes/pki/audit-webhook-config",
-                "audit-webhook-mode": "batch",
                 "cloud-provider": "external",
                 "oidc-ca-file": "/etc/kubernetes/pki/hyperauth.crt",
                 "oidc-client-id": "hypercloud5",
