@@ -326,7 +326,6 @@ local admin_info = if is_master_cluster == "true" then "" else "admin_user = " +
 										"name": "grafana",
 										"port": {
 											"number": 3000
-											"number": 3000
 										}
 									}
 								},
