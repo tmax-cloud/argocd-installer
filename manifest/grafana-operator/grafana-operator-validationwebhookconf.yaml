@@ -10,13 +10,13 @@ webhooks:
   - v1beta1
   clientConfig:
     service:
-      name: controller-manager-metrics-service
+      name: grafana-operator-service
       namespace: monitoring
       path: /validate
       port: 9443
   failurePolicy: Fail
   matchPolicy: Equivalent
-  name: controller-manager-metrics-service.monitoring.svc.cluster
+  name: grafana-operator-service.svc.cluster
   rules:
   - apiGroups:
     - integreatly.org

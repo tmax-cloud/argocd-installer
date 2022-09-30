@@ -3,9 +3,9 @@ function (
 	private_registry="172.22.6.2:5000",
 	client_id="grafana",
 	tmax_client_secret="tmax_client_secret",
-	kube_rbac_proxy_image_repo="",
-	kube_rbac_proxy_version="",
-	grafana_operator_image_repo="",
+	kube_rbac_proxy_image_repo="gcr.io/kubebuilder/kube-rbac-proxy",
+	kube_rbac_proxy_version="v0.8.0",
+	grafana_operator_image_repo="tmaxcloudck/grafana-operator",
 	grafana_operator_version="v0.0.7",
 	keycloak_addr="",
 	ingress_domain="",
@@ -58,7 +58,8 @@ local admin_info = if is_master_cluster == "true" then "" else "admin_user = " +
 				"image":  std.join("",
 						[
 							target_registry,
-							"gcr.io/kubebuilder/kube-rbac-proxy:",
+							kube_rbac_proxy_image_repo,
+							":",
 							kube_rbac_proxy_version
 						],
 				),
