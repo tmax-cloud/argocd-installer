@@ -159,7 +159,7 @@ modules:
   grafanaOperator:
     enabled: true
     pvcSize: 10Gi
-    version: v0.0.2
+    version: v0.0.7
     imageRepo: tmaxcloudck/grafana-operator
     subdomain: grafana
 
