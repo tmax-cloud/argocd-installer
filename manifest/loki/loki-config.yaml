@@ -77,3 +77,15 @@ data:
       retention_delete_delay: 30m
       working_directory: /loki/compactor
       shared_store: filesystem
+    
+    ruler:
+      storage:
+        type: local
+        local:
+          directory: /loki/rules
+      rule_path: /loki/scratch
+      alertmanager_url: http://alertmanager-main.monitoring.svc:9093
+      ring:
+        kvstore:
+          store: inmemory
+      enable_api: true
