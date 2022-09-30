@@ -170,7 +170,7 @@ local promtail_image_path = "docker.io/grafana/promtail:" + promtail_image_tag;
                     "- All"
                   ]
                 },
-                "allowPrivilegeEscalation": true
+                "allowPrivilegeEscalation": false
               },
               "args": [
                 "-config.file=/etc/promtail/promtail-config.yaml",
