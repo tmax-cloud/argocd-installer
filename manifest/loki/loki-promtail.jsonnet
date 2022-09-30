@@ -167,7 +167,7 @@ local promtail_image_path = "docker.io/grafana/promtail:" + promtail_image_tag;
                 "readOnlyRootFilesystem": true,
                 "capabilites" : {
                   "drop" : [
-                    "- All"
+                    "all"
                   ]
                 },
                 "allowPrivilegeEscalation": false
