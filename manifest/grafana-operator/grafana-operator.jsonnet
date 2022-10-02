@@ -216,7 +216,12 @@ local admin_info = if is_master_cluster == "true" then "" else "admin_user = " +
 		"ingress": {
 		  "enabled": true,
 		  "ingressClassName": "tmax-cloud",
-		  "hostname": "grafana.192.168.9.241.nip.io",
+		  "hostname": std.join("", [
+				grafana_subdomain, 
+				".", 
+				ingress_domain
+				]
+			),
 		  "tlsEnabled": true,
 		  "pathType": "Prefix",
 		  "path": "/",
