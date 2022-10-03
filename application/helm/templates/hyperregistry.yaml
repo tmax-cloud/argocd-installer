@@ -29,6 +29,8 @@ spec:
           value: {{ .Values.modules.hyperregistry.core.subdomain }}
         - name: expose.ingress.hosts.notary
           value: {{ .Values.modules.hyperregistry.notary.subdomain }}
+        - name: externalURL
+          value: {{ printf "https://%s.%s" .Values.modules.hyperregistry.core.subdomain .Values.global.domain }}
         - name: storageClass
           value: {{ .Values.modules.hyperregistry.storageClass }}
         - name: storageClassDatabase
