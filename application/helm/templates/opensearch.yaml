@@ -41,9 +41,9 @@ spec:
           - name: dashboard_svc_type
             value: {{ .Values.modules.opensearch.dashboard.svcType }}
           - name: tmax_client_secret
-            value: {{ .Values.modules.hyperAuth.tmaxClientSecret }}
+            value: {{ include "hyperAuth.tmaxClientSecret" . }}
           - name: hyperauth_url
-            value: {{ printf "%s.%s" .Values.modules.hyperAuth.subdomain .Values.global.domain }}
+            value: {{ include "hyperAuth.domain" . }}
           - name: custom_domain_name
             value: {{ .Values.global.domain }}
           - name: fluentd_image_tag

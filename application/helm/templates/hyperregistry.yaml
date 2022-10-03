@@ -38,9 +38,9 @@ spec:
         - name: OIDC.config.clientId
           value: {{ ternary "hyperregistry" (printf "%s-hyperregistry" $prefix) $isMaster }}
         - name: OIDC.config.clientSecret
-          value: {{ .Values.modules.hyperAuth.tmaxClientSecret }}
+          value: {{ include "hyperAuth.tmaxClientSecret" . }}
         - name: OIDC.config.hyperauthUrl
-          value: {{ printf "%s.%s" .Values.modules.hyperAuth.subdomain .Values.global.domain }}
+          value: {{ include "hyperAuth.domain" . }}
         - name: OIDC.config.adminGroupName
           value: {{ ternary "hypercloud5" (printf "%s-hyperregistry" $prefix) $isMaster }}
     path: manifest/hyperregistry

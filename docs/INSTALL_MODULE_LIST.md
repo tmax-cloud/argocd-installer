@@ -2,7 +2,7 @@ Master cluster
 1. api-gateway-bootstrap(cert-manager + api-gateway with console)
 2. strimzi-kafka-operator
 3. hyperauth
-4. efk or opensearch
+4. opensearch
 5. prometheus
 6. grafana
 7. service-mesh(istio, jaeger, kiali)
@@ -17,7 +17,7 @@ Master cluster
 Single cluster
 1. api-gateway-bootstrap(cert-manager + api-gateway w/o console)
 2. strimzi-kafka-operator
-3. efk or opensearch
+3. opensearch
 4. prometheus
 5. grafana
 6. service-mesh(istio, jaeger, kiali)

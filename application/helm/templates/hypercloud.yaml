@@ -27,13 +27,13 @@ spec:
           - name: hypercloud_kafka_enabled
             value: "{{ .Values.modules.hyperCloud.kafka.enabled }}"
           - name: hyperauth_url
-            value: {{ printf "%s.%s" .Values.modules.hyperAuth.subdomain .Values.global.domain }}
+            value: {{ include "hyperAuth.domain" . }}
           - name: hyperauth_client_secret
-            value: {{ .Values.modules.hyperAuth.tmaxClientSecret }}
+            value: {{ include "hyperAuth.tmaxClientSecret" . }}
           - name: console_subdomain
             value: {{ .Values.modules.gatewayBootstrap.console.subdomain }}
           - name: hyperauth_subdomain
-            value: {{ .Values.modules.hyperAuth.subdomain }}
+            value: {{ include "hyperAuth.subdomain" . }}
           - name: storageClass
             value: {{ .Values.modules.hyperCloud.storageClass }}
           - name: aws_enabled

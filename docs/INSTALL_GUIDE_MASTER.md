@@ -4,7 +4,7 @@
 ---
 ## How to install
 1. cluster configuration
-    - cluster에 필요한 정보(registry domain, hyperclou domain등)를 셋팅한다.
+    - cluster에 필요한 정보(registry domain, hypercloud domain등)를 셋팅한다.
     - 수정해야 하는 파일은 아래와 같다.
         ```
         $ application/helm/shared-values.yaml
