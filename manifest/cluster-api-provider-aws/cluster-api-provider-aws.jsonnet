@@ -1,7 +1,7 @@
 function (
   is_offline="false",
   private_registry="172.22.6.2:5000",
-  credentials="aws",
+  credentials="VGhpcyBpcyBhbiBhd3MgY3JlZGVudGlhbAo=",
   time_zone="UTC"
 )
 
