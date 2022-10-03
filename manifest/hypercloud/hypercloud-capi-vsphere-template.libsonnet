@@ -155,7 +155,6 @@
             "apiServer": {
               "extraArgs": {
                 "cloud-provider": "external",
-                "oidc-ca-file": "/etc/kubernetes/pki/hyperauth.crt",
                 "oidc-client-id": "hypercloud5",
                 "oidc-groups-claim": "group",
                 "oidc-issuer-url": "${HyperAuthUrl}",
@@ -174,12 +173,6 @@
               "content": "apiVersion: v1\nkind: Pod\nmetadata:\n  creationTimestamp: null\n  name: kube-vip\n  namespace: kube-system\nspec:\n  containers:\n  - args:\n    - start\n    env:\n    - name: vip_arp\n      value: \"true\"\n    - name: vip_leaderelection\n      value: \"true\"\n    - name: vip_address\n      value: ${VcenterKcpIp}\n    - name: vip_interface\n      value: eth0\n    - name: vip_leaseduration\n      value: \"15\"\n    - name: vip_renewdeadline\n      value: \"10\"\n    - name: vip_retryperiod\n      value: \"2\"\n    image: plndr/kube-vip:0.3.2\n    imagePullPolicy: IfNotPresent\n    name: kube-vip\n    resources: {}\n    securityContext:\n      capabilities:\n        add:\n        - NET_ADMIN\n        - SYS_TIME\n    volumeMounts:\n    - mountPath: /etc/kubernetes/admin.conf\n      name: kubeconfig\n  hostNetwork: true\n  volumes:\n  - hostPath:\n      path: /etc/kubernetes/admin.conf\n      type: FileOrCreate\n    name: kubeconfig\nstatus: {}\n",
               "owner": "root:root",
               "path": "/etc/kubernetes/manifests/kube-vip.yaml"
-            },
-            {
-              "content": "${HyperAuthCert}\n",
-              "owner": "root:root",
-              "path": "/etc/kubernetes/pki/hyperauth.crt",
-              "permissions": "0644"
             }
           ],
           "initConfiguration": {
@@ -398,7 +391,7 @@
         "namespace": "${Namespace}"
       },
       "stringData": {
-        "data": "apiVersion: v1\nkind: Secret\nmetadata:\n  name: csi-vsphere-config\n  namespace: kube-system\nstringData:\n  csi-vsphere.conf: |+\n    [Global]\n    cluster-id = \"${Namespace}/${ClusterName}\"\n\n    [VirtualCenter \"${VcenterIp}\"]\n    insecure-flag = \"true\"\n    user = \"${VcenterId}\"\n    password = \"${VcenterPassword}\"\n    datacenters = \"${VcenterDataCenter}\"\n\n    [Network]\n    public-network = \"${VcenterNetwork}\"\n\ntype: Opaque\n"
+        "data": "apiVersion: v1\nkind: Secret\nmetadata:\n  name: csi-vsphere-config\n  namespace: kube-system\nstringData:\n  csi-vsphere.conf: |+\n    [Global]\n    cluster-id = \"${Namespace}/${ClusterName}\"\n    [VirtualCenter \"${VcenterIp}\"]\n    insecure-flag = \"true\"\n    user = \"${VcenterId}\"\n    password = \"${VcenterPassword}\"\n    datacenters = \"${VcenterDataCenter}\"\n    [Network]\n    public-network = \"${VcenterNetwork}\"\ntype: Opaque\n"
       },
       "type": "addons.cluster.x-k8s.io/resource-set"
     },
@@ -622,14 +615,6 @@
       "name": "HyperAuthUrl",
       "required": false,
       "value": "hyperauth.tmax.co.kr",
-      "valueType": "string"
-    },
-    {
-      "description": "HyperAuth tls Certifcate",
-      "displayName": "HyperAuth Cert",
-      "name": "HyperAuthCert",
-      "required": false,
-      "value": "xxxx",
       "valueType": "string"
     }
   ],

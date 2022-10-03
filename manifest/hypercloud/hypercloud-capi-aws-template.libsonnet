@@ -82,7 +82,6 @@
             "apiServer": {
               "extraArgs": {
                 "cloud-provider": "aws",
-                "oidc-ca-file": "/etc/kubernetes/pki/hyperauth.crt",
                 "oidc-client-id": "hypercloud5",
                 "oidc-groups-claim": "group",
                 "oidc-issuer-url": "${HyperAuthUrl}",
@@ -96,14 +95,6 @@
               }
             }
           },
-          "files": [
-            {
-              "content": "${HyperAuthCert}\n",
-              "owner": "root:root",
-              "path": "/etc/kubernetes/pki/hyperauth.crt",
-              "permissions": "0644"
-            }
-          ],
           "initConfiguration": {
             "nodeRegistration": {
               "kubeletExtraArgs": {
@@ -313,14 +304,6 @@
       "name": "HyperAuthUrl",
       "required": false,
       "value": "hyperauth.tmax.co.kr",
-      "valueType": "string"
-    },
-    {
-      "description": "HyperAuth tls Certifcate",
-      "displayName": "HyperAuth Cert",
-      "name": "HyperAuthCert",
-      "required": false,
-      "value": "xxxx",
       "valueType": "string"
     }
   ],
