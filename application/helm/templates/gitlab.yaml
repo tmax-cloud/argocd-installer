@@ -27,6 +27,10 @@ spec:
           value: {{ .Values.modules.gitlab.subdomain }}
         - name: global.timezone
           value: {{ .Values.global.timeZone }}
+        - name: pvc.storage
+          value: {{ .Values.pvc.storage }}
+        - name: pvc.storageClassName
+          value: {{ .Values.pvc.storageClassName }}
     path: manifest/gitlab
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
