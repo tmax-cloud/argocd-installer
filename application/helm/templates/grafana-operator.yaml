@@ -23,9 +23,9 @@ spec:
           - name: private_registry
             value: {{ .Values.global.privateRegistry }}
           - name: tmax_client_secret
-            value: {{ .Values.modules.hyperAuth.tmaxClientSecret }}
+            value: {{ include "hyperAuth.tmaxClientSecret" . }}
           - name: keycloak_addr
-            value: {{ printf "%s.%s" .Values.modules.hyperAuth.subdomain .Values.global.domain }}
+            value: {{ include "hyperAuth.domain" . }}
           - name: grafana_pvc_size
             value: {{ .Values.modules.grafanaOperator.pvcSize }}
           - name: grafana_operator_version

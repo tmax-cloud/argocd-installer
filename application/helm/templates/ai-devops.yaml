@@ -32,12 +32,12 @@ spec:
             value: {{ .Values.global.domain }}
           - name: notebook_svc_type
             value: {{ .Values.modules.aiDevops.notebookSvcType }}
-          - name: tmax_client_secret
-            value: {{ .Values.modules.hyperAuth.tmaxClientSecret }}
-          - name: hyperauth_url
-            value: {{ printf "%s.%s" .Values.modules.hyperAuth.subdomain .Values.global.domain }}
           - name: console_subdomain
             value: "{{ .Values.modules.gatewayBootstrap.console.subdomain }}"
+          - name: hyperauth_url
+            value: {{ include "hyperAuth.domain" . }}
+          - name: tmax_client_secret
+            value: {{ include "hyperAuth.tmaxClientSecret" . }}
     path: manifest/ai-devops
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}

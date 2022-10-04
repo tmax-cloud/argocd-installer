@@ -5809,7 +5809,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
     },
 
     if notebook_svc_type == "Ingress" then {        
-        "apiVersion": "extensions/v1beta1",
+        "apiVersion": "networking.k8s.io/v1beta1",
         "kind": "Ingress",
         "metadata": {
             "name": "notebook-ingress",

@@ -29,6 +29,8 @@ spec:
           value: {{ .Values.modules.hyperregistry.core.subdomain }}
         - name: expose.ingress.hosts.notary
           value: {{ .Values.modules.hyperregistry.notary.subdomain }}
+        - name: externalURL
+          value: {{ printf "https://%s.%s" .Values.modules.hyperregistry.core.subdomain .Values.global.domain }}
         - name: storageClass
           value: {{ .Values.modules.hyperregistry.storageClass }}
         - name: storageClassDatabase
@@ -36,9 +38,9 @@ spec:
         - name: OIDC.config.clientId
           value: {{ ternary "hyperregistry" (printf "%s-hyperregistry" $prefix) $isMaster }}
         - name: OIDC.config.clientSecret
-          value: {{ .Values.modules.hyperAuth.tmaxClientSecret }}
+          value: {{ include "hyperAuth.tmaxClientSecret" . }}
         - name: OIDC.config.hyperauthUrl
-          value: {{ printf "%s.%s" .Values.modules.hyperAuth.subdomain .Values.global.domain }}
+          value: {{ include "hyperAuth.domain" . }}
         - name: OIDC.config.adminGroupName
           value: {{ ternary "hypercloud5" (printf "%s-hyperregistry" $prefix) $isMaster }}
     path: manifest/hyperregistry

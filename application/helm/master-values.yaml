@@ -191,7 +191,14 @@ modules:
       aws:
         enabled: true
         # description: ...
-        credentials: "credential"
+        # credential은 다음과 같이 생성
+        # cat << EOF | base64
+        # > [default]
+        # > aws_access_key_id = {{ AWS ACCESS KEY }}
+        # > aws_secret_access_key = {{ AWS SECRET ACCESS KEY }} 
+        # > region = {{ default region}} ex) ap-northeast-2
+        # > EOF
+        credentials: "VGhpcyBpcyBhbiBhd3MgY3JlZGVudGlhbAo="
       vsphere:
         enabled: true
         credentials:
