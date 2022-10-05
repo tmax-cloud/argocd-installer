@@ -151,7 +151,7 @@ modules:
   
   ### Loki
   loki:
-    enabled: false
+    enabled: true
     loki: 
       version: 2.6.0
       volumeSize: 50Gi

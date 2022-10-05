@@ -72,7 +72,7 @@ local promtail_image_path = "docker.io/grafana/promtail:" + promtail_image_tag;
               "volumeMounts": [
                 {
                   "name": "data",
-                  "mountPath": "/loki
+                  "mountPath": "/loki"
                 },
                 {
                   "name": "config",
@@ -121,7 +121,7 @@ local promtail_image_path = "docker.io/grafana/promtail:" + promtail_image_tag;
               }
             }
           } + (
-            if storageClass != "default" then {
+            if storage_class != "default" then {
               "storageClassName": storage_class
             } else {}
           )
@@ -165,7 +165,7 @@ local promtail_image_path = "docker.io/grafana/promtail:" + promtail_image_tag;
               "imagePullPolicy": "IfNotPresent",
               "securityContext": {
                 "readOnlyRootFilesystem": true,
-                "capabilites" : {
+                "capabilities" : {
                   "drop" : [
                     "all"
                   ]
@@ -241,7 +241,6 @@ local promtail_image_path = "docker.io/grafana/promtail:" + promtail_image_tag;
             }
           ] + if timezone != "UTC" then [
             {
-              "name": "timezone=config",
               "name": "timezone-config",
               "hostPath": {
                 "path": std.join("", ["/usr/share/zoneinfo/", timezone])
