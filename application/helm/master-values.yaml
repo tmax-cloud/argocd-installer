@@ -148,7 +148,17 @@ modules:
       # default로 주는 경우 default storage class를 사용
       # default를 사용하지 않고 싶은 경우에는 storage class이름을 기입
       storageClass: default
-
+  
+  ### Loki
+  loki:
+    enabled: false
+    loki: 
+      version: 2.6.0
+      volumeSize: 50Gi
+      storageClass: default
+    promtail:
+      version: 2.6.0
+  
   ### prometheus
   prometheus:
     enabled: true
