@@ -24,6 +24,7 @@ modules:
     subdomain: gitlab
     pvc:
       storage: 30Gi
+      # 빈 문자열 입력시 default storage class 사용
       storageClassName: ""
       
   ### gateway-bootstrap
