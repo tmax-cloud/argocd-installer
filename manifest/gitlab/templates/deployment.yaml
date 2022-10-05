@@ -108,6 +108,21 @@ spec:
             port:
               number: 80
 ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gitlab-pvc
+  namespace: gitlab-system
+  labels:
+    app: gitlab
+spec:
+  storageClassName: {{ .Values.pvc.storageClassName }}
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.pvc.storage }}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:

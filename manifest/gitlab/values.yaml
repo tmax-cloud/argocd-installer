@@ -11,6 +11,10 @@ externalURL: http://gitlab.testdomain.com
 tls:
   enabled: true
 
+pvc:
+  storageClassName: ""
+  storage: 30Gi
+  
 ingress:
   hosts:
     domain: testdomain.com
