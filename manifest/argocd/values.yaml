@@ -38,7 +38,7 @@ ingress:
   tls:
     enabled: true
     secretName:
-  enableTraefik: false
+  enableTraefik: true
 
 timezone: "UTC"
 

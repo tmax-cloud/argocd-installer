@@ -39,6 +39,8 @@ spec:
           value: "true"
         - name: tls.acme.email
           value: {{ .Values.global.tls.acme.email }}
+        - name: tls.acme.environment
+          value: {{ .Values.global.tls.acme.environment }}
         - name: tls.acme.dns.accessKeyID
           value: {{ .Values.global.tls.acme.dns.accessKeyID }}
         - name: tls.acme.dns.accessKeySecret
