@@ -32,7 +32,7 @@ spec:
             value: {{ .Values.modules.loki.promtail.version }}
           - name: is_master_cluster
             value: "{{ $isMaster }}"
-          - name: storageClass
+          - name: storage_class
             value: {{ .Values.modules.loki.loki.storageClass }}
     path: manifest/loki
     repoURL: {{ .Values.spec.source.repoURL }}
