@@ -141,7 +141,16 @@ modules:
       version: fluentd-v1.4.2-debian-elasticsearch-1.1
       # master cluster를 위한 value, 수정 X
       storageClass: default
-
+  
+  ### Loki
+  loki:
+    enabled: false
+    loki: 
+      version: 2.6.0
+      volumeSize: 50Gi
+      storageClass: default
+    promtail:
+      version: 2.6.0
 
   ### prometheus
   prometheus:
