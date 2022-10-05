@@ -22,6 +22,9 @@ modules:
   gitlab:
     enabled: true
     subdomain: gitlab
+    pvc:
+      storage: 30Gi
+      storageClassName: ""
       
   ### gateway-bootstrap
   gatewayBootstrap:
