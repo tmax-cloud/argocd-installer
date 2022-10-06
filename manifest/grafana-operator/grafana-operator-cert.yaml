@@ -5,7 +5,7 @@ metadata:
   namespace: monitoring
 spec:
   secretName: grafana-webhook
-  duration: 2880h
+  duration: 2880h0m0s
   dnsNames:
     - grafana-operator-service.monitoring.svc
     - grafana-operator-service.svc.cluster.local    

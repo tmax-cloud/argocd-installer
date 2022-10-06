@@ -114,7 +114,7 @@ metadata:
   namespace: helm-ns
 spec:
   secretName: helm-apiserver-cert
-  isCA: false
+  # isCA: false
   usages:
     - digital signature
     - key encipherment

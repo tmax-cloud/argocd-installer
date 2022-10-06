@@ -43,5 +43,4 @@ spec:
   syncPolicy:
     syncOptions:
     - CreateNamespace=true
-  ignoreDifferences: {{ include "argocd.ignoreDifference" . | indent 4 }}
 {{ end }}
