@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    k8s-app: kube-controller-manager
+    component: kube-controller-manager
   name: kube-controller-manager-prometheus-discovery
   namespace: kube-system
 spec:
@@ -13,7 +13,7 @@ spec:
     protocol: TCP
     targetPort: 10252
   selector:
-    k8s-app: kube-controller-manager
+    component: kube-controller-manager
   sessionAffinity: None
   type: ClusterIP
 status:
