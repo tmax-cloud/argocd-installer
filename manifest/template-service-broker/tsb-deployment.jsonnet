@@ -2,8 +2,8 @@ function (
   is_offline = "false",
   private_registry="registry.tmaxcloud.org",
   template_operator_version = "0.2.8",
-  cluster_tsb_version = "0.1.5",
-  tsb_version = "0.1.5",
+  cluster_tsb_version = "0.1.6",
+  tsb_version = "0.1.6",
   log_level="error",
   time_zone="UTC"
 )
