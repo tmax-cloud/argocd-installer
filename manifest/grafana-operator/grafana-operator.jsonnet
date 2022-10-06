@@ -6,7 +6,7 @@ function (
 	kube_rbac_proxy_image_repo="gcr.io/kubebuilder/kube-rbac-proxy",
 	kube_rbac_proxy_version="v0.8.0",
 	grafana_operator_image_repo="tmaxcloudck/grafana-operator",
-	grafana_operator_version="v0.0.7",
+	grafana_operator_version="v0.0.8",
 	keycloak_addr="",
 	ingress_domain="",
 	console_url="",
