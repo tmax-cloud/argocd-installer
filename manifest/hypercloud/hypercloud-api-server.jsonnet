@@ -64,7 +64,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
           "containers": [
             {
               "name": "hypercloud5-api-server",
-              "image": std.join("", [ target_registry, "docker.io/tmaxcloudck/hypercloud-api-server:b5.0.34.0" ]),
+              "image": std.join("", [ target_registry, "docker.io/tmaxcloudck/hypercloud-api-server:b5.0.34.1" ]),
               "imagePullPolicy": "IfNotPresent",
               "args": [
                 std.join("", ["--log-level=", api_server_log_level])
