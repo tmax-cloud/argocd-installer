@@ -30,3 +30,11 @@ backoff:
 {{- end -}}
 {{- end -}}
 
+{{- define "argocd.ignoreDifference" }}
+- group: cert-manager.io
+  kind: Certificate
+  jsonPointers:
+  - /spec/isCA
+{{ end -}}
+
+
