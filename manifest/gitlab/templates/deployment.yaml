@@ -116,7 +116,9 @@ metadata:
   labels:
     app: gitlab
 spec:
+  {{- if ne .Values.pvc.storageClassName ""  }}
   storageClassName: {{ .Values.pvc.storageClassName }}
+  {{- end }}
   accessModes:
   - ReadWriteMany
   resources:
