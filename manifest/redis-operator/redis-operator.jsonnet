@@ -41,7 +41,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "args": [
               "--leader-elect"
             ],
-            "image": std.join("", [target_registry, "quay.io/opstree/redis-operator:v0.9.0"]),
+            "image": std.join("", [target_registry, "docker.io/tmaxcloudck/redis-operator:v0.11.0"]),
             "imagePullPolicy": "Always",
             "name": "manager",
             "securityContext": {
