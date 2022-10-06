@@ -194,7 +194,7 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
           "containers": [
             {
               "name": "hyperauth",
-              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hyperauth:b1.1.1.41"]),
+              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hyperauth:b1.1.2.1"]),
               "args": [
                 "-c standalone-ha.xml",
                 "-Dkeycloak.profile.feature.upload_scripts=enabled",
