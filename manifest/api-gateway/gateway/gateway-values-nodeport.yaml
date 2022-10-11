@@ -15,8 +15,9 @@ traefik:
   deployment:
     podLabels:
       app: traefik
-    imagePullSecrets:
-      - name: regcred
+    imagePullSecrets: []
+    # imagePullSecrets:
+    #   - name: regcred
   volumes:
     - name: gateway-config
       mountPath: "/gateway-config"
