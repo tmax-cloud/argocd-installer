@@ -7,10 +7,10 @@ metadata:
   namespace: kube-system
 spec:
   ports:
-  - name: http-metrics
-    port: 10251
+  - name: https-metrics
+    port: 10259
     protocol: TCP
-    targetPort: 10251
+    targetPort: 10259
   selector:
     component: kube-scheduler
   sessionAffinity: None
