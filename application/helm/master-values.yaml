@@ -13,7 +13,7 @@ global:
   cluster: master
   clusterName: in-cluster
   clusterNamespace: default
-  domain: mastertestdomain.com
+  domain: testdomain.com
 
 modules:
   ###calico
@@ -115,7 +115,7 @@ modules:
     enabled: true
     subdomain: argocd
     dex:
-      replicas: 1
+      replicas: 0
     repoServer:
       replicas: 1
     redis:

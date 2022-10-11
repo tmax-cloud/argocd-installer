@@ -32,9 +32,9 @@ image:
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: "5.0.69.0"
-#imagePullSecrets: []
-imagePullSecrets:
-  - name: regcred
+imagePullSecrets: []
+# imagePullSecrets:
+#   - name: regcred
 
 nodeSelector:
   node-role.kubernetes.io/master: ""
