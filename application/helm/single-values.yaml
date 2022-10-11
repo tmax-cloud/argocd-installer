@@ -171,10 +171,15 @@ modules:
   ### grafana-operator
   grafanaOperator:
     enabled: true
-    pvcSize: 10Gi
-    version: v0.0.7
-    imageRepo: tmaxcloudck/grafana-operator
     subdomain: grafana
+    pvcSize: 10Gi
+    operator: 
+      version: v0.0.9
+      imageRepo: tmaxcloudck/grafana-operator
+    grafana:
+      version: "8.2.2"
+      imageRepo: grafana/grafana
+
 
   ### service-mesh
   serviceMesh:
