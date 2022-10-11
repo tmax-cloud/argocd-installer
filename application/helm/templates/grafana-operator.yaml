@@ -29,9 +29,21 @@ spec:
           - name: grafana_pvc_size
             value: {{ .Values.modules.grafanaOperator.pvcSize }}
           - name: grafana_operator_version
-            value: {{ .Values.modules.grafanaOperator.version }}
+            value: {{ .Values.modules.grafanaOperator.operator.version }}
           - name: grafana_operator_image_repo
-            value: {{ .Values.modules.grafanaOperator.imageRepo }}
+            value: {{ .Values.modules.grafanaOperator.operator.imageRepo }}
+          - name: grafana_image_repo
+            value: {{ .Values.modules.grafanaOperator.grafana.imageRepo }}
+          - name: grafana_image_version
+            value: {{ .Values.modules.grafanaOperator.grafana.version }}
+          - name: grafana_init_image_repo
+            value: {{ .Values.modules.grafanaOperator.grafana.initImageRepo }}
+          - name: grafana_init_image_version
+            value: {{ .Values.modules.grafanaOperator.grafana.initImageVersion }}
+          - name: kube_rbac_proxy_image_repo
+            value: {{ .Values.modules.grafanaOperator.rbacProxy.version }}
+          - name: kube_rbac_proxy_version
+            value: {{ .Values.modules.grafanaOperator.rbacProxy.imageRepo }}
           - name: ingress_domain
             value: {{ .Values.global.domain }}
           - name: is_master_cluster

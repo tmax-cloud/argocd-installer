@@ -6,7 +6,11 @@ function (
 	kube_rbac_proxy_image_repo="gcr.io/kubebuilder/kube-rbac-proxy",
 	kube_rbac_proxy_version="v0.8.0",
 	grafana_operator_image_repo="tmaxcloudck/grafana-operator",
-	grafana_operator_version="v0.0.8",
+	grafana_operator_version="v0.0.9",
+	grafana_image_repo="docker.io/grafana/grafana",
+	grafana_image_version="8.2.2",
+	grafana_init_image_repo="quay.io/grafana-operator/grafana_plugins_init",
+	grafana_init_image_version="0.0.5",
 	keycloak_addr="",
 	ingress_domain="",
 	console_url="",
@@ -210,8 +214,22 @@ local admin_info = if is_master_cluster == "true" then "" else "admin_user = " +
 		}
 	  },
 	  "spec": {
+	    "baseImage": std.join("", [
+				target_registry,
+				grafana_image_repo,
+				":",
+				grafana_image_version
+			]
+		),
+		"initImage": std.join("", [
+				target_registry,
+				grafana_init_image_repo,
+				":",
+				grafana_init_image_version
+			]
+		),
 		"deployment": {
-		  "replicas": 2
+		  "replicas": 1
 		},
 		"ingress": {
 		  "enabled": true,
