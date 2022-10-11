@@ -11,7 +11,7 @@ global:
   cluster: single
   clusterName: cluster-name
   clusterNamespace: cluster-namespace
-  domain: singletestdomain.com
+  domain: testdomain.com
 
 modules:
   ###calico

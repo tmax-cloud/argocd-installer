@@ -13,7 +13,7 @@ global:
   cluster: master
   clusterName: in-cluster
   clusterNamespace: default
-  domain: mastertestdomain.com
+  domain: testdomain.com
 
 modules:
   ###calico
