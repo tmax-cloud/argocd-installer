@@ -83,7 +83,7 @@ local capi_vsphere_template = import 'hypercloud-capi-vsphere-template.libsonnet
                   "value": hyperauth_subdomain
                 },
               ],
-              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-multi-operator:b5.0.34.2"]),
+              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-multi-operator:b5.0.34.3"]),
               "name": "manager",
               "ports": [
                 {

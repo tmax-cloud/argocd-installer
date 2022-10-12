@@ -204,7 +204,9 @@
             "mkdir -p $HOME/.kube",
             "cp /etc/kubernetes/admin.conf $HOME/.kube/config",
             "chown $USER:$USER $HOME/.kube/config",
-            "kubectl apply -f https://docs.projectcalico.org/archive/v3.16/manifests/calico.yaml"
+            "kubectl apply -f https://docs.projectcalico.org/archive/v3.16/manifests/calico.yaml",
+            "sed -i 's/--bind-address=127.0.0.1/--bind-address=0.0.0.0/g' /etc/kubernetes/manifests/kube-controller-manager.yaml || echo",
+            "sed -i 's/--bind-address=127.0.0.1/--bind-address=0.0.0.0/g' /etc/kubernetes/manifests/kube-scheduler.yaml || echo"
           ],
           "useExperimentalRetryJoin": true,
           "users": [
