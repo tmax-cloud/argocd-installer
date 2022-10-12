@@ -159,8 +159,17 @@ modules:
   grafanaOperator:
     enabled: true
     pvcSize: 10Gi
-    version: v0.0.7
-    imageRepo: tmaxcloudck/grafana-operator
+    rbacProxy:
+        version: v0.8.0
+        imageRepo: gcr.io/kubebuilder/kube-rbac-proxy
+    operator:
+        version: v0.0.9
+        imageRepo: tmaxcloudck/grafana-operator
+    grafana:
+        version: 8.2.2
+        imageRepo: docker.io/grafana/grafana
+        initImageRepo: quay.io/grafana-operator/grafana_plugins_init
+        initImageVersion: 0.0.5
     subdomain: grafana
 
   ### service-mesh
