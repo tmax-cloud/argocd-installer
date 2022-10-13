@@ -27,6 +27,7 @@ spec:
     path: manifest/service-binding-operator
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
+  ## TODO: argocd-cm에 ignoreDifference가 추가되면 해당 필드 제거 
   ignoreDifferences:
   - group: rbac.authorization.k8s.io
     kind: ClusterRole
