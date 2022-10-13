@@ -114,8 +114,6 @@ modules:
   argocd:
     enabled: true
     subdomain: argocd
-    dex:
-      replicas: 0
     repoServer:
       replicas: 1
     redis:
