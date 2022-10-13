@@ -16,12 +16,8 @@ image:
   argocdServer:
     repository: quay.io/argoproj/argocd
     tag: v2.2.5
-  dex:
-    repository: ghcr.io/dexidp/dex
-    tag: v2.30.2
 
-dex:
-  replicas: 1
+
 repoServer:
   replicas: 1
 redis:

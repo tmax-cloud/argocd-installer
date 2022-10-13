@@ -2,102 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app.kubernetes.io/component: dex-server
-    app.kubernetes.io/name: argocd-dex-server
-    app.kubernetes.io/part-of: argocd
-  name: argocd-dex-server
-spec:
-  replicas: {{ .Values.dex.replicas }}
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: argocd-dex-server
-  template:
-    metadata:
-      labels:
-        app.kubernetes.io/name: argocd-dex-server
-    spec:
-      affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - podAffinityTerm:
-              labelSelector:
-                matchLabels:
-                  app.kubernetes.io/part-of: argocd
-              topologyKey: kubernetes.io/hostname
-            weight: 5
-      containers:
-      - command:
-        - /shared/argocd-dex
-        - rundex
-        {{- if .Values.global.registry.is_offline }}
-        image: {{ .Values.global.registry.private_registry }}/{{ .Values.image.dex.repository }}:{{ .Values.image.dex.tag }}
-        {{- else }}
-        image: {{ .Values.image.dex.repository }}:{{ .Values.image.dex.tag }}
-        {{- end }}
-        imagePullPolicy: Always
-        name: dex
-        ports:
-        - containerPort: 5556
-        - containerPort: 5557
-        - containerPort: 5558
-        securityContext:
-          allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: true
-          runAsNonRoot: true
-        volumeMounts:
-        {{- if ne .Values.timezone "UTC" }}
-        - name: timezone-config
-          mountPath: /etc/localtime
-        {{- end }}
-        - mountPath: /shared
-          name: static-files
-        - mountPath: /tmp
-          name: dexconfig
-        - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
-          name: argocd-dex-server-secret
-      initContainers:
-      - command:
-        - cp
-        - -n
-        - /usr/local/bin/argocd
-        - /shared/argocd-dex
-        {{- if .Values.global.registry.is_offline }}
-        image: {{ .Values.global.registry.private_registry }}/{{ .Values.image.argocdServer.repository }}:{{ .Values.image.argocdServer.tag }}
-        {{- else }}
-        image: {{ .Values.image.argocdServer.repository }}:{{ .Values.image.argocdServer.tag }}
-        {{- end }}
-        imagePullPolicy: Always
-        name: copyutil
-        volumeMounts:
-        {{- if ne .Values.timezone "UTC" }}
-        - name: timezone-config
-          mountPath: /etc/localtime
-        {{- end }}
-        - mountPath: /shared
-          name: static-files
-        - mountPath: /tmp
-          name: dexconfig
-        - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
-          name: argocd-dex-server-secret
-      serviceAccountName: argocd-dex-server
-      volumes:
-      {{- if ne .Values.timezone "UTC" }}
-      - name: timezone-config
-        hostPath: 
-          path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.timezone }}
-      {{- end }}
-      - emptyDir: {}
-        name: static-files
-      - emptyDir: {}
-        name: dexconfig
-      - name: argocd-dex-server-secret
-        secret:
-          secretName: argocd-dex-server-token
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
     app.kubernetes.io/component: redis
     app.kubernetes.io/name: argocd-redis
     app.kubernetes.io/part-of: argocd
@@ -461,12 +365,6 @@ spec:
           valueFrom:
             configMapKeyRef:
               key: repo.server
-              name: argocd-cmd-params-cm
-              optional: true
-        - name: ARGOCD_SERVER_DEX_SERVER
-          valueFrom:
-            configMapKeyRef:
-              key: server.dex.server
               name: argocd-cmd-params-cm
               optional: true
         - name: ARGOCD_SERVER_DISABLE_AUTH
