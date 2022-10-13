@@ -187,7 +187,7 @@ spec:
           PORT="${PORT/\.[0-9]*/}"
           PORT_SSH="${PORT_SSH/\.[0-9]*/}"
           cat <<EOT >> /tmp/shared/omnibus.env
-          external_url {{ .Values.externalURL }}
+          external_url = {{ .Values.externalURL }}
           gitlab_rails['gitlab_shell_ssh_port'] = $PORT_SSH
           prometheus['enable'] = false
           prometheus['monitor_kubernetes'] = false
