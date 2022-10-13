@@ -1,0 +1,47 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: gradle-build-task
+spec:
+  workspaces:
+    - name: build-dir
+  params:
+    - name: BUILDER_IMG
+      description: Gradle build image
+      default: ""
+    - name: JAR_NAME
+      description: Target Jar Name
+      default: "*.jar"
+    - name: REG_USER
+      description: Registry User Name
+      default: ""
+    - name: REG_PASS
+      description: Registry password
+      default: ""
+    - name: REGISTRY_URL
+      description: Registry URL
+      default: ""
+    - name: IMG_PATH
+      description: Image Path
+      default: ""
+    - name: IMG_TAG
+      description: Image Tag
+      default: ""
+  steps:
+    - name: gradle-package
+      image: $(params.BUILDER_IMG)
+      workingDir: $(workspaces.build-dir.path)
+      script: |
+        gradle build
+        cp build/libs/$(params.JAR_NAME) $(workspaces.build-dir.path)
+    - name: docker-package
+      image: docker.io/alpine:3.13.6
+      workingDir: $(workspaces.build-dir.path)
+      script: |
+        cp $(workspaces.build-dir.path)/$(params.JAR_NAME) ./
+
+        buildah bud --tls-verify=false --storage-driver=vfs --format docker -f Dockerfile -t $(params.REGISTRY_URL)/$(params.IMG_PATH):$(params.IMG_TAG)
+        buildah login --tls-verify=false -u $(params.REG_USER) -p $(params.REG_PASS) $(params.REGISTRY_URL)
+        buildah push --tls-verify=false --storage-driver=vfs $(params.REGISTRY_URL)/$(params.IMG_PATH):$(params.IMG_TAG) docker://$(params.REGISTRY_URL)/$(params.IMG_PATH):$(params.IMG_TAG)
+      securityContext:
+        privileged: true
