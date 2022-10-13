@@ -38,7 +38,4 @@ spec:
     path: manifest/argocd
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
-  syncPolicy:
-    syncOptions:
-    - CreateNamespace=true
 {{ end }}
