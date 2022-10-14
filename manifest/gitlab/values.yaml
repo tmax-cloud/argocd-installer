@@ -22,9 +22,9 @@ ingress:
 
 image:
   kube:
-    repo: bitnami/kubectl
+    repo: docker.io/bitnami/kubectl
     tag: 1.20.10
 
   gitlab:
-    repo: gitlab/gitlab-ce
+    repo: docker.io/gitlab/gitlab-ce
     tag: 13.6.4-ce.0
