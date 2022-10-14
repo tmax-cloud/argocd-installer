@@ -26,7 +26,7 @@ spec:
         - name: ingress.hosts.subdomain
           value: {{ .Values.modules.gitlab.subdomain }}
         - name: externalURL
-          value: {{ printf "https://%s.%s" .Values.modules.gitlab.subdomain .Values.global.domain }}
+          value: {{ printf "http://%s.%s" .Values.modules.gitlab.subdomain .Values.global.domain }}
         - name: global.timezone
           value: {{ .Values.global.timeZone }}
         - name: pvc.storage
