@@ -166,7 +166,7 @@ spec:
         - name: gitlab-account-secret
           mountPath: /var/run/secrets/kubernetes.io/serviceaccount
         {{- if ne .Values.global.timezone "UTC" }}
-        - name: timezone-config
+        - name: timezone-seoul
           mountPath: /etc/localtime
         {{- end }}
         resources:
@@ -235,8 +235,9 @@ spec:
         - name: gitlab-account-secret
           mountPath: /var/run/secrets/kubernetes.io/serviceaccount
         {{- if ne .Values.global.timezone "UTC" }}
-        - name: timezone-config
+        - name: timezone-seoul
           mountPath: /etc/localtime
+          readOnly: true
         {{- end }}
         resources:
           limits:
@@ -254,11 +255,6 @@ spec:
               /opt/gitlab/bin/gitlab-healthcheck --fail --max-time 10
           periodSeconds: 150
       volumes:
-      {{- if ne .Values.global.timezone "UTC" }}
-      - name: timezone-config
-        hostPath:
-          path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.global.timezone }}
-      {{- end }}
       - name: gitlab-account-secret
         secret:
           defaultMode: 420
@@ -268,3 +264,8 @@ spec:
           claimName: gitlab-pvc
       - name: shared
         emptyDir: {}
+      {{- if ne .Values.global.timezone "UTC" }}
+      - name: timezone-seoul
+        hostPath:
+          path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.global.timezone }}
+      {{- end }}
