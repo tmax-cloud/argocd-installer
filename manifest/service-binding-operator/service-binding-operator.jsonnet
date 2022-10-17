@@ -26,6 +26,9 @@ local target_registry = if is_offline == "false" then "" else private_registry +
     },
     "template": {
       "metadata": {
+        "annotations" : {
+          "kubectl.kubernetes.io/default-container": "manager"
+        },
         "labels": {
           "control-plane": "service-binding-controller-manager"
         }
@@ -34,12 +37,15 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "containers": [
           {
             "args": [
-              "--leader-elect"
+              "--leader-elect",
+              "--zap-encoder=json",
+              "--zap-log-level=info"
             ],
             "command": [
               "/manager"
             ],
-            "image": std.join("", [target_registry, "quay.io/redhat-developer/servicebinding-operator:9230857d"]),
+            "imagePullPolicy": "Always",
+            "image": std.join("", [target_registry, "tmaxcloudck/service-binding-operator:1.0.0"]),
             "livenessProbe": {
               "httpGet": {
                 "path": "/healthz",
