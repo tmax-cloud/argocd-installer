@@ -16,11 +16,11 @@ global:
   domain: testdomain.com
 
 modules:
-  ###calico
+  ### calico
   calico:
     enabled: false
 
-  ###gitlab
+  ### gitlab
   gitlab:
     enabled: true
     subdomain: gitlab
@@ -291,8 +291,6 @@ modules:
         retention: "10 years"
 
   ### hyperregistry
-  # single cluster 설치용 변수
-  # enabled: true로 변경 X
   hyperregistry:
     enabled: true
     core:
