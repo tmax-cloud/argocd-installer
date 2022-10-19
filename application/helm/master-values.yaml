@@ -16,18 +16,20 @@ global:
   domain: testdomain.com
 
 modules:
-  ###calico
+  ### calico
   calico:
     enabled: false
 
-  ###gitlab
+  ### gitlab
   gitlab:
     enabled: true
     subdomain: gitlab
     pvc:
       storage: 30Gi
-      # 빈 문자열 입력시 default storage class 사용
-      storageClassName: ""
+    # default로 주는 경우 default storage class를 사용
+    # default를 사용하지 않고 싶은 경우에는 storage class이름을 기입
+    # 미리 설치된 gitlab과 sync해야 하는 경우 default storageclass는 사용할 수 없음    
+      storageClassName: "nfs"
 
   ### gateway-bootstrap
   gatewayBootstrap:
@@ -291,8 +293,6 @@ modules:
         retention: "10 years"
 
   ### hyperregistry
-  # single cluster 설치용 변수
-  # enabled: true로 변경 X
   hyperregistry:
     enabled: true
     core:

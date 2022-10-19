@@ -32,7 +32,7 @@ spec:
         - name: pvc.storage
           value: {{ .Values.modules.gitlab.pvc.storage }}
         - name: pvc.storageClassName
-          value: "{{ .Values.modules.gitlab.pvc.storageClassName }}"
+          value: {{ .Values.modules.gitlab.pvc.storageClassName }}
     path: manifest/gitlab
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
