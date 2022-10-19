@@ -117,7 +117,7 @@ metadata:
   labels:
     app: gitlab
 spec:
-  {{- if ne .Values.pvc.storageClassName ""  }}
+  {{- if ne .Values.pvc.storageClassName "default"  }}
   storageClassName: {{ .Values.pvc.storageClassName }}
   {{- end }}
   accessModes:
@@ -243,10 +243,10 @@ spec:
         resources:
           limits:
             cpu: 1
-            memory: 8Gi
+            memory: 4Gi
           requests:
             cpu: 1
-            memory: 8Gi
+            memory: Gi
         readinessProbe:
           exec:
             command:
@@ -270,3 +270,4 @@ spec:
         hostPath:
           path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.global.timezone }}
       {{- end }}
+      
