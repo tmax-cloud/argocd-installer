@@ -200,7 +200,7 @@ spec:
           EOT
       containers:
       - name: gitlab
-        {{- if or (eq .Values.pvc.storageClassName "") (eq .Values.pvc.storageClassName "nfs") }}
+        {{- if or (eq .Values.pvc.storageClassName "default") (eq .Values.pvc.storageClassName "nfs") }}
         securityContext:
           privileged: true
         {{- end }}
