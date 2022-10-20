@@ -34,7 +34,6 @@ function (
       },
       "annotations": {
         "traefik.ingress.kubernetes.io/router.entrypoints": "websecure",
-        "cert-manager.io/cluster-issuer": custom_clusterissuer
       }
     },
     "spec": {
@@ -65,7 +64,6 @@ function (
           "hosts": [
             std.join("", [opensearch_subdomain, ".", custom_domain_name])
           ],
-          "secretName": "dashboards-secret"
         }
       ]
     }
