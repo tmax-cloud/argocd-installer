@@ -317,6 +317,7 @@ modules:
     enabled: false
 
   ### ai-devops
+  # 해당 모듈 제외 
   aiDevops:
     enabled: false
     namespace: "kubeflow"
@@ -337,14 +338,14 @@ modules:
 
   ### ceph-csi-cephfs
   cephfs:
-    enabled: true
+    enabled: false
     # 사용 위해 ceph-csi namespace에 configmap(csi-config-map), secret(csi-cephfs-secret) 생성 필요
     # csi-config-map 에서 명시한 clusterID(fsid)
     clusterId: 50611be6-33b3-11eb-a5cb-0894ef32cba4
 
   ### ceph-csi-rbd
   rbd:
-    enabled: true
+    enabled: false
     # 사용 위해 ceph-csi namespace에 configmap(csi-config-map), secret(csi-rbd-secret) 생성 필요
     # csi-config-map 에서 명시한 clusterID(fsid)
     clusterId: 50611be6-33b3-11eb-a5cb-0894ef32cba4

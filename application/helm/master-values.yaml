@@ -325,8 +325,9 @@ modules:
     enabled: true
 
   ### ai-devops
+  # 해당 모듈 제외 
   aiDevops:
-    enabled: true
+    enabled: false
     namespace: "kubeflow"
     knativeNamespace: "knative-serving"
     notebookSvcType: "Ingress"

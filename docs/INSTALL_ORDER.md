@@ -19,4 +19,3 @@
 18. cicd-operator
 19. redis-operator
 20. image-validating-webhook
-21. ai-devops(미완)
