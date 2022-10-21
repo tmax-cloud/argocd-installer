@@ -1,9 +1,9 @@
 apiVersion: console.tmax.io/v1
 kind: ClusterMenuPolicy
 metadata:
-  name: default-menus-sample
   labels:
-    primary: "true"
+    primary: 'true'
+  name: default-menus-sample
 menuTabs:
   - menus:
       - innerMenus:
@@ -17,13 +17,13 @@ menuTabs:
             menuType: REGISTERED_MENU
           - kind: Events
             menuType: REGISTERED_MENU
+          - kind: ArgoCD
+            menuType: REGISTERED_MENU
           - kind: Grafana
             menuType: REGISTERED_MENU
           - kind: Git
             menuType: REGISTERED_MENU
           - kind: Harbor
-            menuType: REGISTERED_MENU
-          - kind: ArgoCD
             menuType: REGISTERED_MENU
         label: Home
         menuType: CONTAINER
@@ -32,21 +32,21 @@ menuTabs:
             menuType: REGISTERED_MENU
           - kind: Deployment
             menuType: REGISTERED_MENU
-          - kind: ReplicaSet
-            menuType: REGISTERED_MENU
-          - kind: HorizontalPodAutoscaler
-            menuType: REGISTERED_MENU
-          - kind: DaemonSet
-            menuType: REGISTERED_MENU
           - kind: StatefulSet
-            menuType: REGISTERED_MENU
-          - kind: ConfigMap
             menuType: REGISTERED_MENU
           - kind: Secret
             menuType: REGISTERED_MENU
-          - kind: Job
+          - kind: ConfigMap
             menuType: REGISTERED_MENU
           - kind: CronJob
+            menuType: REGISTERED_MENU
+          - kind: Job
+            menuType: REGISTERED_MENU
+          - kind: DaemonSet
+            menuType: REGISTERED_MENU
+          - kind: ReplicaSet
+            menuType: REGISTERED_MENU
+          - kind: HorizontalPodAutoscaler
             menuType: REGISTERED_MENU
         label: Workload
         menuType: CONTAINER
@@ -60,24 +60,13 @@ menuTabs:
         label: Networking
         menuType: CONTAINER
       - innerMenus:
-          - kind: StorageClass
+          - kind: PersistentVolume
             menuType: REGISTERED_MENU
           - kind: PersistentVolumeClaim
             menuType: REGISTERED_MENU
-          - kind: PersistentVolume
+          - kind: StorageClass
             menuType: REGISTERED_MENU
         label: Storage
-        menuType: CONTAINER
-      - innerMenus:
-          - kind: LimitRange
-            menuType: REGISTERED_MENU
-          - kind: ResourceQuota
-            menuType: REGISTERED_MENU
-          - kind: PodSecurityPolicy
-            menuType: REGISTERED_MENU
-          - kind: CustomResourceDefinition
-            menuType: REGISTERED_MENU
-        label: Management
         menuType: CONTAINER
       - innerMenus:
           - kind: Node
@@ -85,13 +74,24 @@ menuTabs:
         label: Host
         menuType: CONTAINER
       - innerMenus:
+          - kind: ServiceAccount
+            menuType: REGISTERED_MENU
           - kind: Role
             menuType: REGISTERED_MENU
           - kind: RoleBinding
             menuType: REGISTERED_MENU
-          - kind: ServiceAccount
-            menuType: REGISTERED_MENU
         label: Authentications
+        menuType: CONTAINER
+      - innerMenus:
+          - kind: ResourceQuota
+            menuType: REGISTERED_MENU
+          - kind: LimitRange
+            menuType: REGISTERED_MENU
+          - kind: CustomResourceDefinition
+            menuType: REGISTERED_MENU
+          - kind: PodSecurityPolicy
+            menuType: REGISTERED_MENU
+        label: Management
         menuType: CONTAINER
     name: MASTER
   - menus:
@@ -104,11 +104,11 @@ menuTabs:
       - innerMenus:
           - kind: Dashboard
             menuType: REGISTERED_MENU
+          - kind: Namespace
+            menuType: REGISTERED_MENU
           - kind: Search
             menuType: REGISTERED_MENU
           - kind: Event
-            menuType: REGISTERED_MENU
-          - kind: Namespace
             menuType: REGISTERED_MENU
         label: Home
         menuType: CONTAINER
@@ -117,21 +117,21 @@ menuTabs:
             menuType: REGISTERED_MENU
           - kind: Deployment
             menuType: REGISTERED_MENU
-          - kind: ReplicaSet
-            menuType: REGISTERED_MENU
-          - kind: HorizontalPodAutoscaler
-            menuType: REGISTERED_MENU
-          - kind: DaemonSet
-            menuType: REGISTERED_MENU
           - kind: StatefulSet
-            menuType: REGISTERED_MENU
-          - kind: ConfigMap
             menuType: REGISTERED_MENU
           - kind: Secret
             menuType: REGISTERED_MENU
-          - kind: Job
+          - kind: ConfigMap
             menuType: REGISTERED_MENU
           - kind: CronJob
+            menuType: REGISTERED_MENU
+          - kind: Job
+            menuType: REGISTERED_MENU
+          - kind: DaemonSet
+            menuType: REGISTERED_MENU
+          - kind: ReplicaSet
+            menuType: REGISTERED_MENU
+          - kind: HorizontalPodAutoscaler
             menuType: REGISTERED_MENU
         label: Workload
         menuType: CONTAINER
@@ -154,15 +154,6 @@ menuTabs:
         label: Storage
         menuType: CONTAINER
       - innerMenus:
-          - kind: LimitRange
-            menuType: REGISTERED_MENU
-          - kind: ResourceQuota
-            menuType: REGISTERED_MENU
-          - kind: CustomResourceDefinition
-            menuType: REGISTERED_MENU
-        label: Management
-        menuType: CONTAINER
-      - innerMenus:
           - kind: Node
             menuType: REGISTERED_MENU
         label: Host
@@ -177,6 +168,15 @@ menuTabs:
           - kind: PodSecurityPolicy
             menuType: REGISTERED_MENU
         label: Authentications
+        menuType: CONTAINER
+      - innerMenus:
+          - kind: LimitRange
+            menuType: REGISTERED_MENU
+          - kind: ResourceQuota
+            menuType: REGISTERED_MENU
+          - kind: CustomResourceDefinition
+            menuType: REGISTERED_MENU
+        label: Management
         menuType: CONTAINER
     name: SINGLE
   - menus:
@@ -195,15 +195,24 @@ menuTabs:
             menuType: REGISTERED_MENU
           - kind: ServiceInstance
             menuType: REGISTERED_MENU
-          - kind: ClusterTemplateClaim
-            menuType: REGISTERED_MENU
           - kind: Template
             menuType: REGISTERED_MENU
           - kind: ClusterTemplate
             menuType: REGISTERED_MENU
+          - kind: ClusterTemplateClaim
+            menuType: REGISTERED_MENU
           - kind: TemplateInstance
             menuType: REGISTERED_MENU
         label: ServiceCatalogs
+        menuType: CONTAINER
+      - innerMenus:
+          - kind: HelmRepository
+            menuType: REGISTERED_MENU
+          - kind: HelmChart
+            menuType: REGISTERED_MENU
+          - kind: HelmRelease
+            menuType: REGISTERED_MENU
+        label: Helm
         menuType: CONTAINER
       - innerMenus:
           - kind: VirtualService
@@ -250,28 +259,6 @@ menuTabs:
         label: CI/CD
         menuType: CONTAINER
       - innerMenus:
-          - kind: Notebook
-            menuType: REGISTERED_MENU
-          - kind: Experiment
-            menuType: REGISTERED_MENU
-          - kind: TrainingJob
-            menuType: REGISTERED_MENU
-          - kind: InferenceService
-            menuType: REGISTERED_MENU
-          - kind: TrainedModel
-            menuType: REGISTERED_MENU
-        label: AIDevOps
-        menuType: CONTAINER
-      - innerMenus:
-          - kind: HelmRepository
-            menuType: REGISTERED_MENU
-          - kind: HelmChart
-            menuType: REGISTERED_MENU
-          - kind: HelmRelease
-            menuType: REGISTERED_MENU
-        label: Helm
-        menuType: CONTAINER
-      - innerMenus:
           - kind: Kafka
             menuType: REGISTERED_MENU
           - kind: KafkaConnect
@@ -298,24 +285,9 @@ menuTabs:
     name: DEVELOPER
   - menus:
       - innerMenus:
-          - kind: Pod
-            menuType: REGISTERED_MENU
-          - kind: Deployment
-            menuType: REGISTERED_MENU
-          - kind: Search
-            menuType: REGISTERED_MENU
-        label: 즐겨찾기 메뉴
-        menuType: CONTAINER
-      - kind: Add
-        menuType: REGISTERED_MENU
-      - kind: Node
-        menuType: REGISTERED_MENU
-    name: CUSTOM
-  - menus:
-      - innerMenus:
           - kind: AWX
             menuType: REGISTERED_MENU
         label: Ansible
         menuType: CONTAINER
     name: BAREMETAL
-showCustomPerspective: true
+showCustomPerspective: false
