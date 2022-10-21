@@ -26,11 +26,7 @@ spec:
       {{- end }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      volumes:
-        - name: gateway-token
-          secret:
-            defaultMode: 420
-            secretName: gateway-token
+
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -62,21 +58,24 @@ spec:
             - name: gateway-token
               mountPath: /var/run/secrets/kubernetes.io/serviceaccount
               readOnly: true
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- if not (eq .Values.timeZone "UTC") }}
-          volumeMounts:
             - mountPath: /etc/localtime
               name: timezone-config
           {{- end }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
               containerPort: 8080
               protocol: TCP
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-      {{- if not (eq .Values.timeZone "UTC") }}
       volumes:
+        - name: gateway-token
+          secret:
+            defaultMode: 420
+            secretName: gateway-token
+      {{- if not (eq .Values.timeZone "UTC") }}
         - name: timezone-config
           hostPath:
             path: "/usr/share/zoneinfo/{{ .Values.timeZone }}"

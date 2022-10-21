@@ -181,7 +181,7 @@ modules:
     pvcSize: 10Gi
     operator: 
       version: v0.0.9
-      imageRepo: tmaxcloudck/grafana-operator
+      imageRepo: docker.io/tmaxcloudck/grafana-operator
     grafana:
       version: "8.2.2"
       imageRepo: grafana/grafana
@@ -325,8 +325,9 @@ modules:
     enabled: true
 
   ### ai-devops
+  # 해당 모듈 제외 
   aiDevops:
-    enabled: true
+    enabled: false
     namespace: "kubeflow"
     knativeNamespace: "knative-serving"
     notebookSvcType: "Ingress"

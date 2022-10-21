@@ -3,6 +3,7 @@
 # Declare variables to be passed into your templates.
 
 timeZone: "UTC"
+# timeZone: "Asia/Seoul"
 nameOverride: "jwt-decode-auth"
 fullnameOverride: "jwt-decode-auth"
 hyperauth:

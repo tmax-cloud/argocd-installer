@@ -45,7 +45,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
               "/manager"
             ],
             "imagePullPolicy": "Always",
-            "image": std.join("", [target_registry, "tmaxcloudck/service-binding-operator:1.0.0"]),
+            "image": std.join("", [target_registry, "docker.io/tmaxcloudck/service-binding-operator:1.0.0"]),
             "livenessProbe": {
               "httpGet": {
                 "path": "/healthz",
