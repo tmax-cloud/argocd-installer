@@ -37,6 +37,7 @@ app: "{{ template "harbor.name" . }}"
 {{- define "harbor.matchLabels" -}}
 release: {{ .Release.Name }}
 app: "{{ template "harbor.name" . }}"
+app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{- define "harbor.autoGenCert" -}}
