@@ -1,7 +1,7 @@
-{{- if .Values.modules.nfs.enabled }}
+{{- if .Values.modules.efs.enabled }}
 {{ $isMaster := eq .Values.global.cluster "master" }}
 {{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
-{{ $module := "nfs" }}
+{{ $module := "efs" }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -12,16 +12,14 @@ metadata:
 spec:
   destination:
     name: {{ .Values.global.clusterName }}
-    namespace: nfs
+    namespace: efs-csi
   project: {{ .Values.spec.project }}
   source:
     helm:
       parameters:
-        - name: nfs.server
-          value: {{ .Values.modules.nfs.server }}
-        - name: nfs.path
-          value: {{ .Values.modules.nfs.path }}
-        {{- if eq .Values.modules.nfs.defaultClass "default" }}
+        - name: storageClass.fileSystemId
+          value: {{ .Values.modules.efs.fileSystemId }}
+        {{- if eq .Values.modules.efs.defaultClass "default" }}
         - name: storageClass.defaultClass
           value: "true"
           forceString: true
@@ -30,9 +28,15 @@ spec:
           value: {{ .Values.global.timeZone }}
         {{- if .Values.global.network.disabled }}
         - name: image.repository
-          value: "{{ .Values.global.privateRegistry }}/nfs-subdir-external-provisioner"
+          value: "{{ .Values.global.privateRegistry }}/aws-efs-csi-driver"
+        - name: sidecars.livenessProbe.image.repository
+          value: "{{ .Values.global.privateRegistry }}/livenessprobe"
+        - name: sidecars.nodeDriverRegistrar.image.repository
+          value: "{{ .Values.global.privateRegistry }}/node-driver-registrar"
+        - name: sidecars.csiProvisioner.image.repository
+          value: "{{ .Values.global.privateRegistry }}/external-provisioner
         {{- end }}
-    path: manifest/nfs-subdir-external-provisioner
+    path: manifest/aws-efs-csi-driver
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
   syncPolicy:

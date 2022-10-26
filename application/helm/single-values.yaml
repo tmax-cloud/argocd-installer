@@ -335,17 +335,37 @@ modules:
     server: 192.168.7.16
     # nfs provisioner가 사용할 nfs server의 path, ex: /mnt/nfs-shared-dir
     path: /nfs-storage
+    # nfs provisioner를 default storageClass로 설정
+    defaultClass: not
 
   ### ceph-csi-cephfs
   cephfs:
     enabled: false
-    # 사용 위해 ceph-csi namespace에 configmap(csi-config-map), secret(csi-cephfs-secret) 생성 필요
-    # csi-config-map 에서 명시한 clusterID(fsid)
+    # ceph clusterID(fsid)
     clusterId: 50611be6-33b3-11eb-a5cb-0894ef32cba4
+    # ceph monitor들 IP:PORT
+    monitors: '["192.168.7.16:3300","192.168.7.16:6789","192.168.7.17:3300","192.168.7.17:6789"]'
+    # ceph admin key, /etc/ceph의 ceph.client.admin.keyring
+    key: AQCeBcZftAEvExAAultsKBpNpiWWGi06Md7mmw==
+    # cephfs csi를 default storageClass로 설정, ex: default / not
+    defaultClass: not
 
   ### ceph-csi-rbd
   rbd:
     enabled: false
-    # 사용 위해 ceph-csi namespace에 configmap(csi-config-map), secret(csi-rbd-secret) 생성 필요
-    # csi-config-map 에서 명시한 clusterID(fsid)
+    # ceph clusterID(fsid)
     clusterId: 50611be6-33b3-11eb-a5cb-0894ef32cba4
+    # ceph monitor들 IP:PORT
+    monitors: '["192.168.7.16:3300","192.168.7.16:6789","192.168.7.17:3300","192.168.7.17:6789"]'
+    # ceph admin key, /etc/ceph의 ceph.client.admin.keyring
+    key: AQCeBcZftAEvExAAultsKBpNpiWWGi06Md7mmw==
+    # rbd csi를 default storageClass로 설정, ex: default / not
+    defaultClass: not
+  
+  ### efs-csi
+  efs:
+    enabled: false
+    # efs ID
+    fileSystemId: fs-0ce741ec0e2ea2fa2
+    # efs csi를 default storageClass로 설정, ex: default / not
+    defaultClass: not
