@@ -207,7 +207,7 @@
             "kubectl apply -f https://docs.projectcalico.org/archive/v3.16/manifests/calico.yaml",
             "sed -i 's/--bind-address=127.0.0.1/--bind-address=0.0.0.0/g' /etc/kubernetes/manifests/kube-controller-manager.yaml || echo",
             "sed -i 's/--bind-address=127.0.0.1/--bind-address=0.0.0.0/g' /etc/kubernetes/manifests/kube-scheduler.yaml || echo",
-            "sed -i \"s/--listen-metrics-urls=http:\\/\\/127.0.0.1:2381/--listen-metrics-urls=http:\\/\\/127.0.0.1:2381,http:\\/\\/$(hostname -i):2381/g\" /etc/kubernetes/manifests/etcd.yaml || echo"
+            "sed -i \"s/--listen-metrics-urls=http:\\/\\/127.0.0.1:2381/--listen-metrics-urls=http:\\/\\/127.0.0.1:2381,http:\\/\\/{{ ds.meta_data.local_ipv4 }}:2381/g\" /etc/kubernetes/manifests/etcd.yaml || echo"
           ],
           "useExperimentalRetryJoin": true,
           "users": [
