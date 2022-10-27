@@ -12,5 +12,5 @@ metadata:
     heritage: {{ .Release.Service }}
 data:
   config.json: |-
-{{ toJson .Values.csiConfig | indent 4 -}}
+{{ .Values.csiConfig | indent 4 -}}
 {{- end }}

@@ -19,6 +19,15 @@ spec:
       parameters:
         - name: storageClass.clusterID
           value: {{ .Values.modules.cephfs.clusterId }}
+        - name: csiConfig
+          value: '[{"clusterID": "{{ .Values.modules.cephfs.clusterId }}", "monitors": {{ .Values.modules.cephfs.monitors }}}]'
+        - name: secret.adminKey
+          value: {{ .Values.modules.cephfs.key }}
+        {{- if eq .Values.modules.cephfs.defaultClass "default" }}
+        - name: storageClass.defaultClass
+          value: "true"
+          forceString: true
+        {{- end }}
         - name: timeZone
           value: {{ .Values.global.timeZone }}
         {{- if .Values.global.network.disabled }}

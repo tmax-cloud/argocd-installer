@@ -19,6 +19,15 @@ spec:
       parameters:
         - name: storageClass.clusterID
           value: {{ .Values.modules.rbd.clusterId }}
+        - name: csiConfig
+          value: '[{"clusterID": "{{ .Values.modules.rbd.clusterId }}", "monitors": {{ .Values.modules.rbd.monitors }}}]'
+        - name: secret.userKey
+          value: {{ .Values.modules.rbd.key }}
+        {{- if eq .Values.modules.rbd.defaultClass "default" }}
+        - name: storageClass.defaultClass
+          value: "true"
+          forceString: true
+        {{- end }}
         - name: timeZone
           value: {{ .Values.global.timeZone }}
         {{- if .Values.global.network.disabled }}

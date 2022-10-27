@@ -27,7 +27,9 @@ serviceAccounts:
 #       - "<MONValue2>"
 #     cephFS:
 #       subvolumeGroup: "csi"
-csiConfig: []
+# edit
+#csiConfig: []
+csiConfig: string
 
 # Set logging level for csi containers.
 # Supported values from 0 to 5. 0 for general useful logs,
@@ -35,6 +37,7 @@ csiConfig: []
 logLevel: 0
 
 # Set timeZone # UTC (default),  # Asia/Seoul
+# edit
 timeZone: UTC
 
 nodeplugin:
@@ -211,6 +214,12 @@ topology:
 storageClass:
   # Specifies whether the Storage class should be created
   create: true
+  
+  # Set StorageClass as the default StorageClass
+  # Ignored if storageClass.create is false
+  # edit
+  defaultClass: false
+
   name: csi-cephfs-sc
   # String representing a Ceph cluster to provision storage from.
   # Should be unique across all Ceph clusters in use for provisioning,
@@ -262,12 +271,13 @@ storageClass:
 
 secret:
   # Specifies whether the secret should be created
-  create: false
+  create: true
   name: csi-cephfs-secret
   # Key values correspond to a user name and its key, as defined in the
   # ceph cluster. User ID should have required access to the 'pool'
   # specified in the storage class
-  adminID: <plaintext ID>
+  # edit
+  adminID: admin
   adminKey: <Ceph auth key corresponding to ID above>
 
 #########################################################
