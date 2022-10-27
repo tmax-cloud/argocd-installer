@@ -148,7 +148,7 @@ spec:
       initContainers:
       - name: parse-svc
         {{- if .Values.global.registry.is_offline }}
-        image: "{{ .Values.global.private_registry }}/{{ .Values.image.kube.repo }}:{{ .Values.image.kube.tag }}"
+        image: "{{ .Values.global.registry.private_registry }}/{{ .Values.image.kube.repo }}:{{ .Values.image.kube.tag }}"
         {{- else }}
         image: "{{ .Values.image.kube.repo }}:{{ .Values.image.kube.tag }}"
         {{- end }}
@@ -205,7 +205,7 @@ spec:
           privileged: true
         {{- end }}
         {{- if .Values.global.registry.is_offline }}
-        image: "{{ .Values.global.private_registry }}/{{ .Values.image.gitlab.repo }}:{{ .Values.image.gitlab.tag }}"
+        image: "{{ .Values.global.registry.private_registry }}/{{ .Values.image.gitlab.repo }}:{{ .Values.image.gitlab.tag }}"
         {{- else }}
         image: "{{ .Values.image.gitlab.repo }}:{{ .Values.image.gitlab.tag }}"
         {{- end }}
