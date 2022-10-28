@@ -3,4 +3,6 @@ kind: Namespace
 metadata:
   labels:
     control-plane: redis-operator
+    hypercloud: system
   name: redis-operator
+  
