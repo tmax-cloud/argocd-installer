@@ -301,7 +301,7 @@ modules:
       subdomain: hyperregistry-notary
     # core, chartmuseum, jobservice, notary-server, notary-signer, registry, trivy의 경우 다음 아래의 로그레벨 설정으로 debug, info, warning, error, fatal 기입 가능 (대소문자 유의)
     mains:
-      logLevel: error
+      logLevel: info
     # redis의 경우 debug, verbose, notice, warning 기입 가능 (대소문자 유의, warning은 error 급) 
     redis:
       logLevel: warning

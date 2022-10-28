@@ -1,4 +1,5 @@
 global:
+  appName: "hyperregistry"
   # time_zone: "Asia/Seoul"
   time_zone: "UTC"
   registry:
