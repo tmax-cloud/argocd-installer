@@ -3,5 +3,7 @@ kind: Namespace
 metadata:
   creationTimestamp: null
   name: argocd
+  labels: 
+    hypercloud: system
 spec: {}
 status: {}

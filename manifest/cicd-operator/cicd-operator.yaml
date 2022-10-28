@@ -3,6 +3,7 @@ kind: Namespace
 metadata:
   labels:
     control-plane: controller-manager
+    hypercloud: system
   name: cicd-system
 ---
 apiVersion: v1
