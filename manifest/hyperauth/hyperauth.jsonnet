@@ -427,7 +427,7 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
           "hosts": [
             hyperauth_external_dns
           ],
-          "secretName": "hyperauth-https-secret"
+          // "secretName": "hyperauth-https-secret"
         }
       ]
     }
