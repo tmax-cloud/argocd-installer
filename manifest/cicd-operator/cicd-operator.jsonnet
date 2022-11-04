@@ -2,7 +2,9 @@ function (
   is_offline = "false",
   private_registry = "registry.tmaxcloud.org",
   custom_domain = "tmaxcloud.org",
-  cicd_subdomain = "cicd-webhook"
+  cicd_subdomain = "cicd-webhook",
+  timezone="UTC"
+
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -40,7 +42,7 @@ local cicd_domain = std.join("", [cicd_subdomain, ".", custom_domain]);
               "command": [
                 "/controller"
               ],
-              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/cicd-operator:v0.4.3"]),
+              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/cicd-operator:v0.4.13"]),
               "imagePullPolicy": "Always",
               "name": "manager",
               "resources": {
@@ -54,7 +56,12 @@ local cicd_domain = std.join("", [cicd_subdomain, ".", custom_domain]);
                   "mountPath": "/logs",
                   "name": "operator-log"
                 }
-              ],
+              ] + if timezone != "UTC" then [
+                {
+                  "name": "timezone-config",
+                  "mountPath": "/etc/localtime"
+                }
+              ] else [],
               "readinessProbe": {
                 "httpGet": {
                   "path": "/readyz",
@@ -74,7 +81,14 @@ local cicd_domain = std.join("", [cicd_subdomain, ".", custom_domain]);
                 "path": "/var/log/cicd-operator/logs"
               }
             }
-          ],
+          ] + if timezone != "UTC" then [
+            {
+              "name": "timezone-config",
+              "hostPath": {
+                "path": std.join("", ["/usr/share/zoneinfo/", timezone])
+              }
+            }
+          ] else [],
           "terminationGracePeriodSeconds": 10
         }
       }
@@ -111,7 +125,7 @@ local cicd_domain = std.join("", [cicd_subdomain, ".", custom_domain]);
               "command": [
                 "/blocker"
               ],
-              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/cicd-blocker:v0.4.3"]),
+              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/cicd-blocker:v0.4.13"]),
               "imagePullPolicy": "Always",
               "name": "manager",
               "resources": {
@@ -125,7 +139,12 @@ local cicd_domain = std.join("", [cicd_subdomain, ".", custom_domain]);
                   "mountPath": "/logs",
                   "name": "operator-log"
                 }
-              ],
+              ] + if timezone != "UTC" then [
+                {
+                  "name": "timezone-config",
+                  "mountPath": "/etc/localtime"
+                }
+              ] else [],
               "readinessProbe": {
                 "httpGet": {
                   "path": "/readyz",
@@ -145,7 +164,14 @@ local cicd_domain = std.join("", [cicd_subdomain, ".", custom_domain]);
                 "path": "/var/log/cicd-operator/logs"
               }
             }
-          ],
+          ] + if timezone != "UTC" then [
+            {
+              "name": "timezone-config",
+              "hostPath": {
+                "path": std.join("", ["/usr/share/zoneinfo/", timezone])
+              }
+            }
+          ] else [],
           "terminationGracePeriodSeconds": 10
         }
       }

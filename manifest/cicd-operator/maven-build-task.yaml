@@ -1,0 +1,76 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: maven-build-task
+spec:
+  params:
+  - default: ""
+    description: git server url
+    name: CI_SERVER_URL
+    type: string
+  - default: ""
+    description: git repository
+    name: CI_REPOSITORY
+    type: string
+  - default: ""
+    description: git head reference
+    name: CI_HEAD_REF
+    type: string
+  - default: ""
+    description: Maven build image
+    name: BUILDER_IMG
+    type: string
+  - default: '*.jar'
+    description: Target Jar Name
+    name: JAR_NAME
+    type: string
+  - default: ""
+    description: Registry User Name
+    name: REG_USER
+    type: string
+  - default: ""
+    description: Registry password
+    name: REG_PASS
+    type: string
+  - default: ""
+    description: Registry URL
+    name: REGISTRY_URL
+    type: string
+  - default: ""
+    description: Image Path
+    name: IMG_PATH
+    type: string
+  - default: ""
+    description: Image Tag
+    name: IMG_TAG
+    type: string
+  steps:
+  - image: alpine/git
+    name: git-clone
+    resources: {}
+    script: |
+      set -e
+      git config --global user.email bot@cicd.tmax.io
+      git config --global user.name tmax-cicd-bot
+      git init
+      git -c 'http.sslVerify=false' fetch $(params.CI_SERVER_URL)/$(params.CI_REPOSITORY) $(params.CI_HEAD_REF)
+      git -c 'http.sslVerify=false' checkout FETCH_HEAD
+    workingDir: $(workspaces.build-dir.path)
+  - image: $(params.BUILDER_IMG)
+    name: maven-package
+    resources: {}
+    script: |
+      mvn package
+    workingDir: $(workspaces.build-dir.path)
+  - image: quay.io/buildah/stable
+    name: docker-package
+    resources: {}
+    script: |
+      buildah bud --tls-verify=false --storage-driver=vfs --format docker -f Dockerfile -t $(params.REGISTRY_URL)/$(params.IMG_PATH):$(params.IMG_TAG)
+      buildah login --tls-verify=false -u $(params.REG_USER) -p $(params.REG_PASS) $(params.REGISTRY_URL)
+      buildah push --tls-verify=false --storage-driver=vfs $(params.REGISTRY_URL)/$(params.IMG_PATH):$(params.IMG_TAG) docker://$(params.REGISTRY_URL)/$(params.IMG_PATH):$(params.IMG_TAG)
+    securityContext:
+      privileged: true
+    workingDir: $(workspaces.build-dir.path)
+  workspaces:
+  - name: build-dir

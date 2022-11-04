@@ -24,11 +24,13 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "jwt-decode-auth.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+
       containers:
         - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           env:
@@ -48,6 +50,18 @@ spec:
               value: "8080"
             - name: TOKEN_VALIDATED_HEADER_KEY
               value: jwt-token-validated
+            - name: MULTI_CLUSTER_PREFIX
+              value: multicluster
+            - name: SECRET_CACHE_TTL
+              value: "300"
+          volumeMounts:
+            - name: gateway-token
+              mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+              readOnly: true
+          {{- if not (eq .Values.timeZone "UTC") }}
+            - mountPath: /etc/localtime
+              name: timezone-config
+          {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
@@ -56,6 +70,16 @@ spec:
               protocol: TCP
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: gateway-token
+          secret:
+            defaultMode: 420
+            secretName: gateway-token
+      {{- if not (eq .Values.timeZone "UTC") }}
+        - name: timezone-config
+          hostPath:
+            path: "/usr/share/zoneinfo/{{ .Values.timeZone }}"
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

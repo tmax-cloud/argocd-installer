@@ -18,10 +18,14 @@ spec:
     directory:
       jsonnet:
         tlas:
+          - name: time_zone
+            value: {{ .Values.global.timeZone }}
           - name: is_offline
             value: "{{ .Values.global.network.disabled }}"
           - name: private_registry
             value: {{ .Values.global.privateRegistry }}
+          - name: log_level
+            value: {{ .Values.modules.imageValidatingWebhook.logLevel }}
     path: manifest/image-validating-webhook
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}

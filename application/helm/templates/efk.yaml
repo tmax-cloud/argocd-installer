@@ -18,6 +18,8 @@ spec:
     directory:
       jsonnet:
         tlas:
+          - name: timezone
+            value: {{ .Values.global.timeZone }}
           - name: is_offline
             value: "{{ .Values.global.network.disabled }}"
           - name: private_registry
@@ -41,9 +43,9 @@ spec:
           - name: gatekeeper_image_tag
             value: {{ .Values.modules.efk.gatekeeper.version }}
           - name: tmax_client_secret
-            value: {{ .Values.global.keycloak.tmaxClientSecret }}
+            value: {{ include "hyperAuth.tmaxClientSecret" . }}
           - name: hyperauth_url
-            value: {{ .Values.global.keycloak.domain }}
+            value: {{ include "hyperAuth.domain" . }}
           - name: custom_domain_name
             value: {{ .Values.global.domain }}
           - name: fluentd_image_tag

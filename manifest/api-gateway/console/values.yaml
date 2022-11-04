@@ -8,11 +8,13 @@ fullnameOverride: "console"
 replicaCount: 1
 
 console:
+  timeZone: "UTC"
   auth:
     hyperauth: hyperauth.ckcloud.org
     realm: tmax
     clientid: hypercloud5
   mcMode: true
+  chatbotEmbed: true
 
 image:
   repository: docker.io/tmaxcloudck/hypercloud-console

@@ -6,7 +6,8 @@ function (
   is_kafka_enabled="true",
   hyperauth_subdomain="hyperauth",
   hypercloud_domain_host="tmaxcloud.org",
-  storage_class="default"
+  storage_class="default",
+  timezone_setting="UTC"
 )
 
 local svcType = if hyperauth_svc_type == "Ingress" then "ClusterIP" else hyperauth_svc_type;
@@ -64,10 +65,6 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
                       "key": "DB_PASSWORD"
                     }
                   }
-                },
-                {
-                  "name": "TZ",
-                  "value": "Asia/Seoul"
                 }
               ],
               "resources": {
@@ -91,8 +88,15 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
                   "name": "postgresql",
                   "mountPath": "/var/lib/postgresql/data",
                   "subPath": "postgres"
-                }
-              ]
+                },
+              ] + (
+                if timezone_setting != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  }
+                ] else []
+              ),
             }
           ],
           "volumes": [
@@ -102,7 +106,16 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
                 "claimName": "postgres-pvc"
               }
             }
-          ]
+          ] + (
+            if timezone_setting != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", timezone_setting])
+                }
+              }
+            ] else []
+          ),
         }
       }
     }
@@ -131,7 +144,6 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
           }
         },
         "spec": {
-          "serviceAccount": "hyperauth-admin",
           "volumes": [
             {
               "name": "ssl",
@@ -162,12 +174,27 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
               "configMap": {
                 "name": "tmax-realm-import-config"
               }
-            }
-          ],
+            },
+            {
+              "name": "hyperauth-admin-token",
+              "secret": {
+                "secretName": "hyperauth-admin-token"
+              },
+            },
+          ]+ (
+            if timezone_setting != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", timezone_setting])
+                }
+              }
+            ] else []
+          ),
           "containers": [
             {
               "name": "hyperauth",
-              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hyperauth:b1.1.1.41"]),
+              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hyperauth:b1.1.2.1"]),
               "args": [
                 "-c standalone-ha.xml",
                 "-Dkeycloak.profile.feature.upload_scripts=enabled",
@@ -238,10 +265,6 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
                   "value": "tmax"
                 },
                 {
-                  "name": "TZ",
-                  "value": "Asia/Seoul"
-                },
-                {
                   "name": "NAMESPACE",
                   "value": "hyperauth"
                 },
@@ -296,8 +319,19 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
                 {
                   "name": "realm",
                   "mountPath": "/tmp/realm-import"
+                },
+                {
+                  "name": "hyperauth-admin-token",
+                  "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
                 }
-              ],
+              ]+ (
+                if timezone_setting != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  }
+                ] else []
+              ),
               "readinessProbe": {
                 "httpGet": {
                   "path": "/auth/realms/master",
@@ -397,7 +431,7 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
           "hosts": [
             hyperauth_external_dns
           ],
-          "secretName": "hyperauth-https-secret"
+          // "secretName": "hyperauth-https-secret"
         }
       ]
     }

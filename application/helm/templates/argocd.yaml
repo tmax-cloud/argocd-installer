@@ -1,0 +1,41 @@
+{{ $isMaster := eq .Values.global.cluster "master" }}
+{{ if .Values.modules.argocd.enabled }}
+{{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
+{{ $module := "argocd" }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  labels:
+    cluster: {{ ternary "master" $prefix $isMaster }}
+  name: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
+  namespace: argocd
+spec:
+  destination:
+    name: {{ .Values.global.clusterName }}
+    namespace: argocd
+  project: {{ .Values.spec.project }}
+  source:
+    helm:
+      parameters:
+        - name: global.registry.is_offline
+          value: "{{ .Values.global.network.disabled }}"
+        - name: global.registry.private_registry
+          value: {{ .Values.global.privateRegistry }}
+        - name: ingress.hosts.domain
+          value: {{ .Values.global.domain }}
+        - name: ingress.hosts.subdomain
+          value: {{ .Values.modules.argocd.subdomain }}
+        - name: repoServer.replicas
+          value: "{{ .Values.modules.argocd.repoServer.replicas }}"
+        - name: redis.replicas
+          value: "{{ .Values.modules.argocd.redis.replicas }}"
+        - name: argocdServer.replicas
+          value: "{{ .Values.modules.argocd.argocdServer.replicas }}"
+        - name: controller.replicas
+          value: "{{ .Values.modules.argocd.controller.replicas }}"
+        - name: timezone
+          value: {{ .Values.global.timeZone }}
+    path: manifest/argocd
+    repoURL: {{ .Values.spec.source.repoURL }}
+    targetRevision: {{ .Values.spec.source.targetRevision }}
+{{ end }}

@@ -1,0 +1,293 @@
+apiVersion: console.tmax.io/v1
+kind: ClusterMenuPolicy
+metadata:
+  labels:
+    primary: 'true'
+  name: default-menus-sample
+menuTabs:
+  - menus:
+      - innerMenus:
+          - kind: Dashboard
+            menuType: REGISTERED_MENU
+          - kind: Namespace
+            menuType: REGISTERED_MENU
+          - kind: Search
+            menuType: REGISTERED_MENU
+          - kind: Audit
+            menuType: REGISTERED_MENU
+          - kind: Events
+            menuType: REGISTERED_MENU
+          - kind: ArgoCD
+            menuType: REGISTERED_MENU
+          - kind: Grafana
+            menuType: REGISTERED_MENU
+          - kind: Git
+            menuType: REGISTERED_MENU
+          - kind: Harbor
+            menuType: REGISTERED_MENU
+        label: Home
+        menuType: CONTAINER
+      - innerMenus:
+          - kind: Pod
+            menuType: REGISTERED_MENU
+          - kind: Deployment
+            menuType: REGISTERED_MENU
+          - kind: StatefulSet
+            menuType: REGISTERED_MENU
+          - kind: Secret
+            menuType: REGISTERED_MENU
+          - kind: ConfigMap
+            menuType: REGISTERED_MENU
+          - kind: CronJob
+            menuType: REGISTERED_MENU
+          - kind: Job
+            menuType: REGISTERED_MENU
+          - kind: DaemonSet
+            menuType: REGISTERED_MENU
+          - kind: ReplicaSet
+            menuType: REGISTERED_MENU
+          - kind: HorizontalPodAutoscaler
+            menuType: REGISTERED_MENU
+        label: Workload
+        menuType: CONTAINER
+      - innerMenus:
+          - kind: Service
+            menuType: REGISTERED_MENU
+          - kind: Ingress
+            menuType: REGISTERED_MENU
+          - kind: NetworkPolicy
+            menuType: REGISTERED_MENU
+        label: Networking
+        menuType: CONTAINER
+      - innerMenus:
+          - kind: PersistentVolume
+            menuType: REGISTERED_MENU
+          - kind: PersistentVolumeClaim
+            menuType: REGISTERED_MENU
+          - kind: StorageClass
+            menuType: REGISTERED_MENU
+        label: Storage
+        menuType: CONTAINER
+      - innerMenus:
+          - kind: Node
+            menuType: REGISTERED_MENU
+        label: Host
+        menuType: CONTAINER
+      - innerMenus:
+          - kind: ServiceAccount
+            menuType: REGISTERED_MENU
+          - kind: Role
+            menuType: REGISTERED_MENU
+          - kind: RoleBinding
+            menuType: REGISTERED_MENU
+        label: Authentications
+        menuType: CONTAINER
+      - innerMenus:
+          - kind: ResourceQuota
+            menuType: REGISTERED_MENU
+          - kind: LimitRange
+            menuType: REGISTERED_MENU
+          - kind: CustomResourceDefinition
+            menuType: REGISTERED_MENU
+          - kind: PodSecurityPolicy
+            menuType: REGISTERED_MENU
+        label: Management
+        menuType: CONTAINER
+    name: MASTER
+  - menus:
+      - kind: ClusterManager
+        menuType: REGISTERED_MENU
+      - kind: TFApplyClaim
+        menuType: REGISTERED_MENU
+    name: MULTI
+  - menus:
+      - innerMenus:
+          - kind: Dashboard
+            menuType: REGISTERED_MENU
+          - kind: Namespace
+            menuType: REGISTERED_MENU
+          - kind: Search
+            menuType: REGISTERED_MENU
+          - kind: Event
+            menuType: REGISTERED_MENU
+        label: Home
+        menuType: CONTAINER
+      - innerMenus:
+          - kind: Pod
+            menuType: REGISTERED_MENU
+          - kind: Deployment
+            menuType: REGISTERED_MENU
+          - kind: StatefulSet
+            menuType: REGISTERED_MENU
+          - kind: Secret
+            menuType: REGISTERED_MENU
+          - kind: ConfigMap
+            menuType: REGISTERED_MENU
+          - kind: CronJob
+            menuType: REGISTERED_MENU
+          - kind: Job
+            menuType: REGISTERED_MENU
+          - kind: DaemonSet
+            menuType: REGISTERED_MENU
+          - kind: ReplicaSet
+            menuType: REGISTERED_MENU
+          - kind: HorizontalPodAutoscaler
+            menuType: REGISTERED_MENU
+        label: Workload
+        menuType: CONTAINER
+      - innerMenus:
+          - kind: Service
+            menuType: REGISTERED_MENU
+          - kind: Ingress
+            menuType: REGISTERED_MENU
+          - kind: NetworkPolicy
+            menuType: REGISTERED_MENU
+        label: Networking
+        menuType: CONTAINER
+      - innerMenus:
+          - kind: StorageClass
+            menuType: REGISTERED_MENU
+          - kind: PersistentVolumeClaim
+            menuType: REGISTERED_MENU
+          - kind: PersistentVolume
+            menuType: REGISTERED_MENU
+        label: Storage
+        menuType: CONTAINER
+      - innerMenus:
+          - kind: Node
+            menuType: REGISTERED_MENU
+        label: Host
+        menuType: CONTAINER
+      - innerMenus:
+          - kind: Role
+            menuType: REGISTERED_MENU
+          - kind: RoleBinding
+            menuType: REGISTERED_MENU
+          - kind: ServiceAccount
+            menuType: REGISTERED_MENU
+          - kind: PodSecurityPolicy
+            menuType: REGISTERED_MENU
+        label: Authentications
+        menuType: CONTAINER
+      - innerMenus:
+          - kind: LimitRange
+            menuType: REGISTERED_MENU
+          - kind: ResourceQuota
+            menuType: REGISTERED_MENU
+          - kind: CustomResourceDefinition
+            menuType: REGISTERED_MENU
+        label: Management
+        menuType: CONTAINER
+    name: SINGLE
+  - menus:
+      - kind: Add
+        menuType: REGISTERED_MENU
+      - kind: Topology
+        menuType: REGISTERED_MENU
+      - innerMenus:
+          - kind: ServiceBroker
+            menuType: REGISTERED_MENU
+          - kind: ServiceClass
+            menuType: REGISTERED_MENU
+          - kind: ClusterServiceBroker
+            menuType: REGISTERED_MENU
+          - kind: ClusterServiceClass
+            menuType: REGISTERED_MENU
+          - kind: ServiceInstance
+            menuType: REGISTERED_MENU
+          - kind: Template
+            menuType: REGISTERED_MENU
+          - kind: ClusterTemplate
+            menuType: REGISTERED_MENU
+          - kind: ClusterTemplateClaim
+            menuType: REGISTERED_MENU
+          - kind: TemplateInstance
+            menuType: REGISTERED_MENU
+        label: ServiceCatalogs
+        menuType: CONTAINER
+      - innerMenus:
+          - kind: HelmRepository
+            menuType: REGISTERED_MENU
+          - kind: HelmChart
+            menuType: REGISTERED_MENU
+          - kind: HelmRelease
+            menuType: REGISTERED_MENU
+        label: Helm
+        menuType: CONTAINER
+      - innerMenus:
+          - kind: VirtualService
+            menuType: REGISTERED_MENU
+          - kind: DestinationRule
+            menuType: REGISTERED_MENU
+          - kind: EnvoyFilter
+            menuType: REGISTERED_MENU
+          - kind: Gateway
+            menuType: REGISTERED_MENU
+          - kind: Sidecar
+            menuType: REGISTERED_MENU
+          - kind: ServiceEntry
+            menuType: REGISTERED_MENU
+          - kind: RequestAuthentication
+            menuType: REGISTERED_MENU
+          - kind: PeerAuthentication
+            menuType: REGISTERED_MENU
+          - kind: AuthorizationPolicy
+            menuType: REGISTERED_MENU
+          - kind: Kiali
+            menuType: REGISTERED_MENU
+        label: ServiceMesh
+        menuType: CONTAINER
+      - innerMenus:
+          - kind: Task
+            menuType: REGISTERED_MENU
+          - kind: ClusterTask
+            menuType: REGISTERED_MENU
+          - kind: TaskRun
+            menuType: REGISTERED_MENU
+          - kind: Pipeline
+            menuType: REGISTERED_MENU
+          - kind: PipelineRun
+            menuType: REGISTERED_MENU
+          - kind: Approval
+            menuType: REGISTERED_MENU
+          - kind: PipelineResource
+            menuType: REGISTERED_MENU
+          - kind: IntegrationJob
+            menuType: REGISTERED_MENU
+          - kind: IntegrationConfig
+            menuType: REGISTERED_MENU
+        label: CI/CD
+        menuType: CONTAINER
+      - innerMenus:
+          - kind: Kafka
+            menuType: REGISTERED_MENU
+          - kind: KafkaConnect
+            menuType: REGISTERED_MENU
+          - kind: KafkaConnector
+            menuType: REGISTERED_MENU
+          - kind: KafkaBridge
+            menuType: REGISTERED_MENU
+          - kind: KafkaMirrorMaker2
+            menuType: REGISTERED_MENU
+          - kind: KafkaRebalance
+            menuType: REGISTERED_MENU
+        label: Kafka
+        menuType: CONTAINER
+      - innerMenus:
+          - kind: Redis
+            menuType: REGISTERED_MENU
+          - kind: RedisCluster
+            menuType: REGISTERED_MENU
+        label: Redis
+        menuType: CONTAINER
+      - kind: ServiceBinding
+        menuType: REGISTERED_MENU
+    name: DEVELOPER
+  - menus:
+      - innerMenus:
+          - kind: AWX
+            menuType: REGISTERED_MENU
+        label: Ansible
+        menuType: CONTAINER
+    name: BAREMETAL
+showCustomPerspective: false

@@ -9,6 +9,7 @@ spec:
   project: default
 
 global:
+  timeZone: UTC
   cluster: master
   clusterName: in-cluster
   clusterNamespace: default
@@ -23,6 +24,7 @@ global:
     clientid: hypercloud5
   console:
     mcMode: true
+    chatbotEmbed: true
   tls:
     selfsigned:
       enabled: true
@@ -38,6 +40,11 @@ global:
       environment: production
 
 modules:
+  namespace:
+    source:
+      path: manifest/api-gateway/namespace
+
+
   certManager:
     syncWaitTime: 60
     enabled: true

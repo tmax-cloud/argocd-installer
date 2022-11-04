@@ -1,5 +1,5 @@
 {{ $isMaster := eq .Values.global.cluster "master" }}
-{{ if (and .Values.modules.hyperregistry.enabled (not $isMaster)) }}
+{{ if .Values.modules.hyperregistry.enabled }}
 {{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
 {{ $module := "hyperregistry" }}
 apiVersion: argoproj.io/v1alpha1
@@ -17,6 +17,10 @@ spec:
   source:
     helm:
       parameters:
+        - name: global.appName
+          value: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}     
+        - name: global.time_zone
+          value: {{ .Values.global.timeZone }}
         - name: global.registry.is_offline
           value: "{{ .Values.global.network.disabled }}"
         - name: global.registry.private_registry
@@ -27,10 +31,28 @@ spec:
           value: {{ .Values.modules.hyperregistry.core.subdomain }}
         - name: expose.ingress.hosts.notary
           value: {{ .Values.modules.hyperregistry.notary.subdomain }}
+        - name: externalURL
+          value: {{ printf "https://%s.%s" .Values.modules.hyperregistry.core.subdomain .Values.global.domain }}
         - name: storageClass
           value: {{ .Values.modules.hyperregistry.storageClass }}
         - name: storageClassDatabase
           value: {{ .Values.modules.hyperregistry.storageClassDatabase }}
+        - name: OIDC.config.clientId
+          value: {{ ternary "hyperregistry" (printf "%s-hyperregistry" $prefix) $isMaster }}
+        - name: OIDC.config.clientSecret
+          value: {{ include "hyperAuth.tmaxClientSecret" . }}
+        - name: OIDC.config.hyperauthUrl
+          value: {{ include "hyperAuth.domain" . }}
+        - name: OIDC.config.adminGroupName
+          value: {{ ternary "hypercloud5" (printf "%s-hyperregistry" $prefix) $isMaster }}
+        - name: mainsLogLevel
+          value: {{ .Values.modules.hyperregistry.mains.logLevel }}
+        - name: redisLogLevel
+          value: {{ .Values.modules.hyperregistry.redis.logLevel }}
+        - name: databaseLogLevel
+          value: {{ .Values.modules.hyperregistry.database.logLevel }}
+        - name: portalLogLevel
+          value: {{ .Values.modules.hyperregistry.portal.logLevel }}    
     path: manifest/hyperregistry
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}

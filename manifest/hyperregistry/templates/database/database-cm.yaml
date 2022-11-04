@@ -1,0 +1,13 @@
+{{- if eq .Values.redis.type "internal" -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ template "harbor.database" . }}"
+  namespace: {{ .Values.namespace }}
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+data: 
+  initial-loglevel.sql: |
+    ALTER SYSTEM SET log_min_messages = "{{ .Values.databaseLogLevel }}";
+    SELECT pg_reload_conf();
+{{- end -}}

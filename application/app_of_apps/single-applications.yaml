@@ -69,6 +69,51 @@ spec:
           # Hyperregistry에서 postgres의 pvc의 storage class로 변경
           # aws의 경우 efs-sc-999, 그외에는 nfs
           value: nfs
+        - name: modules.gitlab.subdomain
+          # gitlab이 사용할 subdomain으로 변경
+          value: gitlab
+        - name: modules.nfs.server
+          # nfs provisioner가 사용할 nfs server, ex: 192.168.7.16
+          value: 192.168.7.16
+        - name: modules.nfs.path
+          # nfs provisioner가 사용할 nfs server의 path, ex: /mnt/nfs-shared-dir
+          value: /nfs-storage
+        - name: modules.nfs.defaultClass
+          # nfs provisioner를 default storageClass로 설정, ex: default / not
+          value: not
+        - name: modules.cephfs.clusterId
+          # ceph clusterID(fsid)
+          value: 50611be6-33b3-11eb-a5cb-0894ef32cba4
+        - name: modules.cephfs.monitors
+          # ceph monitor들 IP:PORT
+          value: '["192.168.7.16:3300","192.168.7.16:6789","192.168.7.17:3300","192.168.7.17:6789"]'
+          # cephfs csi를 default storageClass로 설정, ex: default / not
+        - name: modules.cephfs.key
+          # ceph admin key, /etc/ceph의 ceph.client.admin.keyring
+          value: AQCeBcZftAEvExAAultsKBpNpiWWGi06Md7mmw==
+        - name: modules.cephfs.defaultClass
+          # cephfs csi를 default storageClass로 설정, ex: default / not
+          value: not
+        - name: modules.rbd.clusterId
+          # ceph clusterID(fsid)
+          value: 50611be6-33b3-11eb-a5cb-0894ef32cba4
+        - name: modules.rbd.monitors
+          # ceph monitor들 IP:PORT
+          value: '["192.168.7.16:3300","192.168.7.16:6789","192.168.7.17:3300","192.168.7.17:6789"]'
+          # cephfs csi를 default storageClass로 설정, ex: default / not
+        - name: modules.rbd.key
+          # ceph admin key, /etc/ceph의 ceph.client.admin.keyring
+          value: AQCeBcZftAEvExAAultsKBpNpiWWGi06Md7mmw==
+        - name: modules.rbd.defaultClass
+          # rbd csi를 default storageClass로 설정, ex: default / not
+          value: not
+        - name: modules.efs.fileSystemId
+          # efs fileSystemId
+          value: fs-0ce741ec0e2ea2fa2
+        - name: modules.efs.defaultClass
+          # efs csi를 default storageClass로 설정, ex: default / not
+          value: not
+
     path: application/helm
     # 환경에 맞게 url 주소 변경 필요
     repoURL: https://github.com/tmax-cloud/argocd-installer

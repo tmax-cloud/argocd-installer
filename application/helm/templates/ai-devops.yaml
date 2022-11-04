@@ -18,6 +18,8 @@ spec:
     directory:
       jsonnet:
         tlas:
+          - name: time_zone
+            value: {{ .Values.global.timeZone }}
           - name: is_offline
             value: "{{ .Values.global.network.disabled }}"
           - name: private_registry
@@ -30,12 +32,12 @@ spec:
             value: {{ .Values.global.domain }}
           - name: notebook_svc_type
             value: {{ .Values.modules.aiDevops.notebookSvcType }}
-          - name: tmax_client_secret
-            value: {{ .Values.global.keycloak.tmaxClientSecret }}
-          - name: hyperauth_url
-            value: {{ .Values.global.keycloak.domain }}
           - name: console_subdomain
             value: "{{ .Values.modules.gatewayBootstrap.console.subdomain }}"
+          - name: hyperauth_url
+            value: {{ include "hyperAuth.domain" . }}
+          - name: tmax_client_secret
+            value: {{ include "hyperAuth.tmaxClientSecret" . }}
     path: manifest/ai-devops
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}

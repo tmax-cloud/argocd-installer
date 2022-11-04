@@ -151,7 +151,8 @@ console:
     hyperauth: hyperauth.org
     realm: tmax
     clientid: hypercloud5
-  mcMode: false
+  mcMode: true
+  chatbotEmbed: true
 
 ingressroute:
   enabled: true
