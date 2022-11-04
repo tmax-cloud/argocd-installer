@@ -8,6 +8,7 @@ function (
   domain="tmaxcloud.org",
   hyperauth_subdomain="hyperauth",
   console_subdomain="console",
+  kubectl_timeout="21600",
   storageClass="default",
   aws_enabled="true",
   vsphere_enabled="true",

@@ -8,6 +8,7 @@ function (
   domain="tmaxcloud.org",
   hyperauth_subdomain="hyperauth",
   console_subdomain="console",
+  kubectl_timeout="21600",
   storageClass="default",
   aws_enabled="true",
   vsphere_enabled="true",
@@ -64,7 +65,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
           "containers": [
             {
               "name": "hypercloud5-api-server",
-              "image": std.join("", [ target_registry, "docker.io/tmaxcloudck/hypercloud-api-server:b5.0.34.2" ]),
+              "image": std.join("", [ target_registry, "docker.io/tmaxcloudck/hypercloud-api-server:b5.0.35.0" ]),
               "imagePullPolicy": "IfNotPresent",
               "args": [
                 std.join("", ["--log-level=", api_server_log_level])
@@ -101,6 +102,10 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 {
                   "name": "CONSOLE_SUBDOMAIN",
                   "value": console_subdomain
+                },
+                {
+                  "name": "KUBECTL_TIMEOUT",
+                  "value": kubectl_timeout
                 },
               ],
               "ports": [
