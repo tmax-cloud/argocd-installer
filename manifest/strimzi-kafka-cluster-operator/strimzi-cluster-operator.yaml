@@ -13108,6 +13108,8 @@ spec:
                 pause:
                   type: boolean
                   description: Whether the connector should be paused. Defaults to false.
+              required:
+              - class
               description: The specification of the Kafka Connector.
             status:
               type: object
