@@ -35,7 +35,7 @@ spec:
           - name: hyperauth_subdomain
             value: {{ include "hyperAuth.subdomain" . }}
           - name: kubectl_timeout
-            value: {{ .Values.modules.hyperCloud.kubectl.timeout }}
+            value: "{{ .Values.modules.hyperCloud.kubectl.timeout }}"
           - name: storageClass
             value: {{ .Values.modules.hyperCloud.storageClass }}
           - name: aws_enabled
