@@ -275,8 +275,8 @@ local admin_info = if is_master_cluster == "true" then "" else "admin_user = " +
 		  "auth.generic_oauth": {
 			"enabled": true,
 			"allow_sign_up": true,
-			"client_id": "grafana",
-			"client_secret": tmax_client_secret,
+			"client_id": std.join("",[client_id])
+			"client_secret": std.join("",[tmax_client_secret]),
 			"scopes": "openid profile email",
 			"email_attribute_path": "email",
 			"auth_url": std.join("", ["https://", keycloak_addr, "/auth/realms/tmax/protocol/openid-connect/auth" ]),
