@@ -161,6 +161,9 @@ webhooks:
       - key: webhook
         operator: NotIn 
         values: ["false"]
+      - key: hypercloud
+        operator: NotIn
+        values: ["system"]
     objectSelector:
       matchExpressions:
       - key: hypercloud5
