@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gitea-ingress
+  namespace: gitea-system
+  labels:
+    ingress.tmaxcloud.org/name: gitea
+  annotations:
+    cert-manager.io/cluster-issuer: tmaxcloud-issuer
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+
+spec:
+  ingressClassName: tmax-cloud
+  {{- if .Values.tls.enabled }}
+  tls:
+  - hosts:
+    - {{ .Values.ingress.hosts.subdomain }}.{{ .Values.ingress.hosts.domain }}
+  {{- end }}
+  rules:
+  - host: {{ .Values.ingress.hosts.subdomain }}.{{ .Values.ingress.hosts.domain }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: gitea-http
+            port:
+              number: 3000
