@@ -60,3 +60,9 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{- define "console.subdomain" -}}
+{{- if and (ne .Values.tls.consoleSubdomain "") (ne .Values.tls.consoleSubdomain "console") -}}
+- "{{ printf "https://%s.%s" .Values.tls.consoleSubdomain .Values.tls.domain }}"
+{{- end -}}
+{{- end -}}

@@ -51,6 +51,8 @@ spec:
           value: {{ .Values.global.domain }}
         - name: tls.selfsigned.enabled
           value: "false"
+        - name: tls.consoleSubdomain
+          value: {{ .Values.modules.console.subdomain | default "console" }}
       {{- else if .Values.global.tls.selfsigned.enabled }}
         - name: tls.selfsigned.enabled
           value: "true"
