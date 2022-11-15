@@ -202,7 +202,7 @@ spec:
           EOT
           # Add keycloak
           {{- if .Values.keycloak.enabled }}
-            kubectl get secret {{ .Values.keycloak.secret }} -o jsonpath='{.data.tls\.crt}' | base64 -d > /tmp/shared/keycloak.pem
+            kubectl -n hyperauth get secret {{ .Values.keycloak.secret }} -o jsonpath='{.data.tls\.crt}' | base64 -d > /tmp/shared/keycloak.pem
             cat <<EOY >> /tmp/shared/omnibus.env
             gitlab_rails['omniauth_enabled'] = true
             gitlab_rails['omniauth_allow_single_sign_on'] = ['oauth2_generic']
