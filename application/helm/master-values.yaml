@@ -30,6 +30,8 @@ modules:
     # default를 사용하지 않고 싶은 경우에는 storage class이름을 기입
     # 미리 설치된 gitlab과 sync해야 하는 경우 default storageclass는 사용할 수 없음    
       storageClassName: "nfs"
+    oidc:
+      enabled: true
 
   ### gateway-bootstrap
   gatewayBootstrap:
