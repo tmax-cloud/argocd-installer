@@ -33,6 +33,11 @@ modules:
     oidc:
       enabled: true
 
+  ### gitea
+  gitea:
+    enabled: true
+    subdomain: gitea
+
   ### gateway-bootstrap
   gatewayBootstrap:
     enabled: true

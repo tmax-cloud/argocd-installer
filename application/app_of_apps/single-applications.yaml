@@ -72,6 +72,9 @@ spec:
         - name: modules.gitlab.subdomain
           # gitlab이 사용할 subdomain으로 변경
           value: gitlab
+        - name: modules.gitea.subdomain
+          # gitea가 사용할 subdomain으로 변경
+          value: gitea
         - name: modules.nfs.server
           # nfs provisioner가 사용할 nfs server, ex: 192.168.7.16
           value: 192.168.7.16
