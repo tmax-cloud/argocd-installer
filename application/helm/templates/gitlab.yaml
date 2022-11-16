@@ -33,6 +33,13 @@ spec:
           value: {{ .Values.modules.gitlab.pvc.storage }}
         - name: pvc.storageClassName
           value: {{ .Values.modules.gitlab.pvc.storageClassName }}
+        ## oidc 
+        - name: keycloak.enabled
+          value: "{{ .Values.modules.gitlab.oidc.enabled }}"
+        - name: keycloak.url
+          value: https://{{ include "hyperAuth.domain" . }}
+        - name: keycloak.client_secret
+          value: {{ include "hyperAuth.tmaxClientSecret" . }}
     path: manifest/gitlab
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
