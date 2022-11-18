@@ -173,7 +173,7 @@ modules:
     subdomain: grafana
     pvcSize: 10Gi
     operator: 
-      version: v0.0.9
+      version: v0.0.10
       imageRepo: docker.io/tmaxcloudck/grafana-operator
     grafana:
       version: "8.2.2"
