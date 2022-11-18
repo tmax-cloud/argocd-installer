@@ -6,7 +6,7 @@ function (
 	kube_rbac_proxy_image_repo="gcr.io/kubebuilder/kube-rbac-proxy",
 	kube_rbac_proxy_version="v0.8.0",
 	grafana_operator_image_repo="docker.io/tmaxcloudck/grafana-operator",
-	grafana_operator_version="v0.0.9",
+	grafana_operator_version="v0.0.10",
 	grafana_image_repo="docker.io/grafana/grafana",
 	grafana_image_version="8.2.2",
 	grafana_init_image_repo="quay.io/grafana-operator/grafana_plugins_init",
