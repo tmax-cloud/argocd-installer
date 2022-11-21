@@ -1,7 +1,7 @@
 function (
   is_offline = "false",
   private_registry= "registry.tmaxcloud.org",
-  helm_apiserver_version = "0.0.4",
+  helm_apiserver_version = "0.0.5",
   storage_class= "default",
   helm_subdomain="helm",
   hypercloud_domain_host="tmaxcloud.org",
