@@ -17,6 +17,8 @@ spec:
   source:
     helm:
       parameters:
+        - name: global.appName
+          value: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}     
         - name: global.time_zone
           value: {{ .Values.global.timeZone }}
         - name: global.registry.is_offline
@@ -43,6 +45,14 @@ spec:
           value: {{ include "hyperAuth.domain" . }}
         - name: OIDC.config.adminGroupName
           value: {{ ternary "hypercloud5" (printf "%s-hyperregistry" $prefix) $isMaster }}
+        - name: mainsLogLevel
+          value: {{ .Values.modules.hyperregistry.mains.logLevel }}
+        - name: redisLogLevel
+          value: {{ .Values.modules.hyperregistry.redis.logLevel }}
+        - name: databaseLogLevel
+          value: {{ .Values.modules.hyperregistry.database.logLevel }}
+        - name: portalLogLevel
+          value: {{ .Values.modules.hyperregistry.portal.logLevel }}    
     path: manifest/hyperregistry
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}

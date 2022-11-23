@@ -65,7 +65,7 @@ spec:
               value: "{{ template "harbor.noProxy" . }}"
           {{- end }}
             - name: "SCANNER_LOG_LEVEL"
-              value: {{ .Values.logLevel | quote }}
+              value: {{ .Values.mainsLogLevel  | quote }}
             - name: "SCANNER_TRIVY_CACHE_DIR"
               value: "/home/scanner/.cache/trivy"
             - name: "SCANNER_TRIVY_REPORTS_DIR"
@@ -196,7 +196,9 @@ spec:
     {{- end }}
 {{- if and .Values.persistence.enabled (not $trivy.existingClaim) }}
   volumeClaimTemplates:
-  - metadata:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
       name: data
       labels:
 {{ include "harbor.labels" . | indent 8 }}

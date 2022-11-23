@@ -17,6 +17,7 @@ kind: Namespace
 metadata:
   name: tekton-pipelines
   labels:
+    hypercloud: system
     app.kubernetes.io/instance: default
     app.kubernetes.io/part-of: tekton-pipelines
 

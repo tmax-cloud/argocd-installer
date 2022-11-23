@@ -6,6 +6,7 @@ backoff:
   maxDuration: "3m0s"
 {{ end -}}
 
+# hyperauth.domain.com
 {{- define "hyperAuth.domain" -}}
 {{- if .Values.global.masterSingle.enabled -}}
 {{- .Values.global.masterSingle.hyperAuthDomain -}}
@@ -22,6 +23,7 @@ backoff:
 {{- end -}}
 {{- end -}}
 
+# hyperauth
 {{- define "hyperAuth.subdomain" -}}
 {{- if .Values.global.masterSingle.enabled -}}
 {{- (split "." .Values.global.masterSingle.hyperAuthDomain)._0 -}}

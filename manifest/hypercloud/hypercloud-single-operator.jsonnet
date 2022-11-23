@@ -8,6 +8,7 @@ function (
   domain="tmaxcloud.org",    
   hyperauth_subdomain="hyperauth",
   console_subdomain="console",
+  kubectl_timeout="21600",
   storageClass="default",
   aws_enabled="true",
   vsphere_enabled="true",
@@ -66,7 +67,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "command": [
               "/manager"
             ],
-            "image": std.join( "", [ target_registry, "docker.io/tmaxcloudck/hypercloud-single-operator:b5.0.34.0" ]),
+            "image": std.join( "", [ target_registry, "docker.io/tmaxcloudck/hypercloud-single-operator:b5.0.36.0" ]),
             "name": "manager",
             "ports": [
               {

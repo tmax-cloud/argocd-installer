@@ -20,7 +20,7 @@ global:
   masterSingle:
     enabled: true
     # master cluster의 hyperauth domain을 적는다. 
-    # 해당 hyperauth subdomain은 single-values와 master-values의 hyperauth subdomain에 override된다. 
+    # 다음 hyperauth subdomain은 single-values와 master-values의 hyperauth subdomain보다 우선순위가 높다. 
     hyperAuthDomain: "hyperauth.testdomain.com"
     tmaxClientSecret: tmax_client_secret
 

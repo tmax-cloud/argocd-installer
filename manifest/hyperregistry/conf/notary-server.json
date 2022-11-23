@@ -10,7 +10,7 @@
     "key_algorithm": "ecdsa"
   },
   "logging": {
-    "level": "{{ .Values.logLevel }}"
+    "level": "{{ .Values.mainsLogLevel  }}"
   },
   "storage": {
     "backend": "postgres",

@@ -25,7 +25,9 @@ serviceAccounts:
 #     monitors:
 #       - "<MONValue1>"
 #       - "<MONValue2>"
-csiConfig: []
+# edit
+#csiConfig: []
+csiConfig: string
 
 # Configuration for the encryption KMS
 # Ref: https://github.com/ceph/ceph-csi/blob/devel/docs/deploy-rbd.md
@@ -47,6 +49,7 @@ encryptionKMSConfig: {}
 logLevel: 0
 
 # Set timeZone # UTC (default),  # Asia/Seoul
+# edit
 timeZone: UTC
 
 nodeplugin:
@@ -238,6 +241,12 @@ topology:
 storageClass:
   # Specifies whether the storageclass should be created
   create: true
+  
+  # Set StorageClass as the default StorageClass
+  # Ignored if storageClass.create is false
+  # edit
+  defaultClass: false
+
   name: csi-rbd-sc
   # (required) String representing a Ceph cluster to provision storage from.
   # Should be unique across all Ceph clusters in use for provisioning,
@@ -347,12 +356,13 @@ storageClass:
 
 secret:
   # Specifies whether the secret should be created
-  create: false
+  create: true
   name: csi-rbd-secret
   # Key values correspond to a user name and its key, as defined in the
   # ceph cluster. User ID should have required access to the 'pool'
   # specified in the storage class
-  userID: <plaintext ID>
+  # edit
+  userID: admin
   userKey: <Ceph auth key corresponding to userID above>
   # Encryption passphrase
   encryptionPassphrase: test_passphrase

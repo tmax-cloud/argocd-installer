@@ -52,6 +52,7 @@ traefik:
 
 tls:
   domain: tmaxcloud.test
+  consoleSubdomain: console
   acme:
     enabled: false
     email: email

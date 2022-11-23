@@ -21,6 +21,11 @@ spec:
           value: {{ .Values.modules.nfs.server }}
         - name: nfs.path
           value: {{ .Values.modules.nfs.path }}
+        {{- if eq .Values.modules.nfs.defaultClass "default" }}
+        - name: storageClass.defaultClass
+          value: "true"
+          forceString: true
+        {{- end }}
         - name: timeZone
           value: {{ .Values.global.timeZone }}
         {{- if .Values.global.network.disabled }}

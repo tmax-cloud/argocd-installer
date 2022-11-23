@@ -20,6 +20,12 @@ ingress:
     domain: testdomain.com
     subdomain: gitlab
 
+keycloak:
+  enabled: false
+  url: http://keycloak.testdomain.com
+  secret: hyperauth-https-secret
+  client: gitlab
+  client_secret: tmax_client_secret
 image:
   kube:
     repo: docker.io/bitnami/kubectl

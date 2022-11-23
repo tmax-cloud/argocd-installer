@@ -9,6 +9,10 @@ metadata:
      chart: {{ include "ceph-csi-cephfs.chart" . }}
      release: {{ .Release.Name }}
      heritage: {{ .Release.Service }}
+   annotations:
+   {{- if .Values.storageClass.defaultClass }}
+     storageclass.kubernetes.io/is-default-class: "true"
+   {{- end }}
 provisioner: {{ .Values.driverName }}
 parameters:
   clusterID: {{ .Values.storageClass.clusterID }}

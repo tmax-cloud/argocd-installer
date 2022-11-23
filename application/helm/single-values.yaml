@@ -27,6 +27,13 @@ modules:
     # default로 주는 경우 default storage class를 사용
     # default를 사용하지 않고 싶은 경우에는 storage class이름을 기입
       storageClassName: "default"
+    oidc:
+      enabled: true
+
+  ###gitea
+  gitea:
+    enabled: true
+    subdomain: gitea
       
   ### gateway-bootstrap
   gatewayBootstrap:
@@ -233,7 +240,7 @@ modules:
   ### helm-apiserver
   helmApiserver:
     enabled: false
-    version: 0.0.4
+    version: 0.0.5
     subdomain: helm
     # default로 주는 경우 default storage class를 사용
     # default를 사용하지 않고 싶은 경우에는 storage class이름을 기입
@@ -248,6 +255,8 @@ modules:
     mode: multi
     kafka:
       enabled: false
+    kubectl:
+      timeout: 21600
     # master cluster를 위한 value, 수정 X
     storageClass: default
     
@@ -291,6 +300,18 @@ modules:
       subdomain: hyperregistry
     notary:
       subdomain: hyperregistry-notary
+      # core, chartmuseum, jobservice, notary-server, notary-signer, registry, trivy의 경우 다음 아래의 로그레벨 설정으로 debug, info, warning, error, fatal 기입 가능 (대소문자 유의)
+    mains:
+      logLevel: info
+    # redis의 경우 debug, verbose, notice, warning 기입 가능 (대소문자 유의, warning은 error 급) 
+    redis:
+      logLevel: warning
+    # database(postgres)의 경우 DEBUG5, DEBUG4, DEBUG3, DEBUG2, DEBUG1, INFO, NOTICE, WARNING, ERROR, LOG, FATAL, PANIC 기입 가능(대소문자 유의)
+    database:
+      logLevel: ERROR
+    # portal의 경우 debug, info, notice, warn, error, crit, alert, emerg 기입 가능 (대소문자 유의)
+    portal:
+      logLevel: error
     storageClass: nfs
     storageClassDatabase: nfs
 
@@ -315,6 +336,8 @@ modules:
   ### image validating webhook
   imageValidatingWebhook:
     enabled: false
+    # debug, info, error 기입 가능 (대소문자 유의)
+    logLevel: error
 
   ### ai-devops
   # 해당 모듈 제외 
@@ -335,17 +358,37 @@ modules:
     server: 192.168.7.16
     # nfs provisioner가 사용할 nfs server의 path, ex: /mnt/nfs-shared-dir
     path: /nfs-storage
+    # nfs provisioner를 default storageClass로 설정
+    defaultClass: not
 
   ### ceph-csi-cephfs
   cephfs:
     enabled: false
-    # 사용 위해 ceph-csi namespace에 configmap(csi-config-map), secret(csi-cephfs-secret) 생성 필요
-    # csi-config-map 에서 명시한 clusterID(fsid)
+    # ceph clusterID(fsid)
     clusterId: 50611be6-33b3-11eb-a5cb-0894ef32cba4
+    # ceph monitor들 IP:PORT
+    monitors: '["192.168.7.16:3300","192.168.7.16:6789","192.168.7.17:3300","192.168.7.17:6789"]'
+    # ceph admin key, /etc/ceph의 ceph.client.admin.keyring
+    key: AQCeBcZftAEvExAAultsKBpNpiWWGi06Md7mmw==
+    # cephfs csi를 default storageClass로 설정, ex: default / not
+    defaultClass: not
 
   ### ceph-csi-rbd
   rbd:
     enabled: false
-    # 사용 위해 ceph-csi namespace에 configmap(csi-config-map), secret(csi-rbd-secret) 생성 필요
-    # csi-config-map 에서 명시한 clusterID(fsid)
+    # ceph clusterID(fsid)
     clusterId: 50611be6-33b3-11eb-a5cb-0894ef32cba4
+    # ceph monitor들 IP:PORT
+    monitors: '["192.168.7.16:3300","192.168.7.16:6789","192.168.7.17:3300","192.168.7.17:6789"]'
+    # ceph admin key, /etc/ceph의 ceph.client.admin.keyring
+    key: AQCeBcZftAEvExAAultsKBpNpiWWGi06Md7mmw==
+    # rbd csi를 default storageClass로 설정, ex: default / not
+    defaultClass: not
+  
+  ### efs-csi
+  efs:
+    enabled: false
+    # efs ID
+    fileSystemId: fs-0ce741ec0e2ea2fa2
+    # efs csi를 default storageClass로 설정, ex: default / not
+    defaultClass: not

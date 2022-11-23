@@ -2,6 +2,8 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: gitlab-system
+  labels:
+    hypercloud: system
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -148,7 +150,7 @@ spec:
       initContainers:
       - name: parse-svc
         {{- if .Values.global.registry.is_offline }}
-        image: "{{ .Values.global.private_registry }}/{{ .Values.image.kube.repo }}:{{ .Values.image.kube.tag }}"
+        image: "{{ .Values.global.registry.private_registry }}/{{ .Values.image.kube.repo }}:{{ .Values.image.kube.tag }}"
         {{- else }}
         image: "{{ .Values.image.kube.repo }}:{{ .Values.image.kube.tag }}"
         {{- end }}
@@ -198,6 +200,39 @@ spec:
           gitlab_rails['initial_root_password'] = "password"
           nginx['ssl_protocols'] = "TLSv1.1"
           EOT
+          # Add keycloak
+          {{- if .Values.keycloak.enabled }}
+            kubectl -n hyperauth get secret {{ .Values.keycloak.secret }} -o jsonpath='{.data.tls\.crt}' | base64 -d > /tmp/shared/keycloak.pem
+            cat <<EOY >> /tmp/shared/omnibus.env
+            gitlab_rails['omniauth_enabled'] = true
+            gitlab_rails['omniauth_allow_single_sign_on'] = ['oauth2_generic']
+            gitlab_rails['omniauth_block_auto_created_users'] = false
+            gitlab_rails['omniauth_providers'] = [
+            {
+                    'name' => 'oauth2_generic',
+                    'issuer' => '{{ .Values.keycloak.url }}',
+                    'app_id' => '{{ .Values.keycloak.client }}',
+                    'app_secret' => '{{ .Values.keycloak.client_secret }}',
+                    'discovery' => true,
+                    'args' => {
+                    client_options: {
+                            'site' => '{{ .Values.keycloak.url }}',
+                            'user_info_url' => '/auth/realms/tmax/protocol/openid-connect/userinfo',
+                            'authorize_url' => '/auth/realms/tmax/protocol/openid-connect/auth',
+                            'token_url' => '/auth/realms/tmax/protocol/openid-connect/token',
+                            'redirect_uri' => "{{ .Values.externalURL }}/users/auth/oauth2_generic/callback",
+                    },
+                    user_response_structure: {
+                    attributes: { email:'email', first_name:'given_name', last_name:'family_name', name:'name', nickname:'preferred_username' },
+                    id_path: 'preferred_username'
+                    },
+                    }
+            }
+            ]
+            EOY          
+          {{- end }}
+
+
       containers:
       - name: gitlab
         {{- if or (eq .Values.pvc.storageClassName "default") (eq .Values.pvc.storageClassName "nfs") }}
@@ -205,7 +240,7 @@ spec:
           privileged: true
         {{- end }}
         {{- if .Values.global.registry.is_offline }}
-        image: "{{ .Values.global.private_registry }}/{{ .Values.image.gitlab.repo }}:{{ .Values.image.gitlab.tag }}"
+        image: "{{ .Values.global.registry.private_registry }}/{{ .Values.image.gitlab.repo }}:{{ .Values.image.gitlab.tag }}"
         {{- else }}
         image: "{{ .Values.image.gitlab.repo }}:{{ .Values.image.gitlab.tag }}"
         {{- end }}
