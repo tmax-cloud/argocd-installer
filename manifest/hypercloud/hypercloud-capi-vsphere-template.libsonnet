@@ -142,7 +142,11 @@
       "kind": "KubeadmControlPlane",
       "metadata": {
         "name": "${ClusterName}-control-plane",
-        "namespace": "${Namespace}"
+        "namespace": "${Namespace}",
+        "labels": {
+          "cluster.tmax.io/cluster-name": "${ClusterName}",
+          "cluster.tmax.io/controlplane": "controlplane"
+        }
       },
       "spec": {
         "infrastructureTemplate": {
@@ -268,7 +272,8 @@
       "kind": "MachineDeployment",
       "metadata": {
         "labels": {
-          "cluster.x-k8s.io/cluster-name": "${ClusterName}"
+          "cluster.tmax.io/cluster-name": "${ClusterName}",
+          "cluster.tmax.io/worker": "worker"
         },
         "name": "${ClusterName}-md-0",
         "namespace": "${Namespace}"
@@ -394,7 +399,7 @@
         "namespace": "${Namespace}"
       },
       "stringData": {
-        "data": "apiVersion: v1\nkind: Secret\nmetadata:\n  name: csi-vsphere-config\n  namespace: kube-system\nstringData:\n  csi-vsphere.conf: |+\n    [Global]\n    cluster-id = \"${Namespace}/${ClusterName}\"\n    [VirtualCenter \"${VcenterIp}\"]\n    insecure-flag = \"true\"\n    user = \"${VcenterId}\"\n    password = \"${VcenterPassword}\"\n    datacenters = \"${VcenterDataCenter}\"\n    [Network]\n    public-network = \"${VcenterNetwork}\"\ntype: Opaque\n"
+        "data": "apiVersion: v1\nkind: Secret\nmetadata:\n  name: csi-vsphere-config\n  namespace: kube-system\nstringData:\n  csi-vsphere.conf: |+\n    [Global]\n    cluster-id = \"${Namespace}/${ClusterName}\"\n\n    [VirtualCenter \"${VcenterIp}\"]\n    insecure-flag = \"true\"\n    user = \"${VcenterId}\"\n    password = \"${VcenterPassword}\"\n    datacenters = \"${VcenterDataCenter}\"\n\n    [Network]\n    public-network = \"${VcenterNetwork}\"\n\ntype: Opaque\n"
       },
       "type": "addons.cluster.x-k8s.io/resource-set"
     },
