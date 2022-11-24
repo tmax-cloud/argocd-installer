@@ -71,6 +71,10 @@
         "name": "${ClusterName}-control-plane",
         "namespace": "default"
       },
+      "labels": {
+        "cluster.tmax.io/cluster-name": "${ClusterName}",
+        "cluster.tmax.io/controlplane": "controlplane"
+      },
       "spec": {
         "infrastructureTemplate": {
           "apiVersion": "infrastructure.cluster.x-k8s.io/v1alpha3",
@@ -137,7 +141,10 @@
           "spec": {
             "iamInstanceProfile": "control-plane.cluster-api-provider-aws.sigs.k8s.io",
             "instanceType": "${MasterType}",
-            "sshKeyName": "${SshKey}"
+            "sshKeyName": "${SshKey}",
+            "rootVolume": {
+              "size": "${MasterDiskSize}"
+            }
           }
         }
       }
@@ -147,7 +154,11 @@
       "kind": "MachineDeployment",
       "metadata": {
         "name": "${ClusterName}-md-0",
-        "namespace": "default"
+        "namespace": "default",
+        "labels": {
+          "cluster.tmax.io/cluster-name": "${ClusterName}",
+          "cluster.tmax.io/worker": "worker"
+        }
       },
       "spec": {
         "clusterName": "${ClusterName}",
@@ -185,7 +196,10 @@
           "spec": {
             "iamInstanceProfile": "nodes.cluster-api-provider-aws.sigs.k8s.io",
             "instanceType": "${WorkerType}",
-            "sshKeyName": "${SshKey}"
+            "sshKeyName": "${SshKey}",
+            "rootVolume": {
+              "size": "${WorkerDiskSize}"
+            }
           }
         }
       }
@@ -300,6 +314,22 @@
       "required": false,
       "value": "t3.large",
       "valueType": "string"
+    },
+    {
+      "description": "Master nodes disk type",
+      "displayName": "MasterDiskSize",
+      "name": "MasterDiskSize",
+      "required": false,
+      "value": 20,
+      "valueType": "number"
+    },
+    {
+      "description": "Worker nodes disk type",
+      "displayName": "WorkerDiskSize",
+      "name": "WorkerDiskSize",
+      "required": false,
+      "value": 20,
+      "valueType": "number"
     },
     {
       "description": "HyperAuth url for open id connect",

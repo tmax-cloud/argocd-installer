@@ -34,6 +34,7 @@ function (
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
 local capi_aws_template = import 'hypercloud-capi-aws-template.libsonnet';
 local capi_vsphere_template = import 'hypercloud-capi-vsphere-template.libsonnet';
+local capi_vsphere_upgrade_template = import 'hypercloud-capi-vsphere-upgrade-template.libsonnet';
 
 [
   {
@@ -84,7 +85,7 @@ local capi_vsphere_template = import 'hypercloud-capi-vsphere-template.libsonnet
                   "value": hyperauth_subdomain
                 },
               ],
-              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-multi-operator:b5.0.34.5"]),
+              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-multi-operator:b5.0.37.1"]),
               "name": "manager",
               "ports": [
                 {
@@ -191,5 +192,6 @@ local capi_vsphere_template = import 'hypercloud-capi-vsphere-template.libsonnet
 ] + (if aws_enabled == "true" then [
   capi_aws_template
 ] else []) + (if vsphere_enabled == "true" then [
-  capi_vsphere_template
+  capi_vsphere_template,
+  capi_vsphere_upgrade_template,
 ] else [])
