@@ -32,7 +32,7 @@ modules:
 
   ###gitea
   gitea:
-    enabled: true
+    enabled: false
     subdomain: gitea
       
   ### gateway-bootstrap
