@@ -339,18 +339,6 @@ modules:
     # debug, info, error 기입 가능 (대소문자 유의)
     logLevel: error
 
-  ### ai-devops
-  # 해당 모듈 제외 
-  aiDevops:
-    enabled: false
-    namespace: "kubeflow"
-    knativeNamespace: "knative-serving"
-    notebookSvcType: "Ingress"
-  job:
-      imagePullSecrets: []
-#      imagePullSecrets:
-#        - name: regcred
-
   ### nfs-subdir-external-provisioner
   nfs:
     enabled: true
