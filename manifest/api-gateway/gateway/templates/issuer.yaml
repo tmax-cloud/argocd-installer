@@ -5,9 +5,9 @@ kind: Issuer
 metadata:
 {{- with .Values.tls.acme }}
   name: {{ .dns.type }}-letsencrypt-staging
-  annotations:
-    "helm.sh/hook": post-install,post-upgrade
-    "helm.sh/hook-weight": "10"
+  # annotations:
+  #   "helm.sh/hook": post-install,post-upgrade
+  #   "helm.sh/hook-weight": "10"
 {{/*    "helm.sh/hook-delete-policy": before-hook-creation*/}}
 spec:
   acme:
@@ -46,9 +46,9 @@ kind: Issuer
 {{- with .Values.tls.acme }}
 metadata:
   name: {{ .dns.type }}-letsencrypt-production
-  annotations:
-    "helm.sh/hook": post-install,post-upgrade
-    "helm.sh/hook-weight": "10"
+  # annotations:
+  #   "helm.sh/hook": post-install,post-upgrade
+  #   "helm.sh/hook-weight": "10"
 {{/*    "helm.sh/hook-delete-policy": before-hook-creation*/}}
 spec:
   acme:

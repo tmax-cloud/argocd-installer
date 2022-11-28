@@ -72,16 +72,16 @@ metadata:
     helm.sh/chart: {{ template "gateway.chart" . }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/instance: {{ .Release.Name }}
-  annotations:
-    "helm.sh/hook": pre-install,pre-upgrade
-    "helm.sh/hook-weight": "0"
+  # annotations:
+  #   "helm.sh/hook": pre-install,pre-upgrade
+  #   "helm.sh/hook-weight": "0"
 spec:
   secretName: selfsigned-ca
   commonName: tmax-cloud
   subject:
     organizations:
       - "tmax-cloud"
-  isCA: false
+  # isCA: false
   usages:
     - digital signature
     - key encipherment

@@ -4,9 +4,9 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: {{ .Values.tls.acme.dns.type }}-acme-crt
-  annotations:
-    "helm.sh/hook": post-install,post-upgrade
-    "helm.sh/hook-weight": "15"
+  # annotations:
+  #   "helm.sh/hook": post-install,post-upgrade
+  #   "helm.sh/hook-weight": "15"
 {{/*    "helm.sh/hook-delete-policy": before-hook-creation*/}}
 spec:
   secretName: {{ .Values.tls.acme.dns.type }}-acme-crt-secret
@@ -23,10 +23,10 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  annotations:
-    "helm.sh/hook": post-install,post-upgrade
-    "helm.sh/hook-weight": "15"
-    "helm.sh/hook-delete-policy": before-hook-creation
+  # annotations:
+  #   "helm.sh/hook": post-install,post-upgrade
+  #   "helm.sh/hook-weight": "15"
+  #   "helm.sh/hook-delete-policy": before-hook-creation
   name: selfsigned-crt
 spec:
   secretName: selfsigned-crt-secret
@@ -34,7 +34,7 @@ spec:
   subject:
     organizations:
       - "tmax-cloud"
-  isCA: false
+  # isCA: false
   usages:
     - digital signature
     - key encipherment
