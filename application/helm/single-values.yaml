@@ -28,7 +28,7 @@ modules:
     # default를 사용하지 않고 싶은 경우에는 storage class이름을 기입
       storageClassName: "default"
     oidc:
-      enabled: true
+      enabled: false
 
   ###gitea
   gitea:
