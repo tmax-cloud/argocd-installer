@@ -48,7 +48,7 @@ spec:
                     description: Specify whether the ConfigMap or its key must be
                       defined
                     type: boolean
-                required:
+                required:s
                 - key
                 type: object
               customFolderName:
