@@ -1,0 +1,131 @@
+name: Verify
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+  # workflow 수동 세팅 
+  workflow_dispatch:
+    inputs:
+      application: 
+        description: 'master/single-applications 사용 여부'
+        default: master
+        type: choice
+        options:
+        - master
+        - single
+        required: true
+      test_range:
+        description: '모든 모듈에 대해 테스트 여부'
+        default: All
+        type: choice
+        options:
+        - All
+        - Only modules specified in the app
+        required: false
+      
+# job
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      ARGOCD_VERSION: v2.2.5 
+      ARGOCD_CLI_VERSION: v2.5.2
+      K8S_VERSION: v1.22.15
+      APPLICATION: ${{ github.event.inputs.application || 'master' }}-applications
+      # 사용하고 있는 모듈 list를 명시 
+      MODULE_LIST: | 
+        calico gitlab gitea gatewayBootstrap strimziKafka serviceBinding hyperAuth argocd opensearch loki prometheus grafanaOperator
+        serviceMesh.istio serviceMesh.jaeger serviceMesh.kiali capi capi.providers.aws capi.providers.vsphere tsb catalogController
+        helmApiserver hyperCloud hyperregistry tektonPipeline tektonTrigger cicd redis imageValidatingWebhook nfs cephfs rbd efs
+
+    steps:
+      - uses: actions/checkout@master
+      - name: Create k8s Kind Cluster
+
+        uses: helm/kind-action@v1.3.0
+        with: 
+          cluster_name: argocd-testing
+          kubectl_version: ${{ env.K8S_VERSION }}
+          node_image: kindest/node:${{ env.K8S_VERSION }}
+
+      - name: Install Argocd
+        run: |
+          kubectl create namespace argocd;
+          kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/$ARGOCD_VERSION/manifests/install.yaml;
+          kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "NodePort"}}';
+
+      - name: Install Argocd cli
+        run: |
+          curl -sL -o argocd https://github.com/argoproj/argo-cd/releases/download/$ARGOCD_CLI_VERSION/argocd-linux-amd64;
+          chmod +x argocd;
+          sudo mv argocd /usr/local/bin/argocd;
+
+      - name: Login to Argocd 
+        uses: nick-fields/retry@v2
+        with:
+          timeout_seconds: 10
+          max_attempts: 10
+          command: |
+            PASSWORD=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d);
+            NODEPORT=$(kubectl get svc -n argocd argocd-server -o jsonpath={.spec.ports[?\(@.port==80\)].nodePort});
+            NODE_IP=$(kubectl get nodes -o jsonpath={.items[0].status.addresses[?\(@.type==\"InternalIP\"\)].address});
+            argocd login $NODE_IP:$NODEPORT --insecure --username=admin --password=$PASSWORD;
+  
+      - name: Deploy root application
+        run: |
+          kubectl apply -f application/app_of_apps/.;
+
+      - name: Set essential params to root application
+        uses: nick-fields/retry@v2
+        with:
+          timeout_seconds: 20
+          max_attempts: 5
+          command: |
+            REPO=$(echo $GITHUB_REPOSITORY | cut -d '/' -f2)
+            REPO=$GITHUB_SERVER_URL/$GITHUB_ACTOR/$REPO
+            BRANCH=$GITHUB_HEAD_REF 
+            if [ "$BRANCH" = "" ]
+            then
+                BRANCH=$GITHUB_REF_NAME;
+            fi
+            echo Repository=$REPO;
+            echo Branch=$BRANCH;
+
+            argocd app set $APPLICATION --repo=$REPO;
+            argocd app set $APPLICATION --revision=$BRANCH;
+            argocd app set $APPLICATION --parameter spec.source.repoURL=$REPO;
+            argocd app set $APPLICATION --parameter spec.source.targetRevision=$BRANCH;
+            argocd app set $APPLICATION --parameter global.clusterName=in-cluster;
+            argocd app set $APPLICATION --parameter global.clusterNamespace=default;
+
+      # 모든 모듈에 대해서 test할지 여부
+      - name: Enabled all modules 
+        if: ${{ (github.event.inputs.test_range || 'All') == 'All' }} 
+        uses: nick-fields/retry@v2
+        with:
+          timeout_seconds: 60
+          max_attempts: 5
+          command: |
+            for module in $MODULE_LIST;do argocd app set $APPLICATION --parameter modules.$module.enabled=true;done
+
+      - name: Sync argocd root application
+        run: |
+          argocd app sync $APPLICATION;
+      
+      # sub app을 sync후 error가 발생한 module을 저장하여 다음 step에서 처리 
+      - name: Sync argocd sub application
+        continue-on-error: true
+        id: subapp
+        run: |
+          MODULES=$(kubectl get app -n argocd -o jsonpath={.items[*].metadata.name});     
+          for m in $MODULES
+          do
+            echo "module=$m" >> $GITHUB_OUTPUT; 
+            echo "argocd sync checked: $m";
+            argocd app sync $m --preview-changes <<<no > /dev/null;
+          done
+      - name: Check if application error exist
+        run: |
+          argocd app sync ${{ steps.subapp.outputs.module }} --preview-changes <<<no;
+          echo "Checked argocd sub module error successfully";
