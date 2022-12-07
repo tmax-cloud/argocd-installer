@@ -1,4 +1,4 @@
-apiVersion: admissionregistration.k8s.io/v1beta1
+apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
   name: grafana-operator-validating-webhook-configuration
@@ -7,7 +7,7 @@ metadata:
     cert-manager.io/inject-ca-from: monitoring/grafana-operator-val-cert
 webhooks:
 - admissionReviewVersions:
-  - v1beta1
+  - v1
   clientConfig:
     service:
       name: grafana-operator-service
@@ -16,7 +16,7 @@ webhooks:
       port: 9443
   failurePolicy: Fail
   matchPolicy: Equivalent
-  name: grafana-operator-service.svc.cluster
+  name: grafana-operator-service.monitoring.svc.cluster
   rules:
   - apiGroups:
     - integreatly.org
@@ -25,6 +25,7 @@ webhooks:
     operations:
     - CREATE
     - UPDATE
-    - DELETE
     resources:
     - grafanas
+  sideEffects: NoneOnDryRun
+  timeoutSeconds: 10
