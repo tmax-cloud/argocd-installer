@@ -7,7 +7,8 @@ function (
   hyperauth_subdomain="hyperauth",
   hypercloud_domain_host="tmaxcloud.org",
   storage_class="default",
-  timezone_setting="UTC"
+  timezone_setting="UTC",
+  self_signed="false"
 )
 
 local svcType = if hyperauth_svc_type == "Ingress" then "ClusterIP" else hyperauth_svc_type;
@@ -427,8 +428,11 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
           "hosts": [
             hyperauth_external_dns
           ],
-          // "secretName": "hyperauth-https-secret"
-        }
+        }+(
+          if self_signed == "true" then {
+            "secretName": "hyperauth-https-secret"
+          } else {}
+        )
       ]
     }
   } else {},

@@ -34,6 +34,8 @@ spec:
             value: {{ .Values.modules.hyperAuth.storageClass }}
           - name: timezone_setting
             value: {{ .Values.global.timeZone }}
+          - name: self_signed
+            value: "{{ .Values.modules.gatewayBootstrap.tls.selfsigned.enabled }}"
     path: manifest/hyperauth
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
