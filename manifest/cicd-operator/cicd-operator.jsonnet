@@ -42,7 +42,7 @@ local cicd_domain = std.join("", [cicd_subdomain, ".", custom_domain]);
               "command": [
                 "/controller"
               ],
-              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/cicd-operator:v0.4.13"]),
+              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/cicd-operator:v0.4.14"]),
               "imagePullPolicy": "Always",
               "name": "manager",
               "resources": {
