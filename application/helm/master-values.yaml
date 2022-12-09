@@ -38,6 +38,10 @@ modules:
     enabled: false
     subdomain: gitea
 
+  ### nexus
+  nexus:
+    enabled: false
+
   ### gateway-bootstrap
   gatewayBootstrap:
     enabled: true
