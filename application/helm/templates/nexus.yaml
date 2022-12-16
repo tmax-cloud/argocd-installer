@@ -1,7 +1,7 @@
 {{ $isMaster := eq .Values.global.cluster "master" }}
-  {{ if .Values.modules.gitlab.enabled }}
+  {{ if .Values.modules.nexus.enabled }}
   {{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
-  {{ $module := "gitlab" }}
+  {{ $module := "nexus" }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
