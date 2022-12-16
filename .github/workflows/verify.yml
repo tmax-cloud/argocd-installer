@@ -35,7 +35,7 @@ jobs:
       APPLICATION: ${{ github.event.inputs.application || 'master' }}-applications
       # 사용하고 있는 모듈 list를 명시 
       MODULE_LIST: | 
-        calico gitlab gitea gatewayBootstrap strimziKafka serviceBinding hyperAuth argocd opensearch loki prometheus grafanaOperator
+        calico gitlab nexus gitea gatewayBootstrap strimziKafka serviceBinding hyperAuth argocd opensearch loki prometheus grafanaOperator
         serviceMesh.istio serviceMesh.jaeger serviceMesh.kiali capi capi.providers.aws capi.providers.vsphere tsb catalogController
         helmApiserver hyperCloud hyperregistry tektonPipeline tektonTrigger cicd redis imageValidatingWebhook nfs cephfs rbd efs
 
