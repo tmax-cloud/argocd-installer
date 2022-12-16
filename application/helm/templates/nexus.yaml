@@ -1,7 +1,7 @@
 {{ $isMaster := eq .Values.global.cluster "master" }}
-  {{ if .Values.modules.gitlab.enabled }}
-  {{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
-  {{ $module := "gitlab" }}
+{{ if .Values.modules.nexus.enabled }}
+{{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
+{{ $module := "nexus" }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -25,9 +25,11 @@ spec:
           value: {{ .Values.global.domain }}
         - name: global.timezone
           value: {{ .Values.global.timeZone }}
-        - name: pvc.storageClassName
-          value: {{ .Values.modules.nexus.persistence.storageClass }}
+        - name: persistence.enabled
+          value: "{{ .Values.modules.nexus.persistence.enabled }}"
+        - name: persistence.storageClass
+          value: "{{ .Values.modules.nexus.persistence.storageClass }}"
     path: manifest/nexus
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
-  {{ end }}
+{{ end }}

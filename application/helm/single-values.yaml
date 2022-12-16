@@ -38,6 +38,9 @@ modules:
   ### nexus
   nexus:
     enabled: false
+    persistence:
+      enabled: true
+      storageClass: ""
 
   ### gateway-bootstrap
   gatewayBootstrap:
