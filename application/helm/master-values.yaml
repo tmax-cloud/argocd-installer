@@ -209,7 +209,7 @@ modules:
   serviceMesh:
     ### istio
     istio:
-      enabled: false
+      enabled: true
       # :(scope) 를 기준으로 앞, default, ads, all, attributes, authn, configmapcontroller, grpcAdapter, mcp, model, pkica, rbac, rootcertrotator, secretcontroller, serverca, validation, validationController, validationServer
       # :(scope) 를 기준으로 뒤, debug, info, warn, error, fatal, none 
       istiodPilotDiscoveryLoglevel: default:info
@@ -232,7 +232,7 @@ modules:
       # debug, info, warning, error, fatal, panic
       gatekeeperLoglevel: info
 
-    ###
+    ### kiali
     kiali:
       enabled: true
       subdomain: kiali
