@@ -203,6 +203,10 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
               ],
               "env": [
                 {
+                  "name": "LOG_LEVEL",
+                  "value": "INFO"
+                },
+                {
                   "name": "KEYCLOAK_IMPORT",
                   "value": "/tmp/realm-import/tmax-realm.json"
                 },
