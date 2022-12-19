@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sonarqube-service
+  namespace: sonarqube
+spec:
+  ports:
+  - name: sonarqube-ui
+    protocol: TCP
+    port: 9000
+    targetPort: 9000
+  selector:
+    app: sonarqube
+---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: jenkins-discovery
+#   namespace: jenkins
+# spec:
+#   ports:
+#   - name: slaves
+#     protocol: TCP
+#     port: 50000
+#     targetPort: 50000
+#   selector:
+#     app: jenkins
+#     role: master

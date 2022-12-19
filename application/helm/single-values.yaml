@@ -39,6 +39,11 @@ modules:
   nexus:
     enabled: false
 
+
+  ### sonarqube
+  sonarqube:
+    enabled: false
+
   ### gateway-bootstrap
   gatewayBootstrap:
     enabled: true
