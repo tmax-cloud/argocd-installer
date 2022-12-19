@@ -202,17 +202,35 @@ modules:
   serviceMesh:
     ### istio
     istio:
-      enabled: true
+      enabled: false
+      # :(scope) 를 기준으로 앞, default, all, authn, cache, citadelclient, configmapcontroller, googleca, model, rbac, sds, secretfetcher, stsclient, stsserver, token, validation, vault
+      # :(scope) 를 기준으로 뒤, debug, info, warn, error, fatal, none 
+      istiodPilotDiscoveryLoglevel: default:info
+      # :(scope) 를 기준으로 앞, default, all, authn, cache, citadelclient, configmapcontroller, googleca, model, rbac, sds, secretfetcher, stsclient, stsserver, token, validation, vault
+      # :(scope) 를 기준으로 뒤, debug, info, warn, error, fatal, none 
+      ingressgatewayPilotAgentLoglevel: default:info
+      # none, error, warn, info, debug
+      envoyProxyLoglevel: warning
 
     ### jaeger
     jaeger:
       enabled: true
       subdomain: jaeger
+      # debug, info, warn, error
+      jaegerCollectorLoglevel: info
+      # debug, info, warn, error
+      jaegerAgentLoglevel: info
+      # debug, info, warn, error
+      jaegerQueryLoglevel: info
+      # debug, info, warning, error, fatal, panic
+      gatekeeperLoglevel: info
 
     ### kiali
     kiali:
       enabled: true
       subdomain: kiali
+      # "3" : info, "4": debug, "5": trace
+      kialiLoglevel: "3"
 
   ### cluster-api
   capi:

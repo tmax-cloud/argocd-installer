@@ -6,7 +6,7 @@ function(
   CUSTOM_DOMAIN_NAME="custom-domain",
   CUSTOM_CLUSTER_ISSUER="tmaxcloud-issuer",
   kiali_subdomain="kiali",
-  client_id="kiali",
+  kiali_loglevel="3",
   time_zone="UTC"
 )
 
@@ -432,7 +432,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "-config",
                 "/kiali-configuration/config.yaml",
                 "-v",
-                "3"
+                std.join("", [kiali_loglevel])
               ],
               "env": [
                 {

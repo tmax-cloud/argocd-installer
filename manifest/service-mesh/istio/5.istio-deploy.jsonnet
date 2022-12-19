@@ -2,6 +2,8 @@ function (
   is_offline="false",
   private_registry="registry.tmaxcloud.org",
   ISTIO_VERSION= "1.5.1",
+  istiod_pilot_discovery_loglevel="default:info",
+  ingressgateway_pilot_agent_loglevel="default:info",
   time_zone="UTC"
 )
 
@@ -113,7 +115,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
               "args": [
                 "discovery",
                 "--monitoringAddr=:15014",
-                "--log_output_level=default:info",
+                std.join("", ["--log_output_level=", istiod_pilot_discovery_loglevel]),
                 "--domain",
                 "cluster.local",
                 "--secureGrpcAddr=:15011",
@@ -444,7 +446,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "$(POD_NAMESPACE).svc.cluster.local",
                 "--proxyLogLevel=warning",
                 "--proxyComponentLogLevel=misc:error",
-                "--log_output_level=default:info",
+                std.join("", ["--log_output_level=", ingressgateway_pilot_agent_loglevel]),
                 "--drainDuration",
                 "45s",
                 "--parentShutdownDuration",
