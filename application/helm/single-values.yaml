@@ -6,14 +6,42 @@ spec:
   project: default
 
 global:
-  # 마스터와 다르게 싱글의 경우 값변경이 필요하지 않음
   privateRegistry: test-registry.com
   adminUser: test@test.co.kr
   cluster: single
   clusterName: cluster-name
   clusterNamespace: cluster-namespace
+  domain: testdomain.com
 
 modules:
+  ###calico
+  calico:
+    enabled: true
+
+  ###gitlab
+  gitlab:
+    enabled: true
+    subdomain: gitlab
+    pvc:
+      storage: 30Gi
+    # default로 주는 경우 default storage class를 사용
+    # default를 사용하지 않고 싶은 경우에는 storage class이름을 기입
+      storageClassName: "default"
+    oidc:
+      enabled: false
+
+  ###gitea
+  gitea:
+    enabled: false
+    subdomain: gitea
+
+  ### nexus
+  nexus:
+    enabled: false
+    persistence:
+      enabled: true
+      storageClass: ""
+
   ### gateway-bootstrap
   gatewayBootstrap:
     enabled: true
@@ -53,11 +81,13 @@ modules:
       enabled: true
       # default 30
       syncWaitTime: 30
-    monitoringIngressroute:
-      enabled: true
 
   ### strimzi-kafka-operator
   strimziKafka:
+    enabled: true
+
+  ### service-binding-operator
+  serviceBinding:
     enabled: false
 
   ### hyperauth
@@ -67,6 +97,12 @@ modules:
     subdomain: hyperauth
     # master cluster를 위한 value, 수정 X
     storageClass: default
+    # do not edit tmaxClientSecret!
+    tmaxClientSecret: tmax_client_secret
+
+    # keycloak, hyperauth, kafka, jboss 로그레벨을 하나의 환경변수로 통합 조절
+    # 사용 가능 한 값 : ALL, DEBUG, ERROR, FATAL, INFO, OFF, TRACE, WARN
+    LOG_LEVEL: INFO
 
   ### efk
   efk:
@@ -87,10 +123,26 @@ modules:
       version: 10.0.0
     fluentd:
       version: v1.4.2-debian-elasticsearch-1.1
-  
+
+  ### argocd
+  argocd:
+    enabled: false
+    subdomain: argocd
+    repoServer:
+      replicas: 1
+    redis:
+      replicas: 1
+    argocdServer:
+      replicas: 1
+    controller:
+      replicas: 1
+    ingress:
+      enableTraefik: true
+      secretName:
+      
   ### opensearch
   opensearch:
-    enabled: false
+    enabled: true
     os:
       version: 1.2.3
       limitMemory: 8Gi
@@ -107,7 +159,16 @@ modules:
       version: fluentd-v1.4.2-debian-elasticsearch-1.1
       # master cluster를 위한 value, 수정 X
       storageClass: default
-
+  
+  ### Loki
+  loki:
+    enabled: true
+    loki: 
+      version: 2.6.0
+      volumeSize: 50Gi
+      storageClass: default
+    promtail:
+      version: 2.6.0
 
   ### prometheus
   prometheus:
@@ -124,13 +185,18 @@ modules:
       adapter: v0.9.1
     pvcSize: 10Gi
 
-  ### grafana
-  grafana:
+  ### grafana-operator
+  grafanaOperator:
     enabled: true
-    pvcSize: 10Gi
-    version: 6.4.3
-    imageRepo: grafana/grafana
     subdomain: grafana
+    pvcSize: 10Gi
+    operator: 
+      version: v0.0.10
+      imageRepo: docker.io/tmaxcloudck/grafana-operator
+    grafana:
+      version: "8.2.2"
+      imageRepo: grafana/grafana
+
 
   ### service-mesh
   serviceMesh:
@@ -148,7 +214,7 @@ modules:
 
     ### jaeger
     jaeger:
-      enabled: false
+      enabled: true
       subdomain: jaeger
       # debug, info, warn, error
       jaegerCollectorLoglevel: info
@@ -161,7 +227,7 @@ modules:
 
     ### kiali
     kiali:
-      enabled: false
+      enabled: true
       subdomain: kiali
       # "3" : info, "4": debug, "5": trace
       kialiLoglevel: "3"
@@ -173,13 +239,20 @@ modules:
       aws:
         enabled: false
         # description: ...
-        credentials: "credential"
+        # credential은 다음과 같이 생성
+        # cat << EOF | base64
+        # > [default]
+        # > aws_access_key_id = {{ AWS ACCESS KEY }}
+        # > aws_secret_access_key = {{ AWS SECRET ACCESS KEY }} 
+        # > region = {{ default region}} ex) ap-northeast-2
+        # > EOF
+        credentials: "VGhpcyBpcyBhbiBhd3MgY3JlZGVudGlhbAo="
       vsphere:
         enabled: false
-        credentials: 
+        credentials:
           username: "user"
           password: "password"
-  
+
   ### template service broker
   tsb:
     enabled: false
@@ -192,6 +265,18 @@ modules:
   ### catalog controller
   catalogController:
     enabled: false
+    vLevel: 0
+
+  ### helm-apiserver
+  helmApiserver:
+    enabled: false
+    version: 0.0.5
+    subdomain: helm
+    # default로 주는 경우 default storage class를 사용
+    # default를 사용하지 않고 싶은 경우에는 storage class이름을 기입
+    storageClass: default
+    # 지정 가능: fatal(0), error(1), warn(2), info(3), debug(4), trace(5)
+    logLevel: error
   
   ### hypercloud
   hyperCloud:
@@ -200,8 +285,43 @@ modules:
     mode: multi
     kafka:
       enabled: false
+    kubectl:
+      timeout: 21600
     # master cluster를 위한 value, 수정 X
     storageClass: default
+    
+    # multi-operator의 경우, info, debug, error 기입 가능(대소문자 유의)
+    multiOperator:
+      logLevel: info
+    # single-operator의 경우, info, debug, error 기입 가능(대소문자 유의)
+    singleOperator:
+      logLevel: info
+    # hypercloud api server의 경우, TRACE, DEBUG, INFO, WARN, ERROR, FATAL 기입 가능(대소문자 유의)
+    apiServer:
+      logLevel: INFO
+    # timescaledb.<테이블 이름>.chunk : 청크 테이블이 생성되는 시간 단위
+    # timescaledb.<테이블 이름>.retention : 청크 테이블 보관 기간
+    timescaledb:
+      # timescaledb의 경우, DEBUG5, DEBUG4, DEBUG3, DEBUG2, DEBUG1, INFO, NOTICE, WARNING, ERROR, LOG, FATAL, PANIC 기입 가능(대소문자 유의)
+      logLevel: WARNING
+      audit:
+        chunk: "7 days"
+        retention: "1 years"
+      event:
+        chunk: "1 days"
+        retention: "1 months"
+      metering_hour:
+        chunk: "1 days"
+        retention: "1 months"
+      metering_day:
+        chunk: "1 months"
+        retention: "1 years"
+      metering_month:
+        chunk: "1 years"
+        retention: "1 years"
+      metering_year:
+        chunk: "1 years"
+        retention: "10 years"
 
   ### hyperregistry
   hyperregistry:
@@ -210,38 +330,83 @@ modules:
       subdomain: hyperregistry
     notary:
       subdomain: hyperregistry-notary
+      # core, chartmuseum, jobservice, notary-server, notary-signer, registry, trivy의 경우 다음 아래의 로그레벨 설정으로 debug, info, warning, error, fatal 기입 가능 (대소문자 유의)
+    mains:
+      logLevel: info
+    # redis의 경우 debug, verbose, notice, warning 기입 가능 (대소문자 유의, warning은 error 급) 
+    redis:
+      logLevel: warning
+    # database(postgres)의 경우 DEBUG5, DEBUG4, DEBUG3, DEBUG2, DEBUG1, INFO, NOTICE, WARNING, ERROR, LOG, FATAL, PANIC 기입 가능(대소문자 유의)
+    database:
+      logLevel: ERROR
+    # portal의 경우 debug, info, notice, warn, error, crit, alert, emerg 기입 가능 (대소문자 유의)
+    portal:
+      logLevel: error
     storageClass: nfs
     storageClassDatabase: nfs
 
   ### tekton pipeline
   tektonPipeline:
-    enabled: false
+    enabled: true
     #namespace: tekton-pipelines
 
   ### tekton trigger
   tektonTrigger:
-    enabled: false
+    enabled: true
 
   ### cicd operator
   cicd:
-    enabled: false
+    enabled: true
     subdomain: cicd-webhook
 
   ### redis-operator
   redis:
-    enabled: false
+    enabled: true
 
   ### image validating webhook
   imageValidatingWebhook:
     enabled: false
-    
-  ### ai-devops
-  aiDevops:
+    # debug, info, error 기입 가능 (대소문자 유의)
+    logLevel: error
+
+  ### nfs-subdir-external-provisioner
+  nfs:
+    enabled: true
+    # nfs provisioner가 사용할 nfs server, ex: 192.168.7.16
+    server: 192.168.7.16
+    # nfs provisioner가 사용할 nfs server의 path, ex: /mnt/nfs-shared-dir
+    path: /nfs-storage
+    # nfs provisioner를 default storageClass로 설정
+    defaultClass: not
+
+  ### ceph-csi-cephfs
+  cephfs:
     enabled: false
-    namespace: "kubeflow"
-    knativeNamespace: "knative-serving"
-    notebookSvcType: "Ingress"
-  job:
-      imagePullSecrets: []
-#      imagePullSecrets:
-#        - name: regcred
+    # ceph clusterID(fsid)
+    clusterId: 50611be6-33b3-11eb-a5cb-0894ef32cba4
+    # ceph monitor들 IP:PORT
+    monitors: '["192.168.7.16:3300","192.168.7.16:6789","192.168.7.17:3300","192.168.7.17:6789"]'
+    # ceph admin key, /etc/ceph의 ceph.client.admin.keyring
+    key: AQCeBcZftAEvExAAultsKBpNpiWWGi06Md7mmw==
+    # cephfs csi를 default storageClass로 설정, ex: default / not
+    defaultClass: not
+
+  ### ceph-csi-rbd
+  rbd:
+    enabled: false
+    # ceph clusterID(fsid)
+    clusterId: 50611be6-33b3-11eb-a5cb-0894ef32cba4
+    # ceph monitor들 IP:PORT
+    monitors: '["192.168.7.16:3300","192.168.7.16:6789","192.168.7.17:3300","192.168.7.17:6789"]'
+    # ceph admin key, /etc/ceph의 ceph.client.admin.keyring
+    key: AQCeBcZftAEvExAAultsKBpNpiWWGi06Md7mmw==
+    # rbd csi를 default storageClass로 설정, ex: default / not
+    defaultClass: not
+  
+  ### efs-csi
+  efs:
+    enabled: false
+    # efs ID
+    fileSystemId: fs-0ce741ec0e2ea2fa2
+    # efs csi를 default storageClass로 설정, ex: default / not
+    defaultClass: not

@@ -5,7 +5,7 @@ image:
   tag: ""
   pullPolicy: IfNotPresent
 
-#fullnameOverride: "api-gateway"
+fullnameOverride: "traefik"
 #
 # Configure the deployment
 #
@@ -130,7 +130,7 @@ providers:
       # - "default"
     # IP used for Kubernetes Ingress endpoints
     publishedService:
-      enabled: ture
+      enabled: true
       # Published Kubernetes Service to copy status from. Format: namespace/servicename
       # By default this Traefik service
       # pathOverride: ""
@@ -159,6 +159,8 @@ additionalVolumeMounts: []
   # For instance when using a logshipper for access logs
   # - name: traefik-logs
   #   mountPath: /var/log/traefik
+additionalVolumes: []
+
 
 # Logs
 # https://docs.traefik.io/observability/logs/
@@ -227,9 +229,10 @@ globalArguments: []
 additionalArguments: []
 
 # Environment variables to be passed to Traefik's binary
-env:
-  - name: TZ
-    value: Asia/Seoul
+#env:
+#  - name: TZ
+#    value: Asia/Seoul
+env: []
 
 envFrom: []
 

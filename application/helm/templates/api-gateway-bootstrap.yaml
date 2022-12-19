@@ -22,6 +22,8 @@ spec:
           value: {{ .Values.global.clusterName }}
         - name: global.clusterNamespace
           value: {{ .Values.global.clusterNamespace }}
+        - name: global.timeZone
+          value: {{ .Values.global.timeZone }}
         - name: global.console.mcMode
           value: "{{ .Values.modules.gatewayBootstrap.console.multiCluster.enabled }}"
         - name: global.svc_type
@@ -29,7 +31,7 @@ spec:
         - name: global.domain
           value: {{ .Values.global.domain }}
         - name: global.hyperauth.address
-          value: {{ .Values.global.keycloak.domain }}
+          value: {{ include "hyperAuth.domain" . }}
         - name: global.registry.is_offline
           value: "{{ .Values.global.network.disabled }}"
         - name: global.registry.private_registry
@@ -77,9 +79,9 @@ spec:
     path: manifest/api-gateway-bootstrap
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
-  syncPolicy:
-    automated:
-      prune: true
-    syncOptions:
-      - ApplyOutOfSyncOnly=true
+  # syncPolicy:
+  #   automated:
+  #     prune: true
+  #   syncOptions:
+  #     - ApplyOutOfSyncOnly=true
 {{ end }}

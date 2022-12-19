@@ -9,12 +9,12 @@ data:
   config.yml: |+
     version: 0.1
     log:
-      {{- if eq .Values.logLevel "warning" }}
+      {{- if eq .Values.mainsLogLevel  "warning" }}
       level: warn
-      {{- else if eq .Values.logLevel "fatal" }}
+      {{- else if eq .Values.mainsLogLevel  "fatal" }}
       level: error
       {{- else }}
-      level: {{ .Values.logLevel }}
+      level: {{ .Values.mainsLogLevel  }}
       {{- end }}
       fields:
         service: registry
@@ -234,5 +234,5 @@ data:
     protocol: "http"
     port: 8080
     {{- end }}
-    log_level: {{ .Values.logLevel }}
+    log_level: {{ .Values.mainsLogLevel  }}
     registry_config: "/etc/registry/config.yml"

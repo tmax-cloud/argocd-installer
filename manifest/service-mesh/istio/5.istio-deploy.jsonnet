@@ -3,7 +3,8 @@ function (
   private_registry="registry.tmaxcloud.org",
   ISTIO_VERSION= "1.5.1",
   istiod_pilot_discovery_loglevel="default:info",
-  ingressgateway_pilot_agent_loglevel="default:info"
+  ingressgateway_pilot_agent_loglevel="default:info",
+  time_zone="UTC"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -263,7 +264,13 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                   "name": "istiod",
                   "readOnly": true
                 }
-              ]
+              ] + ( if time_zone != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  }
+                ] else []
+              )
             }
           ],
           "securityContext": {
@@ -310,7 +317,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
               },
               "name": "pilot-envoy-config"
             }
-          ]
+          ] + (
+            if time_zone != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                }
+              }
+            ] else []
+          )
         }
       }
     }
@@ -657,7 +673,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                   "name": "ingressgateway-ca-certs",
                   "readOnly": true
                 }
-              ]
+              ] + ( 
+                if time_zone != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  }
+                ] else []
+              )
             }
           ],
           "serviceAccountName": "istio-ingressgateway-service-account",
@@ -705,7 +728,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "secretName": "istio-ingressgateway-ca-certs"
               }
             }
-          ]
+          ]  + (
+            if time_zone != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                }
+              }
+            ] else []
+          )
         }
       }
     }

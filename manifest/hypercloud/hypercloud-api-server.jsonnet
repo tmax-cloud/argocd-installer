@@ -8,10 +8,27 @@ function (
   domain="tmaxcloud.org",
   hyperauth_subdomain="hyperauth",
   console_subdomain="console",
-  hyperregistry_enabled="true",
+  kubectl_timeout="21600",
   storageClass="default",
   aws_enabled="true",
-  vsphere_enabled="true"
+  vsphere_enabled="true",
+  time_zone="UTC",
+  multi_operator_log_level="info",
+  single_operator_log_level="info",
+  api_server_log_level="INFO",
+  timescaledb_log_level="WARNING",
+  timescaledb_audit_chunk_time_interval="7 days",
+  timescaledb_audit_retention_policy="1 years",
+  timescaledb_event_chunk_time_interval="1 days",
+  timescaledb_event_retention_policy="1 months",
+  timescaledb_metering_hour_chunk_time_interval="1 days",
+  timescaledb_metering_hour_retention_policy="1 months",
+  timescaledb_metering_day_chunk_time_interval="1 months",
+  timescaledb_metering_day_retention_policy="1 years",
+  timescaledb_metering_month_chunk_time_interval="1 years",
+  timescaledb_metering_month_retention_policy="1 years",
+  timescaledb_metering_year_retention_policy="1 years",
+  timescaledb_metering_year_retention_policy="10 years"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -48,13 +65,12 @@ local target_registry = if is_offline == "false" then "" else private_registry +
           "containers": [
             {
               "name": "hypercloud5-api-server",
-              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-api-server:b5.0.26.16"]),
+              "image": std.join("", [ target_registry, "docker.io/tmaxcloudck/hypercloud-api-server:b5.0.37.0" ]),
               "imagePullPolicy": "IfNotPresent",
+              "args": [
+                std.join("", ["--log-level=", api_server_log_level])
+                ],
               "env": [
-                {
-                  "name": "TZ",
-                  "value": "Asia/Seoul"
-                },
                 {
                   "name": "HC_MODE",
                   "value": hypercloud_hpcd_mode
@@ -86,6 +102,10 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 {
                   "name": "CONSOLE_SUBDOMAIN",
                   "value": console_subdomain
+                },
+                {
+                  "name": "KUBECTL_TIMEOUT",
+                  "value": kubectl_timeout
                 },
               ],
               "ports": [
@@ -140,7 +160,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                   "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
                   "readOnly": true
                 }
-              ]
+              ] + (
+                if time_zone != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  }
+                ] else []
+              )
             }
           ],
           "volumes": [
@@ -203,7 +230,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "defaultMode": 420
               }
             }
-          ]
+          ] + (
+            if time_zone != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                }
+              }
+            ] else []
+          )
         }
       }
     }
@@ -384,14 +420,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
           "      path: /api/health",
           "      port: 3000",
           "  versionProbe:",
-          "- name: Kibana",
+          "- name: OpenSearch",
           "  namespace: kube-logging",
           "  selector:",
           "    matchLabels:",
           "      statusLabel:",
-          "      - app=kibana",
+          "      - app=opensearch",
           "      versionLabel:",
-          "      - app=kibana",
+          "      - app=opensearch",
           "  readinessProbe:",
           "  versionProbe:"
         ]

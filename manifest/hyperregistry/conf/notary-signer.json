@@ -5,7 +5,7 @@
     "tls_key_file": "/etc/ssl/notary/tls.key"
   },
   "logging": {
-    "level": "{{ .Values.logLevel }}"
+    "level": "{{ .Values.mainsLogLevel  }}"
   },
   "storage": {
     "backend": "postgres",

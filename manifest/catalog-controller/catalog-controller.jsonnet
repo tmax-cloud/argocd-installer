@@ -1,6 +1,8 @@
 function (
   is_offline = "false",
-  private_registry = "registry.tmaxcloud.org"
+  private_registry = "registry.tmaxcloud.org",
+  v_level = "0",
+  time_zone="UTC"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -49,7 +51,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
               "name": "run",
               "emptyDir": {}
             }
-          ],
+          ] + (
+            if time_zone != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                }
+              }
+            ] else []
+          ),
           "containers": [
             {
               "name": "controller-manager",
@@ -83,7 +94,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "--leader-elect=false",
                 "--profiling=false",
                 "-v",
-                "10",
+                std.join("", ["", v_level]),
                 "--resync-interval",
                 "5m",
                 "--broker-relist-interval",
@@ -102,7 +113,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                   "mountPath": "/var/run",
                   "name": "run"
                 }
-              ],
+              ] + (
+                if time_zone != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  }
+                ] else []
+              ),
               "ports": [
                 {
                   "containerPort": 8444
@@ -197,7 +215,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "--healthz-server-bind-port",
                 "8081",
                 "-v",
-                "10",
+                std.join("", ["", v_level]),
                 "--feature-gates",
                 "OriginatingIdentity=true",
                 "--feature-gates",
@@ -214,7 +232,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                   "mountPath": "/var/run/service-catalog-webhook",
                   "readOnly": true
                 }
-              ],
+              ] + (
+                if time_zone != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  }
+                ] else []
+              ),
               "readinessProbe": {
                 "httpGet": {
                   "port": 8081,
@@ -258,7 +283,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 ]
               }
             }
-          ]
+          ] + (
+            if time_zone != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                }
+              }
+            ] else []
+          )
         }
       }
     }

@@ -22,6 +22,8 @@ spec:
             value: "{{ .Values.global.network.disabled }}"
           - name: private_registry
             value: {{ .Values.global.privateRegistry }}
+          - name: timezone
+            value: {{ .Values.global.timeZone }}            
     path: manifest/tekton-trigger
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}

@@ -7,7 +7,7 @@ function(
   CUSTOM_CLUSTER_ISSUER="tmaxcloud-issuer",
   kiali_subdomain="kiali",
   kiali_loglevel="3",
-  client_id="kiali"
+  time_zone="UTC"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -488,7 +488,13 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                   "mountPath": "/kiali-secret",
                   "name": "kiali-secret"
                 }
-              ]
+              ] + ( if time_zone != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  }
+                ] else []
+              )
             }
           ],
           "serviceAccountName": "kiali-service-account",
@@ -513,7 +519,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "secretName": "kiali"
               }
             }
-          ]
+          ] + (
+            if time_zone != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                }
+              }
+            ] else []
+          )
         }
       }
     }

@@ -32,16 +32,27 @@ traefik:
   service:
     annotations:
       service.beta.kubernetes.io/aws-load-balancer-type: nlb
-      service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+      service.beta.kubernetes.io/aws-load-balancer-internal: "false"
   resources: {}
   nodeSelector:
     node-role.kubernetes.io/master: ""
   tolerations:
     - key: "node-role.kubernetes.io/master"
       operator: Exists
+  env: []
+#  env:
+#    - name: TZ
+#      value: Asia/Seoul
+  additionalVolumeMounts: []
+  #  - name: gateway-confi
+  # For instance when using a logshipper for access logs
+  # - name: traefik-logs
+  #   mountPath: /var/log/traefik
+  additionalVolumes: []
 
 tls:
   domain: tmaxcloud.test
+  consoleSubdomain: console
   acme:
     enabled: false
     email: email

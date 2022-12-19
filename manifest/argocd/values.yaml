@@ -1,0 +1,40 @@
+# Default values for argocd.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicas: 1
+
+global:
+    registry:
+      is_offline: false
+      private_registry: test-registry.com
+
+image:
+  redis:
+    repository: docker.io/library/redis
+    tag: 6.2.6-alpine
+  argocdServer:
+    repository: quay.io/argoproj/argocd
+    tag: v2.2.5
+
+
+repoServer:
+  replicas: 1
+redis:
+  replicas: 1
+argocdServer:
+  replicas: 1
+controller:
+  replicas: 1
+
+ingress:
+  hosts:
+    domain: test123.com
+    subdomain: argocd
+  tls:
+    enabled: true
+    secretName:
+  enableTraefik: true
+
+timezone: "UTC"
+

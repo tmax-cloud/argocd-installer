@@ -1,4 +1,5 @@
 function (
+  timezone="UTC",
   is_offline="false",
   private_registry="172.22.6.2:5000",
   os_image_tag="1.2.3",
@@ -102,6 +103,14 @@ local fluentd_image_path = "docker.io/tmaxcloudck/hypercloud:" + fluentd_image_t
                   "mountPath": "/usr/share/opensearch/config/certificates/admin",
                   "readOnly": true
                 },
+              ] + (
+                if timezone != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  }
+                ] else []
+              ) + [
                 {
                   "name": "roles",
                   "mountPath": "/usr/share/opensearch/plugins/opensearch-security/securityconfig/roles.yml",
@@ -171,7 +180,17 @@ local fluentd_image_path = "docker.io/tmaxcloudck/hypercloud:" + fluentd_image_t
               "secret": {
                 "secretName": "admin-secret"
               }
-            },
+            }
+          ] + (
+            if timezone != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", timezone])
+                }
+              }
+            ] else []
+          ) + [
             {
               "name": "roles",
               "configMap": {
@@ -331,7 +350,14 @@ local fluentd_image_path = "docker.io/tmaxcloudck/hypercloud:" + fluentd_image_t
                 "secretName": "dashboards-secret"
               }
             }
-          ],
+          ] + if timezone != "UTC" then [
+            {
+              "name": "timezone-config",
+              "hostPath": {
+                "path": std.join("", ["/usr/share/zoneinfo/", timezone])
+              }
+            }
+          ] else [],
           "containers": [
             {
               "name": "dashboards",
@@ -397,7 +423,12 @@ local fluentd_image_path = "docker.io/tmaxcloudck/hypercloud:" + fluentd_image_t
                   "mountPath": "/usr/share/opensearch-dashboards/config/certificates",
                   "readOnly": true
                 }
-              ]
+              ] + if timezone != "UTC" then [
+                {
+                  "name": "timezone-config",
+                  "mountPath": "/etc/localtime"
+                }
+              ] else []
             }
           ]
         }
@@ -507,7 +538,12 @@ local fluentd_image_path = "docker.io/tmaxcloudck/hypercloud:" + fluentd_image_t
                   "subPath": "Gemfile",
                   "readOnly": true
                 }
-              ]
+              ] + if timezone != "UTC" then [
+                {
+                  "name": "timezone-config",
+                  "mountPath": "/etc/localtime"
+                }
+              ] else []
             }
           ],
           "terminationGracePeriodSeconds": 30,
@@ -536,7 +572,14 @@ local fluentd_image_path = "docker.io/tmaxcloudck/hypercloud:" + fluentd_image_t
                 "name": "fluentd-gem"
               }
             }
-          ]
+          ] + if timezone != "UTC" then [
+            {
+              "name": "timezone-config",
+              "hostPath": {
+                "path": std.join("", ["/usr/share/zoneinfo/", timezone])
+              }
+            }
+          ] else []
         }
       }
     }

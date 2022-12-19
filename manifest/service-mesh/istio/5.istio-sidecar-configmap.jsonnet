@@ -2,7 +2,8 @@ function (
   is_offline="false",
   private_registry="registry.tmaxcloud.org",
   ISTIO_VERSION= "1.5.1",
-  istio_proxy_loglevel="warning"
+  istio_proxy_loglevel="warning",
+  time_zone="UTC"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";

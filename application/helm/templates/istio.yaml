@@ -28,7 +28,11 @@ spec:
             value: {{ .Values.modules.serviceMesh.istio.ingressgatewayPilotAgentLoglevel }}
           - name: istio_proxy_loglevel
             value: {{ .Values.modules.serviceMesh.istio.envoyProxyLoglevel }}
+          - name: time_zone
+            value: {{ .Values.global.timeZone }}
     path: manifest/service-mesh/istio
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
+  syncPolicy: 
+    retry: {{ include "argocd.syncPolicy.retry" . | indent 6 }}
 {{ end }}

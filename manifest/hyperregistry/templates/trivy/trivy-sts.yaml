@@ -65,7 +65,7 @@ spec:
               value: "{{ template "harbor.noProxy" . }}"
           {{- end }}
             - name: "SCANNER_LOG_LEVEL"
-              value: {{ .Values.logLevel | quote }}
+              value: {{ .Values.mainsLogLevel  | quote }}
             - name: "SCANNER_TRIVY_CACHE_DIR"
               value: "/home/scanner/.cache/trivy"
             - name: "SCANNER_TRIVY_REPORTS_DIR"
@@ -120,6 +120,10 @@ spec:
             - name: api-server
               containerPort: {{ template "harbor.trivy.containerPort" . }}
           volumeMounts:
+          {{- if ne .Values.global.time_zone "UTC" }}
+          - name: timezone-config
+            mountPath: /etc/localtime
+          {{- end }}
           - name: data
             mountPath: /home/scanner/.cache
             subPath: {{ .Values.persistence.persistentVolumeClaim.trivy.subPath }}
@@ -151,8 +155,13 @@ spec:
             failureThreshold: 3
           resources:
 {{ toYaml .Values.trivy.resources | indent 12 }}
-      {{- if or (or .Values.internalTLS.enabled .Values.caBundleSecretName) (or (not .Values.persistence.enabled) $trivy.existingClaim) }}
       volumes:
+      {{- if ne .Values.global.time_zone "UTC" }}
+      - name: timezone-config
+        hostPath: 
+          path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.global.time_zone }}
+      {{- end }}
+      {{- if or (or .Values.internalTLS.enabled .Values.caBundleSecretName) (or (not .Values.persistence.enabled) $trivy.existingClaim) }}
       {{- if .Values.internalTLS.enabled }}
       - name: trivy-internal-certs
         secret:
@@ -187,7 +196,9 @@ spec:
     {{- end }}
 {{- if and .Values.persistence.enabled (not $trivy.existingClaim) }}
   volumeClaimTemplates:
-  - metadata:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
       name: data
       labels:
 {{ include "harbor.labels" . | indent 8 }}

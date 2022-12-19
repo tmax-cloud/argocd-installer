@@ -1,0 +1,32 @@
+{{- range .Values.storageClasses }}
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: {{ .name }}
+  annotations:
+  {{- if $.Values.storageClass.defaultClass }}
+    {{- if eq .name "efs-sc-0" }}
+    storageclass.kubernetes.io/is-default-class: "true"
+    {{- end }}
+  {{- end }}
+  {{- with .annotations }}
+  {{ toYaml . | indent 4 }}
+  {{- end }}
+provisioner: efs.csi.aws.com
+{{- with .mountOptions }}
+mountOptions:
+{{ toYaml . }}
+{{- end }}
+parameters:
+  fileSystemId: {{ $.Values.storageClass.fileSystemId}}
+{{- with .parameters }}
+{{ toYaml . | indent 2 }}
+{{- end }}
+{{- with .reclaimPolicy }}
+reclaimPolicy: {{ . }}
+{{- end }}
+{{- with .volumeBindingMode }}
+volumeBindingMode: {{ . }}
+{{- end }}
+---
+{{- end }}

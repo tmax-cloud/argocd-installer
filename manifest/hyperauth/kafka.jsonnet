@@ -6,7 +6,9 @@ function (
   is_kafka_enabled="true",
   hyperauth_subdomain="hyperauth",
   hypercloud_domain_host="tmaxcloud.org",
-  storage_class="default"
+  storage_class="default",
+  timezone_setting="UTC",
+  self_signed="false"
 )
 
 if is_kafka_enabled == "true" then [
@@ -15,7 +17,11 @@ if is_kafka_enabled == "true" then [
     "kind": "Kafka",
     "metadata": {
       "name": "kafka",
-      "namespace": "hyperauth"
+      "namespace": "hyperauth",
+      // kafka crd 없이 dry-run 방식으로 생성
+      "annotations": {
+        "argocd.argoproj.io/sync-options": "SkipDryRunOnMissingResource=true"
+      },
     },
     "spec": {
       "kafka": {

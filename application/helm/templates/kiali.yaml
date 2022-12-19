@@ -23,7 +23,7 @@ spec:
           - name: private_registry
             value: {{ .Values.global.privateRegistry }}
           - name: HYPERAUTH_DOMAIN
-            value: {{ .Values.global.keycloak.domain }}
+            value: {{ include "hyperAuth.domain" . }}
           - name: CUSTOM_DOMAIN_NAME
             value: {{ .Values.global.domain }}
           - name: kiali_subdomain
@@ -32,6 +32,8 @@ spec:
             value: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
           - name: kiali_loglevel
             value: {{ .Values.modules.serviceMesh.kiali.kialiLoglevel }}
+          - name: time_zone
+            value: {{ .Values.global.timeZone }}
     path: manifest/service-mesh/kiali
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}

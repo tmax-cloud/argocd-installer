@@ -25,7 +25,7 @@ data:
   CHART_URL: {{ .Values.externalURL }}/chartrepo
 {{- end }}
   DEPTH: "1"
-{{- if eq .Values.logLevel "debug" }}
+{{- if eq .Values.mainsLogLevel  "debug" }}
   DEBUG: "true"
 {{- else }}
   DEBUG: "false"

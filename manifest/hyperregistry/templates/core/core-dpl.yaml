@@ -102,9 +102,20 @@ spec:
           - name: INTERNAL_TLS_TRUST_CA_PATH
             value: /etc/harbor/ssl/core/ca.crt
          {{- end }}
+         {{- if .Values.OIDC.enabled }}
+          - name: CONFIG_OVERWRITE_JSON
+            valueFrom:
+              configMapKeyRef:
+                name: "{{ template "harbor.core" . }}"
+                key: config_overwrite.json
+         {{- end }}
         ports:
         - containerPort: {{ template "harbor.core.containerPort" . }}
         volumeMounts:
+        {{- if ne .Values.global.time_zone "UTC" }}
+        - name: timezone-config
+          mountPath: /etc/localtime
+        {{- end }}
         - name: config
           mountPath: /etc/core/app.conf
           subPath: app.conf
@@ -137,6 +148,11 @@ spec:
 {{ toYaml .Values.core.resources | indent 10 }}
 {{- end }}
       volumes:
+      {{- if ne .Values.global.time_zone "UTC" }}
+      - name: timezone-config
+        hostPath: 
+          path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.global.time_zone }}
+      {{- end }}
       - name: config
         configMap:
           name: {{ template "harbor.core" . }}

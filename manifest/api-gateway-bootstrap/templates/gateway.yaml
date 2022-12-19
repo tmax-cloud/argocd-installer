@@ -28,11 +28,19 @@ spec:
         - {{ .Values.modules.gateway.source.helm.valueFiles }}
       {{- end }}
       parameters:
+      {{- if not (eq .Values.global.timeZone "UTC") }}
+        - name: traefik.env[0].name
+          value: TZ
+        - name: traefik.env[0].value
+          value: {{ .Values.global.timeZone }}
+      {{- end }}
       {{- if .Values.global.tls.acme.enabled }}
         - name: tls.acme.enabled
           value: "true"
         - name: tls.acme.email
           value: {{ .Values.global.tls.acme.email }}
+        - name: tls.acme.environment
+          value: {{ .Values.global.tls.acme.environment }}
         - name: tls.acme.dns.accessKeyID
           value: {{ .Values.global.tls.acme.dns.accessKeyID }}
         - name: tls.acme.dns.accessKeySecret
@@ -43,6 +51,8 @@ spec:
           value: {{ .Values.global.domain }}
         - name: tls.selfsigned.enabled
           value: "false"
+        - name: tls.consoleSubdomain
+          value: {{ .Values.modules.console.subdomain | default "console" }}
       {{- else if .Values.global.tls.selfsigned.enabled }}
         - name: tls.selfsigned.enabled
           value: "true"
@@ -66,8 +76,6 @@ spec:
       prune: true
     syncOptions:
       - ApplyOutOfSyncOnly=true
-    retry:
-      limit: 3
 ---
 {{ $syncWave := "gateway-sync-wave" }}
 apiVersion: batch/v1

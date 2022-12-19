@@ -8,9 +8,10 @@ metadata:
     helm.sh/chart: {{ template "gateway.chart" . }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/instance: {{ .Release.Name }}
-  annotations:
-    "helm.sh/hook": pre-install,pre-upgrade
-    "helm.sh/hook-weight": "0"
+  # domain 변경시 적용되지 않는 문제 때문에 주석처리 
+  # annotations:
+  #   "helm.sh/hook": pre-install,pre-upgrade
+  #   "helm.sh/hook-weight": "0"
 data:
   traefik.yml: |
     http:
@@ -31,12 +32,12 @@ data:
               - "admin:$apr1$WboCaB7Z$PJbsvKlI3XMq12xMeQMmG."
         cors-header:
           headers:
-            accessControlAllowMethods:
-              - "*"
-            accessControlAllowHeaders:
-              - "*"
+            accessControlAllowMethods: [ "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH" ]
+            accessControlAllowHeaders: [ "Accept", "Authorization", "Content-Type", "Locatee-Smart-Signage-Token", "Origin" ]
             accessControlAllowOriginList:
               - "https://console.{{ .Values.tls.domain }}"
+              - "https://multicluster.{{ .Values.tls.domain }}"
+              {{ include "console.subdomain" . | nindent 14 }}
             accessControlAllowOriginListRegex:
               - "([a-z]+)\\.{{ (split "." .Values.tls.domain)._0 }}\\.{{ (split "." .Values.tls.domain)._1 }}"
             accessControlMaxAge: 100
@@ -71,16 +72,16 @@ metadata:
     helm.sh/chart: {{ template "gateway.chart" . }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/instance: {{ .Release.Name }}
-  annotations:
-    "helm.sh/hook": pre-install,pre-upgrade
-    "helm.sh/hook-weight": "0"
+  # annotations:
+  #   "helm.sh/hook": pre-install,pre-upgrade
+  #   "helm.sh/hook-weight": "0"
 spec:
   secretName: selfsigned-ca
   commonName: tmax-cloud
   subject:
     organizations:
       - "tmax-cloud"
-  isCA: false
+  # isCA: false
   usages:
     - digital signature
     - key encipherment

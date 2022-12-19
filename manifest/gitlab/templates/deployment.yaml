@@ -1,0 +1,308 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gitlab-system
+  labels:
+    hypercloud: system
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: gitlab-account
+  namespace: gitlab-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: gitlab-role
+  namespace: gitlab-system
+rules:
+- apiGroups: [""]
+  resources: ["services"]
+  resourceNames: ["gitlab-service"]
+  verbs: ["get", "list", "create", "patch", "update"]
+- apiGroups: ["extensions", "apps"]
+  resources: ["deployments"]
+  resourceNames: ["gitlab"]
+  verbs: ["get", "list", "create", "patch", "update", "delete"]
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "list", "create", "patch", "update", "delete"]
+- apiGroups: ["networkings", "extensions", "networking.k8s.io"]
+  resources: ["ingresses"]
+  resourceNames: ["gitlab-ingress"]
+  verbs: ["get", "list", "create", "patch", "update", "delete"]
+- apiGroups: ["cert-manager.io"]
+  resources: ["issuers"]
+  verbs: ["get", "list", "create", "patch", "update", "delete"]
+- apiGroups: ["cert-manager.io"]
+  resources: ["Certificate","certificates"]
+  verbs: ["get", "list", "create", "patch", "update", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: gitlab-binding
+  namespace: gitlab-system
+subjects:
+- kind: ServiceAccount
+  name: gitlab-account
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: gitlab-role
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: gitlab-account-secret
+  namespace: gitlab-system
+  annotations:
+    kubernetes.io/service-account.name: gitlab-account
+type: kubernetes.io/service-account-token
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gitlab-service
+  namespace: gitlab-system
+  labels:
+    app: gitlab
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 80
+  - name: https
+    port: 443
+  - name: ssh
+    port: 2221
+    targetPort: 22
+  selector:
+    app: gitlab
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gitlab-ingress
+  namespace: gitlab-system
+  labels:
+    ingress.tmaxcloud.org/name: gitlab
+  annotations:
+    cert-manager.io/cluster-issuer: tmaxcloud-issuer
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+
+spec:
+  ingressClassName: tmax-cloud
+  {{- if .Values.tls.enabled }}
+  tls:
+  - hosts:
+    - {{ .Values.ingress.hosts.subdomain }}.{{ .Values.ingress.hosts.domain }}
+  {{- end }}
+  rules:
+  - host: {{ .Values.ingress.hosts.subdomain }}.{{ .Values.ingress.hosts.domain }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: gitlab-service
+            port:
+              number: 80
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gitlab-pvc
+  namespace: gitlab-system
+  labels:
+    app: gitlab
+spec:
+  {{- if ne .Values.pvc.storageClassName "default"  }}
+  storageClassName: {{ .Values.pvc.storageClassName }}
+  {{- end }}
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.pvc.storage }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitlab
+  namespace: gitlab-system
+  labels:
+    app: gitlab
+spec:
+  selector:
+    matchLabels:
+      app: gitlab
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: gitlab
+    spec:
+      serviceAccountName: gitlab-account
+      initContainers:
+      - name: parse-svc
+        {{- if .Values.global.registry.is_offline }}
+        image: "{{ .Values.global.registry.private_registry }}/{{ .Values.image.kube.repo }}:{{ .Values.image.kube.tag }}"
+        {{- else }}
+        image: "{{ .Values.image.kube.repo }}:{{ .Values.image.kube.tag }}"
+        {{- end }}
+        env:
+        - name: NODE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        volumeMounts:
+        - name: shared
+          mountPath: /tmp/shared
+        - name: gitlab-account-secret
+          mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        {{- if ne .Values.global.timezone "UTC" }}
+        - name: timezone-config
+          mountPath: /etc/localtime
+        {{- end }}
+        resources:
+          limits:
+            cpu: 1
+            memory: 2Gi
+          requests:
+            cpu: 1
+            memory: 2Gi
+        command:
+        - /bin/bash
+        - -c
+        - -x
+        - |
+          SVC_TYPE=Ingress
+          PORT=80
+          PORT_SSH=2221
+          PORT="${PORT/\.[0-9]*/}"
+          PORT_SSH="${PORT_SSH/\.[0-9]*/}"
+          cat <<EOT >> /tmp/shared/omnibus.env
+          external_url  '{{ .Values.externalURL }}'
+          gitlab_rails['gitlab_shell_ssh_port'] = $PORT_SSH
+          prometheus['enable'] = false
+          prometheus['monitor_kubernetes'] = false
+          unicorn['worker_processes'] = 4
+          grafana['enable'] = false
+          nginx['client_max_body_size'] = '2500m'
+          gitlab_rails['initial_root_password'] = "password"
+          nginx['ssl_protocols'] = "TLSv1.1"
+          EOT
+          # Add keycloak
+          {{- if .Values.keycloak.enabled }}
+            kubectl -n hyperauth get secret {{ .Values.keycloak.secret }} -o jsonpath='{.data.tls\.crt}' | base64 -d > /tmp/shared/keycloak.pem
+            cat <<EOY >> /tmp/shared/omnibus.env
+            gitlab_rails['omniauth_enabled'] = true
+            gitlab_rails['omniauth_allow_single_sign_on'] = ['oauth2_generic']
+            gitlab_rails['omniauth_block_auto_created_users'] = false
+            gitlab_rails['omniauth_providers'] = [
+            {
+                    'name' => 'oauth2_generic',
+                    'issuer' => '{{ .Values.keycloak.url }}',
+                    'app_id' => '{{ .Values.keycloak.client }}',
+                    'app_secret' => '{{ .Values.keycloak.client_secret }}',
+                    'discovery' => true,
+                    'args' => {
+                    client_options: {
+                            'site' => '{{ .Values.keycloak.url }}',
+                            'user_info_url' => '/auth/realms/tmax/protocol/openid-connect/userinfo',
+                            'authorize_url' => '/auth/realms/tmax/protocol/openid-connect/auth',
+                            'token_url' => '/auth/realms/tmax/protocol/openid-connect/token',
+                            'redirect_uri' => "{{ .Values.externalURL }}/users/auth/oauth2_generic/callback",
+                    },
+                    user_response_structure: {
+                    attributes: { email:'email', first_name:'given_name', last_name:'family_name', name:'name', nickname:'preferred_username' },
+                    id_path: 'preferred_username'
+                    },
+                    }
+            }
+            ]
+            EOY          
+          {{- end }}
+
+
+      containers:
+      - name: gitlab
+        {{- if or (eq .Values.pvc.storageClassName "default") (eq .Values.pvc.storageClassName "nfs") }}
+        securityContext:
+          privileged: true
+        {{- end }}
+        {{- if .Values.global.registry.is_offline }}
+        image: "{{ .Values.global.registry.private_registry }}/{{ .Values.image.gitlab.repo }}:{{ .Values.image.gitlab.tag }}"
+        {{- else }}
+        image: "{{ .Values.image.gitlab.repo }}:{{ .Values.image.gitlab.tag }}"
+        {{- end }}
+        command:
+        - /bin/sh
+        - -c
+        - -x
+        - |
+          export GITLAB_OMNIBUS_CONFIG="$(cat /tmp/shared/omnibus.env)"
+          echo 'export GITLAB_OMNIBUS_CONFIG="$(cat /tmp/shared/omnibus.env)"' >> /root/.bashrc
+          mkdir -p /etc/gitlab/trusted-certs
+          cp /tmp/shared/keycloak.pem /etc/gitlab/trusted-certs/keycloak.pem
+          /assets/wrapper
+        ports:
+        - name: http
+          containerPort: 80
+        - name: https
+          containerPort: 443
+        - name: ssh
+          containerPort: 22
+        volumeMounts:
+        - name: gitlab-pv
+          mountPath: /etc/gitlab
+          subPath: config
+        - name: gitlab-pv
+          mountPath: /var/opt/gitlab
+          subPath: data
+        - name: shared
+          mountPath: /tmp/shared
+        - name: gitlab-account-secret
+          mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        {{- if ne .Values.global.timezone "UTC" }}
+        - name: timezone-config
+          mountPath: /etc/localtime
+        {{- end }}
+        resources:
+          limits:
+            cpu: 1
+            memory: 8Gi
+          requests:
+            cpu: 1
+            memory: 8Gi
+        readinessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - |
+              /opt/gitlab/bin/gitlab-healthcheck --fail --max-time 10
+          periodSeconds: 150
+      volumes:
+      {{- if ne .Values.global.timezone "UTC" }}
+      - name: timezone-config
+        hostPath:
+          path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.global.timezone }}
+      {{- end }}
+      - name: gitlab-account-secret
+        secret:
+          defaultMode: 420
+          secretName: gitlab-account-secret
+      - name: gitlab-pv
+        persistentVolumeClaim:
+          claimName: gitlab-pvc
+      - name: shared
+        emptyDir: {}

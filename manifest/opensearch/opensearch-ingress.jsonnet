@@ -1,4 +1,5 @@
 function (
+  timezone="UTC",
   is_offline="false",
   private_registry="172.22.6.2:5000",
   os_image_tag="1.2.3",
@@ -29,11 +30,10 @@ function (
       "name": "dashboards",
       "namespace": "kube-logging",
       "labels": {
-        "ingress.tmaxcloud.org/name": "dashboards"
+        "ingress.tmaxcloud.org/name": "opensearch-dashboards"
       },
       "annotations": {
         "traefik.ingress.kubernetes.io/router.entrypoints": "websecure",
-        "cert-manager.io/cluster-issuer": custom_clusterissuer
       }
     },
     "spec": {
@@ -63,7 +63,7 @@ function (
         {
           "hosts": [
             std.join("", [opensearch_subdomain, ".", custom_domain_name])
-          ]
+          ],
         }
       ]
     }
