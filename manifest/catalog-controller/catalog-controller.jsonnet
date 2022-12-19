@@ -1,6 +1,7 @@
 function (
   is_offline = "false",
   private_registry = "registry.tmaxcloud.org",
+  v_level = "0",
   time_zone="UTC"
 )
 
@@ -93,7 +94,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "--leader-elect=false",
                 "--profiling=false",
                 "-v",
-                "10",
+                std.join("", ["", v_level]),
                 "--resync-interval",
                 "5m",
                 "--broker-relist-interval",
@@ -214,7 +215,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "--healthz-server-bind-port",
                 "8081",
                 "-v",
-                "10",
+                std.join("", ["", v_level]),
                 "--feature-gates",
                 "OriginatingIdentity=true",
                 "--feature-gates",

@@ -253,6 +253,8 @@ modules:
 
   ### catalog controller
   catalogController:
+    enabled: false
+    vLevel: 0
     enabled: true
 
   ### helm-apiserver
