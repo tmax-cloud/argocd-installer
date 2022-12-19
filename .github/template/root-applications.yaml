@@ -16,6 +16,8 @@ spec:
         - master-values.yaml
       parameters:
         # 모든 모듈 enabled
+        - name: modules.sonarqube.enabled
+          value: "true"
         - name: modules.calico.enabled
           value: "true"
         - name: modules.gitlab.enabled
