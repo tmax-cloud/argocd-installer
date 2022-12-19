@@ -32,7 +32,7 @@ spec:
             value: {{ include "hyperAuth.subdomain" . }}
           - name: storage_class
             value: {{ .Values.modules.hyperAuth.storageClass }}
-          - name: LOG_LEVEL
+          - name: log_level
             value: {{ .Values.modules.hyperAuth.LOG_LEVEL }}
           - name: timezone_setting
             value: {{ .Values.global.timeZone }}
