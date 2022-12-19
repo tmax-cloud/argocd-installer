@@ -47,11 +47,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
               "command": [
                 "/manager"
               ],
-              "env": [
-                {
-                  "name": "TZ",
-                  "value": "Asia/Seoul"
-                },                
+              "env": [              
                 {
                   "name": "HC_DOMAIN",
                   // 고정값이 아닌 경우 아래와같이 변수를 사용 가능

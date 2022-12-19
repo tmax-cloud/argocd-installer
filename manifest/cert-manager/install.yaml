@@ -16068,6 +16068,8 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: cert-manager
+  labels: 
+    hypercloud: system
 ---
 # Source: cert-manager/templates/cainjector-serviceaccount.yaml
 apiVersion: v1

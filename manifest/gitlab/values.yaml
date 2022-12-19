@@ -1,0 +1,36 @@
+# Default values for gitlab-tmax.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+global:
+  timezone: UTC
+  registry:
+    is_offline: false
+    private_registry: 172.22.6.2:5000
+
+externalURL: http://gitlab.testdomain.com
+tls:
+  enabled: true
+
+pvc:
+  storageClassName: ""
+  storage: 30Gi
+  
+ingress:
+  hosts:
+    domain: testdomain.com
+    subdomain: gitlab
+
+keycloak:
+  enabled: false
+  url: http://keycloak.testdomain.com
+  secret: hyperauth-https-secret
+  client: gitlab
+  client_secret: tmax_client_secret
+image:
+  kube:
+    repo: docker.io/bitnami/kubectl
+    tag: 1.20.10
+
+  gitlab:
+    repo: docker.io/gitlab/gitlab-ce
+    tag: 13.6.4-ce.0

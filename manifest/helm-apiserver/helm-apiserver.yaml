@@ -1,0 +1,132 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: helm-ns
+  labels:
+    hypercloud: system
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    traefik.ingress.kubernetes.io/service.serverstransport: insecure@file
+  name: helm-apiserver
+  namespace: helm-ns
+spec:
+  selector:
+    app: helm-apiserver
+  ports:
+  - name: https
+    protocol: TCP
+    port: 443
+    targetPort: 8443
+  type: ClusterIP
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+     app: helm-apiserver
+  name: helm-apiserver-sa
+  namespace: helm-ns
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: helm-apiserver-role
+rules:
+- apiGroups:
+  - authorization.k8s.io
+  resources:
+  - subjectaccessreviews
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apiregistration.k8s.io
+  resources:
+  - apiservices
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  - configmaps
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - update
+  - watch
+  - delete
+- apiGroups:
+  - helmapi.tmax.io
+  resources:
+  - "*"
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - update
+  - watch
+  - delete
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: helm-apiserver-rb
+subjects:
+- kind: ServiceAccount
+  name: helm-apiserver-sa
+  namespace: helm-ns
+roleRef:
+  kind: ClusterRole
+  name: helm-apiserver-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: apiregistration.k8s.io/v1
+kind: APIService
+metadata:
+  name: v1.helmapi.tmax.io
+spec:
+  group: helmapi.tmax.io
+  groupPriorityMinimum: 1000
+  versionPriority: 15
+  service:
+    namespace: helm-ns
+    name: helm-apiserver
+  version: v1
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: helm-apiserver-cert
+  namespace: helm-ns
+spec:
+  secretName: helm-apiserver-cert
+  # isCA: false
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+    - client auth
+  dnsNames:
+    - helm-apiserver.helm-ns.svc
+    - helm-apiserver.helm-ns
+    - helm-apiserver.helm-ns.svc.cluster.local
+  issuerRef:
+    kind: ClusterIssuer
+    group: cert-manager.io
+    name: tmaxcloud-issuer

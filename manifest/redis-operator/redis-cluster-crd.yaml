@@ -1,0 +1,1849 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: "v0.4.1"
+  creationTimestamp: null
+  name: "redisclusters.redis.redis.opstreelabs.in"
+spec:
+  group: "redis.redis.opstreelabs.in"
+  names:
+    kind: "RedisCluster"
+    listKind: "RedisClusterList"
+    plural: "redisclusters"
+    singular: "rediscluster"
+  scope: "Namespaced"
+  versions:
+  - additionalPrinterColumns:
+    - description: "Current cluster node count"
+      jsonPath: ".spec.clusterSize"
+      name: "ClusterSize"
+      type: "integer"
+    - description: "Overridden Leader replica count"
+      jsonPath: ".spec.redisLeader.replicas"
+      name: "LeaderReplicas"
+      type: "integer"
+    - description: "Overridden Follower replica count"
+      jsonPath: ".spec.redisFollower.replicas"
+      name: "FollowerReplicas"
+      type: "integer"
+    - description: "Age of Cluster"
+      jsonPath: ".metadata.creationTimestamp"
+      name: "Age"
+      type: "date"
+    name: "v1beta1"
+    schema:
+      openAPIV3Schema:
+        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema"
+        properties:
+          apiVersion:
+            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.apiVersion"
+            type: "string"
+          kind:
+            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.kind"
+            type: "string"
+          metadata:
+            type: "object"
+          spec:
+            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec"
+            properties:
+              TLS:
+                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.TLS"
+                properties:
+                  ca:
+                    type: "string"
+                  cert:
+                    type: "string"
+                  key:
+                    type: "string"
+                  secret:
+                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.TLS.properties.secret"
+                    properties:
+                      defaultMode:
+                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.TLS.properties.secret.properties.defaultMode"
+                        format: "int32"
+                        type: "integer"
+                      items:
+                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.TLS.properties.secret.properties.items"
+                        items:
+                          description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.TLS.properties.secret.properties.items.items"
+                          properties:
+                            key:
+                              description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.TLS.properties.secret.properties.items.items.properties.key"
+                              type: "string"
+                            mode:
+                              description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.TLS.properties.secret.properties.items.items.properties.mode"
+                              format: "int32"
+                              type: "integer"
+                            path:
+                              description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.TLS.properties.secret.properties.items.items.properties.path"
+                              type: "string"
+                          required:
+                          - "key"
+                          - "path"
+                          type: "object"
+                        type: "array"
+                      optional:
+                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.TLS.properties.secret.properties.optional"
+                        type: "boolean"
+                      secretName:
+                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.TLS.properties.secret.properties.secretName"
+                        type: "string"
+                    type: "object"
+                required:
+                - "secret"
+                type: "object"
+              clusterSize:
+                format: "int32"
+                minimum: 3
+                type: "integer"
+              kubernetesConfig:
+                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.kubernetesConfig"
+                properties:
+                  image:
+                    type: "string"
+                  imagePullPolicy:
+                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.kubernetesConfig.properties.imagePullPolicy"
+                    type: "string"
+                  imagePullSecrets:
+                    items:
+                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.kubernetesConfig.properties.imagePullSecrets.items"
+                      properties:
+                        name:
+                          description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.kubernetesConfig.properties.imagePullSecrets.items.properties.name"
+                          type: "string"
+                      type: "object"
+                    type: "array"
+                  redisSecret:
+                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.kubernetesConfig.properties.redisSecret"
+                    properties:
+                      key:
+                        type: "string"
+                      name:
+                        type: "string"
+                    type: "object"
+                  resources:
+                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.kubernetesConfig.properties.resources"
+                    properties:
+                      limits:
+                        additionalProperties:
+                          anyOf:
+                          - type: "integer"
+                          - type: "string"
+                          pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\\
+                            +|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                          x-kubernetes-int-or-string: true
+                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.kubernetesConfig.properties.resources.properties.limits"
+                        type: "object"
+                      requests:
+                        additionalProperties:
+                          anyOf:
+                          - type: "integer"
+                          - type: "string"
+                          pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\\
+                            +|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                          x-kubernetes-int-or-string: true
+                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.kubernetesConfig.properties.resources.properties.requests"
+                        type: "object"
+                    type: "object"
+                required:
+                - "image"
+                type: "object"
+              nodeSelector:
+                additionalProperties:
+                  type: "string"
+                type: "object"
+              priorityClassName:
+                type: "string"
+              redisExporter:
+                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisExporter"
+                properties:
+                  enabled:
+                    type: "boolean"
+                  env:
+                    items:
+                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisExporter.properties.env.items"
+                      properties:
+                        name:
+                          description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisExporter.properties.env.items.properties.name"
+                          type: "string"
+                        value:
+                          description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisExporter.properties.env.items.properties.value"
+                          type: "string"
+                        valueFrom:
+                          description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisExporter.properties.env.items.properties.valueFrom"
+                          properties:
+                            configMapKeyRef:
+                              description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisExporter.properties.env.items.properties.valueFrom.properties.configMapKeyRef"
+                              properties:
+                                key:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisExporter.properties.env.items.properties.valueFrom.properties.configMapKeyRef.properties.key"
+                                  type: "string"
+                                name:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisExporter.properties.env.items.properties.valueFrom.properties.configMapKeyRef.properties.name"
+                                  type: "string"
+                                optional:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisExporter.properties.env.items.properties.valueFrom.properties.configMapKeyRef.properties.optional"
+                                  type: "boolean"
+                              required:
+                              - "key"
+                              type: "object"
+                            fieldRef:
+                              description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisExporter.properties.env.items.properties.valueFrom.properties.fieldRef"
+                              properties:
+                                apiVersion:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisExporter.properties.env.items.properties.valueFrom.properties.fieldRef.properties.apiVersion"
+                                  type: "string"
+                                fieldPath:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisExporter.properties.env.items.properties.valueFrom.properties.fieldRef.properties.fieldPath"
+                                  type: "string"
+                              required:
+                              - "fieldPath"
+                              type: "object"
+                            resourceFieldRef:
+                              description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisExporter.properties.env.items.properties.valueFrom.properties.resourceFieldRef"
+                              properties:
+                                containerName:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisExporter.properties.env.items.properties.valueFrom.properties.resourceFieldRef.properties.containerName"
+                                  type: "string"
+                                divisor:
+                                  anyOf:
+                                  - type: "integer"
+                                  - type: "string"
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisExporter.properties.env.items.properties.valueFrom.properties.resourceFieldRef.properties.divisor"
+                                  pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\\
+                                    +|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                  x-kubernetes-int-or-string: true
+                                resource:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisExporter.properties.env.items.properties.valueFrom.properties.resourceFieldRef.properties.resource"
+                                  type: "string"
+                              required:
+                              - "resource"
+                              type: "object"
+                            secretKeyRef:
+                              description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisExporter.properties.env.items.properties.valueFrom.properties.secretKeyRef"
+                              properties:
+                                key:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisExporter.properties.env.items.properties.valueFrom.properties.secretKeyRef.properties.key"
+                                  type: "string"
+                                name:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisExporter.properties.env.items.properties.valueFrom.properties.secretKeyRef.properties.name"
+                                  type: "string"
+                                optional:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisExporter.properties.env.items.properties.valueFrom.properties.secretKeyRef.properties.optional"
+                                  type: "boolean"
+                              required:
+                              - "key"
+                              type: "object"
+                          type: "object"
+                      required:
+                      - "name"
+                      type: "object"
+                    type: "array"
+                  image:
+                    type: "string"
+                  imagePullPolicy:
+                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisExporter.properties.imagePullPolicy"
+                    type: "string"
+                  resources:
+                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisExporter.properties.resources"
+                    properties:
+                      limits:
+                        additionalProperties:
+                          anyOf:
+                          - type: "integer"
+                          - type: "string"
+                          pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\\
+                            +|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                          x-kubernetes-int-or-string: true
+                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisExporter.properties.resources.properties.limits"
+                        type: "object"
+                      requests:
+                        additionalProperties:
+                          anyOf:
+                          - type: "integer"
+                          - type: "string"
+                          pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\\
+                            +|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                          x-kubernetes-int-or-string: true
+                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisExporter.properties.resources.properties.requests"
+                        type: "object"
+                    type: "object"
+                required:
+                - "image"
+                type: "object"
+              redisFollower:
+                default:
+                  livenessProbe:
+                    failureThreshold: 3
+                    initialDelaySeconds: 1
+                    periodSeconds: 10
+                    successThreshold: 1
+                    timeoutSeconds: 1
+                  readinessProbe:
+                    failureThreshold: 3
+                    initialDelaySeconds: 1
+                    periodSeconds: 10
+                    successThreshold: 1
+                    timeoutSeconds: 1
+                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower"
+                properties:
+                  affinity:
+                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity"
+                    properties:
+                      nodeAffinity:
+                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.nodeAffinity"
+                        properties:
+                          preferredDuringSchedulingIgnoredDuringExecution:
+                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.nodeAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution"
+                            items:
+                              description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.nodeAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items"
+                              properties:
+                                preference:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.nodeAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.preference"
+                                  properties:
+                                    matchExpressions:
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.nodeAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.preference.properties.matchExpressions"
+                                      items:
+                                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.nodeAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.preference.properties.matchExpressions.items"
+                                        properties:
+                                          key:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.nodeAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.preference.properties.matchExpressions.items.properties.key"
+                                            type: "string"
+                                          operator:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.nodeAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.preference.properties.matchExpressions.items.properties.operator"
+                                            type: "string"
+                                          values:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.nodeAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.preference.properties.matchExpressions.items.properties.values"
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                        required:
+                                        - "key"
+                                        - "operator"
+                                        type: "object"
+                                      type: "array"
+                                    matchFields:
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.nodeAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.preference.properties.matchFields"
+                                      items:
+                                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.nodeAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.preference.properties.matchFields.items"
+                                        properties:
+                                          key:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.nodeAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.preference.properties.matchFields.items.properties.key"
+                                            type: "string"
+                                          operator:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.nodeAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.preference.properties.matchFields.items.properties.operator"
+                                            type: "string"
+                                          values:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.nodeAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.preference.properties.matchFields.items.properties.values"
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                        required:
+                                        - "key"
+                                        - "operator"
+                                        type: "object"
+                                      type: "array"
+                                  type: "object"
+                                weight:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.nodeAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.weight"
+                                  format: "int32"
+                                  type: "integer"
+                              required:
+                              - "preference"
+                              - "weight"
+                              type: "object"
+                            type: "array"
+                          requiredDuringSchedulingIgnoredDuringExecution:
+                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.nodeAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution"
+                            properties:
+                              nodeSelectorTerms:
+                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.nodeAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.properties.nodeSelectorTerms"
+                                items:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.nodeAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.properties.nodeSelectorTerms.items"
+                                  properties:
+                                    matchExpressions:
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.nodeAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.properties.nodeSelectorTerms.items.properties.matchExpressions"
+                                      items:
+                                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.nodeAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.properties.nodeSelectorTerms.items.properties.matchExpressions.items"
+                                        properties:
+                                          key:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.nodeAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.properties.nodeSelectorTerms.items.properties.matchExpressions.items.properties.key"
+                                            type: "string"
+                                          operator:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.nodeAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.properties.nodeSelectorTerms.items.properties.matchExpressions.items.properties.operator"
+                                            type: "string"
+                                          values:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.nodeAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.properties.nodeSelectorTerms.items.properties.matchExpressions.items.properties.values"
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                        required:
+                                        - "key"
+                                        - "operator"
+                                        type: "object"
+                                      type: "array"
+                                    matchFields:
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.nodeAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.properties.nodeSelectorTerms.items.properties.matchFields"
+                                      items:
+                                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.nodeAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.properties.nodeSelectorTerms.items.properties.matchFields.items"
+                                        properties:
+                                          key:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.nodeAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.properties.nodeSelectorTerms.items.properties.matchFields.items.properties.key"
+                                            type: "string"
+                                          operator:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.nodeAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.properties.nodeSelectorTerms.items.properties.matchFields.items.properties.operator"
+                                            type: "string"
+                                          values:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.nodeAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.properties.nodeSelectorTerms.items.properties.matchFields.items.properties.values"
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                        required:
+                                        - "key"
+                                        - "operator"
+                                        type: "object"
+                                      type: "array"
+                                  type: "object"
+                                type: "array"
+                            required:
+                            - "nodeSelectorTerms"
+                            type: "object"
+                        type: "object"
+                      podAffinity:
+                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity"
+                        properties:
+                          preferredDuringSchedulingIgnoredDuringExecution:
+                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution"
+                            items:
+                              description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items"
+                              properties:
+                                podAffinityTerm:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm"
+                                  properties:
+                                    labelSelector:
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.labelSelector"
+                                      properties:
+                                        matchExpressions:
+                                          description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.labelSelector.properties.matchExpressions"
+                                          items:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.labelSelector.properties.matchExpressions.items"
+                                            properties:
+                                              key:
+                                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.labelSelector.properties.matchExpressions.items.properties.key"
+                                                type: "string"
+                                              operator:
+                                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.labelSelector.properties.matchExpressions.items.properties.operator"
+                                                type: "string"
+                                              values:
+                                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.labelSelector.properties.matchExpressions.items.properties.values"
+                                                items:
+                                                  type: "string"
+                                                type: "array"
+                                            required:
+                                            - "key"
+                                            - "operator"
+                                            type: "object"
+                                          type: "array"
+                                        matchLabels:
+                                          additionalProperties:
+                                            type: "string"
+                                          description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.labelSelector.properties.matchLabels"
+                                          type: "object"
+                                      type: "object"
+                                    namespaceSelector:
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.namespaceSelector"
+                                      properties:
+                                        matchExpressions:
+                                          description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.namespaceSelector.properties.matchExpressions"
+                                          items:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.namespaceSelector.properties.matchExpressions.items"
+                                            properties:
+                                              key:
+                                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.namespaceSelector.properties.matchExpressions.items.properties.key"
+                                                type: "string"
+                                              operator:
+                                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.namespaceSelector.properties.matchExpressions.items.properties.operator"
+                                                type: "string"
+                                              values:
+                                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.namespaceSelector.properties.matchExpressions.items.properties.values"
+                                                items:
+                                                  type: "string"
+                                                type: "array"
+                                            required:
+                                            - "key"
+                                            - "operator"
+                                            type: "object"
+                                          type: "array"
+                                        matchLabels:
+                                          additionalProperties:
+                                            type: "string"
+                                          description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.namespaceSelector.properties.matchLabels"
+                                          type: "object"
+                                      type: "object"
+                                    namespaces:
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.namespaces"
+                                      items:
+                                        type: "string"
+                                      type: "array"
+                                    topologyKey:
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.topologyKey"
+                                      type: "string"
+                                  required:
+                                  - "topologyKey"
+                                  type: "object"
+                                weight:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.weight"
+                                  format: "int32"
+                                  type: "integer"
+                              required:
+                              - "podAffinityTerm"
+                              - "weight"
+                              type: "object"
+                            type: "array"
+                          requiredDuringSchedulingIgnoredDuringExecution:
+                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution"
+                            items:
+                              description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items"
+                              properties:
+                                labelSelector:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.labelSelector"
+                                  properties:
+                                    matchExpressions:
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.labelSelector.properties.matchExpressions"
+                                      items:
+                                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.labelSelector.properties.matchExpressions.items"
+                                        properties:
+                                          key:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.labelSelector.properties.matchExpressions.items.properties.key"
+                                            type: "string"
+                                          operator:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.labelSelector.properties.matchExpressions.items.properties.operator"
+                                            type: "string"
+                                          values:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.labelSelector.properties.matchExpressions.items.properties.values"
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                        required:
+                                        - "key"
+                                        - "operator"
+                                        type: "object"
+                                      type: "array"
+                                    matchLabels:
+                                      additionalProperties:
+                                        type: "string"
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.labelSelector.properties.matchLabels"
+                                      type: "object"
+                                  type: "object"
+                                namespaceSelector:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.namespaceSelector"
+                                  properties:
+                                    matchExpressions:
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.namespaceSelector.properties.matchExpressions"
+                                      items:
+                                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.namespaceSelector.properties.matchExpressions.items"
+                                        properties:
+                                          key:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.namespaceSelector.properties.matchExpressions.items.properties.key"
+                                            type: "string"
+                                          operator:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.namespaceSelector.properties.matchExpressions.items.properties.operator"
+                                            type: "string"
+                                          values:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.namespaceSelector.properties.matchExpressions.items.properties.values"
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                        required:
+                                        - "key"
+                                        - "operator"
+                                        type: "object"
+                                      type: "array"
+                                    matchLabels:
+                                      additionalProperties:
+                                        type: "string"
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.namespaceSelector.properties.matchLabels"
+                                      type: "object"
+                                  type: "object"
+                                namespaces:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.namespaces"
+                                  items:
+                                    type: "string"
+                                  type: "array"
+                                topologyKey:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.topologyKey"
+                                  type: "string"
+                              required:
+                              - "topologyKey"
+                              type: "object"
+                            type: "array"
+                        type: "object"
+                      podAntiAffinity:
+                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity"
+                        properties:
+                          preferredDuringSchedulingIgnoredDuringExecution:
+                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution"
+                            items:
+                              description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items"
+                              properties:
+                                podAffinityTerm:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm"
+                                  properties:
+                                    labelSelector:
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.labelSelector"
+                                      properties:
+                                        matchExpressions:
+                                          description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.labelSelector.properties.matchExpressions"
+                                          items:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.labelSelector.properties.matchExpressions.items"
+                                            properties:
+                                              key:
+                                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.labelSelector.properties.matchExpressions.items.properties.key"
+                                                type: "string"
+                                              operator:
+                                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.labelSelector.properties.matchExpressions.items.properties.operator"
+                                                type: "string"
+                                              values:
+                                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.labelSelector.properties.matchExpressions.items.properties.values"
+                                                items:
+                                                  type: "string"
+                                                type: "array"
+                                            required:
+                                            - "key"
+                                            - "operator"
+                                            type: "object"
+                                          type: "array"
+                                        matchLabels:
+                                          additionalProperties:
+                                            type: "string"
+                                          description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.labelSelector.properties.matchLabels"
+                                          type: "object"
+                                      type: "object"
+                                    namespaceSelector:
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.namespaceSelector"
+                                      properties:
+                                        matchExpressions:
+                                          description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.namespaceSelector.properties.matchExpressions"
+                                          items:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.namespaceSelector.properties.matchExpressions.items"
+                                            properties:
+                                              key:
+                                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.namespaceSelector.properties.matchExpressions.items.properties.key"
+                                                type: "string"
+                                              operator:
+                                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.namespaceSelector.properties.matchExpressions.items.properties.operator"
+                                                type: "string"
+                                              values:
+                                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.namespaceSelector.properties.matchExpressions.items.properties.values"
+                                                items:
+                                                  type: "string"
+                                                type: "array"
+                                            required:
+                                            - "key"
+                                            - "operator"
+                                            type: "object"
+                                          type: "array"
+                                        matchLabels:
+                                          additionalProperties:
+                                            type: "string"
+                                          description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.namespaceSelector.properties.matchLabels"
+                                          type: "object"
+                                      type: "object"
+                                    namespaces:
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.namespaces"
+                                      items:
+                                        type: "string"
+                                      type: "array"
+                                    topologyKey:
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.topologyKey"
+                                      type: "string"
+                                  required:
+                                  - "topologyKey"
+                                  type: "object"
+                                weight:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.weight"
+                                  format: "int32"
+                                  type: "integer"
+                              required:
+                              - "podAffinityTerm"
+                              - "weight"
+                              type: "object"
+                            type: "array"
+                          requiredDuringSchedulingIgnoredDuringExecution:
+                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution"
+                            items:
+                              description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items"
+                              properties:
+                                labelSelector:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.labelSelector"
+                                  properties:
+                                    matchExpressions:
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.labelSelector.properties.matchExpressions"
+                                      items:
+                                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.labelSelector.properties.matchExpressions.items"
+                                        properties:
+                                          key:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.labelSelector.properties.matchExpressions.items.properties.key"
+                                            type: "string"
+                                          operator:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.labelSelector.properties.matchExpressions.items.properties.operator"
+                                            type: "string"
+                                          values:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.labelSelector.properties.matchExpressions.items.properties.values"
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                        required:
+                                        - "key"
+                                        - "operator"
+                                        type: "object"
+                                      type: "array"
+                                    matchLabels:
+                                      additionalProperties:
+                                        type: "string"
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.labelSelector.properties.matchLabels"
+                                      type: "object"
+                                  type: "object"
+                                namespaceSelector:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.namespaceSelector"
+                                  properties:
+                                    matchExpressions:
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.namespaceSelector.properties.matchExpressions"
+                                      items:
+                                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.namespaceSelector.properties.matchExpressions.items"
+                                        properties:
+                                          key:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.namespaceSelector.properties.matchExpressions.items.properties.key"
+                                            type: "string"
+                                          operator:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.namespaceSelector.properties.matchExpressions.items.properties.operator"
+                                            type: "string"
+                                          values:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.namespaceSelector.properties.matchExpressions.items.properties.values"
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                        required:
+                                        - "key"
+                                        - "operator"
+                                        type: "object"
+                                      type: "array"
+                                    matchLabels:
+                                      additionalProperties:
+                                        type: "string"
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.namespaceSelector.properties.matchLabels"
+                                      type: "object"
+                                  type: "object"
+                                namespaces:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.namespaces"
+                                  items:
+                                    type: "string"
+                                  type: "array"
+                                topologyKey:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.topologyKey"
+                                  type: "string"
+                              required:
+                              - "topologyKey"
+                              type: "object"
+                            type: "array"
+                        type: "object"
+                    type: "object"
+                  livenessProbe:
+                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.livenessProbe"
+                    properties:
+                      failureThreshold:
+                        default: 3
+                        format: "int32"
+                        minimum: 1
+                        type: "integer"
+                      initialDelaySeconds:
+                        default: 1
+                        format: "int32"
+                        minimum: 1
+                        type: "integer"
+                      periodSeconds:
+                        default: 10
+                        format: "int32"
+                        minimum: 1
+                        type: "integer"
+                      successThreshold:
+                        default: 1
+                        format: "int32"
+                        minimum: 1
+                        type: "integer"
+                      timeoutSeconds:
+                        default: 1
+                        format: "int32"
+                        minimum: 1
+                        type: "integer"
+                    type: "object"
+                  pdb:
+                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.pdb"
+                    properties:
+                      enabled:
+                        type: "boolean"
+                      maxUnavailable:
+                        format: "int32"
+                        type: "integer"
+                      minAvailable:
+                        format: "int32"
+                        type: "integer"
+                    type: "object"
+                  readinessProbe:
+                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.readinessProbe"
+                    properties:
+                      failureThreshold:
+                        default: 3
+                        format: "int32"
+                        minimum: 1
+                        type: "integer"
+                      initialDelaySeconds:
+                        default: 1
+                        format: "int32"
+                        minimum: 1
+                        type: "integer"
+                      periodSeconds:
+                        default: 10
+                        format: "int32"
+                        minimum: 1
+                        type: "integer"
+                      successThreshold:
+                        default: 1
+                        format: "int32"
+                        minimum: 1
+                        type: "integer"
+                      timeoutSeconds:
+                        default: 1
+                        format: "int32"
+                        minimum: 1
+                        type: "integer"
+                    type: "object"
+                  redisConfig:
+                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisFollower.properties.redisConfig"
+                    properties:
+                      additionalRedisConfig:
+                        type: "string"
+                    type: "object"
+                  replicas:
+                    format: "int32"
+                    minimum: 3
+                    type: "integer"
+                type: "object"
+              redisLeader:
+                default:
+                  livenessProbe:
+                    failureThreshold: 3
+                    initialDelaySeconds: 1
+                    periodSeconds: 10
+                    successThreshold: 1
+                    timeoutSeconds: 1
+                  readinessProbe:
+                    failureThreshold: 3
+                    initialDelaySeconds: 1
+                    periodSeconds: 10
+                    successThreshold: 1
+                    timeoutSeconds: 1
+                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader"
+                properties:
+                  affinity:
+                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity"
+                    properties:
+                      nodeAffinity:
+                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.nodeAffinity"
+                        properties:
+                          preferredDuringSchedulingIgnoredDuringExecution:
+                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.nodeAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution"
+                            items:
+                              description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.nodeAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items"
+                              properties:
+                                preference:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.nodeAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.preference"
+                                  properties:
+                                    matchExpressions:
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.nodeAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.preference.properties.matchExpressions"
+                                      items:
+                                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.nodeAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.preference.properties.matchExpressions.items"
+                                        properties:
+                                          key:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.nodeAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.preference.properties.matchExpressions.items.properties.key"
+                                            type: "string"
+                                          operator:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.nodeAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.preference.properties.matchExpressions.items.properties.operator"
+                                            type: "string"
+                                          values:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.nodeAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.preference.properties.matchExpressions.items.properties.values"
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                        required:
+                                        - "key"
+                                        - "operator"
+                                        type: "object"
+                                      type: "array"
+                                    matchFields:
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.nodeAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.preference.properties.matchFields"
+                                      items:
+                                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.nodeAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.preference.properties.matchFields.items"
+                                        properties:
+                                          key:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.nodeAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.preference.properties.matchFields.items.properties.key"
+                                            type: "string"
+                                          operator:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.nodeAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.preference.properties.matchFields.items.properties.operator"
+                                            type: "string"
+                                          values:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.nodeAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.preference.properties.matchFields.items.properties.values"
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                        required:
+                                        - "key"
+                                        - "operator"
+                                        type: "object"
+                                      type: "array"
+                                  type: "object"
+                                weight:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.nodeAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.weight"
+                                  format: "int32"
+                                  type: "integer"
+                              required:
+                              - "preference"
+                              - "weight"
+                              type: "object"
+                            type: "array"
+                          requiredDuringSchedulingIgnoredDuringExecution:
+                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.nodeAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution"
+                            properties:
+                              nodeSelectorTerms:
+                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.nodeAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.properties.nodeSelectorTerms"
+                                items:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.nodeAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.properties.nodeSelectorTerms.items"
+                                  properties:
+                                    matchExpressions:
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.nodeAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.properties.nodeSelectorTerms.items.properties.matchExpressions"
+                                      items:
+                                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.nodeAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.properties.nodeSelectorTerms.items.properties.matchExpressions.items"
+                                        properties:
+                                          key:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.nodeAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.properties.nodeSelectorTerms.items.properties.matchExpressions.items.properties.key"
+                                            type: "string"
+                                          operator:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.nodeAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.properties.nodeSelectorTerms.items.properties.matchExpressions.items.properties.operator"
+                                            type: "string"
+                                          values:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.nodeAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.properties.nodeSelectorTerms.items.properties.matchExpressions.items.properties.values"
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                        required:
+                                        - "key"
+                                        - "operator"
+                                        type: "object"
+                                      type: "array"
+                                    matchFields:
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.nodeAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.properties.nodeSelectorTerms.items.properties.matchFields"
+                                      items:
+                                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.nodeAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.properties.nodeSelectorTerms.items.properties.matchFields.items"
+                                        properties:
+                                          key:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.nodeAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.properties.nodeSelectorTerms.items.properties.matchFields.items.properties.key"
+                                            type: "string"
+                                          operator:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.nodeAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.properties.nodeSelectorTerms.items.properties.matchFields.items.properties.operator"
+                                            type: "string"
+                                          values:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.nodeAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.properties.nodeSelectorTerms.items.properties.matchFields.items.properties.values"
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                        required:
+                                        - "key"
+                                        - "operator"
+                                        type: "object"
+                                      type: "array"
+                                  type: "object"
+                                type: "array"
+                            required:
+                            - "nodeSelectorTerms"
+                            type: "object"
+                        type: "object"
+                      podAffinity:
+                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity"
+                        properties:
+                          preferredDuringSchedulingIgnoredDuringExecution:
+                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution"
+                            items:
+                              description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items"
+                              properties:
+                                podAffinityTerm:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm"
+                                  properties:
+                                    labelSelector:
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.labelSelector"
+                                      properties:
+                                        matchExpressions:
+                                          description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.labelSelector.properties.matchExpressions"
+                                          items:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.labelSelector.properties.matchExpressions.items"
+                                            properties:
+                                              key:
+                                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.labelSelector.properties.matchExpressions.items.properties.key"
+                                                type: "string"
+                                              operator:
+                                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.labelSelector.properties.matchExpressions.items.properties.operator"
+                                                type: "string"
+                                              values:
+                                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.labelSelector.properties.matchExpressions.items.properties.values"
+                                                items:
+                                                  type: "string"
+                                                type: "array"
+                                            required:
+                                            - "key"
+                                            - "operator"
+                                            type: "object"
+                                          type: "array"
+                                        matchLabels:
+                                          additionalProperties:
+                                            type: "string"
+                                          description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.labelSelector.properties.matchLabels"
+                                          type: "object"
+                                      type: "object"
+                                    namespaceSelector:
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.namespaceSelector"
+                                      properties:
+                                        matchExpressions:
+                                          description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.namespaceSelector.properties.matchExpressions"
+                                          items:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.namespaceSelector.properties.matchExpressions.items"
+                                            properties:
+                                              key:
+                                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.namespaceSelector.properties.matchExpressions.items.properties.key"
+                                                type: "string"
+                                              operator:
+                                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.namespaceSelector.properties.matchExpressions.items.properties.operator"
+                                                type: "string"
+                                              values:
+                                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.namespaceSelector.properties.matchExpressions.items.properties.values"
+                                                items:
+                                                  type: "string"
+                                                type: "array"
+                                            required:
+                                            - "key"
+                                            - "operator"
+                                            type: "object"
+                                          type: "array"
+                                        matchLabels:
+                                          additionalProperties:
+                                            type: "string"
+                                          description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.namespaceSelector.properties.matchLabels"
+                                          type: "object"
+                                      type: "object"
+                                    namespaces:
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.namespaces"
+                                      items:
+                                        type: "string"
+                                      type: "array"
+                                    topologyKey:
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.topologyKey"
+                                      type: "string"
+                                  required:
+                                  - "topologyKey"
+                                  type: "object"
+                                weight:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.weight"
+                                  format: "int32"
+                                  type: "integer"
+                              required:
+                              - "podAffinityTerm"
+                              - "weight"
+                              type: "object"
+                            type: "array"
+                          requiredDuringSchedulingIgnoredDuringExecution:
+                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution"
+                            items:
+                              description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items"
+                              properties:
+                                labelSelector:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.labelSelector"
+                                  properties:
+                                    matchExpressions:
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.labelSelector.properties.matchExpressions"
+                                      items:
+                                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.labelSelector.properties.matchExpressions.items"
+                                        properties:
+                                          key:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.labelSelector.properties.matchExpressions.items.properties.key"
+                                            type: "string"
+                                          operator:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.labelSelector.properties.matchExpressions.items.properties.operator"
+                                            type: "string"
+                                          values:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.labelSelector.properties.matchExpressions.items.properties.values"
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                        required:
+                                        - "key"
+                                        - "operator"
+                                        type: "object"
+                                      type: "array"
+                                    matchLabels:
+                                      additionalProperties:
+                                        type: "string"
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.labelSelector.properties.matchLabels"
+                                      type: "object"
+                                  type: "object"
+                                namespaceSelector:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.namespaceSelector"
+                                  properties:
+                                    matchExpressions:
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.namespaceSelector.properties.matchExpressions"
+                                      items:
+                                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.namespaceSelector.properties.matchExpressions.items"
+                                        properties:
+                                          key:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.namespaceSelector.properties.matchExpressions.items.properties.key"
+                                            type: "string"
+                                          operator:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.namespaceSelector.properties.matchExpressions.items.properties.operator"
+                                            type: "string"
+                                          values:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.namespaceSelector.properties.matchExpressions.items.properties.values"
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                        required:
+                                        - "key"
+                                        - "operator"
+                                        type: "object"
+                                      type: "array"
+                                    matchLabels:
+                                      additionalProperties:
+                                        type: "string"
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.namespaceSelector.properties.matchLabels"
+                                      type: "object"
+                                  type: "object"
+                                namespaces:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.namespaces"
+                                  items:
+                                    type: "string"
+                                  type: "array"
+                                topologyKey:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.topologyKey"
+                                  type: "string"
+                              required:
+                              - "topologyKey"
+                              type: "object"
+                            type: "array"
+                        type: "object"
+                      podAntiAffinity:
+                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity"
+                        properties:
+                          preferredDuringSchedulingIgnoredDuringExecution:
+                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution"
+                            items:
+                              description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items"
+                              properties:
+                                podAffinityTerm:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm"
+                                  properties:
+                                    labelSelector:
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.labelSelector"
+                                      properties:
+                                        matchExpressions:
+                                          description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.labelSelector.properties.matchExpressions"
+                                          items:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.labelSelector.properties.matchExpressions.items"
+                                            properties:
+                                              key:
+                                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.labelSelector.properties.matchExpressions.items.properties.key"
+                                                type: "string"
+                                              operator:
+                                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.labelSelector.properties.matchExpressions.items.properties.operator"
+                                                type: "string"
+                                              values:
+                                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.labelSelector.properties.matchExpressions.items.properties.values"
+                                                items:
+                                                  type: "string"
+                                                type: "array"
+                                            required:
+                                            - "key"
+                                            - "operator"
+                                            type: "object"
+                                          type: "array"
+                                        matchLabels:
+                                          additionalProperties:
+                                            type: "string"
+                                          description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.labelSelector.properties.matchLabels"
+                                          type: "object"
+                                      type: "object"
+                                    namespaceSelector:
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.namespaceSelector"
+                                      properties:
+                                        matchExpressions:
+                                          description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.namespaceSelector.properties.matchExpressions"
+                                          items:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.namespaceSelector.properties.matchExpressions.items"
+                                            properties:
+                                              key:
+                                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.namespaceSelector.properties.matchExpressions.items.properties.key"
+                                                type: "string"
+                                              operator:
+                                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.namespaceSelector.properties.matchExpressions.items.properties.operator"
+                                                type: "string"
+                                              values:
+                                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.namespaceSelector.properties.matchExpressions.items.properties.values"
+                                                items:
+                                                  type: "string"
+                                                type: "array"
+                                            required:
+                                            - "key"
+                                            - "operator"
+                                            type: "object"
+                                          type: "array"
+                                        matchLabels:
+                                          additionalProperties:
+                                            type: "string"
+                                          description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.namespaceSelector.properties.matchLabels"
+                                          type: "object"
+                                      type: "object"
+                                    namespaces:
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.namespaces"
+                                      items:
+                                        type: "string"
+                                      type: "array"
+                                    topologyKey:
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.podAffinityTerm.properties.topologyKey"
+                                      type: "string"
+                                  required:
+                                  - "topologyKey"
+                                  type: "object"
+                                weight:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.preferredDuringSchedulingIgnoredDuringExecution.items.properties.weight"
+                                  format: "int32"
+                                  type: "integer"
+                              required:
+                              - "podAffinityTerm"
+                              - "weight"
+                              type: "object"
+                            type: "array"
+                          requiredDuringSchedulingIgnoredDuringExecution:
+                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution"
+                            items:
+                              description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items"
+                              properties:
+                                labelSelector:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.labelSelector"
+                                  properties:
+                                    matchExpressions:
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.labelSelector.properties.matchExpressions"
+                                      items:
+                                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.labelSelector.properties.matchExpressions.items"
+                                        properties:
+                                          key:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.labelSelector.properties.matchExpressions.items.properties.key"
+                                            type: "string"
+                                          operator:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.labelSelector.properties.matchExpressions.items.properties.operator"
+                                            type: "string"
+                                          values:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.labelSelector.properties.matchExpressions.items.properties.values"
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                        required:
+                                        - "key"
+                                        - "operator"
+                                        type: "object"
+                                      type: "array"
+                                    matchLabels:
+                                      additionalProperties:
+                                        type: "string"
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.labelSelector.properties.matchLabels"
+                                      type: "object"
+                                  type: "object"
+                                namespaceSelector:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.namespaceSelector"
+                                  properties:
+                                    matchExpressions:
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.namespaceSelector.properties.matchExpressions"
+                                      items:
+                                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.namespaceSelector.properties.matchExpressions.items"
+                                        properties:
+                                          key:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.namespaceSelector.properties.matchExpressions.items.properties.key"
+                                            type: "string"
+                                          operator:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.namespaceSelector.properties.matchExpressions.items.properties.operator"
+                                            type: "string"
+                                          values:
+                                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.namespaceSelector.properties.matchExpressions.items.properties.values"
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                        required:
+                                        - "key"
+                                        - "operator"
+                                        type: "object"
+                                      type: "array"
+                                    matchLabels:
+                                      additionalProperties:
+                                        type: "string"
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.namespaceSelector.properties.matchLabels"
+                                      type: "object"
+                                  type: "object"
+                                namespaces:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.namespaces"
+                                  items:
+                                    type: "string"
+                                  type: "array"
+                                topologyKey:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.affinity.properties.podAntiAffinity.properties.requiredDuringSchedulingIgnoredDuringExecution.items.properties.topologyKey"
+                                  type: "string"
+                              required:
+                              - "topologyKey"
+                              type: "object"
+                            type: "array"
+                        type: "object"
+                    type: "object"
+                  livenessProbe:
+                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.livenessProbe"
+                    properties:
+                      failureThreshold:
+                        default: 3
+                        format: "int32"
+                        minimum: 1
+                        type: "integer"
+                      initialDelaySeconds:
+                        default: 1
+                        format: "int32"
+                        minimum: 1
+                        type: "integer"
+                      periodSeconds:
+                        default: 10
+                        format: "int32"
+                        minimum: 1
+                        type: "integer"
+                      successThreshold:
+                        default: 1
+                        format: "int32"
+                        minimum: 1
+                        type: "integer"
+                      timeoutSeconds:
+                        default: 1
+                        format: "int32"
+                        minimum: 1
+                        type: "integer"
+                    type: "object"
+                  pdb:
+                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.pdb"
+                    properties:
+                      enabled:
+                        type: "boolean"
+                      maxUnavailable:
+                        format: "int32"
+                        type: "integer"
+                      minAvailable:
+                        format: "int32"
+                        type: "integer"
+                    type: "object"
+                  readinessProbe:
+                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.readinessProbe"
+                    properties:
+                      failureThreshold:
+                        default: 3
+                        format: "int32"
+                        minimum: 1
+                        type: "integer"
+                      initialDelaySeconds:
+                        default: 1
+                        format: "int32"
+                        minimum: 1
+                        type: "integer"
+                      periodSeconds:
+                        default: 10
+                        format: "int32"
+                        minimum: 1
+                        type: "integer"
+                      successThreshold:
+                        default: 1
+                        format: "int32"
+                        minimum: 1
+                        type: "integer"
+                      timeoutSeconds:
+                        default: 1
+                        format: "int32"
+                        minimum: 1
+                        type: "integer"
+                    type: "object"
+                  redisConfig:
+                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.redisLeader.properties.redisConfig"
+                    properties:
+                      additionalRedisConfig:
+                        type: "string"
+                    type: "object"
+                  replicas:
+                    format: "int32"
+                    minimum: 3
+                    type: "integer"
+                type: "object"
+              resources:
+                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.resources"
+                properties:
+                  limits:
+                    additionalProperties:
+                      anyOf:
+                      - type: "integer"
+                      - type: "string"
+                      pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\\
+                        +|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                      x-kubernetes-int-or-string: true
+                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.resources.properties.limits"
+                    type: "object"
+                  requests:
+                    additionalProperties:
+                      anyOf:
+                      - type: "integer"
+                      - type: "string"
+                      pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\\
+                        +|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                      x-kubernetes-int-or-string: true
+                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.resources.properties.requests"
+                    type: "object"
+                type: "object"
+              securityContext:
+                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.securityContext"
+                properties:
+                  fsGroup:
+                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.securityContext.properties.fsGroup"
+                    format: "int64"
+                    type: "integer"
+                  fsGroupChangePolicy:
+                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.securityContext.properties.fsGroupChangePolicy"
+                    type: "string"
+                  runAsGroup:
+                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.securityContext.properties.runAsGroup"
+                    format: "int64"
+                    type: "integer"
+                  runAsNonRoot:
+                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.securityContext.properties.runAsNonRoot"
+                    type: "boolean"
+                  runAsUser:
+                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.securityContext.properties.runAsUser"
+                    format: "int64"
+                    type: "integer"
+                  seLinuxOptions:
+                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.securityContext.properties.seLinuxOptions"
+                    properties:
+                      level:
+                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.securityContext.properties.seLinuxOptions.properties.level"
+                        type: "string"
+                      role:
+                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.securityContext.properties.seLinuxOptions.properties.role"
+                        type: "string"
+                      type:
+                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.securityContext.properties.seLinuxOptions.properties.type"
+                        type: "string"
+                      user:
+                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.securityContext.properties.seLinuxOptions.properties.user"
+                        type: "string"
+                    type: "object"
+                  seccompProfile:
+                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.securityContext.properties.seccompProfile"
+                    properties:
+                      localhostProfile:
+                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.securityContext.properties.seccompProfile.properties.localhostProfile"
+                        type: "string"
+                      type:
+                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.securityContext.properties.seccompProfile.properties.type"
+                        type: "string"
+                    required:
+                    - "type"
+                    type: "object"
+                  supplementalGroups:
+                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.securityContext.properties.supplementalGroups"
+                    items:
+                      format: "int64"
+                      type: "integer"
+                    type: "array"
+                  sysctls:
+                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.securityContext.properties.sysctls"
+                    items:
+                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.securityContext.properties.sysctls.items"
+                      properties:
+                        name:
+                          description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.securityContext.properties.sysctls.items.properties.name"
+                          type: "string"
+                        value:
+                          description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.securityContext.properties.sysctls.items.properties.value"
+                          type: "string"
+                      required:
+                      - "name"
+                      - "value"
+                      type: "object"
+                    type: "array"
+                  windowsOptions:
+                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.securityContext.properties.windowsOptions"
+                    properties:
+                      gmsaCredentialSpec:
+                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.securityContext.properties.windowsOptions.properties.gmsaCredentialSpec"
+                        type: "string"
+                      gmsaCredentialSpecName:
+                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.securityContext.properties.windowsOptions.properties.gmsaCredentialSpecName"
+                        type: "string"
+                      hostProcess:
+                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.securityContext.properties.windowsOptions.properties.hostProcess"
+                        type: "boolean"
+                      runAsUserName:
+                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.securityContext.properties.windowsOptions.properties.runAsUserName"
+                        type: "string"
+                    type: "object"
+                type: "object"
+              sidecars:
+                items:
+                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.sidecars.items"
+                  properties:
+                    env:
+                      items:
+                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.sidecars.items.properties.env.items"
+                        properties:
+                          name:
+                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.sidecars.items.properties.env.items.properties.name"
+                            type: "string"
+                          value:
+                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.sidecars.items.properties.env.items.properties.value"
+                            type: "string"
+                          valueFrom:
+                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.sidecars.items.properties.env.items.properties.valueFrom"
+                            properties:
+                              configMapKeyRef:
+                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.sidecars.items.properties.env.items.properties.valueFrom.properties.configMapKeyRef"
+                                properties:
+                                  key:
+                                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.sidecars.items.properties.env.items.properties.valueFrom.properties.configMapKeyRef.properties.key"
+                                    type: "string"
+                                  name:
+                                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.sidecars.items.properties.env.items.properties.valueFrom.properties.configMapKeyRef.properties.name"
+                                    type: "string"
+                                  optional:
+                                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.sidecars.items.properties.env.items.properties.valueFrom.properties.configMapKeyRef.properties.optional"
+                                    type: "boolean"
+                                required:
+                                - "key"
+                                type: "object"
+                              fieldRef:
+                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.sidecars.items.properties.env.items.properties.valueFrom.properties.fieldRef"
+                                properties:
+                                  apiVersion:
+                                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.sidecars.items.properties.env.items.properties.valueFrom.properties.fieldRef.properties.apiVersion"
+                                    type: "string"
+                                  fieldPath:
+                                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.sidecars.items.properties.env.items.properties.valueFrom.properties.fieldRef.properties.fieldPath"
+                                    type: "string"
+                                required:
+                                - "fieldPath"
+                                type: "object"
+                              resourceFieldRef:
+                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.sidecars.items.properties.env.items.properties.valueFrom.properties.resourceFieldRef"
+                                properties:
+                                  containerName:
+                                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.sidecars.items.properties.env.items.properties.valueFrom.properties.resourceFieldRef.properties.containerName"
+                                    type: "string"
+                                  divisor:
+                                    anyOf:
+                                    - type: "integer"
+                                    - type: "string"
+                                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.sidecars.items.properties.env.items.properties.valueFrom.properties.resourceFieldRef.properties.divisor"
+                                    pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\\
+                                      +|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                    x-kubernetes-int-or-string: true
+                                  resource:
+                                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.sidecars.items.properties.env.items.properties.valueFrom.properties.resourceFieldRef.properties.resource"
+                                    type: "string"
+                                required:
+                                - "resource"
+                                type: "object"
+                              secretKeyRef:
+                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.sidecars.items.properties.env.items.properties.valueFrom.properties.secretKeyRef"
+                                properties:
+                                  key:
+                                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.sidecars.items.properties.env.items.properties.valueFrom.properties.secretKeyRef.properties.key"
+                                    type: "string"
+                                  name:
+                                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.sidecars.items.properties.env.items.properties.valueFrom.properties.secretKeyRef.properties.name"
+                                    type: "string"
+                                  optional:
+                                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.sidecars.items.properties.env.items.properties.valueFrom.properties.secretKeyRef.properties.optional"
+                                    type: "boolean"
+                                required:
+                                - "key"
+                                type: "object"
+                            type: "object"
+                        required:
+                        - "name"
+                        type: "object"
+                      type: "array"
+                    image:
+                      type: "string"
+                    imagePullPolicy:
+                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.sidecars.items.properties.imagePullPolicy"
+                      type: "string"
+                    name:
+                      type: "string"
+                    resources:
+                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.sidecars.items.properties.resources"
+                      properties:
+                        limits:
+                          additionalProperties:
+                            anyOf:
+                            - type: "integer"
+                            - type: "string"
+                            pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\\
+                              +|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                            x-kubernetes-int-or-string: true
+                          description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.sidecars.items.properties.resources.properties.limits"
+                          type: "object"
+                        requests:
+                          additionalProperties:
+                            anyOf:
+                            - type: "integer"
+                            - type: "string"
+                            pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\\
+                              +|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                            x-kubernetes-int-or-string: true
+                          description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.sidecars.items.properties.resources.properties.requests"
+                          type: "object"
+                      type: "object"
+                  required:
+                  - "image"
+                  - "name"
+                  type: "object"
+                type: "array"
+              storage:
+                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage"
+                properties:
+                  volumeClaimTemplate:
+                    description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate"
+                    properties:
+                      apiVersion:
+                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.apiVersion"
+                        type: "string"
+                      kind:
+                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.kind"
+                        type: "string"
+                      metadata:
+                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.metadata"
+                        type: "object"
+                      spec:
+                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.spec"
+                        properties:
+                          accessModes:
+                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.spec.properties.accessModes"
+                            items:
+                              type: "string"
+                            type: "array"
+                          dataSource:
+                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.spec.properties.dataSource"
+                            properties:
+                              apiGroup:
+                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.spec.properties.dataSource.properties.apiGroup"
+                                type: "string"
+                              kind:
+                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.spec.properties.dataSource.properties.kind"
+                                type: "string"
+                              name:
+                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.spec.properties.dataSource.properties.name"
+                                type: "string"
+                            required:
+                            - "kind"
+                            - "name"
+                            type: "object"
+                          dataSourceRef:
+                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.spec.properties.dataSourceRef"
+                            properties:
+                              apiGroup:
+                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.spec.properties.dataSourceRef.properties.apiGroup"
+                                type: "string"
+                              kind:
+                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.spec.properties.dataSourceRef.properties.kind"
+                                type: "string"
+                              name:
+                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.spec.properties.dataSourceRef.properties.name"
+                                type: "string"
+                            required:
+                            - "kind"
+                            - "name"
+                            type: "object"
+                          resources:
+                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.spec.properties.resources"
+                            properties:
+                              limits:
+                                additionalProperties:
+                                  anyOf:
+                                  - type: "integer"
+                                  - type: "string"
+                                  pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\\
+                                    +|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                  x-kubernetes-int-or-string: true
+                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.spec.properties.resources.properties.limits"
+                                type: "object"
+                              requests:
+                                additionalProperties:
+                                  anyOf:
+                                  - type: "integer"
+                                  - type: "string"
+                                  pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\\
+                                    +|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                  x-kubernetes-int-or-string: true
+                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.spec.properties.resources.properties.requests"
+                                type: "object"
+                            type: "object"
+                          selector:
+                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.spec.properties.selector"
+                            properties:
+                              matchExpressions:
+                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.spec.properties.selector.properties.matchExpressions"
+                                items:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.spec.properties.selector.properties.matchExpressions.items"
+                                  properties:
+                                    key:
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.spec.properties.selector.properties.matchExpressions.items.properties.key"
+                                      type: "string"
+                                    operator:
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.spec.properties.selector.properties.matchExpressions.items.properties.operator"
+                                      type: "string"
+                                    values:
+                                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.spec.properties.selector.properties.matchExpressions.items.properties.values"
+                                      items:
+                                        type: "string"
+                                      type: "array"
+                                  required:
+                                  - "key"
+                                  - "operator"
+                                  type: "object"
+                                type: "array"
+                              matchLabels:
+                                additionalProperties:
+                                  type: "string"
+                                description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.spec.properties.selector.properties.matchLabels"
+                                type: "object"
+                            type: "object"
+                          storageClassName:
+                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.spec.properties.storageClassName"
+                            type: "string"
+                          volumeMode:
+                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.spec.properties.volumeMode"
+                            type: "string"
+                          volumeName:
+                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.spec.properties.volumeName"
+                            type: "string"
+                        type: "object"
+                      status:
+                        description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.status"
+                        properties:
+                          accessModes:
+                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.status.properties.accessModes"
+                            items:
+                              type: "string"
+                            type: "array"
+                          allocatedResources:
+                            additionalProperties:
+                              anyOf:
+                              - type: "integer"
+                              - type: "string"
+                              pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\\
+                                +|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                              x-kubernetes-int-or-string: true
+                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.status.properties.allocatedResources"
+                            type: "object"
+                          capacity:
+                            additionalProperties:
+                              anyOf:
+                              - type: "integer"
+                              - type: "string"
+                              pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\\
+                                +|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                              x-kubernetes-int-or-string: true
+                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.status.properties.capacity"
+                            type: "object"
+                          conditions:
+                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.status.properties.conditions"
+                            items:
+                              description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.status.properties.conditions.items"
+                              properties:
+                                lastProbeTime:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.status.properties.conditions.items.properties.lastProbeTime"
+                                  format: "date-time"
+                                  type: "string"
+                                lastTransitionTime:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.status.properties.conditions.items.properties.lastTransitionTime"
+                                  format: "date-time"
+                                  type: "string"
+                                message:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.status.properties.conditions.items.properties.message"
+                                  type: "string"
+                                reason:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.status.properties.conditions.items.properties.reason"
+                                  type: "string"
+                                status:
+                                  type: "string"
+                                type:
+                                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.status.properties.conditions.items.properties.type"
+                                  type: "string"
+                              required:
+                              - "status"
+                              - "type"
+                              type: "object"
+                            type: "array"
+                          phase:
+                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.status.properties.phase"
+                            type: "string"
+                          resizeStatus:
+                            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.storage.properties.volumeClaimTemplate.properties.status.properties.resizeStatus"
+                            type: "string"
+                        type: "object"
+                    type: "object"
+                type: "object"
+              tolerations:
+                items:
+                  description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.tolerations.items"
+                  properties:
+                    effect:
+                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.tolerations.items.properties.effect"
+                      type: "string"
+                    key:
+                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.tolerations.items.properties.key"
+                      type: "string"
+                    operator:
+                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.tolerations.items.properties.operator"
+                      type: "string"
+                    tolerationSeconds:
+                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.tolerations.items.properties.tolerationSeconds"
+                      format: "int64"
+                      type: "integer"
+                    value:
+                      description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.tolerations.items.properties.value"
+                      type: "string"
+                  type: "object"
+                type: "array"
+            required:
+            - "clusterSize"
+            - "kubernetesConfig"
+            type: "object"
+          status:
+            description: "%redisclusters.yaml.spec.versions.schema.openAPIV3Schema.properties.status"
+            type: "object"
+        required:
+        - "spec"
+        type: "object"
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

@@ -1,4 +1,43 @@
-# Installation Guide for SINGLE Cluster
+# Installation Guide for SINGLE Cluster(v1.1.0)
+## Prerequisites
+- Master cluster Argocd 설치
+- Single cluster 생성
+---
+## How to install
+1. Argocd 대시보드에 접속하기  
+    1) hypercloud console에 접속 
+    2) 좌측의 [멀티 클러스터] 탭 클릭
+    3) [클러스터] 탭에서 생성한 클러스터의 상태에서 [SyncNeeded]를 클릭
+        - 상태가 SyncNeeded가 아니라면, SyncNeeded가 될 때까지 기다린다
+    4) argocd application 대시보드로 접속    
+---
+2. Argocd Application Repository 경로 설정하기
+    1) application 대시보드 [SUMMARY] tab에서 [EDIT] 버튼 클릭
+    2) [REPO URL]에 repository 경로 기입
+        - gitlab repository의 경우 마지막에 .git을 함께 기입
+        - ex) https://github.com/tmax-cloud/argocd-installer
+        - ex) https://gitlab.com/tmax-cloud/argocd-installer.git
+    3) [TARGET REVISION]에 사용할 revision 기입    
+        - ex) main
+    4) [SAVE] 버튼을 클릭해서 저장
+---
+3. Application 변수 세팅하기 
+    1) application 대시보드 [PARAMETERS] tab에서 [EDIT] 버튼 클릭
+    2) 한글로 표시되어 있는 부분 변경 
+    3) [SAVE] 버튼을 클릭해서 저장 
+---
+4. Resource 배포하기(Application Sync)
+    1) 상위 Application의 햄버거 버튼에서 [Sync] 버튼 클릭
+    2) [SYNCHRONIZE] 버튼 클릭
+    3) 하위 Application들이 모두 Sync될 때까지 기다린다.  
+    4) 이후의 Application Sync는 마스터와 동일하므로 [마스터 설치 가이드](INSTALL_GUIDE_MASTER.md#how-to-install) 4번 항목 참조
+
+
+<br/>
+
+<br/>
+
+# Installation Guide for SINGLE Cluster(v1.0.0 - v1.0.2)
 ## Prerequisites
     1. ArgoCD([Install guide link](https://github.com/tmax-cloud/install-argocd))
 ---

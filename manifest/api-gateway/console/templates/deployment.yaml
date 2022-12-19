@@ -30,6 +30,8 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
             - /opt/bridge/bin/console
             - server
@@ -41,11 +43,15 @@ spec:
             - --keycloak-auth-url=https://{{ .auth.hyperauth }}/auth
             - --keycloak-client-id={{ .auth.clientid }}
             - --mc-mode={{ .mcMode }}
+            - --chatbot-embed={{ .chatbotEmbed }}
             {{- end }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if not (eq .Values.console.timeZone "UTC") }}
+          volumeMounts:
+            - mountPath: /etc/localtime
+              name: timezone-config
+          {{- end }}
           ports:
             - name: http
               containerPort: 31303
@@ -60,6 +66,12 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      {{- if not (eq .Values.console.timeZone "UTC") }}
+      volumes:
+        - name: timezone-config
+          hostPath:
+            path: "/usr/share/zoneinfo/{{ .Values.console.timeZone }}"
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

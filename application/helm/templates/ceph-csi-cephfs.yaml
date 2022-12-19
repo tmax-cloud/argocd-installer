@@ -1,0 +1,53 @@
+{{- if .Values.modules.cephfs.enabled }}
+{{ $isMaster := eq .Values.global.cluster "master" }}
+{{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
+{{ $module := "cephfs" }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  labels:
+    cluster: {{ ternary "master" $prefix $isMaster }}
+  name: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
+  namespace: argocd
+spec:
+  destination:
+    name: {{ .Values.global.clusterName }}
+    namespace: ceph-csi
+  project: {{ .Values.spec.project }}
+  source:
+    helm:
+      parameters:
+        - name: storageClass.clusterID
+          value: {{ .Values.modules.cephfs.clusterId }}
+        - name: csiConfig
+          value: '[{"clusterID": "{{ .Values.modules.cephfs.clusterId }}", "monitors": {{ .Values.modules.cephfs.monitors }}}]'
+        - name: secret.adminKey
+          value: {{ .Values.modules.cephfs.key }}
+        {{- if eq .Values.modules.cephfs.defaultClass "default" }}
+        - name: storageClass.defaultClass
+          value: "true"
+          forceString: true
+        {{- end }}
+        - name: timeZone
+          value: {{ .Values.global.timeZone }}
+        {{- if .Values.global.network.disabled }}
+        - name: nodeplugin.registrar.image.repository
+          value: "{{ .Values.global.privateRegistry }}/csi-node-driver-registrar"
+        - name: nodeplugin.plugin.image.repository
+          value: "{{ .Values.global.privateRegistry }}/cephcsi"
+        - name: provisioner.provisioner.image.repository
+          value: "{{ .Values.global.privateRegistry }}/csi-provisioner"
+        - name: provisioner.attacher.image.repository
+          value: "{{ .Values.global.privateRegistry }}/csi-attacher"
+        - name: provisioner.resizer.image.repository
+          value: "{{ .Values.global.privateRegistry }}/csi-resizer"
+        - name: provisioner.snapshotter.image.repository
+          value: "{{ .Values.global.privateRegistry }}/csi-snapshotter"
+        {{- end }}
+    path: manifest/ceph-csi-cephfs
+    repoURL: {{ .Values.spec.source.repoURL }}
+    targetRevision: {{ .Values.spec.source.targetRevision }}
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+{{- end }}

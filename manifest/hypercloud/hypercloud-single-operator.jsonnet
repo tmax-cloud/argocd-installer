@@ -8,10 +8,27 @@ function (
   domain="tmaxcloud.org",    
   hyperauth_subdomain="hyperauth",
   console_subdomain="console",
-  hyperregistry_enabled="true",
+  kubectl_timeout="21600",
   storageClass="default",
   aws_enabled="true",
-  vsphere_enabled="true"
+  vsphere_enabled="true",
+  time_zone="UTC",
+  multi_operator_log_level="info",
+  single_operator_log_level="info",
+  api_server_log_level="INFO",
+  timescaledb_log_level="WARNING",
+  timescaledb_audit_chunk_time_interval="7 days",
+  timescaledb_audit_retention_policy="1 years",
+  timescaledb_event_chunk_time_interval="1 days",
+  timescaledb_event_retention_policy="1 months",
+  timescaledb_metering_hour_chunk_time_interval="1 days",
+  timescaledb_metering_hour_retention_policy="1 months",
+  timescaledb_metering_day_chunk_time_interval="1 months",
+  timescaledb_metering_day_retention_policy="1 years",
+  timescaledb_metering_month_chunk_time_interval="1 years",
+  timescaledb_metering_month_retention_policy="1 years",
+  timescaledb_metering_year_retention_policy="1 years",
+  timescaledb_metering_year_retention_policy="10 years"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -44,12 +61,13 @@ local target_registry = if is_offline == "false" then "" else private_registry +
           {
             "args": [
               "--metrics-addr=127.0.0.1:8080",
-              "--enable-leader-election"
+              "--enable-leader-election",
+              std.join("", ["--zap-log-level=", single_operator_log_level])
             ],
             "command": [
               "/manager"
             ],
-            "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-single-operator:b5.0.25.16"]),
+            "image": std.join( "", [ target_registry, "docker.io/tmaxcloudck/hypercloud-single-operator:b5.0.37.0" ]),
             "name": "manager",
             "ports": [
               {
@@ -83,7 +101,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "mountPath": "/logs",
                 "name": "operator-log-mnt"
               }
-            ]
+            ] + (
+              if time_zone != "UTC" then [
+                {
+                  "name": "timezone-config",
+                  "mountPath": "/etc/localtime"
+                }
+              ] else []
+            )
           },
           {
             "args": [
@@ -140,7 +165,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
           {
             "name": "operator-log-mnt"
           }
-        ]
+        ] + (
+          if time_zone != "UTC" then [
+            {
+              "name": "timezone-config",
+              "hostPath": {
+                "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+              }
+            }
+          ] else []
+        )
       }
     }
   }

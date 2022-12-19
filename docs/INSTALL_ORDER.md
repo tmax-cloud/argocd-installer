@@ -2,21 +2,23 @@
 1. api-gateway-bootstrap(cert-manager + api-gateway)
 2. strimzi kafka operator
 3. hyperauth
-4. efk or opensearch
+4. opensearch
 5. prometheus
-6. grafana
-7. istio
-8. jaeger
-9. kiali
-10. cluster-api
-11. cluster-api-provider-aws
-12. cluster-api-provider-vsphere
-13. template-service-broker
-14. catalog-controller
-15. hypercloud
-16. tekton-pipeline
-17. tekton-trigger
-18. cicd-operator
-19. redis-operator
-20. image-validating-webhook
-21. ai-devops(미완)
+6. grafana-operator
+7. loki
+8. istio
+9. jaeger
+10. kiali
+11. helm-api-server
+12. cluster-api
+13. cluster-api-provider-aws
+14. cluster-api-provider-vsphere
+15. template-service-broker
+16. catalog-controller
+17. hypercloud
+18. service-binding
+19. tekton-pipeline
+20. tekton-trigger
+21. cicd-operator
+22. redis-operator
+23. image-validating-webhook

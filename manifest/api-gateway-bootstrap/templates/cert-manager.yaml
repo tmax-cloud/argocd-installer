@@ -42,8 +42,6 @@ spec:
       prune: true
     syncOptions:
       - ApplyOutOfSyncOnly=true
-    retry:
-      limit: 3
 
 ---
 {{ $syncWave := "cert-manager-sync-wave" }}

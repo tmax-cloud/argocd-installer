@@ -56,7 +56,7 @@ spec:
             port: {{ .Values.metrics.exporter.port }}
           initialDelaySeconds: 30
           periodSeconds: 10
-        args: ["-log-level", "{{ .Values.logLevel }}"]
+        args: ["-log-level", "{{ .Values.mainsLogLevel  }}"]
         envFrom:
         - configMapRef:
             name: "{{ template "harbor.exporter" . }}-env"
@@ -69,6 +69,10 @@ spec:
         ports:
         - containerPort: {{ template "harbor.core.containerPort" . }}
         volumeMounts:
+        {{- if ne .Values.global.time_zone "UTC" }}
+        - name: timezone-config
+          mountPath: /etc/localtime
+        {{- end }}
         {{- if .Values.caBundleSecretName }}
 {{ include "harbor.caBundleVolumeMount" . | indent 8 }}
         {{- end }}
@@ -79,6 +83,11 @@ spec:
           # When internal TLS is enabled, the Exporter need the CA file to collect these data.
         {{- end }}
       volumes:
+      {{- if ne .Values.global.time_zone "UTC" }}
+      - name: timezone-config
+        hostPath: 
+          path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.global.time_zone }}
+      {{- end }}
       - name: config
         secret:
           secretName: "{{ template "harbor.exporter" . }}"

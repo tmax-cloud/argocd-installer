@@ -24,6 +24,8 @@ spec:
       valueFiles:
         - {{ .Values.modules.jwtDecodeAuth.source.helm.valueFiles }}
       parameters:
+        - name: timeZone
+          value: {{ .Values.global.timeZone | default "UTC" }}
         - name: hyperauth.address
           value: {{ .Values.global.hyperauth.address | default "hyperauth.org"}}
         - name: hyperauth.realm
@@ -40,8 +42,6 @@ spec:
   syncPolicy:
     automated:
       prune: true
-    retry:
-      limit: 3
     syncOptions:
       - ApplyOutOfSyncOnly=true
 ---

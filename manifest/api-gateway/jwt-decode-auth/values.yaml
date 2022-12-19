@@ -2,6 +2,8 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+timeZone: "UTC"
+# timeZone: "Asia/Seoul"
 nameOverride: "jwt-decode-auth"
 fullnameOverride: "jwt-decode-auth"
 hyperauth:
@@ -18,14 +20,14 @@ image:
   repository: docker.io/tmaxcloudck/jwt-decode
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "5.0.0.1"
+  tag: "5.0.0.4"
 
 imagePullSecrets: []
 #imagePullSecrets:
 #  - name: regcred
 
-nameOverride: ""
-fullnameOverride: "jwt-decode-auth"
+#nameOverride: ""
+#fullnameOverride: "jwt-decode-auth"
 
 serviceAccount:
   # Specifies whether a service account should be created

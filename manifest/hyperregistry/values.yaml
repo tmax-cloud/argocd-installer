@@ -1,10 +1,21 @@
 global:
+  appName: "hyperregistry"
+  # time_zone: "Asia/Seoul"
+  time_zone: "UTC"
   registry:
     is_offline: false
     private_registry: 172.22.6.2:5000
 
 fullnameOverride: "hyperregistry-harbor"
 nameOverride: ""
+
+OIDC:
+  enabled: true 
+  config:
+    clientId: hyperregistry
+    clientSecret: tmax_client_secret
+    hyperauthUrl: hyperauth_domain
+    adminGroupName: hypercloud5
 
 expose:
   # Set the way how to expose the service. Set the type as "ingress",
@@ -230,19 +241,19 @@ persistence:
       storageClass: ""
       subPath: ""
       accessMode: ReadWriteOnce
-      size: 5Gi
+      size: 50G
     chartmuseum:
       existingClaim: ""
       storageClass: ""
       subPath: ""
       accessMode: ReadWriteOnce
-      size: 5Gi
+      size: 10G
     jobservice:
       existingClaim: ""
       storageClass: ""
       subPath: ""
       accessMode: ReadWriteOnce
-      size: 1Gi
+      size: 5G
     # If external database is used, the following settings for database will
     # be ignored
     database:
@@ -250,7 +261,7 @@ persistence:
       storageClass: ""
       subPath: ""
       accessMode: ReadWriteOnce
-      size: 1Gi
+      size: 10G
     # If external Redis is used, the following settings for Redis will
     # be ignored
     redis:
@@ -258,13 +269,13 @@ persistence:
       storageClass: ""
       subPath: ""
       accessMode: ReadWriteOnce
-      size: 1Gi
+      size: 1G
     trivy:
       existingClaim: ""
       storageClass: ""
       subPath: ""
       accessMode: ReadWriteOnce
-      size: 5Gi
+      size: 1G
   # Define which storage backend is used for registry and chartmuseum to store
   # images and charts. Refer to
   # https://github.com/docker/distribution/blob/master/docs/configuration.md#storage
@@ -363,8 +374,15 @@ imagePullSecrets:
 updateStrategy:
   type: RollingUpdate
 
-# debug, info, warning, error or fatal
-logLevel: info
+# set loglevel
+# core, chartmuseum, jobservice, notary-server, notary-signer, registry, trivy (debug, info, warning, error or fatal)
+mainsLogLevel: error
+# redis (debug, verbose, notice, warning)
+redisLogLevel: warning
+# database[postgres] (DEBUG5, DEBUG4, DEBUG3, DEBUG2, DEBUG1, INFO, NOTICE, WARNING, ERROR, LOG, FATAL, PANIC)
+databaseLogLevel: ERROR
+# portal (debug, info, notice, warn, error, crit, alert, emerg)
+portalLogLevel: error
 
 # The initial password of Harbor admin. Change it from portal after launching Harbor
 harborAdminPassword: "admin"

@@ -8,11 +8,21 @@ spec:
     targetRevision: HEAD
     
 global:
+  # 현재 지원하는 timeZone value
+  # UTC (default)
+  # Asia/Seoul
+  timeZone: UTC
   network:
     # 폐쇄망일경우 true
     disabled: false
-  domain: testdomain.com
-  keycloak:
-    domain: testauth.testdomain.com
-    # Do not change value of tmaxClientSecret!
+
+  # master cluster와 single cluster가 master cluster의 hyperauth를 사용하는 경우
+  masterSingle:
+    enabled: true
+    # master cluster의 hyperauth domain을 적는다. 
+    # 다음 hyperauth subdomain은 single-values와 master-values의 hyperauth subdomain보다 우선순위가 높다. 
+    hyperAuthDomain: "hyperauth.testdomain.com"
     tmaxClientSecret: tmax_client_secret
+
+
+ 

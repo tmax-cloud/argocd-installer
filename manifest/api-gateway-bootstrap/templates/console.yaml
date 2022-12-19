@@ -26,6 +26,8 @@ spec:
       valueFiles:
         - {{ .Values.modules.console.source.helm.valueFiles }}
       parameters:
+        - name: console.timeZone
+          value: {{ .Values.global.timeZone | default "UTC" }}
         - name: console.auth.hyperauth
           value: {{ .Values.global.hyperauth.address | default "hyperauth.org"}}
         - name: console.auth.realm
@@ -34,6 +36,8 @@ spec:
           value: {{ .Values.global.hyperauth.clientid | default "hypercloud5" }}
         - name: console.mcMode
           value: {{ .Values.global.console.mcMode | default true | quote }}
+        - name: console.chatbotEmbed
+          value: {{ .Values.global.console.chatbotEmbed | default true | quote }}
         - name: ingressroute.domain.name
           value: {{ .Values.global.domain | default "tmaxcloud.org" }}
         - name: ingressroute.domain.subdomain
@@ -46,8 +50,6 @@ spec:
   syncPolicy:
     automated:
       prune: true
-    retry:
-      limit: 3
     syncOptions:
       - ApplyOutOfSyncOnly=true
 {{- end }}
