@@ -42,6 +42,11 @@ modules:
       enabled: true
       storageClass: ""
 
+
+  ### sonarqube
+  sonarqube:
+    enabled: false
+
   ### gateway-bootstrap
   gatewayBootstrap:
     enabled: true

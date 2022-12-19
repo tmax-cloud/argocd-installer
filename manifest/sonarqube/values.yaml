@@ -1,0 +1,24 @@
+# Default values for gitlab-tmax.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+global:
+  timezone: UTC
+  registry:
+    is_offline: false
+    private_registry: 172.22.6.2:5000
+
+tls:
+  enabled: true
+
+pvc:
+  storageClassName: ""
+  storage: 30Gi
+  
+ingress:
+  hosts:
+    domain: testdomain.com
+
+image:
+  sonarqube:
+    repo: docker.io/sonarqube/sonarqube
+    tag: 7.9.1-community

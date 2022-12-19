@@ -38,6 +38,11 @@ modules:
     enabled: false
     subdomain: gitea
 
+  ### sonarqube
+  sonarqube:
+    enabled: false
+
+
   ### nexus
   nexus:
     enabled: false
