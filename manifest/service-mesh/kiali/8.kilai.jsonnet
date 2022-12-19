@@ -7,6 +7,7 @@ function(
   CUSTOM_CLUSTER_ISSUER="tmaxcloud-issuer",
   kiali_subdomain="kiali",
   kiali_loglevel="3",
+  kiali_client_id="kiali",
   time_zone="UTC"
 )
 
@@ -301,7 +302,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "auth:",
         "  strategy: openid",
         "  openid:",
-        std.join("", ["    client_id: ", client_id]),
+        std.join("", ["    client_id: ", kiali_client_id]),
         std.join("", ["    issuer_url: https://", HYPERAUTH_DOMAIN, "/auth/realms/tmax"]),
         std.join("", ["    authorization_endpoint: https://", HYPERAUTH_DOMAIN, "/auth/realms/tmax/protocol/openid-connect/auth"]),
         "deployment:",

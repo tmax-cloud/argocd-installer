@@ -4,6 +4,7 @@ function (
   ISTIO_VERSION= "1.5.1",
   istiod_pilot_discovery_loglevel="default:info",
   ingressgateway_pilot_agent_loglevel="default:info",
+  istio_proxy_loglevel="warning",
   time_zone="UTC"
 )
 
