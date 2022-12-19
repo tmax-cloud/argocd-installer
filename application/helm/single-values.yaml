@@ -256,11 +256,12 @@ modules:
   ### template service broker
   tsb:
     enabled: false
-    version: 0.1.4
+    version: 0.1.6
     clusterTsb:
-      version: 0.1.4
+      version: 0.1.6
     templateOperator:
-      version: 0.2.7
+      version: 0.2.8
+    logLevel: error
 
   ### catalog controller
   catalogController:
