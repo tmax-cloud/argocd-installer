@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: master-applications
+  name: "{{root}}-applications"
   namespace: argocd
 spec:
   destination:
@@ -13,11 +13,9 @@ spec:
     helm:
       valueFiles:
         - shared-values.yaml
-        - master-values.yaml
+        - "{{root}}-values.yaml"
       parameters:
         # 모든 모듈 enabled
-        - name: modules.sonarqube.enabled
-          value: "true"
         - name: modules.calico.enabled
           value: "true"
         - name: modules.gitlab.enabled
@@ -90,6 +88,12 @@ spec:
           value: in-cluster
         - name: global.clusterNamespace
           value: default
+        - name: spec.source.repoURL
+          value: {{repoURL}}
+        - name: spec.source.targetRevision
+          value: {{targetRevision}}
+
+
     path: application/helm
-    repoURL: https://github.com/tmax-cloud/argocd-installer
-    targetRevision: HEAD
+    repoURL: {{repoURL}}
+    targetRevision: {{targetRevision}}

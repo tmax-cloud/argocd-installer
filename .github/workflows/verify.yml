@@ -1,4 +1,4 @@
-name: Argocd manifest verify
+name: Verify argocd manifest
 
 on:
   pull_request:
@@ -27,9 +27,10 @@ jobs:
       
     steps:
       - uses: actions/checkout@master
-      - name: Create k8s Kind Cluster
+
 
       # kind cluster 생성 
+      - name: Create k8s Kind Cluster
         uses: helm/kind-action@v1.3.0
         with: 
           cluster_name: argocd-testing
@@ -60,53 +61,49 @@ jobs:
             NODEPORT=$(kubectl get svc -n argocd argocd-server -o jsonpath={.spec.ports[?\(@.port==80\)].nodePort});
             NODE_IP=$(kubectl get nodes -o jsonpath={.items[0].status.addresses[?\(@.type==\"InternalIP\"\)].address});
             argocd login $NODE_IP:$NODEPORT --insecure --username=admin --password=$PASSWORD;
-  
+
 
       # master app과 single app을 배포 
       - name: Deploy root application(master, single)
         run: |
-          kubectl apply -f .github/template/root-applications.yaml;
-          sed -i "s/master/single/g" .github/template/root-applications.yaml;
-          kubectl apply -f .github/template/root-applications.yaml;
+          REPO=$(echo $GITHUB_REPOSITORY | cut -d '/' -f2)
+          REPO=$GITHUB_SERVER_URL/$GITHUB_ACTOR/$REPO
+          BRANCH=$GITHUB_HEAD_REF 
+          if [ "$BRANCH" = "" ]
+          then
+              BRANCH=$GITHUB_REF_NAME;
+          fi
+          echo Repository=$REPO;
+          echo Branch=$BRANCH;
+          
+          sed -i "s@{{repoURL}}@$REPO@g" .github/template/root-applications.yaml;
+          sed -i "s@{{targetRevision}}@$BRANCH@g" .github/template/root-applications.yaml;
+          cp .github/template/root-applications.yaml ./master.yaml
+          cp .github/template/root-applications.yaml ./single.yaml
+          sed -i "s@{{root}}@master@g" master.yaml;
+          sed -i "s@{{root}}@single@g" single.yaml;
+          kubectl apply -f master.yaml
+          kubectl apply -f single.yaml
 
-
-      # master app과 single app에 필요한 변수 세팅 
-      - name: Set essential params to root application(master, single)
-        uses: nick-fields/retry@v2
-        with:
-          timeout_seconds: 60
-          max_attempts: 5
-          command: |
-            REPO=$(echo $GITHUB_REPOSITORY | cut -d '/' -f2)
-            REPO=$GITHUB_SERVER_URL/$GITHUB_ACTOR/$REPO
-            BRANCH=$GITHUB_HEAD_REF 
-            if [ "$BRANCH" = "" ]
-            then
-                BRANCH=$GITHUB_REF_NAME;
-            fi
-            echo Repository=$REPO;
-            echo Branch=$BRANCH;
-
-            argocd app set $MASTER_APPLICATION --repo=$REPO;
-            argocd app set $MASTER_APPLICATION --revision=$BRANCH;
-            argocd app set $MASTER_APPLICATION --parameter spec.source.repoURL=$REPO;
-            argocd app set $MASTER_APPLICATION --parameter spec.source.targetRevision=$BRANCH;
-            
-            argocd app set $SINGLE_APPLICATION --repo=$REPO;
-            argocd app set $SINGLE_APPLICATION --revision=$BRANCH;
-            argocd app set $SINGLE_APPLICATION --parameter spec.source.repoURL=$REPO;
-            argocd app set $SINGLE_APPLICATION --parameter spec.source.targetRevision=$BRANCH;
 
       # master application sync. 
-      - name: Sync argocd master application 
-        run: |
-          argocd app sync $MASTER_APPLICATION;
+      - name: Sync argocd master application
+        uses: nick-fields/retry@v2
+        with:
+          timeout_seconds: 5
+          max_attempts: 3
+          command: | 
+            argocd app sync $MASTER_APPLICATION;
 
 
       # single application sync. 
       - name: Sync argocd single application
-        run: |
-          argocd app sync $SINGLE_APPLICATION;
+        uses: nick-fields/retry@v2
+        with:
+          timeout_seconds: 10
+          max_attempts: 3
+          command: | 
+            argocd app sync $SINGLE_APPLICATION;
       
 
       # 배포된 application들에 대한 error 검사 
