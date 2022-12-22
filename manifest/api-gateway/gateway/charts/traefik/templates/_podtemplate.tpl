@@ -24,6 +24,7 @@
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      automountServiceAccountToken: false
       serviceAccountName: {{ include "traefik.serviceAccountName" . }}
       terminationGracePeriodSeconds: {{ default 60 .Values.deployment.terminationGracePeriodSeconds }}
       hostNetwork: {{ .Values.hostNetwork }}
@@ -33,6 +34,9 @@
       {{- with .Values.deployment.initContainers }}
       initContainers:
       {{- toYaml . | nindent 6 }}
+      {{- end }}
+      {{- if .Values.deployment.shareProcessNamespace }}
+      shareProcessNamespace: true
       {{- end }}
       containers:
       - image: "{{ .Values.image.name }}:{{ default .Chart.AppVersion .Values.image.tag }}"
@@ -46,20 +50,12 @@
           httpGet:
             path: /ping
             port: {{ default .Values.ports.traefik.port .Values.ports.traefik.healthchecksPort }}
-          failureThreshold: 1
-          initialDelaySeconds: 10
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 2
+          {{- toYaml .Values.readinessProbe | nindent 10 }}
         livenessProbe:
           httpGet:
             path: /ping
             port: {{ default .Values.ports.traefik.port .Values.ports.traefik.healthchecksPort }}
-          failureThreshold: 3
-          initialDelaySeconds: 10
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 2
+          {{- toYaml .Values.livenessProbe | nindent 10 }}
         ports:
         {{- range $name, $config := .Values.ports }}
         {{- if $config }}
@@ -79,6 +75,8 @@
           {{- toYaml . | nindent 10 }}
         {{- end }}
         volumeMounts:
+          - name: sa-token
+            mountPath: /var/run/secrets/kubernetes.io/serviceaccount
           - name: {{ .Values.persistence.name }}
             mountPath: {{ .Values.persistence.path }}
             {{- if .Values.persistence.subPath }}
@@ -107,7 +105,7 @@
           {{- end }}
           {{- range $name, $config := .Values.ports }}
           {{- if $config }}
-          - "--entryPoints.{{$name}}.address=:{{ $config.port }}/{{ default "tcp" $config.protocol | lower }}"
+          - "--entrypoints.{{$name}}.address=:{{ $config.port }}/{{ default "tcp" $config.protocol | lower }}"
           {{- end }}
           {{- end }}
           - "--api.dashboard=true"
@@ -115,7 +113,9 @@
           {{- if .Values.metrics }}
           {{- if .Values.metrics.datadog }}
           - "--metrics.datadog=true"
+          {{- if .Values.metrics.datadog.address }}
           - "--metrics.datadog.address={{ .Values.metrics.datadog.address }}"
+          {{- end }}
           {{- end }}
           {{- if .Values.metrics.influxdb }}
           - "--metrics.influxdb=true"
@@ -125,10 +125,33 @@
           {{- if .Values.metrics.prometheus }}
           - "--metrics.prometheus=true"
           - "--metrics.prometheus.entrypoint={{ .Values.metrics.prometheus.entryPoint }}"
+          {{- if .Values.metrics.prometheus.addRoutersLabels }}
+          - "--metrics.prometheus.addRoutersLabels=true"
+          {{- end }}
           {{- end }}
           {{- if .Values.metrics.statsd }}
           - "--metrics.statsd=true"
           - "--metrics.statsd.address={{ .Values.metrics.statsd.address }}"
+          {{- end }}
+          {{- end }}
+          {{- if .Values.tracing }}
+          {{- if .Values.tracing.instana }}
+          - "--tracing.instana=true"
+          {{- end }}
+          {{- if .Values.tracing.datadog }}
+          - "--tracing.datadog=true"
+          {{- if .Values.tracing.datadog.localAgentHostPort }}
+          - "--tracing.datadog.localAgentHostPort={{ .Values.tracing.datadog.localAgentHostPort }}"
+          {{- end }}
+          {{- if .Values.tracing.datadog.debug }}
+          - "--tracing.datadog.debug=true"
+          {{- end }}
+          {{- if .Values.tracing.datadog.globalTag }}
+          - "--tracing.datadog.globalTag={{ .Values.tracing.datadog.globalTag }}"
+          {{- end }}
+          {{- if .Values.tracing.datadog.prioritySampling }}
+          - "--tracing.datadog.prioritySampling=true"
+          {{- end }}
           {{- end }}
           {{- end }}
           {{- if .Values.providers.kubernetesCRD.enabled }}
@@ -145,6 +168,9 @@
           {{- if .Values.providers.kubernetesCRD.allowExternalNameServices }}
           - "--providers.kubernetescrd.allowExternalNameServices=true"
           {{- end }}
+          {{- if .Values.providers.kubernetesCRD.allowEmptyServices }}
+          - "--providers.kubernetescrd.allowEmptyServices=true"
+          {{- end }}
           {{- end }}
           {{- if .Values.providers.kubernetesIngress.enabled }}
           - "--providers.kubernetesingress"
@@ -152,10 +178,7 @@
           - "--providers.kubernetesingress.allowExternalNameServices=true"
           {{- end }}
           {{- if .Values.providers.kubernetesIngress.allowEmptyServices }}
-          - "--providers.kubernetesingress.allowEmptyServices={{ .Values.providers.kubernetesIngress.allowEmptyServices }}"
-          {{- end }}
-          {{- if .Values.providers.kubernetesIngress.ingressClass }}
-          - "--providers.kubernetesingress.ingressclass={{ .Values.providers.kubernetesIngress.ingressClass }}"
+          - "--providers.kubernetesingress.allowEmptyServices=true"
           {{- end }}
           {{- if and .Values.service.enabled .Values.providers.kubernetesIngress.publishedService.enabled }}
           - "--providers.kubernetesingress.ingressendpoint.publishedservice={{ template "providers.kubernetesIngress.publishedServicePath" . }}"
@@ -163,10 +186,16 @@
           {{- if .Values.providers.kubernetesIngress.labelSelector }}
           - "--providers.kubernetesingress.labelSelector={{ .Values.providers.kubernetesIngress.labelSelector }}"
           {{- end }}
+          {{- if .Values.providers.kubernetesIngress.ingressClass }}
+          - "--providers.kubernetesingress.ingressClass={{ .Values.providers.kubernetesIngress.ingressClass }}"
+          {{- end }}
           {{- end }}
           {{- if .Values.experimental.kubernetesGateway.enabled }}
           - "--providers.kubernetesgateway"
           - "--experimental.kubernetesgateway"
+          {{- end }}
+          {{- if .Values.experimental.http3.enabled }}
+          - "--experimental.http3=true"
           {{- end }}
           {{- if and .Values.rbac.enabled .Values.rbac.namespaced }}
           {{- if .Values.providers.kubernetesCRD.enabled }}
@@ -176,9 +205,6 @@
           - "--providers.kubernetesingress.namespaces={{ template "providers.kubernetesIngress.namespaces" . }}"
           {{- end }}
           {{- end }}
-          - "--providers.file"
-          - "--providers.file.directory=/gateway-config"
-          - "--providers.file.watch=true"
           {{- range $entrypoint, $config := $.Values.ports }}
           {{- if $config.redirectTo }}
           {{- $toPort := index $.Values.ports $config.redirectTo }}
@@ -204,6 +230,13 @@
           {{- end }}
           {{- end }}
           {{- end }}
+          {{- if $config.http3 }}
+          {{- if semverCompare ">=2.6.0" (default $.Chart.AppVersion $.Values.image.tag)}}
+          - "--entrypoints.{{ $entrypoint }}.http3.advertisedPort={{ default $config.port $config.exposedPort }}"
+          {{- else }}
+          - "--entrypoints.{{ $entrypoint }}.enableHTTP3=true"
+          {{- end }}
+          {{- end }}
           {{- end }}
           {{- end }}
           {{- end }}
@@ -218,9 +251,6 @@
           - "--accesslog=true"
           {{- if .access.format }}
           - "--accesslog.format={{ .access.format }}"
-          {{- end }}
-          {{- if .access.filepath }}
-          - "--accesslog.filepath={{ .access.filepath }}"
           {{- end }}
           {{- if .access.bufferingsize }}
           - "--accesslog.bufferingsize={{ .access.bufferingsize }}"
@@ -252,6 +282,17 @@
           {{- if hasKey .Values.pilot "dashboard" }}
           - "--pilot.dashboard={{ .Values.pilot.dashboard }}"
           {{- end }}
+          {{- range $resolver, $config := $.Values.certResolvers }}
+          {{- range $option, $setting := $config }}
+          {{- if kindIs "map" $setting }}
+          {{- range $field, $value := $setting }}
+          - "--certificatesresolvers.{{ $resolver }}.acme.{{ $option }}.{{ $field }}={{ if kindIs "slice" $value }}{{ join "," $value }}{{ else }}{{ $value }}{{ end }}"
+          {{- end }}
+          {{- else }}
+          - "--certificatesresolvers.{{ $resolver }}.acme.{{ $option }}={{ $setting }}"
+          {{- end }}
+          {{- end }}
+          {{- end }}
           {{- with .Values.additionalArguments }}
           {{- range . }}
           - {{ . | quote }}
@@ -269,6 +310,9 @@
         {{- toYaml .Values.deployment.additionalContainers | nindent 6 }}
       {{- end }}
       volumes:
+        - name: sa-token
+          secret:
+            secretName: {{ include "traefik.serviceAccountName" . }}
         - name: {{ .Values.persistence.name }}
           {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:

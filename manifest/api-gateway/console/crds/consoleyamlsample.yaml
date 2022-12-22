@@ -39,6 +39,27 @@ spec:
               type: string
             metadata:
               type: object
+            samples:
+              items:
+                properties:
+                  description:
+                    description: this is description
+                    type: string
+                  title:
+                    description: this is title
+                    type: string
+                  yaml:
+                    description: this is yaml
+                    type: string
+                  image:
+                    type: string
+                    format: base64
+                type: object
+              type: array
+            image:
+              type: string
+              format: base64
+              # contentMediaType: image/jpeg
             spec:
               description: >-
                 ConsoleYAMLSampleSpec is the desired YAML sample configuration.
@@ -95,3 +116,6 @@ spec:
             - metadata
             - spec
           type: object
+      # encoding:
+      #   image:
+      #     contentType: image/png, image/jpeg

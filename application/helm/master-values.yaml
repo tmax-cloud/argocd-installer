@@ -7,7 +7,7 @@ spec:
 global:
   # 기본시나리오에서는 privateRegistry값만 변경해주면 된다
   # e.x) 172.22.6.2:5000 or hyperregistry.domain.com
-  privateRegistry: test-registry.com
+  privateRegistry: ""
   # 값 변경 필요 없음
   adminUser: test@test.co.kr
   cluster: master
@@ -22,7 +22,7 @@ modules:
 
   ### gitlab
   gitlab:
-    enabled: true
+    enabled: false
     subdomain: gitlab
     pvc:
       storage: 30Gi
@@ -50,12 +50,17 @@ modules:
       enabled: true
       storageClass: ""
 
+  ### cert-manager
+  certManager:
+    enabled: true
+
   ### gateway-bootstrap
   gatewayBootstrap:
     enabled: true
     # cloud provider의 load balancer 서비스(ex. aws nlb)를 사용하기 위해서는
     # LoadBalancer로 값을 변경
-    svc_type: NodePort
+    service:
+      type: NodePort
     tls:
       selfsigned:
         enabled: false
@@ -72,37 +77,52 @@ modules:
         # 자세한 내용은 https://letsencrypt.org/docs/staging-environment/#rate-limits 참조
         # staging / production 중 택1하여 기입하여야 하며, 각각 테스트용 / 운영용을 의미함
         environment: production
-    certManager:
-      enabled: true
-      # default 300
-      syncWaitTime: 300
-    console:
-      enabled: true
-      multiCluster:
-        enabled: true
-      # default 0
-      syncWaitTime: 0
-      subdomain: console
+    hyperAuthInfo:
+      # 미기입 시 define "hyperAuth.domain" 값 사용
+      address: "hyperauth.tmaxcloud.org"
+      # 미기입 시 default로 "tmax" 사용
+      realm: "tmax"
+      # 미기입 시 default로 "hypercloud5" 사용
+      clientID: "hypercloud5"
+      # 미기입 시 default로 "Qj1gKJvgnPCCDFS9DJlkmtFwyMKlUaIDC7oE4jgA3kY" 사용
+      clientSecret: ""
+    consoleInfo:
+      subDomain: console
+      mcMode: true
+      chatbotEmbed: true
+      customProductName: hypercloud
+      k8sPublicEndpoint: https://kubernetes.default.svc
+      svcType: LoadBalancer
+      logInfo:
+        logLevel: "debug"
+        logType: "pretty"
+      cookieSecret: ""
+
     gateway:
       enabled: true
-      # default 120
-      syncWaitTime: 120
+      version: v2.8.7
     jwtDecodeAuth:
       enabled: true
-      # default 30
-      syncWaitTime: 30
+      version: 5.0.0.3
+    oauth2Proxy:
+      enabled: true
+      version: v7.3.0
+    console:
+      enabled: true
+      version: 5.2.20.0
+
 
   ### strimzi-kafka-operator
   strimziKafka:
-    enabled: true
+    enabled: false
 
   ### service-binding-operator
   serviceBinding:
-    enabled: true
+    enabled: false
     
   ### hyperauth
   hyperAuth:
-    enabled: true
+    enabled: false
     svcType: Ingress
     subdomain: hyperauth
     # default로 주는 경우 default storage class를 사용
@@ -137,7 +157,7 @@ modules:
 
   ### argocd
   argocd:
-    enabled: true
+    enabled: false
     subdomain: argocd
     repoServer:
       replicas: 1
@@ -153,7 +173,7 @@ modules:
      
   ### opensearch
   opensearch:
-    enabled: true
+    enabled: false
     os:
       version: 1.2.3
       limitMemory: 8Gi
@@ -174,7 +194,7 @@ modules:
   
   ### Loki
   loki:
-    enabled: true
+    enabled: false
     loki: 
       version: 2.6.0
       volumeSize: 50Gi
@@ -184,7 +204,7 @@ modules:
   
   ### prometheus
   prometheus:
-    enabled: true
+    enabled: false
     versions:
       prometheus: v2.30.3
       cmReload: v0.0.1
@@ -199,7 +219,7 @@ modules:
 
   ### grafana-operator
   grafanaOperator:
-    enabled: true
+    enabled: false
     subdomain: grafana
     pvcSize: 10Gi
     operator: 
@@ -214,7 +234,7 @@ modules:
   serviceMesh:
     ### istio
     istio:
-      enabled: true
+      enabled: false
       # :(scope) 를 기준으로 앞, default, ads, all, attributes, authn, configmapcontroller, grpcAdapter, mcp, model, pkica, rbac, rootcertrotator, secretcontroller, serverca, validation, validationController, validationServer
       # :(scope) 를 기준으로 뒤, debug, info, warn, error, fatal, none 
       istiodPilotDiscoveryLoglevel: default:info
@@ -226,7 +246,7 @@ modules:
 
     ### jaeger
     jaeger:
-      enabled: true
+      enabled: false
       subdomain: jaeger
       # debug, info, warn, error
       jaegerCollectorLoglevel: info
@@ -239,14 +259,14 @@ modules:
 
     ### kiali
     kiali:
-      enabled: true
+      enabled: false
       subdomain: kiali
       # "3" : info, "4": debug, "5": trace
       kialiLoglevel: "3"
 
   ### cluster-api
   capi:
-    enabled: true
+    enabled: false
     providers:
       aws:
         enabled: true
@@ -267,7 +287,7 @@ modules:
 
   ### template service broker
   tsb:
-    enabled: true
+    enabled: false
     version: 0.1.6
     clusterTsb:
       version: 0.1.6
@@ -277,12 +297,12 @@ modules:
 
   ### catalog controller
   catalogController:
-    enabled: true
+    enabled: false
     vLevel: 0
 
   ### helm-apiserver
   helmApiserver:
-    enabled: true
+    enabled: false
     version: 0.0.5
     subdomain: helm
     # default로 주는 경우 default storage class를 사용
@@ -293,7 +313,7 @@ modules:
 
   ### hypercloud
   hyperCloud:
-    enabled: true
+    enabled: false
     # description: 'single' or 'multi'
     mode: multi
     kafka:
@@ -339,7 +359,7 @@ modules:
 
   ### hyperregistry
   hyperregistry:
-    enabled: true
+    enabled: false
     core:
       subdomain: hyperregistry
     notary:
@@ -361,27 +381,27 @@ modules:
 
   ### tekton pipeline
   tektonPipeline:
-    enabled: true
+    enabled: false
     #namespace: tekton-pipelines
 
   ### tekton trigger
   tektonTrigger:
-    enabled: true
+    enabled: false
 
   ### cicd operator
   cicd:
-    enabled: true
+    enabled: false
     subdomain: cicd-webhook
 
   ### redis-operator
   redis:
-    enabled: true
+    enabled: false
     # info, debug, error 기입 가능(대소문자 유의)
     logLevel: info
 
   ### image validating webhook
   imageValidatingWebhook:
-    enabled: true
+    enabled: false
       # debug, info, error 기입 가능 (대소문자 유의)
     logLevel: error
 

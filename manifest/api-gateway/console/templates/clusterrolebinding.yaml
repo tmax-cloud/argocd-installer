@@ -1,7 +1,7 @@
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: {{ include "console.fullname" . }}
+  name: {{ template "console.fullname" . }}
   labels:
   {{- include "console.labels" . | nindent 4 }}
 roleRef:
@@ -10,5 +10,5 @@ roleRef:
   name: {{ include "console.fullname" . }}
 subjects:
   - kind: ServiceAccount
-    name: {{ include "console.serviceAccountName" . }}
+    name: {{ template "console.serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}

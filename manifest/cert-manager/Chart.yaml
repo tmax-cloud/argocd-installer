@@ -1,0 +1,12 @@
+apiVersion: v2
+name: cert-manager
+description: A Helm chart for Kubernetes
+type: application
+version: 1.0.1
+appVersion: "v1.5.4"
+dependencies:
+  - name: cert-manager
+    version: v1.5.4
+    repository: file://charts/cert-manager
+    alias: cert-manager
+    condition: cert-manager.enabled

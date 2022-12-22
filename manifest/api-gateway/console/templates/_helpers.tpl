@@ -41,7 +41,7 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 app.kubernetes.io/component: webserver
-app.kubernetes.io/part-of: api-gateway
+app.kubernetes.io/part-of: {{ template  "console.name" . }}
 {{- end }}
 
 {{/*

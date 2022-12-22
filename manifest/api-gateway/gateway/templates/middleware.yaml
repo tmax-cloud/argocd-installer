@@ -1,0 +1,74 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: cors-header
+  labels:
+    {{- include "gateway.labels" . | nindent 4 }}
+spec:
+  headers:
+    accessControlAllowMethods: [ "GET", "POST", "PUT", "DELETE", "OPTIONS" ]
+    ## https://github.com/traefik/traefik/issues/8961
+    accessControlAllowHeaders: [ "Accept", "Authorization", "Content-Type", "Origin" ]
+    # accessControlAllowOriginList:
+    #   - "https://console.{{ .Values.tls.domain }}"
+{{- if .Values.tls.domain }}
+    accessControlAllowOriginListRegex:
+      - "([a-z]+)\\.{{ (split "." .Values.tls.domain)._0 }}\\.{{ (split "." .Values.tls.domain)._1 }}"
+{{- end }}
+    accessControlMaxAge: 100
+    addVaryHeader: true
+    # Add for sending a request with credentials (cookie)
+    accessControlAllowCredentials: true
+
+---
+
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: hypercloud-stripprefix
+  labels:
+    {{- include "gateway.labels" . | nindent 4 }}
+spec:
+  stripPrefix:
+    prefixes:
+      - "/api/hypercloud"
+      - "/api/multi-hypercloud"
+      - "/api/webhook"
+---
+
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: kubernetes-stripprefix
+  labels:
+    {{- include "gateway.labels" . | nindent 4 }}
+spec:
+  stripPrefix:
+    prefixes:
+      - "/api/kubernetes"
+    forceSlash: true
+---
+
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: monitoring-stripprefix
+  labels:
+    {{- include "gateway.labels" . | nindent 4 }}
+spec:
+  stripPrefix:
+    prefixes:
+      - "/api/prometheus"
+      - "/api/alertmanager"
+---
+
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: monitoring-stripprefix-tenancy
+  labels:
+    {{- include "gateway.labels" . | nindent 4 }}
+spec:
+  stripPrefix:
+    prefixes:
+      - "/api/prometheus-tenancy"
