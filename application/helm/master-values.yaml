@@ -7,7 +7,7 @@ spec:
 global:
   # 기본시나리오에서는 privateRegistry값만 변경해주면 된다
   # e.x) 172.22.6.2:5000 or hyperregistry.domain.com
-  privateRegistry: ""
+  privateRegistry: test-registry.com
   # 값 변경 필요 없음
   adminUser: test@test.co.kr
   cluster: master
@@ -22,7 +22,7 @@ modules:
 
   ### gitlab
   gitlab:
-    enabled: false
+    enabled: true
     subdomain: gitlab
     pvc:
       storage: 30Gi
@@ -114,15 +114,15 @@ modules:
 
   ### strimzi-kafka-operator
   strimziKafka:
-    enabled: false
+    enabled: true
 
   ### service-binding-operator
   serviceBinding:
-    enabled: false
+    enabled: true
     
   ### hyperauth
   hyperAuth:
-    enabled: false
+    enabled: true
     svcType: Ingress
     subdomain: hyperauth
     # default로 주는 경우 default storage class를 사용
@@ -137,7 +137,7 @@ modules:
 
   ### efk
   efk:
-    enabled: false
+    enabled: true
     es:
       version: 7.2.1
       limitMemory: 8Gi
@@ -157,7 +157,7 @@ modules:
 
   ### argocd
   argocd:
-    enabled: false
+    enabled: true
     subdomain: argocd
     repoServer:
       replicas: 1
@@ -173,7 +173,7 @@ modules:
      
   ### opensearch
   opensearch:
-    enabled: false
+    enabled: true
     os:
       version: 1.2.3
       limitMemory: 8Gi
@@ -194,7 +194,7 @@ modules:
   
   ### Loki
   loki:
-    enabled: false
+    enabled: true
     loki: 
       version: 2.6.0
       volumeSize: 50Gi
@@ -204,7 +204,7 @@ modules:
   
   ### prometheus
   prometheus:
-    enabled: false
+    enabled: true
     versions:
       prometheus: v2.30.3
       cmReload: v0.0.1
@@ -219,7 +219,7 @@ modules:
 
   ### grafana-operator
   grafanaOperator:
-    enabled: false
+    enabled: true
     subdomain: grafana
     pvcSize: 10Gi
     operator: 
@@ -234,7 +234,7 @@ modules:
   serviceMesh:
     ### istio
     istio:
-      enabled: false
+      enabled: true
       # :(scope) 를 기준으로 앞, default, ads, all, attributes, authn, configmapcontroller, grpcAdapter, mcp, model, pkica, rbac, rootcertrotator, secretcontroller, serverca, validation, validationController, validationServer
       # :(scope) 를 기준으로 뒤, debug, info, warn, error, fatal, none 
       istiodPilotDiscoveryLoglevel: default:info
@@ -246,7 +246,7 @@ modules:
 
     ### jaeger
     jaeger:
-      enabled: false
+      enabled: true
       subdomain: jaeger
       # debug, info, warn, error
       jaegerCollectorLoglevel: info
@@ -259,14 +259,14 @@ modules:
 
     ### kiali
     kiali:
-      enabled: false
+      enabled: true
       subdomain: kiali
       # "3" : info, "4": debug, "5": trace
       kialiLoglevel: "3"
 
   ### cluster-api
   capi:
-    enabled: false
+    enabled: true
     providers:
       aws:
         enabled: true
@@ -287,7 +287,7 @@ modules:
 
   ### template service broker
   tsb:
-    enabled: false
+    enabled: true
     version: 0.1.6
     clusterTsb:
       version: 0.1.6
@@ -297,12 +297,12 @@ modules:
 
   ### catalog controller
   catalogController:
-    enabled: false
+    enabled: true
     vLevel: 0
 
   ### helm-apiserver
   helmApiserver:
-    enabled: false
+    enabled: true
     version: 0.0.5
     subdomain: helm
     # default로 주는 경우 default storage class를 사용
@@ -313,7 +313,7 @@ modules:
 
   ### hypercloud
   hyperCloud:
-    enabled: false
+    enabled: true
     # description: 'single' or 'multi'
     mode: multi
     kafka:
@@ -359,7 +359,7 @@ modules:
 
   ### hyperregistry
   hyperregistry:
-    enabled: false
+    enabled: true
     core:
       subdomain: hyperregistry
     notary:
@@ -381,27 +381,27 @@ modules:
 
   ### tekton pipeline
   tektonPipeline:
-    enabled: false
+    enabled: true
     #namespace: tekton-pipelines
 
   ### tekton trigger
   tektonTrigger:
-    enabled: false
+    enabled: true
 
   ### cicd operator
   cicd:
-    enabled: false
+    enabled: true
     subdomain: cicd-webhook
 
   ### redis-operator
   redis:
-    enabled: false
+    enabled: true
     # info, debug, error 기입 가능(대소문자 유의)
     logLevel: info
 
   ### image validating webhook
   imageValidatingWebhook:
-    enabled: false
+    enabled: true
       # debug, info, error 기입 가능 (대소문자 유의)
     logLevel: error
 
