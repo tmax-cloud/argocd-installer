@@ -3,7 +3,7 @@ spec:
     # description
     # https연결만 사용 가능합니다.
     # gitlab의 경우, url 마지막에 '.git' suffix를 붙여주셔야 합니다
-    repoURL: https://github.com/jinsoo-youn/argocd-installer
+    repoURL: https://github.com/tmax-cloud/argocd-installer
 #    repoURL: https://github.com/tmax-cloud/charts
     # description: target branch or release name
     targetRevision: HEAD
