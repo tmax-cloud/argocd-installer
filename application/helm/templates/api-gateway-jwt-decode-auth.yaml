@@ -1,4 +1,4 @@
-{{- if .Values.modules.gatewayBootstrap.console.enabled }}
+{{- if .Values.modules.gatewayBootstrap.jwtDecodeAuth.enabled }}
 {{ $isMaster := eq .Values.global.cluster "master" }}
 {{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
 {{ $module := "jwt-decode-auth" }}
@@ -45,7 +45,7 @@ spec:
         - name: hyperAuth.address
           value: {{ include "hyperAuth.domain" . }}
         - name: hyperAuth.realm
-          value: "Tmax"
+          value: "tmax"
         {{- with .Values.modules.gatewayBootstrap.console }}
         - name: logInfo.logType
           value: {{ .logInfo.logType | default "pretty" }}

@@ -48,7 +48,7 @@ spec:
         - name: subDomain
           value: {{ .Values.modules.gatewayBootstrap.console.subdomain | default "console" }}
         - name: config.hyperAuth.realm
-          value: "Tmax"
+          value: "tmax"
         - name: config.hyperAuth.clientID
           value: "hypercloud5"
         - name: config.hyperAuth.address

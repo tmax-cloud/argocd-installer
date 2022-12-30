@@ -50,7 +50,7 @@ spec:
         - name: config.clientSecret
           value: {{ include "hyperAuth.tmaxClientSecret" . }}
         - name: config.hyperAuth.realm
-          value: "Tmax"
+          value: "tmax"
         - name: config.clientID
           value: "hypercloud5"
         {{- with .Values.modules.gatewayBootstrap.console }}

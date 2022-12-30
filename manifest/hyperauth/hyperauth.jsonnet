@@ -433,11 +433,7 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
           "hosts": [
             hyperauth_external_dns
           ],
-        }+(
-          if self_signed == "true" then {
-            "secretName": "hyperauth-https-secret"
-          } else {}
-        )
+        }
       ]
     }
   } else {},
