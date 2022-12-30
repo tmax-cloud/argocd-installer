@@ -55,7 +55,7 @@ spec:
         - name: config.clientSecret
           value: {{ .clientSecret | default "Qj1gKJvgnPCCDFS9DJlkmtFwyMKlUaIDC7oE4jgA3kY=" }}
         {{- end }}
-        {{- with .Values.modules.gatewayBootstrap.consoleInfo }}
+        {{- with .Values.modules.gatewayBootstrap.console }}
         - name: config.cookieSecret
           value: {{ .cookieSecret | default "DVlYFBWPbb7JxehybnQ2VeRqDW5NBk8HNMi2eIMt3jg=" }}
         {{- end }}

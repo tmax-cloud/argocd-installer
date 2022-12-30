@@ -54,10 +54,10 @@ modules:
   ### gateway-bootstrap
   gatewayBootstrap:
     enabled: true
-    # cloud provider의 load balancer 서비스(ex. aws nlb)를 사용하기 위해서는
+    # load balancer를 사용할 수 있는 경우(ex. aws lb, metallb)
     # LoadBalancer로 값을 변경
     service:
-      type: NodePort
+      type: LoadBalancer
     tls:
       selfsigned:
         enabled: false
@@ -76,15 +76,17 @@ modules:
         environment: production
     hyperAuthInfo:
       # 미기입 시 define "hyperAuth.domain" 값 사용
-      address: ""
+      address: "hyperauth.tmaxcloud.org"
       # 미기입 시 default로 "tmax" 사용
-      realm: ""
+      realm: "tmax"
       # 미기입 시 default로 "hypercloud5" 사용
-      clientID: ""
+      clientID: "hypercloud5"
       # 미기입 시 default로 "Qj1gKJvgnPCCDFS9DJlkmtFwyMKlUaIDC7oE4jgA3kY" 사용
-      clientSecret: ""
-    consoleInfo:
-      subDomain: console
+      clientSecret: "tmax_client_secret"
+    console:
+      enabled: false
+      version: 5.2.20.0
+      subdomain: console
       mcMode: true
       chatbotEmbed: true
       customProductName: hypercloud
@@ -98,15 +100,14 @@ modules:
     gateway:
       enabled: true
       version: v2.8.7
+
     jwtDecodeAuth:
       enabled: true
-      version: 5.0.0.3
+      version: 5.0.0.4
+
     oauth2Proxy:
-      enabled: true
+      enabled: false
       version: v7.3.0
-    console:
-      enabled: true
-      version: 5.2.20.0
 
 
   ### strimzi-kafka-operator

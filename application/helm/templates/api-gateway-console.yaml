@@ -46,7 +46,7 @@ spec:
         - name: domain
           value: {{ .Values.global.domain }}
         - name: subDomain
-          value: {{ .Values.modules.gatewayBootstrap.consoleInfo.subDomain | default "console" }}
+          value: {{ .Values.modules.gatewayBootstrap.console.subdomain | default "console" }}
         {{- with .Values.modules.gatewayBootstrap.hyperAuthInfo }}
         - name: config.hyperAuth.address
           value: {{ .address | default $hyperAuthDomain }}
@@ -55,7 +55,7 @@ spec:
         - name: config.hyperAuth.clientID
           value: {{ .clientID | default "hypercloud5" }}
         {{- end }}
-        {{- with .Values.modules.gatewayBootstrap.consoleInfo }}
+        {{- with .Values.modules.gatewayBootstrap.console }}
         - name: config.mcMode
           value: {{ .mcMode | quote | default "true" }}
         - name: config.chatbotEmbed

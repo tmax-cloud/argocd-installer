@@ -49,7 +49,7 @@ spec:
         - name: hyperAuth.realm
           value: {{ .realm | default "tmax" }}
         {{- end }}
-        {{- with .Values.modules.gatewayBootstrap.consoleInfo }}
+        {{- with .Values.modules.gatewayBootstrap.console }}
         - name: logInfo.logType
           value: {{ .logInfo.logType | default "pretty" }}
         - name: logInfo.logLevel
