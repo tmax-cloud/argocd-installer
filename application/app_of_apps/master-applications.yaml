@@ -16,6 +16,15 @@ spec:
       valueFiles:
         - shared-values.yaml
         - master-values.yaml
+      parameters:
+        - name: global.domain
+          value: "글로벌 도메인을 입력하세요 ex) testdomain.com"
+        - name: global.masterSingle.hyperAuthDomain
+          value: "hyperauth full 도메인을 입력하세요 ex) hyperauth.testdomain.com"
+        - name: spec.source.repoURL
+          value: "git repository URL을 입력하세요 ex) https://github.com/tmax-cloud/argocd-installer.git"
+        - name: spec.source.targetRevision
+          value: "target Revision을 입력하세요 ex) main"
     path: application/helm
     # 환경에 맞게 url 주소 변경 필요
     repoURL: https://github.com/tmax-cloud/argocd-installer

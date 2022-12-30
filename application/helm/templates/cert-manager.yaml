@@ -25,7 +25,7 @@ spec:
     name: {{ .Values.global.clusterName }}
   project: {{ .Values.spec.project }}
   source:
-    path: charts/namespace
+    path: manifest/namespace
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
     helm:
@@ -64,7 +64,7 @@ spec:
     namespace: cert-manager
   project: {{ .Values.spec.project }}
   source:
-    path: charts/cert-manager
+    path: manifest/cert-manager
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
     helm:
