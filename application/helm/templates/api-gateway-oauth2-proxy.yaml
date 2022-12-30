@@ -33,7 +33,7 @@ spec:
     namespace: api-gateway-system
   project: {{ .Values.spec.project }}
   source:
-    path: charts/oauth2-proxy
+    path: manifest/api-gateway/oauth2-proxy
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
     helm:
@@ -45,21 +45,19 @@ spec:
           value: {{ .Values.global.timeZone | default "UTC" }}
         - name: domain
           value: {{ .Values.global.domain }}
-        {{- with .Values.modules.gatewayBootstrap.hyperAuthInfo }}
         - name: config.hyperAuth.address
-          value: {{ .address | default $hyperAuthDomain }}
-        - name: config.hyperAuth.realm
-          value: {{ .realm | default "tmax" }}
-        - name: config.clientID
-          value: {{ .clientID | default "hypercloud5" }}
+          value: {{ include "hyperAuth.domain" . }}
         - name: config.clientSecret
-          value: {{ .clientSecret | default "Qj1gKJvgnPCCDFS9DJlkmtFwyMKlUaIDC7oE4jgA3kY=" }}
-        {{- end }}
-        {{- with .Values.modules.gatewayBootstrap.consoleInfo }}
+          value: {{ include "hyperAuth.tmaxClientSecret" . }}
+        - name: config.hyperAuth.realm
+          value: "tmax"
+        - name: config.clientID
+          value: "hypercloud5"
+        {{- with .Values.modules.gatewayBootstrap.console }}
         - name: config.cookieSecret
           value: {{ .cookieSecret | default "DVlYFBWPbb7JxehybnQ2VeRqDW5NBk8HNMi2eIMt3jg=" }}
         {{- end }}
-        {{- if .Values.global.privateRegistry }}
+        {{- if .Values.global.network.disabled }}
         - name: image.repository
           value: {{ .Values.global.privateRegistry }}/docker.io/tmaxcloudck/oauth2-proxy
         {{- end }}

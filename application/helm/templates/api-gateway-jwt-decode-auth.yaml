@@ -1,8 +1,7 @@
-{{- if .Values.modules.gatewayBootstrap.console.enabled }}
+{{- if .Values.modules.gatewayBootstrap.jwtDecodeAuth.enabled }}
 {{ $isMaster := eq .Values.global.cluster "master" }}
 {{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
 {{ $module := "jwt-decode-auth" }}
-{{ $hyperAuthDomain := include "hyperAuth.domain" . }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -33,7 +32,7 @@ spec:
     namespace: api-gateway-system
   project: {{ .Values.spec.project }}
   source:
-    path: charts/jwt-decode-auth
+    path: manifest/api-gateway/jwt-decode-auth
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
     helm:
@@ -43,19 +42,17 @@ spec:
       parameters:
         - name: timeZone
           value: {{ .Values.global.timeZone | default "UTC" }}
-        {{- with .Values.modules.gatewayBootstrap.hyperAuthInfo }}
         - name: hyperAuth.address
-          value: {{ .address | default $hyperAuthDomain }}
+          value: {{ include "hyperAuth.domain" . }}
         - name: hyperAuth.realm
-          value: {{ .realm | default "tmax" }}
-        {{- end }}
-        {{- with .Values.modules.gatewayBootstrap.consoleInfo }}
+          value: "tmax"
+        {{- with .Values.modules.gatewayBootstrap.console }}
         - name: logInfo.logType
           value: {{ .logInfo.logType | default "pretty" }}
         - name: logInfo.logLevel
           value: {{ .logInfo.logLevel | default "debug" }}
         {{- end }}
-        {{- if .Values.global.privateRegistry }}
+        {{- if .Values.global.network.disabled }}
         - name: image.repository
           value: {{ .Values.global.privateRegistry }}/docker.io/tmaxcloudck/jwt-decode
         {{- end }}

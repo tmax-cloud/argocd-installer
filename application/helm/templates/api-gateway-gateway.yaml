@@ -25,7 +25,7 @@ spec:
     name: {{ .Values.global.clusterName }}
   project: {{ .Values.spec.project }}
   source:
-    path: charts/namespace
+    path: manifest/namespace
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
     helm:
@@ -64,7 +64,7 @@ spec:
     namespace: api-gateway-system
   project: {{ .Values.spec.project }}
   source:
-    path: charts/gateway
+    path: manifest/api-gateway/gateway
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
     helm:
@@ -108,7 +108,7 @@ spec:
         - name: traefik.env[0].value
           value: {{ .Values.global.timeZone }}
       {{- end }}
-      {{- if .Values.global.privateRegistry }}
+      {{- if .Values.global.network.disabled }}
         - name: image.name
           value: {{ .Values.global.privateRegistry }}/docker.io/library/traefik
       {{- end }}

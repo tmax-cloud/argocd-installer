@@ -42,7 +42,6 @@ modules:
   sonarqube:
     enabled: false
 
-
   ### nexus
   nexus:
     enabled: false
@@ -57,13 +56,13 @@ modules:
   ### gateway-bootstrap
   gatewayBootstrap:
     enabled: true
-    # cloud provider의 load balancer 서비스(ex. aws nlb)를 사용하기 위해서는
+    # load balancer를 사용할 수 있는 경우(ex. aws lb, metallb)
     # LoadBalancer로 값을 변경
     service:
-      type: NodePort
+      type: LoadBalancer
     tls:
       selfsigned:
-        enabled: false
+        enabled: true
       # acme로 할 경우, domain에 입력한 주소를 가지고 있어야함
       acme:
         enabled: false
@@ -77,17 +76,10 @@ modules:
         # 자세한 내용은 https://letsencrypt.org/docs/staging-environment/#rate-limits 참조
         # staging / production 중 택1하여 기입하여야 하며, 각각 테스트용 / 운영용을 의미함
         environment: production
-    hyperAuthInfo:
-      # 미기입 시 define "hyperAuth.domain" 값 사용
-      address: "hyperauth.tmaxcloud.org"
-      # 미기입 시 default로 "tmax" 사용
-      realm: "tmax"
-      # 미기입 시 default로 "hypercloud5" 사용
-      clientID: "hypercloud5"
-      # 미기입 시 default로 "Qj1gKJvgnPCCDFS9DJlkmtFwyMKlUaIDC7oE4jgA3kY" 사용
-      clientSecret: ""
-    consoleInfo:
-      subDomain: console
+    console:
+      enabled: true
+      version: 5.2.20.0
+      subdomain: console
       mcMode: true
       chatbotEmbed: true
       customProductName: hypercloud
@@ -101,15 +93,14 @@ modules:
     gateway:
       enabled: true
       version: v2.8.7
+
     jwtDecodeAuth:
       enabled: true
-      version: 5.0.0.3
+      version: 5.0.0.4
+
     oauth2Proxy:
       enabled: true
       version: v7.3.0
-    console:
-      enabled: true
-      version: 5.2.20.0
 
 
   ### strimzi-kafka-operator
@@ -134,10 +125,12 @@ modules:
     # keycloak, hyperauth, kafka, jboss 로그레벨을 하나의 환경변수로 통합 조절
     # 사용 가능 한 값 : ALL, DEBUG, ERROR, FATAL, INFO, OFF, TRACE, WARN
     LOG_LEVEL: INFO
+    kafka: 
+      enabled: true
 
   ### efk
   efk:
-    enabled: true
+    enabled: false
     es:
       version: 7.2.1
       limitMemory: 8Gi

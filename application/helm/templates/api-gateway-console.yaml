@@ -33,7 +33,7 @@ spec:
     namespace: api-gateway-system
   project: {{ .Values.spec.project }}
   source:
-    path: charts/console
+    path: manifest/api-gateway/console
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
     helm:
@@ -46,16 +46,14 @@ spec:
         - name: domain
           value: {{ .Values.global.domain }}
         - name: subDomain
-          value: {{ .Values.modules.gatewayBootstrap.consoleInfo.subDomain | default "console" }}
-        {{- with .Values.modules.gatewayBootstrap.hyperAuthInfo }}
-        - name: config.hyperAuth.address
-          value: {{ .address | default $hyperAuthDomain }}
+          value: {{ .Values.modules.gatewayBootstrap.console.subdomain | default "console" }}
         - name: config.hyperAuth.realm
-          value: {{ .realm | default "tmax" }}
+          value: "tmax"
         - name: config.hyperAuth.clientID
-          value: {{ .clientID | default "hypercloud5" }}
-        {{- end }}
-        {{- with .Values.modules.gatewayBootstrap.consoleInfo }}
+          value: "hypercloud5"
+        - name: config.hyperAuth.address
+          value: {{ include "hyperAuth.domain" . }}
+        {{- with .Values.modules.gatewayBootstrap.console }}
         - name: config.mcMode
           value: {{ .mcMode | quote | default "true" }}
         - name: config.chatbotEmbed
@@ -69,7 +67,7 @@ spec:
         - name: config.k8sPublicEndpoint
           value: {{ .k8sPublicEndpoint | default "https://kubernetes.default.svc" }}
         {{- end }}
-        {{- if .Values.global.privateRegistry }}
+        {{- if .Values.global.network.disabled }}
         - name: image.repository
           value: {{ .Values.global.privateRegistry }}/docker.io/tmaxcloudck/hypercloud-console
         {{- end }}
