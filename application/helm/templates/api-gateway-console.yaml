@@ -47,14 +47,12 @@ spec:
           value: {{ .Values.global.domain }}
         - name: subDomain
           value: {{ .Values.modules.gatewayBootstrap.console.subdomain | default "console" }}
-        {{- with .Values.modules.gatewayBootstrap.hyperAuthInfo }}
-        - name: config.hyperAuth.address
-          value: {{ .address | default $hyperAuthDomain }}
         - name: config.hyperAuth.realm
-          value: {{ .realm | default "tmax" }}
+          value: "Tmax"
         - name: config.hyperAuth.clientID
-          value: {{ .clientID | default "hypercloud5" }}
-        {{- end }}
+          value: "hypercloud5"
+        - name: config.hyperAuth.address
+          value: {{ include "hyperAuth.domain" . }}
         {{- with .Values.modules.gatewayBootstrap.console }}
         - name: config.mcMode
           value: {{ .mcMode | quote | default "true" }}

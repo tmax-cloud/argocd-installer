@@ -76,15 +76,6 @@ modules:
         # 자세한 내용은 https://letsencrypt.org/docs/staging-environment/#rate-limits 참조
         # staging / production 중 택1하여 기입하여야 하며, 각각 테스트용 / 운영용을 의미함
         environment: production
-    hyperAuthInfo:
-      # 미기입 시 define "hyperAuth.domain" 값 사용
-      address: "hyperauth.tmaxcloud.org"
-      # 미기입 시 default로 "tmax" 사용
-      realm: "tmax"
-      # 미기입 시 default로 "hypercloud5" 사용
-      clientID: "hypercloud5"
-      # 미기입 시 default로 "Qj1gKJvgnPCCDFS9DJlkmtFwyMKlUaIDC7oE4jgA3kY" 사용
-      clientSecret: "tmax_client_secret"
     console:
       enabled: true
       version: 5.2.20.0
