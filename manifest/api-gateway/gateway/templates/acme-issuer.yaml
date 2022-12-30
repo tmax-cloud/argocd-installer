@@ -1,0 +1,70 @@
+{{- if .Values.tls.acme.enabled }}
+{{- if eq .Values.tls.acme.environment "staging" }}
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  labels:
+    {{- include "gateway.labels" . | nindent 4 }}
+{{- with .Values.tls.acme }}
+  name: {{ .dns.type }}-letsencrypt-staging
+spec:
+  acme:
+    # You must replace this email address with your own.
+    # Let's Encrypt will use this to contact you about expiring
+    # certificates, and issues related to your account.
+    email: {{ .email }}
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      # Secret resource used to store the account's private key.
+      name: issuer-account-key-staging
+    solvers:
+      - dns01:
+    {{- if eq .dns.type "route53" }}
+          route53:
+            region: ap-northeast-2
+            {{- if .dns.hostedZoneID }}
+            hostedZoneID: {{ .dns.hostedZoneID }}
+            {{- end }}
+            accessKeyID: {{ .dns.accessKeyID }}
+            secretAccessKeySecretRef:
+              name: route53-secret
+              key: secret_access_key
+    {{- end }}
+  {{- end }}
+{{- end }}
+
+{{if eq .Values.tls.acme.environment "production" }}
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  labels:
+    {{- include "gateway.labels" . | nindent 4 }}
+{{- with .Values.tls.acme }}
+  name: {{ .dns.type }}-letsencrypt-production
+spec:
+  acme:
+    # You must replace this email address with your own.
+    # Let's Encrypt will use this to contact you about expiring
+    # certificates, and issues related to your account.
+    email: {{ .email }}
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      # Secret resource used to store the account's private key.
+      name: issuer-account-key 
+    solvers:
+      - dns01:
+    {{- if eq .dns.type "route53" }}
+          route53:
+            region: ap-northeast-2
+            {{- if .dns.hostedZoneID }}
+            hostedZoneID: {{ .dns.hostedZoneID }}
+            {{- end }}
+            accessKeyID: {{ .dns.accessKeyID }}
+            secretAccessKeySecretRef:
+              name: route53-secret
+              key: secret_access_key
+    {{- end }}
+  {{- end }}
+{{- end }}
+{{- end }}

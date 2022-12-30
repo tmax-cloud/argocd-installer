@@ -1,68 +1,61 @@
-# Default values for gateway.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
-tags:
-  traefik: true
+tls:
+  domain: ""
+  acme:
+    enabled: false
+    email: "temp@tmax.co.kr"
+    dns:
+      type: route53
+      accessKeyID: accessKeyID
+      accessKeySecret: accessKeySecret
+      hostedZoneID: hostZoneID
+    # staging or production
+    environment: staging
+  selfsigned:
+    enabled: false
+  # Create an IngressRoute for the dashboard
+dashboard:
+  enabled: true
+  # optional: dashboard login id
+  id: ""
+  # optional: dashboard login password
+  password: ""
 
 traefik:
-  fullnameOverride: "gateway"
+  enabled: true
+  fullnameOverride: gateway
   additionalArguments:
-    # Only use dev environment
-    - "--serverstransport.insecureskipverify=true"
-    - "--serverstransport.rootcas=/run/secrets/tmaxcloud/ca.crt, /run/secrets/kubernetes.io/serviceaccount/ca.crt"
-    - "--entrypoints.websecure.http.middlewares=cors-header@file"
+    - "--entrypoints.websecure.http.middlewares=api-gateway-system-cors-header@kubernetescrd"
+    - "--providers.file"
+    - "--providers.file.directory=/gateway-config"
+    - "--providers.file.watch=true"
+    #- "--serverstransport.insecureskipverify" # Disable SSL certificate verification. (Default: false)
+  image:
+    name: traefik
+    tag: "v2.8.7"
   deployment:
     podLabels:
       app: traefik
     imagePullSecrets: []
-#    imagePullSecrets:
-#      - name: regcred
+    #  imagePullSecrets:
+    #    - name: regcred
   volumes:
-    - name: gateway-config
-      mountPath: "/gateway-config"
+    - mountPath: /gateway-config
+      name: gateway-config
       type: configMap
-    - name: selfsigned-ca
-      mountPath: "/run/secrets/tmaxcloud"
+    - mountPath: /var/run/secrets/tmaxcloud
+      name: selfsigned-ca
       type: secret
-  ingressClass:
-    enabled: true
-    isDefaultClass: true
-    fallbackApiVersion: "v1"
   service:
+    # LoadBalancer , NodePort
+    type: LoadBalancer
+    # 우태건 실장님 요청으로 aws nlb annotation 추가
     annotations:
       service.beta.kubernetes.io/aws-load-balancer-type: nlb
-      service.beta.kubernetes.io/aws-load-balancer-internal: "false"
-  resources: {}
-  nodeSelector:
-    node-role.kubernetes.io/master: ""
+      service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+  env:
+    - name: TZ
+      value: Asia/Seoul
   tolerations:
     - key: "node-role.kubernetes.io/master"
       operator: Exists
-  env: []
-#  env:
-#    - name: TZ
-#      value: Asia/Seoul
-  additionalVolumeMounts: []
-  #  - name: gateway-confi
-  # For instance when using a logshipper for access logs
-  # - name: traefik-logs
-  #   mountPath: /var/log/traefik
-  additionalVolumes: []
 
-tls:
-  domain: tmaxcloud.test
-  consoleSubdomain: console
-  acme:
-    enabled: false
-    email: email
-    dns:
-      type: route53
-      accessKeyID: accesskey
-      accessKeySecret: secretkey
-      hostedZoneID: Z07854445SLZAKEQ0V9P
-    environment: staging
-#    domain: tmaxcloud.test
-  selfsigned:
-    enabled: true
-#    domain: tmaxcloud.test

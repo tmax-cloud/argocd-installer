@@ -1,3 +1,4 @@
+{{- if regexMatch "5.2.[1-9][0-9]*.[0-9]*" .Values.image.tag }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -6,9 +7,7 @@ metadata:
   labels:
     {{- include "console.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
-  {{- end }}
   selector:
     matchLabels:
       {{- include "console.selectorLabels" . | nindent 6 }}
@@ -25,33 +24,40 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "console.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: init-check-middleware
+          image: busybox:1.28
+          # Wait 30 seconds for a middleware service
+          {{- if regexMatch "5.[2-9].[0-9]*.[0-9]*" (.Values.image.tag | default .Chart.AppVersion ) }}
+          command: ['sh', '-c', 'for i in {1..10}; do sleep 3; if nslookup oauth2-proxy.api-gateway-system.svc; then exit 0; fi; done; exit 1']
+          {{- else }}
+          command: ['sh', '-c', 'for i in {1..10}; do sleep 3; if nslookup jwt-decode-auth.api-gateway-system.svc; then exit 0; fi; done; exit 1']
+          {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
             - /opt/bridge/bin/console
-            - server
             - --public-dir=/opt/bridge/static
             - --listen=http://0.0.0.0:31303
             - --base-address=http://0.0.0.0:31303
-            {{- with .Values.console }}
-            - --keycloak-realm={{ .auth.realm }}
-            - --keycloak-auth-url=https://{{ .auth.hyperauth }}/auth
-            - --keycloak-client-id={{ .auth.clientid }}
-            - --mc-mode={{ .mcMode }}
-            - --chatbot-embed={{ .chatbotEmbed }}
+            {{- with .Values.config }}
+            - --keycloak-realm={{ .hyperAuth.realm }}
+            - --keycloak-auth-url=https://{{ .hyperAuth.address }}/auth
+            - --keycloak-client-id={{ .hyperAuth.clientID }}
+            - --mc-mode={{ .mcMode | default true }}
+            - --chatbot-embed={{ .chatbotEmbed | default true }}
+            - --custom-product-name={{ .customProductName | default "hypercloud" }}
+            - --svc-type={{ .svcType | default "LoadBalancer" }}
+            - --log-level={{ .logLevel | default "debug" }}
+            - --log-type={{ .logType | default "pretty" }}
+            - --k8s-public-endpoint={{ .k8sPublicEndpoint | default "https://kubernetes.default.svc" }}
             {{- end }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          {{- if not (eq .Values.console.timeZone "UTC") }}
-          volumeMounts:
-            - mountPath: /etc/localtime
-              name: timezone-config
-          {{- end }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
               containerPort: 31303
@@ -64,14 +70,16 @@ spec:
             httpGet:
               path: /
               port: http
+          volumeMounts:
+            - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+              name: console-token
+              readOnly: true
+            {{- if ne .Values.timeZone "UTC" }}
+            - mountPath: /etc/localtime
+              name: timezone-config
+            {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-      {{- if not (eq .Values.console.timeZone "UTC") }}
-      volumes:
-        - name: timezone-config
-          hostPath:
-            path: "/usr/share/zoneinfo/{{ .Values.console.timeZone }}"
-      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -84,3 +92,117 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      volumes:
+        - name: console-token
+          secret:
+            defaultMode: 420
+            secretName: {{ template "console.serviceAccountName" . }}
+        {{- if ne .Values.timeZone "UTC" }}
+        - name: timezone-config
+          hostPath:
+            path: "/usr/share/zoneinfo/{{ .Values.timeZone }}"
+        {{- end }}
+
+{{- else }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "console.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "console.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "console.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "console.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: init-check-middleware
+          image: busybox:1.28
+          # Wait 30 seconds for a middleware service
+          {{- if regexMatch "5.[2-9].[0-9]*.[0-9]*" (.Values.image.tag | default "5.2.10.0") }}
+          command: ['sh', '-c', 'for i in {1..10}; do sleep 3; if nslookup oauth2-proxy.api-gateway-system.svc; then exit 0; fi; done; exit 1']
+          {{- else }}
+          command: ['sh', '-c', 'for i in {1..10}; do sleep 3; if nslookup jwt-decode-auth.api-gateway-system.svc; then exit 0; fi; done; exit 1']
+          {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          command:
+            - /opt/bridge/bin/console
+            - server
+            - --public-dir=/opt/bridge/static
+            - --listen=http://0.0.0.0:31303
+            - --base-address=http://0.0.0.0:31303
+            {{- with .Values.config }}
+            - --keycloak-realm={{ .hyperAuth.realm }}
+            - --keycloak-auth-url=https://{{ .hyperAuth.address }}/auth
+            - --keycloak-client-id={{ .hyperAuth.clientID }}
+            - --mc-mode={{ .mcMode | default true }}
+            - --app.chatbotEmbed={{ .chatbotEmbed | default true }}
+            - --logInfo.logLevel={{ .logLevel | default "debug" }}
+            - --logInfo.logType={{ .logType | default "pretty" }}
+            {{- end }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 31303
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          volumeMounts:
+            - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+              name: console-token
+              readOnly: true
+            {{- if ne .Values.timeZone "UTC" }}
+            - mountPath: /etc/localtime
+              name: timezone-config
+            {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: console-token
+          secret:
+            defaultMode: 420
+            secretName: {{ template "console.serviceAccountName" . }}
+        {{- if ne .Values.timeZone "UTC" }}
+        - name: timezone-config
+          hostPath:
+            path: "/usr/share/zoneinfo/{{ .Values.timeZone }}"
+        {{- end }}
+{{- end }}

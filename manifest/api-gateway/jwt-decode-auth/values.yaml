@@ -1,33 +1,50 @@
 # Default values for jwt-decode-auth.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-
-timeZone: "UTC"
-# timeZone: "Asia/Seoul"
-nameOverride: "jwt-decode-auth"
 fullnameOverride: "jwt-decode-auth"
-hyperauth:
-  address: hyperauth.tmaxcloud.org
-  realm: tmax
+
+hyperAuth:
+  address: ""
+  realm: ""
+timeZone: ""
+logInfo:
+  logLevel: "debug"
+  logType: "pretty"
 middleware:
   enabled: true
-monitoringIngressroute:
-  enabled: false
-
-replicaCount: 1
 
 image:
   repository: docker.io/tmaxcloudck/jwt-decode
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "5.0.0.4"
-
+  tag: "5.0.0.3"
 imagePullSecrets: []
 #imagePullSecrets:
 #  - name: regcred
 
-#nameOverride: ""
-#fullnameOverride: "jwt-decode-auth"
+#nodeSelector: {}
+#nodeSelector:
+#  node-role.kubernetes.io/master: ""
+
+#tolerations: []
+tolerations:
+  - key: "node-role.kubernetes.io/master"
+    operator: Exists
+
+affinity:
+  podAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - podAffinityTerm:
+          topologyKey: kubernetes.io/hostname
+          labelSelector:
+            matchExpressions:
+              - key: app
+                operator: In
+                values:
+                  - traefik
+        weight: 100
+
+replicaCount: 1
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -36,7 +53,7 @@ serviceAccount:
   annotations: {}
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
-  name: ""
+  name: "jwt-decode-auth"
 
 podAnnotations: {}
 
@@ -73,25 +90,3 @@ autoscaling:
   maxReplicas: 100
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
-
-#nodeSelector: {}
-nodeSelector:
-  node-role.kubernetes.io/master: ""
-
-#tolerations: []
-tolerations:
-  - key: "node-role.kubernetes.io/master"
-    operator: Exists
-
-affinity:
-  podAffinity:
-    preferredDuringSchedulingIgnoredDuringExecution:
-      - podAffinityTerm:
-          topologyKey: kubernetes.io/hostname
-          labelSelector:
-            matchExpressions:
-              - key: app
-                operator: In
-                values:
-                  - traefik
-        weight: 100

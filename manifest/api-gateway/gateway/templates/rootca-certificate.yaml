@@ -1,0 +1,24 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: selfsigned-ca
+  labels:
+    {{- include "gateway.labels" . | nindent 4 }}
+spec:
+  secretName: selfsigned-ca
+  commonName: tmax-cloud
+  subject:
+    organizations:
+      - "tmax-cloud"
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+    - client auth
+  dnsNames:
+    - "tmax-cloud"
+    - "{{ .Values.traefik.fullnameOverride }}.{{ .Release.Namespace }}.svc"
+  issuerRef:
+    kind: ClusterIssuer
+    group: cert-manager.io
+    name: tmaxcloud-issuer

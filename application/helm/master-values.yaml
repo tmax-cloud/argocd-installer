@@ -50,12 +50,17 @@ modules:
       enabled: true
       storageClass: ""
 
+  ### cert-manager
+  certManager:
+    enabled: true
+
   ### gateway-bootstrap
   gatewayBootstrap:
     enabled: true
     # cloud provider의 load balancer 서비스(ex. aws nlb)를 사용하기 위해서는
     # LoadBalancer로 값을 변경
-    svc_type: NodePort
+    service:
+      type: NodePort
     tls:
       selfsigned:
         enabled: false
@@ -72,25 +77,40 @@ modules:
         # 자세한 내용은 https://letsencrypt.org/docs/staging-environment/#rate-limits 참조
         # staging / production 중 택1하여 기입하여야 하며, 각각 테스트용 / 운영용을 의미함
         environment: production
-    certManager:
-      enabled: true
-      # default 300
-      syncWaitTime: 300
-    console:
-      enabled: true
-      multiCluster:
-        enabled: true
-      # default 0
-      syncWaitTime: 0
-      subdomain: console
+    hyperAuthInfo:
+      # 미기입 시 define "hyperAuth.domain" 값 사용
+      address: "hyperauth.tmaxcloud.org"
+      # 미기입 시 default로 "tmax" 사용
+      realm: "tmax"
+      # 미기입 시 default로 "hypercloud5" 사용
+      clientID: "hypercloud5"
+      # 미기입 시 default로 "Qj1gKJvgnPCCDFS9DJlkmtFwyMKlUaIDC7oE4jgA3kY" 사용
+      clientSecret: ""
+    consoleInfo:
+      subDomain: console
+      mcMode: true
+      chatbotEmbed: true
+      customProductName: hypercloud
+      k8sPublicEndpoint: https://kubernetes.default.svc
+      svcType: LoadBalancer
+      logInfo:
+        logLevel: "debug"
+        logType: "pretty"
+      cookieSecret: ""
+
     gateway:
       enabled: true
-      # default 120
-      syncWaitTime: 120
+      version: v2.8.7
     jwtDecodeAuth:
       enabled: true
-      # default 30
-      syncWaitTime: 30
+      version: 5.0.0.3
+    oauth2Proxy:
+      enabled: true
+      version: v7.3.0
+    console:
+      enabled: true
+      version: 5.2.20.0
+
 
   ### strimzi-kafka-operator
   strimziKafka:
@@ -117,7 +137,7 @@ modules:
 
   ### efk
   efk:
-    enabled: false
+    enabled: true
     es:
       version: 7.2.1
       limitMemory: 8Gi

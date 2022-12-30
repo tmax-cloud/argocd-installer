@@ -1,0 +1,68 @@
+{{- if .Values.modules.gatewayBootstrap.console.enabled }}
+{{ $isMaster := eq .Values.global.cluster "master" }}
+{{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
+{{ $module := "oauth2-proxy" }}
+{{ $hyperAuthDomain := include "hyperAuth.domain" . }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  labels:
+    cluster: {{ ternary "master" $prefix $isMaster }}
+  name: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+      - RespectIgnoreDifferences=true
+    automated:
+      selfHeal: true
+      prune: true
+    retry:
+      limit: 1
+      backoff:
+        duration: "10s"
+        factor: 2
+        maxDuration: "1m0s"
+  destination:
+    name: {{ .Values.global.clusterName }}
+    namespace: api-gateway-system
+  project: {{ .Values.spec.project }}
+  source:
+    path: charts/oauth2-proxy
+    repoURL: {{ .Values.spec.source.repoURL }}
+    targetRevision: {{ .Values.spec.source.targetRevision }}
+    helm:
+      releaseName: oauth2-proxy
+      valueFiles:
+        - values.yaml
+      parameters:
+        - name: timeZone
+          value: {{ .Values.global.timeZone | default "UTC" }}
+        - name: domain
+          value: {{ .Values.global.domain }}
+        {{- with .Values.modules.gatewayBootstrap.hyperAuthInfo }}
+        - name: config.hyperAuth.address
+          value: {{ .address | default $hyperAuthDomain }}
+        - name: config.hyperAuth.realm
+          value: {{ .realm | default "tmax" }}
+        - name: config.clientID
+          value: {{ .clientID | default "hypercloud5" }}
+        - name: config.clientSecret
+          value: {{ .clientSecret | default "Qj1gKJvgnPCCDFS9DJlkmtFwyMKlUaIDC7oE4jgA3kY=" }}
+        {{- end }}
+        {{- with .Values.modules.gatewayBootstrap.consoleInfo }}
+        - name: config.cookieSecret
+          value: {{ .cookieSecret | default "DVlYFBWPbb7JxehybnQ2VeRqDW5NBk8HNMi2eIMt3jg=" }}
+        {{- end }}
+        {{- if .Values.global.privateRegistry }}
+        - name: image.repository
+          value: {{ .Values.global.privateRegistry }}/docker.io/tmaxcloudck/oauth2-proxy
+        {{- end }}
+        - name: image.tag
+          value: {{ .Values.modules.gatewayBootstrap.oauth2Proxy.version | default "v7.3.0" }}
+{{- end }}
