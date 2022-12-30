@@ -122,6 +122,8 @@ modules:
     # keycloak, hyperauth, kafka, jboss 로그레벨을 하나의 환경변수로 통합 조절
     # 사용 가능 한 값 : ALL, DEBUG, ERROR, FATAL, INFO, OFF, TRACE, WARN
     LOG_LEVEL: INFO
+    kafka: 
+      enabled: false
 
   ### efk
   efk:
