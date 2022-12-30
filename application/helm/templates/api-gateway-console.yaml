@@ -33,7 +33,7 @@ spec:
     namespace: api-gateway-system
   project: {{ .Values.spec.project }}
   source:
-    path: manifest/console
+    path: manifest/api-gateway/console
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
     helm:
@@ -67,7 +67,7 @@ spec:
         - name: config.k8sPublicEndpoint
           value: {{ .k8sPublicEndpoint | default "https://kubernetes.default.svc" }}
         {{- end }}
-        {{- if .Values.global.privateRegistry }}
+        {{- if .Values.global.network.disabled }}
         - name: image.repository
           value: {{ .Values.global.privateRegistry }}/docker.io/tmaxcloudck/hypercloud-console
         {{- end }}

@@ -71,15 +71,15 @@ spec:
       releaseName: {{ $module }}
       valueFiles:
         - values.yaml
-      {{- if .Values.global.privateRegistry }}
+      {{- if .Values.global.network.disabled }}
       parameters:
-        - name: certManager.image.repository
+        - name: cert-manager.image.repository
           value: "{{ .Values.global.privateRegistry }}/quay.io/jetstack/cert-manager-controller"
-        - name: certManager.cainjector.image.repository
+        - name: cert-manager.cainjector.image.repository
           value: "{{ .Values.global.privateRegistry }}/quay.io/jetstack/cert-manager-cainjector"
-        - name: certManager.webhook.image.repository
+        - name: cert-manager.webhook.image.repository
           value: "{{ .Values.global.privateRegistry }}/quay.io/jetstack/cert-manager-webhook"
-        - name: certManager.startupapicheck.image.repository
+        - name: cert-manager.startupapicheck.image.repository
           value: "{{ .Values.global.privateRegistry }}/quay.io/jetstack/cert-manager-ctl"
       {{- end }}
 ---
