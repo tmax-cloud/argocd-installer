@@ -90,8 +90,8 @@ jobs:
       - name: Sync argocd master application
         uses: nick-fields/retry@v2
         with:
-          timeout_seconds: 10
-          max_attempts: 10
+          timeout_seconds: 30
+          max_attempts: 5
           command: | 
             argocd app sync $MASTER_APPLICATION;
 
@@ -100,8 +100,8 @@ jobs:
       - name: Sync argocd single application
         uses: nick-fields/retry@v2
         with:
-          timeout_seconds: 10
-          max_attempts: 10
+          timeout_seconds: 30
+          max_attempts: 5
           command: | 
             argocd app sync $SINGLE_APPLICATION;
       
