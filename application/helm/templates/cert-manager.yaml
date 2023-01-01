@@ -18,9 +18,11 @@ spec:
   syncPolicy:
     syncOptions:
       - ApplyOutOfSyncOnly=true
+    {{- if .Values.modules.certManager.autoSync }}
     automated:
       selfHeal: true
       prune: true
+    {{- end }}
   destination:
     name: {{ .Values.global.clusterName }}
   project: {{ .Values.spec.project }}
@@ -50,9 +52,11 @@ spec:
     syncOptions:
       - ApplyOutOfSyncOnly=true
       - RespectIgnoreDifferences=true
+    {{- if .Values.modules.certManager.autoSync }}
     automated:
       selfHeal: true
       prune: true
+    {{- end }}
     retry:
       limit: 3
       backoff:
