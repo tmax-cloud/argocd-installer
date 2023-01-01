@@ -18,9 +18,11 @@ spec:
   syncPolicy:
     syncOptions:
       - ApplyOutOfSyncOnly=true
+    {{- if .Values.modules.gatewayBootstrap.autoSync }}
     automated:
       selfHeal: true
       prune: true
+    {{- end }}
   destination:
     name: {{ .Values.global.clusterName }}
   project: {{ .Values.spec.project }}
@@ -50,15 +52,17 @@ spec:
     syncOptions:
       - ApplyOutOfSyncOnly=true
       - RespectIgnoreDifferences=true
-    automated:
-      selfHeal: true
-      prune: true
     retry:
       limit: 3
       backoff:
         duration: "30s"
         factor: 2
         maxDuration: "3m0s"
+    {{- if .Values.modules.gatewayBootstrap.autoSync }}
+    automated:
+      selfHeal: true
+      prune: true
+    {{- end }}
   destination:
     name: {{ .Values.global.clusterName }}
     namespace: api-gateway-system

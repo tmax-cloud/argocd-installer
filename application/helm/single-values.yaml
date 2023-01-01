@@ -50,10 +50,12 @@ modules:
   ### cert-manager
   certManager:
     enabled: true
+    autoSync: true
 
   ### gateway-bootstrap
   gatewayBootstrap:
     enabled: true
+    autoSync: true
     # load balancer를 사용할 수 있는 경우(ex. aws lb, metallb)
     # LoadBalancer로 값을 변경
     service:
