@@ -191,11 +191,11 @@ modules:
   loki:
     enabled: true
     loki: 
-      version: 2.6.0
+      version: 2.7.1
       volumeSize: 50Gi
       storageClass: default
     promtail:
-      version: 2.6.0
+      version: 2.7.1
   
   ### prometheus
   prometheus:
