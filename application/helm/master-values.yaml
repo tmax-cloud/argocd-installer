@@ -170,7 +170,7 @@ modules:
   opensearch:
     enabled: true
     os:
-      version: 1.2.3
+      version: 1.3.7
       limitMemory: 8Gi
       requestMemory: 5Gi
       jvmHeap: "-Xms4g -Xmx4g"
@@ -178,11 +178,11 @@ modules:
     busyBox:
       version: 1.32.0
     dashboard:
-      version: 1.2.0
+      version: 1.3.7
       svcType: ClusterIP
       subdomain: opensearch-dashboard
     fluentd:
-      version: fluentd-v1.4.2-debian-elasticsearch-1.1
+      version: fluentd-v1.15.3-debian-elasticsearch-1.0
       # default로 주는 경우 default storage class를 사용
       # default를 사용하지 않고 싶은 경우에는 storage class이름을 기입
       storageClass: default
