@@ -17,8 +17,9 @@ pvc:
 ingress:
   hosts:
     domain: testdomain.com
+    subdomain: sonarqube
 
 image:
   sonarqube:
-    repo: docker.io/sonarqube/sonarqube
-    tag: 7.9.1-community
+    repo: sonarqube
+    tag: 9.8.0-community
