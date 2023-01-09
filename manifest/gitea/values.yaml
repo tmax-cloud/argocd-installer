@@ -294,11 +294,11 @@ gitea:
   # Either specify inline `key` and `secret` or refer to them via `existingSecret`
   ## @param gitea.oauth OAuth configuration
   oauth:
-    - name: 'giteaOAuth'
-      provider: 'openidConnect'
-      key: 'gitea'
-      secret: 'b9909ff9-cee8-4394-b287-1f596a8791cd'
-      autoDiscoverUrl: 'https://hyperauth.tmaxcloud.org/auth/realms/tmax/.well-known/openid-configuration'
+    - name: 'oauth name ex)giteaOAuth'
+      provider: 'client protocol ex)openidConnect'
+      key: 'client name ex)gitea'
+      secret: 'client secret'
+      autoDiscoverUrl: 'ex)https://hyperauth.{domain}/auth/realms/tmax/.well-known/openid-configuration'
     # - name: 'OAuth 1'
     #   provider:
     #   key:

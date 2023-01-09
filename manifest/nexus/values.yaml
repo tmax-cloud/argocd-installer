@@ -10,6 +10,7 @@ tls:
 ingress:
   hosts:
     domain: tmaxcloud.org
+    subdomain: nexus
 
 persistence:
   enabled: true
@@ -101,7 +102,7 @@ nexus:
   #   - "www.example.com"
 
 nameOverride: ""
-fullnameOverride: ""
+fullnameOverride: "nexus3"
 
 deployment:
   # # Add annotations in deployment to enhance deployment configurations
