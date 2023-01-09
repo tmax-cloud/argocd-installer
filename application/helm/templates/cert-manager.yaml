@@ -75,8 +75,10 @@ spec:
       releaseName: {{ $module }}
       valueFiles:
         - values.yaml
-      {{- if .Values.global.network.disabled }}
       parameters:
+        - name: cert-manager.global.logLevel
+          value: {{ .Values.modules.certManager.logLevel | quote }}
+      {{- if .Values.global.network.disabled }}
         - name: cert-manager.image.repository
           value: "{{ .Values.global.privateRegistry }}/quay.io/jetstack/cert-manager-controller"
         - name: cert-manager.cainjector.image.repository
