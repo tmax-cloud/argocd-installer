@@ -58,4 +58,11 @@ traefik:
   tolerations:
     - key: "node-role.kubernetes.io/master"
       operator: Exists
-
+  logs:
+    # Traefik logs concern everything that happens to Traefik itself (startup, configuration, events, shutdown, and so on).
+    general:
+      # By default, the logs use a text format (common), but you can
+      # also ask for the json format in the format option
+      format: common
+      # By default, the level is set to ERROR. Alternative logging levels are DEBUG, PANIC, FATAL, ERROR, WARN, and INFO.
+      level: ERROR

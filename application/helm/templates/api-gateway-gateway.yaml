@@ -118,4 +118,10 @@ spec:
       {{- end }}
         - name: traefik.image.tag
           value: {{ .Values.modules.gatewayBootstrap.gateway.version | default "v2.8.7" }}
+      {{- with .Values.modules.gatewayBootstrap.gateway.logInfo }}
+        - name: traefik.logs.general.level
+          value: {{ .logLevel }}
+        - name: traefik.logs.general.format
+          value: {{ .logType }}
+      {{- end }}
 {{- end }}
