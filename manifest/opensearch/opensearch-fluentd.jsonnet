@@ -94,6 +94,11 @@ local fluentd_image_path = "docker.io/tmaxcloudck/hypercloud:" + fluentd_image_t
                   "subPath": "opensearch.yml"
                 },
                 {
+                  "name": "log4j2",
+                  "mountPath": "/usr/share/opensearch/config/log4j2.properties",
+                  "subPath": "log4j2.properties"
+                },
+                {
                   "name": "opensearch-cert",
                   "mountPath": "/usr/share/opensearch/config/certificates",
                   "readOnly": true
@@ -167,6 +172,12 @@ local fluentd_image_path = "docker.io/tmaxcloudck/hypercloud:" + fluentd_image_t
               "name": "config",
               "configMap": {
                 "name": "opensearch-config"
+              }
+            },
+            {
+              "name": "log4j2",
+              "configMap": {
+                "name": "opensearch-log4j2-config"
               }
             },
             {
