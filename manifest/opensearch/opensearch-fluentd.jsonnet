@@ -638,7 +638,8 @@ local fluentd_image_path = "docker.io/tmaxcloudck/hypercloud:" + fluentd_image_t
           "opensearch.username: admin",
           "opensearch.password: admin",
           "opensearch.ssl.verificationMode: none",
-          "opensearch.requestTimeout: '100000ms'"
+          "opensearch.requestTimeout: '100000ms'",
+          "logging.quiet: false"
         ]
       )
     } else {
@@ -666,7 +667,8 @@ local fluentd_image_path = "docker.io/tmaxcloudck/hypercloud:" + fluentd_image_t
           std.join("", ["opensearch_security.openid.client_secret: ", tmax_client_secret]),
           std.join("", ["opensearch_security.openid.base_redirect_url: https://", opensearch_subdomain, ".", custom_domain_name]),
           "opensearch_security.openid.verify_hostnames: false",
-          "opensearch_security.cookie.secure: false"
+          "opensearch_security.cookie.secure: false",
+          "logging.quiet: false"
         ]
       )
     }
