@@ -191,6 +191,7 @@ modules:
   ### Loki
   loki:
     enabled: true
+    logLevel: info
     loki: 
       version: 2.6.0
       volumeSize: 50Gi
