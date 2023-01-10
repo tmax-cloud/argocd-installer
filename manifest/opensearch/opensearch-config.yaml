@@ -41,3 +41,18 @@ data:
               ".opendistro-notebooks",
               ".opendistro-asynchronous-search-response*",
             ]
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: opensearch-log4j2-config
+  namespace: kube-logging
+data:
+  log4j2.properties: |
+    status = error
+    appender.console.type = Console
+    appender.console.name = console
+    appender.console.layout.type = PatternLayout
+    appender.console.layout.pattern = [%d{ISO8601}][%-5p][%-25c{1.}] [%node_name]%marker %m%n
+    rootLogger.level = error
+    rootLogger.appenderRef.console.ref = console
