@@ -480,6 +480,11 @@ local fluentd_image_path = "docker.io/tmaxcloudck/hypercloud:" + fluentd_image_t
             {
               "name": "fluentd",
               "image": std.join("",[target_registry, fluentd_image_path]),
+              "command": [
+                "/bin/bash",
+                "-c",
+                "fluentd -qq -c /fluentd/etc/fluent.conf -p /fluentd/plugins"
+              ],
               "env": [
                 {
                   "name": "FLUENT_OPENSEARCH_HOST",
