@@ -668,7 +668,7 @@ local fluentd_log_level = if log_level == "error" then "-qq " else if log_level 
           "opensearch.username: admin",
           "opensearch.password: admin",
           "opensearch.ssl.verificationMode: none",
-          "opensearch.requestTimeout: '100000ms'",
+          "opensearch.requestTimeout: '100000ms'"
         ]
       )
     } else {
