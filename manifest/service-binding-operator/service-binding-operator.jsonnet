@@ -45,7 +45,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
               "/manager"
             ],
             "imagePullPolicy": "Always",
-            "image": std.join("", [target_registry, "docker.io/tmaxcloudck/service-binding-operator:1.0.0"]),
+            "image": std.join("", [target_registry, "quay.io/redhat-developer/servicebinding-operator@sha256:30bf7f0f21024bb2e1e4db901b1f5e89ab56e0f3197a919d2bbb670f3fe5223a"]),
             "livenessProbe": {
               "httpGet": {
                 "path": "/healthz",
@@ -62,6 +62,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "protocol": "TCP"
               }
             ],
+            "resources": {
+                "limits": {
+                  "cpu": "250m",
+                  "memory": "64Mi"
+                },
+                "requests": {
+                  "cpu": "50m",
+                  "memory": "16Mi"
+                }
+            },
             "readinessProbe": {
               "httpGet": {
                 "path": "/readyz",

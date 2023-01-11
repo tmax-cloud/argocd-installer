@@ -3,7 +3,6 @@ kind: Namespace
 metadata:
   labels:
     control-plane: service-binding-controller-manager
-    hypercloud: system
   name: service-binding-operator
 ---
 apiVersion: apiextensions.k8s.io/v1
@@ -1643,6 +1642,70 @@ spec:
     targetPort: 9443
   selector:
     control-plane: service-binding-controller-manager
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    control-plane: service-binding-controller-manager
+  name: service-binding-operator
+  namespace: service-binding-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      control-plane: service-binding-controller-manager
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container: manager
+      labels:
+        control-plane: service-binding-controller-manager
+    spec:
+      containers:
+      - args:
+        - --leader-elect
+        - --zap-encoder=json
+        - --zap-log-level=info
+        command:
+        - /manager
+        imagePullPolicy: Always
+        image: quay.io/redhat-developer/servicebinding-operator@sha256:30bf7f0f21024bb2e1e4db901b1f5e89ab56e0f3197a919d2bbb670f3fe5223a
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8081
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        name: manager
+        ports:
+        - containerPort: 9443
+          name: webhook-server
+          protocol: TCP
+        resources:
+          requests:
+            cpu: "50m"
+            memory : "16Mi"
+          limits:
+            cpu: "250m"
+            memory : "64Mi"
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8081
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        volumeMounts:
+        - mountPath: /tmp/k8s-webhook-server/serving-certs
+          name: cert
+          readOnly: true
+      serviceAccountName: service-binding-operator
+      terminationGracePeriodSeconds: 10
+      volumes:
+      - name: cert
+        secret:
+          defaultMode: 420
+          secretName: service-binding-operator-service-cert
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
