@@ -3,7 +3,7 @@ function (
   private_registry = "registry.tmaxcloud.org",
   custom_domain = "tmaxcloud.org",
   cicd_subdomain = "cicd-webhook",
-  timezone="UTC"
+  timezone="UTC",
   log_level="info"
 
 )
