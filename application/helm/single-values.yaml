@@ -383,6 +383,7 @@ modules:
   cicd:
     enabled: true
     subdomain: cicd-webhook
+    logLevel: info
 
   ### redis-operator
   redis:
