@@ -1,7 +1,8 @@
 function (
   is_offline="false",
   private_registry="172.22.6.2:5000",
-  time_zone="UTC"
+  time_zone="UTC",
+  log_level="INFO"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -88,6 +89,10 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 ] else []
               ),
             "env": [
+              {
+                "name": "STRIMZI_LOG_LEVEL",
+                "value": log_level
+              },
               {
                 "name": "STRIMZI_NAMESPACE",
                 "value": "*"

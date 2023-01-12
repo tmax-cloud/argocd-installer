@@ -106,6 +106,7 @@ modules:
   ### strimzi-kafka-operator
   strimziKafka:
     enabled: true
+    logLevel: INFO
 
   ### service-binding-operator
   serviceBinding:
