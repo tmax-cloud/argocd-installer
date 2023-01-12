@@ -377,6 +377,7 @@ modules:
   tektonPipeline:
     enabled: true
     #namespace: tekton-pipelines
+    logLevel: info
 
   ### tekton trigger
   tektonTrigger:

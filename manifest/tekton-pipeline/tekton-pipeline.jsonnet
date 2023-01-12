@@ -2,6 +2,7 @@ function (
   is_offline="false",
   private_registry="registry.tmaxcloud.org",
   timezone="UTC"
+  log_level="info"
 
 )
 
@@ -433,5 +434,22 @@ local gcr_registry = if is_offline == "false" then "" else private_registry + "/
         } else {},
       }
     }
-  }
+  },
+  {
+    apiVersion: 'v1',
+    kind: 'ConfigMap',
+    metadata: {
+      name: 'config-logging',
+      namespace: 'tekton-pipelines',
+      labels: {
+        'app.kubernetes.io/instance': 'default',
+        'app.kubernetes.io/part-of': 'tekton-pipelines',
+      },
+    },
+    data: {
+      'zap-logger-config': '{\n  "level": "info",\n  "development": false,\n  "sampling": {\n    "initial": 100,\n    "thereafter": 100\n  },\n  "outputPaths": ["stdout"],\n  "errorOutputPaths": ["stderr"],\n  "encoding": "json",\n  "encoderConfig": {\n    "timeKey": "ts",\n    "levelKey": "level",\n    "nameKey": "logger",\n    "callerKey": "caller",\n    "messageKey": "msg",\n    "stacktraceKey": "stacktrace",\n    "lineEnding": "",\n    "levelEncoder": "",\n    "timeEncoder": "iso8601",\n    "durationEncoder": "",\n    "callerEncoder": ""\n  }\n}\n',
+      'loglevel.controller': 'log_level',
+      'loglevel.webhook': 'log_level',
+    },
+  },
 ]
