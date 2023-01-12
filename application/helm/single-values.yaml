@@ -382,6 +382,7 @@ modules:
   ### tekton trigger
   tektonTrigger:
     enabled: true
+    logLevel: info
 
   ### cicd operator
   cicd:

@@ -1,7 +1,7 @@
 function (
   is_offline="false",
   private_registry="registry.tmaxcloud.org",
-  timezone="UTC"
+  timezone="UTC",
   log_level="info"
 
 )
