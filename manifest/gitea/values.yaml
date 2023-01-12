@@ -10,6 +10,7 @@ global:
   registry:
     is_offline: false
     private_registry: test-registry.com
+  logLevel: Info # "Trace", "Debug", "Info", "Warn", "Error", "Critical" or "None"
 
 ## @param replicaCount number of replicas for the statefulset
 replicaCount: 1

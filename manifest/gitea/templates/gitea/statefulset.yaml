@@ -61,6 +61,8 @@ spec:
               value: /data
             - name: GITEA_TEMP
               value: /tmp/gitea
+            - name: LEVEL
+              value: {{ .Values.global.logLevel }}
             {{- if .Values.statefulset.env }}
             {{- toYaml .Values.statefulset.env | nindent 12 }}
             {{- end }}
@@ -94,6 +96,8 @@ spec:
               value: /data
             - name: GITEA_TEMP
               value: /tmp/gitea
+            - name: LEVEL
+              value: {{ .Values.global.logLevel }}
             {{- if .Values.statefulset.env }}
             {{- toYaml .Values.statefulset.env | nindent 12 }}
             {{- end }}
@@ -143,6 +147,8 @@ spec:
               value: /data
             - name: GITEA_TEMP
               value: /tmp/gitea
+            - name: LEVEL
+              value: {{ .Values.global.logLevel }}
             {{- if .Values.gitea.ldap }}
             {{- range $idx, $value := .Values.gitea.ldap }}
             {{- if $value.existingSecret }}
@@ -236,6 +242,8 @@ spec:
               value: /tmp/gitea
             - name: TMPDIR
               value: /tmp/gitea
+            - name: LEVEL
+              value: {{ .Values.global.logLevel }}
             {{- if .Values.signing.enabled }}
             - name: GNUPGHOME
               value: {{ .Values.signing.gpgHome }}

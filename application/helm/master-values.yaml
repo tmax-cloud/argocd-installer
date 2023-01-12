@@ -38,6 +38,7 @@ modules:
   gitea:
     enabled: false
     subdomain: gitea
+    logLevel: Info
 
   ### sonarqube
   sonarqube:

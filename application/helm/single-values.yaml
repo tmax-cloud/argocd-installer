@@ -35,6 +35,7 @@ modules:
   gitea:
     enabled: false
     subdomain: gitea
+    logLevel: Info
 
   ### nexus
   nexus:
