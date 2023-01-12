@@ -32,6 +32,7 @@ modules:
       storageClassName: "nfs"
     oidc:
       enabled: false
+    logLevel: INFO
 
   ### gitea
   gitea:

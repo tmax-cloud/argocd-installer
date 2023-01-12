@@ -29,6 +29,7 @@ modules:
       storageClassName: "default"
     oidc:
       enabled: false
+    logLevel: INFO
 
   ###gitea
   gitea:
