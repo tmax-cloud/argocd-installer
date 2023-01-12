@@ -47,6 +47,7 @@ modules:
   ### sonarqube
   sonarqube:
     enabled: false
+    logLevel: INFO
 
   ### cert-manager
   certManager:
