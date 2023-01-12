@@ -212,10 +212,10 @@ persistence:
   subPath:
 
 ## @param extraVolumes Additional volumes to mount to the Gitea statefulset
-extraVolumes:
- - name: selfsigned-ca
-   secret:
-     secretName: <시크릿 이름>
+extraVolumes: []
+# - name: selfsigned-ca
+#   secret:
+#     secretName: <시크릿 이름>
 
 ## @param extraContainerVolumeMounts Mounts that are only mapped into the Gitea runtime/main container, to e.g. override custom templates.
 extraContainerVolumeMounts: []
@@ -228,10 +228,10 @@ extraInitVolumeMounts: []
 ## - extraInitVolumeMounts
 ## As an example, can be used to mount a client cert when connecting to an external Postgres server.
 ## @param extraVolumeMounts **DEPRECATED** Additional volume mounts for init containers and the Gitea main container
-extraVolumeMounts:
- - name: selfsigned-ca
-   readOnly: true
-   mountPath: /etc/ssl/certs
+extraVolumeMounts: []
+# - name: selfsigned-ca
+#   readOnly: true
+#   mountPath: /etc/ssl/certs
 
 ## @section Init
 ## @param initPreScript Bash shell script copied verbatim to the start of the init-container.
