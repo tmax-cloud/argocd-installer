@@ -27,7 +27,9 @@ spec:
           - name: cicd_subdomain
             value: {{ .Values.modules.cicd.subdomain }}
           - name: timezone
-            value: {{ .Values.global.timeZone }}                     
+            value: {{ .Values.global.timeZone }}
+          - name: log_level
+            value: "{{ .Values.modules.cicd.logLevel }}"
     path: manifest/cicd-operator
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}

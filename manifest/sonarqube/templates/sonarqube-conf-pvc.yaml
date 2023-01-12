@@ -15,6 +15,3 @@ spec:
   resources:
     requests:
       storage: 2500Mi
-  selector: 
-    matchLabels:
-      role: sonarqube-conf

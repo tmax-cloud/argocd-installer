@@ -36,11 +36,11 @@ argocd에서 loki-promtail 배포를 하기 위해서는 application/loki.yaml�
 - name: log_level
   value: info
 - name: loki_image_tag
-  value: 2.6.0
+  value: 2.7.1
 - name: storage_class
   value: default
 - name: loki_volume_size
   value: 50Gi
 - name: promtail_image_tag
-  value: 2.6.0
+  value: 2.7.1
 ```

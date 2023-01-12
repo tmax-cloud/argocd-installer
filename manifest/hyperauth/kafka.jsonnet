@@ -28,6 +28,16 @@ if is_kafka_enabled == "true" then [
       "kafka": {
         "version": "2.8.0",
         "replicas": 3,
+        "resources": {
+            "limits": {
+              "cpu": "1000m",
+              "memory": "2Gi"
+            },
+            "requests": {
+              "cpu": "100m",
+              "memory": "100Mi"
+            }
+        },
         "listeners": [
           {
             "name": "plain",
@@ -74,6 +84,16 @@ if is_kafka_enabled == "true" then [
       },
       "zookeeper": {
         "replicas": 3,
+        "resources": {
+            "limits": {
+              "cpu": "1000m",
+              "memory": "2Gi"
+            },
+            "requests": {
+              "cpu": "100m",
+              "memory": "100Mi"
+            }
+        },
         "storage": {
           "type": "persistent-claim",
           "size": "1Gi"
