@@ -12,10 +12,10 @@ spec:
   {{- if .Values.tls.enabled }}
   tls:
   - hosts:
-    - sonarqube.{{ .Values.ingress.hosts.domain }}
+    - {{ .Values.ingress.hosts.subdomain }}.{{ .Values.ingress.hosts.domain }}
   {{- end }}
   rules:
-    - host: sonarqube.{{ .Values.ingress.hosts.domain }}
+    - host: {{ .Values.ingress.hosts.subdomain }}.{{ .Values.ingress.hosts.domain }}
       http:
         paths:
           - pathType: Prefix
