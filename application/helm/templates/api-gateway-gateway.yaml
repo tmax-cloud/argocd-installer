@@ -88,6 +88,8 @@ spec:
           value: {{ .acme.dns.accessKeySecret }}
         - name: tls.acme.dns.hostedZoneID
           value: {{ .acme.dns.hostedZoneID }}
+        - name: tls.acme.environment
+          value: {{ .acme.environment }}
         - name: tls.domain
           value: {{ $.Values.global.domain }}
         - name: tls.selfsigned.enabled
