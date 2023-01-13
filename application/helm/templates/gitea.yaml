@@ -31,7 +31,7 @@ spec:
           value: {{ printf "http://%s.%s" .Values.modules.gitea.subdomain .Values.global.domain }}
         - name: gitea.config.server.SSH_DOMAIN
           value: {{ printf "%s.%s" .Values.modules.gitea.subdomain .Values.global.domain }}
-        - name: global.logLevel
+        - name: gitea.config.log.LEVEL
           value: {{ .Values.modules.gitea.logLevel }}
     path: manifest/gitea
     repoURL: {{ .Values.spec.source.repoURL }}
