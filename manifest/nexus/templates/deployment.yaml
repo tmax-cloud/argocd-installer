@@ -79,8 +79,6 @@ spec:
                 command: {{ .Values.deployment.postStart.command }}
           {{- end }}
           env:
-            - name: root.level
-              value: {{ .Values.global.logLevel }}
             {{ toYaml .Values.nexus.env | nindent 12 }}
           envFrom:
             {{ toYaml .Values.nexus.envFrom | nindent 12 }}

@@ -23,7 +23,7 @@ spec:
           value: {{ .Values.global.privateRegistry }}
         - name: ingress.hosts.domain
           value: {{ .Values.global.domain }}
-        - name: global.logLevel
+        - name: nexus.properties.data.root.level
           value: {{ .Values.modules.nexus.logLevel }}
         - name: global.timezone
           value: {{ .Values.global.timeZone }}
