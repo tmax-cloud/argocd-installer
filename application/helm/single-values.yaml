@@ -43,6 +43,7 @@ modules:
     persistence:
       enabled: true
       storageClass: ""
+    logLevel: INFO
 
 
   ### sonarqube

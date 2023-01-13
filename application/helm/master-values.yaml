@@ -51,6 +51,7 @@ modules:
     persistence:
       enabled: true
       storageClass: ""
+    logLevel: INFO
 
   ### cert-manager
   certManager:
