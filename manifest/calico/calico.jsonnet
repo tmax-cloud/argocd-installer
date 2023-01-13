@@ -19,9 +19,9 @@ function(
     node_image_repo="calico/node",
     controllers_image_repo="calico/kube-controllers",
     log_level="info",
-    logSeverityFile="INFO",
-    logSeverityScreen="INFO",
-    logSeveritySys="INFO"
+    logSeverityFile="info",
+    logSeverityScreen="info",
+    logSeveritySys="info"
 )
   local target_registry = if is_offline == "false" then "" else private_registry + "/";
 [
