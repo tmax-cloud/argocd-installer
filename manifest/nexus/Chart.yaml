@@ -6,7 +6,7 @@ name: nexus-repository-manager
 version: 43.0.0
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application.
-appVersion: 3.43.0
+appVersion: 3.45.0
 
 description: Sonatype Nexus Repository Manager - Universal Binary repository
 
