@@ -53,6 +53,10 @@ local cicd_domain = std.join("", [cicd_subdomain, ".", custom_domain]);
                 "requests": {
                   "cpu": "100m",
                   "memory": "100Mi"
+                },
+                "limits": {
+                  "cpu": "500m",
+                  "memory": "500Mi"
                 }
               },
               "volumeMounts": [
@@ -139,6 +143,10 @@ local cicd_domain = std.join("", [cicd_subdomain, ".", custom_domain]);
                 "requests": {
                   "cpu": "100m",
                   "memory": "100Mi"
+                },
+                "limits": {
+                  "cpu": "500m",
+                  "memory": "500Mi"
                 }
               },
               "volumeMounts": [
