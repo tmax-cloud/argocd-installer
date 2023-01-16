@@ -2,7 +2,7 @@ function (
   is_offline="false",
   private_registry="registry.tmaxcloud.org",
   time_zone="UTC",
-  log_level="debug"
+  log_level="info"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
