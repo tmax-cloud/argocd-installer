@@ -48,6 +48,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "image": std.join("", [target_registry, "docker.io/tmaxcloudck/helm-apiserver:", helm_apiserver_version]),
                         "imagePullPolicy": "Always",
                         "name": "helm-apiserver",
+                        "resources": {
+                            "limits": {
+                                "cpu": "300m",
+                                "memory": "400Mi"
+                            },
+                            "requests": {
+                                "cpu": "100m",
+                                "memory": "150Mi"
+                            }
+                        },
                         "volumeMounts": [
                             {
                                 "mountPath": "/tmp",
