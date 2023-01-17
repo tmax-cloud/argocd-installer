@@ -7,6 +7,7 @@ function (
   promtail_image_tag="2.7.1",
   custom_clusterissuer="tmaxcloud-issuer",
   is_master_cluster="true",
+  log_level="info",
   storage_class="default"
 )
 
