@@ -92,20 +92,26 @@ modules:
       logInfo:
         logLevel: "debug"
         logType: "pretty"
-      cookieSecret: ""
 
     gateway:
       enabled: true
       version: v2.8.7
+      logInfo:
+        # DEBUG, PANIC, FATAL, ERROR, WARN, and INFO
+        logLevel: "INFO"
+        # common, json
+        logType: "common"
 
     jwtDecodeAuth:
       enabled: true
       version: 5.0.0.4
+      logInfo:
+        logLevel: "debug"
+        logType: "pretty"
 
     oauth2Proxy:
       enabled: false
       version: v7.3.0
-
 
   ### strimzi-kafka-operator
   strimziKafka:
