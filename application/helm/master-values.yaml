@@ -97,7 +97,6 @@ modules:
       logInfo:
         logLevel: "debug"
         logType: "pretty"
-      cookieSecret: ""
 
     gateway:
       enabled: true
@@ -118,7 +117,6 @@ modules:
     oauth2Proxy:
       enabled: true
       version: v7.3.0
-
 
   ### strimzi-kafka-operator
   strimziKafka:
