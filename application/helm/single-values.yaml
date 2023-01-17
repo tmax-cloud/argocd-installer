@@ -55,6 +55,8 @@ modules:
   certManager:
     enabled: true
     autoSync: true
+    # ErrorLevel=0 WarnLevel=1 InfoLevel=2 ExtendedInfoLevel=3 DebugLevel=4 TraceLevel=5
+    logLevel: 2
 
   ### gateway-bootstrap
   gatewayBootstrap:
