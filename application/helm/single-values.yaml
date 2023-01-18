@@ -264,9 +264,9 @@ modules:
 
   ### cluster-api
   capi:
-    enabled: true
+    enabled: false
     # verbose - debug(0), info(1), warning(2), error(3), fatal(4, 5 ,6...)
-    verbose: 3
+    verbose: 1
     provider:
       aws:
         enabled: false
@@ -274,14 +274,14 @@ modules:
           accessKeyID: access-key
           secretAccessKeyID: secret-access-key
         # verbose - debug(0), info(1), warning(2), error(3), fatal(4, 5 ,6...)
-        verbose: 3
+        verbose: 1
       vsphere:
         enabled: false
         credentials:
           username: "user"
           password: "password"
         # verbose - debug(0), info(1), warning(2), error(3), fatal(4, 5 ,6...)
-        verbose: 3
+        verbose: 1
 
   ### template service broker
   tsb:

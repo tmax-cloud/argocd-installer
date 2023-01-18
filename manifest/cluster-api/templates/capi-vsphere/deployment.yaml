@@ -26,7 +26,7 @@ spec:
         - --v={{ .Values.provider.vsphere.verbose }}
         - --feature-gates=NodeAntiAffinity=false,NodeLabeling=false
         {{- if .Values.global.network.disabled }}
-        image: "{{ .Values.global.network.registry }}/cluster-api-provider-vsphere/release/manager:v1.5.1"
+        image: "{{ .Values.global.network.registry }}/gcr.io/cluster-api-provider-vsphere/release/manager:v1.5.1"
         {{- else }}
         image: gcr.io/cluster-api-provider-vsphere/release/manager:v1.5.1
         {{- end }}
