@@ -42,7 +42,7 @@ spec:
       valueFiles:
         - values.yaml
       parameters:
-        - name: singleCluster
+        - name: singleCluster.enabled
           value: {{ ternary false true $isMaster | quote }}
         - name: timeZone
           value: {{ .Values.global.timeZone | default "UTC" }}
