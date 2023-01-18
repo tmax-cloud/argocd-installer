@@ -30,6 +30,9 @@ spec:
         {{- end }}
         - name: timeZone
           value: {{ .Values.global.timeZone }}
+        - name: logLevel
+          value: "{{ .Values.modules.cephfs.logLevel }}"
+          forceString: true
         {{- if .Values.global.network.disabled }}
         - name: nodeplugin.registrar.image.repository
           value: "{{ .Values.global.privateRegistry }}/csi-node-driver-registrar"

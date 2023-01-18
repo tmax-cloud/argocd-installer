@@ -19,6 +19,11 @@ nfs:
 # edit
 timeZone: UTC
 
+# Set logging level for csi containers.
+# Supported values from 0 to 5. 0 for general useful logs,
+# 5 for trace level verbosity.
+logLevel: 0
+
 # For creating the StorageClass automatically:
 storageClass:
   create: true
