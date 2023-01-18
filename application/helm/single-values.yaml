@@ -92,7 +92,9 @@ modules:
       k8sPublicEndpoint: https://kubernetes.default.svc
       svcType: LoadBalancer
       logInfo:
+        # trace | debug | info | warn | crit // 주로 "debug"를 사용
         logLevel: "debug"
+        # json | pretty
         logType: "pretty"
 
     gateway:
@@ -108,7 +110,9 @@ modules:
       enabled: true
       version: 5.0.0.4
       logInfo:
+        # trace | debug | info | warn | crit // 주로 "debug"를 사용
         logLevel: "debug"
+        # json | pretty
         logType: "pretty"
 
     oauth2Proxy:
