@@ -57,7 +57,9 @@ modules:
   certManager:
     enabled: true
     autoSync: true
-    
+    # ErrorLevel=0 WarnLevel=1 InfoLevel=2 ExtendedInfoLevel=3 DebugLevel=4 TraceLevel=5
+    logLevel: 2
+
   ### gateway-bootstrap
   gatewayBootstrap:
     enabled: true
@@ -82,6 +84,7 @@ modules:
         # 자세한 내용은 https://letsencrypt.org/docs/staging-environment/#rate-limits 참조
         # staging / production 중 택1하여 기입하여야 하며, 각각 테스트용 / 운영용을 의미함
         environment: production
+
     console:
       enabled: true
       version: 5.2.20.0
@@ -92,22 +95,32 @@ modules:
       k8sPublicEndpoint: https://kubernetes.default.svc
       svcType: LoadBalancer
       logInfo:
-        logLevel: "debug"
+        # trace | debug | info | warn | crit // 주로 "debug"를 사용
+        logLevel: "info"
+        # json | pretty
         logType: "pretty"
-      cookieSecret: ""
 
     gateway:
       enabled: true
       version: v2.8.7
+      logInfo:
+        # DEBUG, PANIC, FATAL, ERROR, WARN, and INFO
+        logLevel: "INFO"
+        # common, json
+        logType: "common"
 
     jwtDecodeAuth:
       enabled: true
       version: 5.0.0.4
+      logInfo:
+        # trace | debug | info | warn | crit // 주로 "debug"를 사용
+        logLevel: "info"
+        # json | pretty
+        logType: "pretty"
 
     oauth2Proxy:
       enabled: true
       version: v7.3.0
-
 
   ### strimzi-kafka-operator
   strimziKafka:

@@ -75,8 +75,17 @@ spec:
       releaseName: {{ $module }}
       valueFiles:
         - values.yaml
-      {{- if .Values.global.network.disabled }}
       parameters:
+      {{- $value := (.Values.modules.certManager.logLevel | toString) }}
+      {{- $valueIsValid := regexMatch "^[0-5]" $value }}
+      {{- if $valueIsValid }}
+        - name: cert-manager.global.logLevel
+          value: {{ $value | quote }}
+      {{- else }}
+        - name: cert-manager.global.logLevel
+          value: "2"
+      {{- end }}
+      {{- if .Values.global.network.disabled }}
         - name: cert-manager.image.repository
           value: "{{ .Values.global.privateRegistry }}/quay.io/jetstack/cert-manager-controller"
         - name: cert-manager.cainjector.image.repository
