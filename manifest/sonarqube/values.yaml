@@ -28,7 +28,7 @@ sonarProperties:
 
 image:
   sonarqube:
-    repo: sonarqube
+    repo: docker.io/sonarqube
     tag: 9.8.0-community
 
 persistence:
