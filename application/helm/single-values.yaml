@@ -93,7 +93,7 @@ modules:
       svcType: LoadBalancer
       logInfo:
         # trace | debug | info | warn | crit // 주로 "debug"를 사용
-        logLevel: "debug"
+        logLevel: "info"
         # json | pretty
         logType: "pretty"
 
@@ -111,7 +111,7 @@ modules:
       version: 5.0.0.4
       logInfo:
         # trace | debug | info | warn | crit // 주로 "debug"를 사용
-        logLevel: "debug"
+        logLevel: "info"
         # json | pretty
         logType: "pretty"
 
