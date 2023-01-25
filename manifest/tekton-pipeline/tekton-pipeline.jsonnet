@@ -75,6 +75,16 @@ local gcr_registry = if is_offline == "false" then "" else private_registry + "/
             {
               "name": "tekton-pipelines-controller",
               "image": std.join("", [gcr_registry,"gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/controller:v0.26.0"]),
+              "resources": {
+                "requests": {
+                  "cpu": "100m",
+                  "memory": "100Mi"
+                },
+                "limits": {
+                  "cpu": "500m",
+                  "memory": "500Mi"
+                }
+              },
               "args": [
                 "-version",
                 "v0.26.0",

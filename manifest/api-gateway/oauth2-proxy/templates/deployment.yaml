@@ -80,8 +80,8 @@ spec:
           - --config=/etc/oauth2_proxy/oauth2_proxy.cfg
         {{- end }}
         {{- if .Values.authenticatedEmailsFile.enabled }}
-        {{- if .Values.authenticatedEmailsFile.template }}
-          - --authenticated-emails-file=/etc/oauth2-proxy/{{ .Values.authenticatedEmailsFile.template }}
+        {{- if .Values.authenticatedEmailsFile.templates }}
+          - --authenticated-emails-file=/etc/oauth2-proxy/{{ .Values.authenticatedEmailsFile.templates }}
         {{- else }}
           - --authenticated-emails-file=/etc/oauth2-proxy/authenticated-emails-list
         {{- end }}
@@ -240,7 +240,7 @@ spec:
 {{- if ne .Values.timeZone "UTC" }}
       - name: timezone-config
         hostPath:
-          path: "/usr/share/zoneinfo/{{ .Values.global.timeZone }}"
+          path: "/usr/share/zoneinfo/{{ .Values.timeZone }}"
 {{- end }}
 {{- with .Values.config.google }}
 {{- if and .adminEmail (or .serviceAccountJson .existingSecret) }}
@@ -261,13 +261,13 @@ spec:
         secret:
           items:
           - key: {{ default "restricted_user_access" .Values.authenticatedEmailsFile.restrictedUserAccessKey }}
-{{- if .Values.authenticatedEmailsFile.template }}
-            path: {{ .Values.authenticatedEmailsFile.template }}
+{{- if .Values.authenticatedEmailsFile.templates }}
+            path: {{ .Values.authenticatedEmailsFile.templates }}
 {{- else }}
             path: authenticated-emails-list
 {{- end }}
-{{- if .Values.authenticatedEmailsFile.template }}
-          secretName: {{ .Values.authenticatedEmailsFile.template }}
+{{- if .Values.authenticatedEmailsFile.templates }}
+          secretName: {{ .Values.authenticatedEmailsFile.templates }}
 {{- else }}
           secretName: {{ template "oauth2-proxy.fullname" . }}-accesslist
 {{- end }}
@@ -290,15 +290,15 @@ spec:
 {{- end }}
 {{- if and (.Values.authenticatedEmailsFile.enabled) (eq .Values.authenticatedEmailsFile.persistence "configmap") }}
       - configMap:
-{{- if .Values.authenticatedEmailsFile.template }}
-          name: {{ .Values.authenticatedEmailsFile.template }}
+{{- if .Values.authenticatedEmailsFile.templates }}
+          name: {{ .Values.authenticatedEmailsFile.templates }}
 {{- else }}
           name: {{ template "oauth2-proxy.fullname" . }}-accesslist
 {{- end }}
           items:
           - key: {{ default "restricted_user_access" .Values.authenticatedEmailsFile.restrictedUserAccessKey }}
-{{- if .Values.authenticatedEmailsFile.template }}
-            path: {{ .Values.authenticatedEmailsFile.template }}
+{{- if .Values.authenticatedEmailsFile.templates }}
+            path: {{ .Values.authenticatedEmailsFile.templates }}
 {{- else }}
             path: authenticated-emails-list
 {{- end }}

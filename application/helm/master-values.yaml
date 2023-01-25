@@ -19,6 +19,10 @@ modules:
   ### calico
   calico:
     enabled: false
+    logLevel: info
+    logSeverityFile: info
+    logSeverityScreen: info
+    logSeveritySys: info
 
   ### gitlab
   gitlab:
@@ -53,7 +57,9 @@ modules:
   certManager:
     enabled: true
     autoSync: true
-    
+    # ErrorLevel=0 WarnLevel=1 InfoLevel=2 ExtendedInfoLevel=3 DebugLevel=4 TraceLevel=5
+    logLevel: 2
+
   ### gateway-bootstrap
   gatewayBootstrap:
     enabled: true
@@ -78,6 +84,7 @@ modules:
         # 자세한 내용은 https://letsencrypt.org/docs/staging-environment/#rate-limits 참조
         # staging / production 중 택1하여 기입하여야 하며, 각각 테스트용 / 운영용을 의미함
         environment: production
+
     console:
       enabled: true
       version: 5.2.20.0
@@ -88,26 +95,37 @@ modules:
       k8sPublicEndpoint: https://kubernetes.default.svc
       svcType: LoadBalancer
       logInfo:
-        logLevel: "debug"
+        # trace | debug | info | warn | crit // 주로 "debug"를 사용
+        logLevel: "info"
+        # json | pretty
         logType: "pretty"
-      cookieSecret: ""
 
     gateway:
       enabled: true
       version: v2.8.7
+      logInfo:
+        # DEBUG, PANIC, FATAL, ERROR, WARN, and INFO
+        logLevel: "INFO"
+        # common, json
+        logType: "common"
 
     jwtDecodeAuth:
       enabled: true
       version: 5.0.0.4
+      logInfo:
+        # trace | debug | info | warn | crit // 주로 "debug"를 사용
+        logLevel: "info"
+        # json | pretty
+        logType: "pretty"
 
     oauth2Proxy:
       enabled: true
       version: v7.3.0
 
-
   ### strimzi-kafka-operator
   strimziKafka:
     enabled: true
+    logLevel: INFO
 
   ### service-binding-operator
   serviceBinding:
@@ -169,8 +187,9 @@ modules:
   ### opensearch
   opensearch:
     enabled: true
+    logLevel: info
     os:
-      version: 1.2.3
+      version: 1.3.7
       limitMemory: 8Gi
       requestMemory: 5Gi
       jvmHeap: "-Xms4g -Xmx4g"
@@ -178,11 +197,11 @@ modules:
     busyBox:
       version: 1.32.0
     dashboard:
-      version: 1.2.0
+      version: 1.3.7
       svcType: ClusterIP
       subdomain: opensearch-dashboard
     fluentd:
-      version: fluentd-v1.4.2-debian-elasticsearch-1.1
+      version: fluentd-v1.15.3-debian-elasticsearch-1.0
       # default로 주는 경우 default storage class를 사용
       # default를 사용하지 않고 싶은 경우에는 storage class이름을 기입
       storageClass: default
@@ -190,12 +209,13 @@ modules:
   ### Loki
   loki:
     enabled: true
+    logLevel: info
     loki: 
-      version: 2.6.0
+      version: 2.7.1
       volumeSize: 50Gi
       storageClass: default
     promtail:
-      version: 2.6.0
+      version: 2.7.1
   
   ### prometheus
   prometheus:
@@ -387,6 +407,7 @@ modules:
   cicd:
     enabled: true
     subdomain: cicd-webhook
+    logLevel: info
 
   ### redis-operator
   redis:
@@ -409,7 +430,9 @@ modules:
     path: /nfs-storage
     # nfs provisioner를 default storageClass로 설정, ex: default / not
     defaultClass: not
-
+    # logLevel 0 ~ 5 가능
+    logLevel: 0
+  
   ### ceph-csi-cephfs
   cephfs:
     enabled: false
@@ -421,6 +444,8 @@ modules:
     key: AQCeBcZftAEvExAAultsKBpNpiWWGi06Md7mmw==
     # cephfs csi를 default storageClass로 설정, ex: default / not
     defaultClass: not
+    # logLevel 0 ~ 5 가능
+    logLevel: 0
 
   ### ceph-csi-rbd
   rbd:
@@ -433,7 +458,9 @@ modules:
     key: AQCeBcZftAEvExAAultsKBpNpiWWGi06Md7mmw==
     # rbd csi를 default storageClass로 설정, ex: default / not
     defaultClass: not
-  
+    # logLevel 0 ~ 5 가능
+    logLevel: 0
+
   ### efs-csi
   efs:
     enabled: false
@@ -441,3 +468,5 @@ modules:
     fileSystemId: fs-0ce741ec0e2ea2fa2
     # efs csi를 default storageClass로 설정, ex: default / not
     defaultClass: not
+    # logLevel 0 ~ 5 가능
+    logLevel: 0

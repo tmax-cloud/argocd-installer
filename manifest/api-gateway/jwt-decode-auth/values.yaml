@@ -12,6 +12,9 @@ logInfo:
   logType: "pretty"
 middleware:
   enabled: true
+singleCluster:
+  # default value is false
+  enabled: true
 
 image:
   repository: docker.io/tmaxcloudck/jwt-decode

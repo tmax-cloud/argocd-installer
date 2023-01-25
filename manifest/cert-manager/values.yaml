@@ -6,6 +6,9 @@ fullnameOverride: ""
 ## crd 선행 설치
 ## kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.9.1/cert-manager.crds.yaml
 cert-manager:
+##  Error: 0, Warning: 1, infoLevel: 3, debug: 4
+  global:
+    logLevel: 2
   enabled: true
   fullnameOverride: cert-manager
   installCRDs: true
