@@ -6,7 +6,7 @@ metadata:
   namespace: istio-system
 spec:
   workloadLabels:
-    app: istio-ingressgateway
+    app: ingressgateway
   filters:
   - listenerMatch:
       listenerType: GATEWAY
