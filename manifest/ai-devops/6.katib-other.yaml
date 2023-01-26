@@ -1260,6 +1260,7 @@ subjects:
 - kind: ServiceAccount
   name: katib-controller
   namespace: kubeflow
+---  
 apiVersion: v1
 data:
   defaultTrialTemplate.yaml: |-
