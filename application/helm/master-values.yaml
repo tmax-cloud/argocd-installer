@@ -98,6 +98,13 @@ modules:
     storageClass: default
     # do not edit tmaxClientSecret!
     tmaxClientSecret: tmax_client_secret
+  
+  ### ai-devops
+  aiDevops:
+    enabled: true
+    hyperauthRealm: tmax
+    gatekeeperLogLevel: info
+    gatekeeperVersion: v1.0.2
 
   ### efk
   efk:
