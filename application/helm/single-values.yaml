@@ -303,7 +303,7 @@ modules:
       version: 0.1.6
     templateOperator:
       version: 0.2.8
-    logLevel: error
+    logLevel: info
 
   ### catalog controller
   catalogController:
