@@ -15,14 +15,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
     {
         "apiVersion": "v1",
         "data": {
-            "agent": std.join("", ["{\n    \"image\" : \"", target_registry, "docker.io/kserve/agent:v0.8.0\",\n    \"memoryRequest\": \"100Mi\",\n    \"memoryLimit\": \"1Gi\",\n    \"cpuRequest\": \"100m\",\n    \"cpuLimit\": \"1\"\n}"]),
-            "batcher": std.join("", ["{\n    \"image\" : \"", target_registry, "docker.io/kserve/agent:v0.8.0\",\n    \"memoryRequest\": \"1Gi\",\n    \"memoryLimit\": \"1Gi\",\n    \"cpuRequest\": \"1\",\n    \"cpuLimit\": \"1\"\n}"]),
+            "agent": std.join("", ["{\n    \"image\" : \"", target_registry, "docker.io/kserve/agent:v0.9.0\",\n    \"memoryRequest\": \"100Mi\",\n    \"memoryLimit\": \"1Gi\",\n    \"cpuRequest\": \"100m\",\n    \"cpuLimit\": \"1\"\n}"]),
+            "batcher": std.join("", ["{\n    \"image\" : \"", target_registry, "docker.io/kserve/agent:v0.9.0\",\n    \"memoryRequest\": \"1Gi\",\n    \"memoryLimit\": \"1Gi\",\n    \"cpuRequest\": \"1\",\n    \"cpuLimit\": \"1\"\n}"]),
             "credentials": "{\n   \"gcs\": {\n       \"gcsCredentialFileName\": \"gcloud-application-credentials.json\"\n   },\n   \"s3\": {\n       \"s3AccessKeyIDName\": \"AWS_ACCESS_KEY_ID\",\n       \"s3SecretAccessKeyName\": \"AWS_SECRET_ACCESS_KEY\"\n   }\n}",
-            "explainers": std.join("", ["{\n    \"alibi\": {\n        \"image\" : \"", target_registry, "docker.io/kserve/alibi-explainer\",\n        \"defaultImageVersion\": \"v0.8.0\"\n    },\n    \"aix\": {\n        \"image\" : \"", target_registry, "docker.io/kserve/aix-explainer\",\n        \"defaultImageVersion\": \"v0.8.0\"\n    },\n    \"art\": {\n        \"image\" : \"", target_registry, "docker.io/kserve/art-explainer\",\n        \"defaultImageVersion\": \"v0.8.0\"\n    }\n}"]),
+            "explainers": std.join("", ["{\n    \"alibi\": {\n        \"image\" : \"", target_registry, "docker.io/kserve/alibi-explainer\",\n        \"defaultImageVersion\": \"v0.9.0\"\n    },\n    \"aix\": {\n        \"image\" : \"", target_registry, "docker.io/kserve/aix-explainer\",\n        \"defaultImageVersion\": \"v0.9.0\"\n    },\n    \"art\": {\n        \"image\" : \"", target_registry, "docker.io/kserve/art-explainer\",\n        \"defaultImageVersion\": \"v0.9.0\"\n    }\n}"]),
             "ingress": "{\n    \"ingressGateway\" : \"kubeflow/kubeflow-gateway\",\n    \"ingressService\" : \"ingressgateway.istio-system.svc.cluster.local\",\n    \"localGateway\" : \"knative-serving/knative-local-gateway\",\n    \"localGatewayService\" : \"knative-local-gateway.istio-system.svc.cluster.local\"\n  \"ingressDomain\" : \"example.com\"\n  \"ingressClassName\" : \"istio\"\n  \"domainTemplate\" : \"{{ .Name }}-{{ .Namespace }}.{{ .IngressDomain }}\"\n  \"urlScheme\" : \"http\"}",
-            "logger": std.join("", ["{\n    \"image\" : \"", target_registry, "docker.io/kserve/agent:v0.8.0\",\n    \"memoryRequest\": \"100Mi\",\n    \"memoryLimit\": \"1Gi\",\n    \"cpuRequest\": \"100m\",\n    \"cpuLimit\": \"1\",\n    \"defaultUrl\": \"http://default-broker\"\n}"]),
-            "predictors": std.join("", ["{\n    \"tensorflow\": {\n        \"image\": \"", target_registry, "docker.io/tensorflow/serving\",\n        \"defaultImageVersion\": \"2.6.2\",\n        \"defaultGpuImageVersion\": \"2.6.2-gpu\",\n        \"defaultTimeout\": \"60\",\n        \"supportedFrameworks\": [\n          \"tensorflow\"\n        ],\n        \"multiModelServer\": false\n    },\n    \"onnx\": {\n        \"image\": \"", target_registry, "mcr.microsoft.com/onnxruntime/server\",\n        \"defaultImageVersion\": \"v1.0.0\",\n        \"supportedFrameworks\": [\n          \"onnx\"\n        ],\n        \"multiModelServer\": false\n    },\n    \"sklearn\": {\n      \"v1\": {\n        \"image\": \"", target_registry, "docker.io/kserve/sklearnserver\",\n        \"defaultImageVersion\": \"v0.8.0\",\n        \"supportedFrameworks\": [\n          \"sklearn\"\n        ],\n        \"multiModelServer\": true\n      },\n      \"v2\": {\n        \"image\": \"", target_registry, "docker.io/seldonio/mlserver\",\n        \"defaultImageVersion\": \"1.0.0\",\n        \"supportedFrameworks\": [\n          \"sklearn\"\n        ],\n        \"multiModelServer\": false\n      }\n    },\n    \"xgboost\": {\n      \"v1\": {\n        \"image\": \"", target_registry, "docker.io/kserve/xgbserver\",\n        \"defaultImageVersion\": \"v0.8.0\",\n        \"supportedFrameworks\": [\n          \"xgboost\"\n        ],\n        \"multiModelServer\": true\n      },\n      \"v2\": {\n        \"image\": \"", target_registry, "docker.io/seldonio/mlserver\",\n        \"defaultImageVersion\": \"1.0.0\",\n        \"supportedFrameworks\": [\n          \"xgboost\"\n        ],\n        \"multiModelServer\": false\n      }\n    },\n    \"pytorch\": {\n      \"v1\" : {\n        \"image\": \"", target_registry, "docker.io/pytorch/torchserve-kfs\",\n        \"defaultImageVersion\": \"0.6.0\",\n        \"defaultGpuImageVersion\": \"0.6.0-gpu\",\n        \"supportedFrameworks\": [\n          \"pytorch\"\n        ],\n        \"multiModelServer\": false\n      },\n      \"v2\" : {\n        \"image\": \"", target_registry, "docker.io/pytorch/torchserve-kfs\",\n        \"defaultImageVersion\": \"0.6.0\",\n        \"defaultGpuImageVersion\": \"0.6.0-gpu\",\n        \"supportedFrameworks\": [\n          \"pytorch\"\n        ],\n        \"multiModelServer\": false\n      }\n    },\n    \"triton\": {\n        \"image\": \"", target_registry, "nvcr.io/nvidia/tritonserver\",\n        \"defaultImageVersion\": \"21.09-py3\",\n        \"supportedFrameworks\": [\n          \"tensorrt\",\n          \"tensorflow\",\n          \"onnx\",\n          \"pytorch\",\n        ],\n        \"multiModelServer\": true\n    },\n    \"pmml\": {\n        \"image\": \"", target_registry, "docker.io/kserve/pmmlserver\",\n        \"defaultImageVersion\": \"v0.8.0\",\n        \"supportedFrameworks\": [\n          \"pmml\"\n        ],\n        \"multiModelServer\": false\n    },\n    \"lightgbm\": {\n        \"image\": \"", target_registry, "docker.io/kserve/lgbserver\",\n        \"defaultImageVersion\": \"v0.8.0\",\n        \"supportedFrameworks\": [\n          \"lightgbm\"\n        ],\n        \"multiModelServer\": false\n    }\n  \"paddle\": {\n        \"image\": \"", target_registry, "docker.io/kserve/paddleserver\",\n        \"defaultImageVersion\": \"v0.8.0\",\n        \"supportedFrameworks\": [\n          \"paddle\"\n        ],\n        \"multiModelServer\": false\n    }\n}"]),
-            "storageInitializer": std.join("", ["{\n    \"image\" : \"", target_registry, "docker.io/kserve/storage-initializer:v0.8.0\",\n    \"memoryRequest\": \"100Mi\",\n    \"memoryLimit\": \"1Gi\",\n    \"cpuRequest\": \"100m\",\n    \"cpuLimit\": \"1\"\n}"]),
+            "logger": std.join("", ["{\n    \"image\" : \"", target_registry, "docker.io/kserve/agent:v0.9.0\",\n    \"memoryRequest\": \"100Mi\",\n    \"memoryLimit\": \"1Gi\",\n    \"cpuRequest\": \"100m\",\n    \"cpuLimit\": \"1\",\n    \"defaultUrl\": \"http://default-broker\"\n}"]),
+            "predictors": std.join("", ["{\n    \"tensorflow\": {\n        \"image\": \"", target_registry, "docker.io/tensorflow/serving\",\n        \"defaultImageVersion\": \"2.6.2\",\n        \"defaultGpuImageVersion\": \"2.6.2-gpu\",\n        \"defaultTimeout\": \"60\",\n        \"supportedFrameworks\": [\n          \"tensorflow\"\n        ],\n        \"multiModelServer\": false\n    },\n    \"onnx\": {\n        \"image\": \"", target_registry, "mcr.microsoft.com/onnxruntime/server\",\n        \"defaultImageVersion\": \"v1.0.0\",\n        \"supportedFrameworks\": [\n          \"onnx\"\n        ],\n        \"multiModelServer\": false\n    },\n    \"sklearn\": {\n      \"v1\": {\n        \"image\": \"", target_registry, "docker.io/kserve/sklearnserver\",\n        \"defaultImageVersion\": \"v0.9.0\",\n        \"supportedFrameworks\": [\n          \"sklearn\"\n        ],\n        \"multiModelServer\": true\n      },\n      \"v2\": {\n        \"image\": \"", target_registry, "docker.io/seldonio/mlserver\",\n        \"defaultImageVersion\": \"1.0.0\",\n        \"supportedFrameworks\": [\n          \"sklearn\"\n        ],\n        \"multiModelServer\": false\n      }\n    },\n    \"xgboost\": {\n      \"v1\": {\n        \"image\": \"", target_registry, "docker.io/kserve/xgbserver\",\n        \"defaultImageVersion\": \"v0.9.0\",\n        \"supportedFrameworks\": [\n          \"xgboost\"\n        ],\n        \"multiModelServer\": true\n      },\n      \"v2\": {\n        \"image\": \"", target_registry, "docker.io/seldonio/mlserver\",\n        \"defaultImageVersion\": \"1.0.0\",\n        \"supportedFrameworks\": [\n          \"xgboost\"\n        ],\n        \"multiModelServer\": false\n      }\n    },\n    \"pytorch\": {\n      \"v1\" : {\n        \"image\": \"", target_registry, "docker.io/pytorch/torchserve-kfs\",\n        \"defaultImageVersion\": \"0.6.0\",\n        \"defaultGpuImageVersion\": \"0.6.0-gpu\",\n        \"supportedFrameworks\": [\n          \"pytorch\"\n        ],\n        \"multiModelServer\": false\n      },\n      \"v2\" : {\n        \"image\": \"", target_registry, "docker.io/pytorch/torchserve-kfs\",\n        \"defaultImageVersion\": \"0.6.0\",\n        \"defaultGpuImageVersion\": \"0.6.0-gpu\",\n        \"supportedFrameworks\": [\n          \"pytorch\"\n        ],\n        \"multiModelServer\": false\n      }\n    },\n    \"triton\": {\n        \"image\": \"", target_registry, "nvcr.io/nvidia/tritonserver\",\n        \"defaultImageVersion\": \"21.09-py3\",\n        \"supportedFrameworks\": [\n          \"tensorrt\",\n          \"tensorflow\",\n          \"onnx\",\n          \"pytorch\",\n        ],\n        \"multiModelServer\": true\n    },\n    \"pmml\": {\n        \"image\": \"", target_registry, "docker.io/kserve/pmmlserver\",\n        \"defaultImageVersion\": \"v0.9.0\",\n        \"supportedFrameworks\": [\n          \"pmml\"\n        ],\n        \"multiModelServer\": false\n    },\n    \"lightgbm\": {\n        \"image\": \"", target_registry, "docker.io/kserve/lgbserver\",\n        \"defaultImageVersion\": \"v0.9.0\",\n        \"supportedFrameworks\": [\n          \"lightgbm\"\n        ],\n        \"multiModelServer\": false\n    }\n  \"paddle\": {\n        \"image\": \"", target_registry, "docker.io/kserve/paddleserver\",\n        \"defaultImageVersion\": \"v0.9.0\",\n        \"supportedFrameworks\": [\n          \"paddle\"\n        ],\n        \"multiModelServer\": false\n    }\n}"]),
+            "storageInitializer": std.join("", ["{\n    \"image\" : \"", target_registry, "docker.io/kserve/storage-initializer:v0.9.0\",\n    \"memoryRequest\": \"100Mi\",\n    \"memoryLimit\": \"1Gi\",\n    \"cpuRequest\": \"100m\",\n    \"cpuLimit\": \"1\"\n}"]),
             "transformers": "{\n}"
         },
         "kind": "ConfigMap",
@@ -95,7 +95,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "value": "kserve-webhook-server-cert"
                     }
                     ],
-                    "image": std.join("", [target_registry, "docker.io/kserve/kserve-controller:v0.8.0"]),
+                    "image": std.join("", [target_registry, "kserve/kserve-controller:v0.9.0"]),
                     "imagePullPolicy": "Always",
                     "name": "manager",
                     "ports": [
@@ -123,12 +123,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "mountPath": "/tmp/k8s-webhook-server/serving-certs",
                         "name": "cert",
                         "readOnly": true
-                    },
-                    {
-                        "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
-                        "name": "kserve-controller-manager-token",
-                        "readOnly": true
-                    }
+                    }                    
                     ]
                 },
                 {
@@ -152,6 +147,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "securityContext": {
                 "runAsNonRoot": true
                 },
+                "serviceAccountName": "kserve-controller-manager",
                 "terminationGracePeriodSeconds": 10,
                 "volumes": [
                 {
@@ -160,14 +156,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "defaultMode": 420,
                     "secretName": "kserve-webhook-server-cert"
                     }
-                },
-                {
-                    "name": "kserve-controller-manager-token",
-                    "secret": {
-                    "defaultMode": 420,
-                    "secretName": "kserve-controller-manager-token"
-                    }
-                }
+                }                
                 ]
             }
             }
@@ -188,7 +177,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "--http_port=8080",
                 "--nthread=1"
                 ],
-                "image": std.join("", [target_registry, "docker.io/kserve/lgbserver:v0.8.0"]),
+                "image": std.join("", [target_registry, "docker.io/kserve/lgbserver:v0.9.0"]),
                 "name": "kserve-container",
                 "resources": {
                 "limits": {
@@ -201,7 +190,10 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 }
                 }
             }
-            ],            
+            ],
+            "protocolVersions": [
+            "v1"
+            ],
             "supportedModelFormats": [
             {
                 "autoSelect": true,
@@ -251,7 +243,10 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 }
                 }
             }
-            ],            
+            ],
+            "protocolVersions": [
+            "v2"
+            ],
             "supportedModelFormats": [
             {
                 "autoSelect": true,
@@ -290,7 +285,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "--model_dir=/mnt/models",
                 "--http_port=8080"
                 ],
-                "image": std.join("", [target_registry, "docker.io/kserve/paddleserver:v0.8.0"]),
+                "image": std.join("", [target_registry, "docker.io/kserve/paddleserver:v0.9.0"]),
                 "name": "kserve-container",
                 "resources": {
                 "limits": {
@@ -303,7 +298,10 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 }
                 }
             }
-            ],            
+            ],
+            "protocolVersions": [
+            "v1"
+            ],
             "supportedModelFormats": [
             {
                 "autoSelect": true,
@@ -327,7 +325,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "--model_dir=/mnt/models",
                 "--http_port=8080"
                 ],
-                "image": std.join("", [target_registry, "docker.io/kserve/pmmlserver:v0.8.0"]),
+                "image": std.join("", [target_registry, "docker.io/kserve/pmmlserver:v0.9.0"]),
                 "name": "kserve-container",
                 "resources": {
                 "limits": {
@@ -340,7 +338,10 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 }
                 }
             }
-            ],            
+            ],
+            "protocolVersions": [
+            "v1"
+            ],
             "supportedModelFormats": [
             {
                 "autoSelect": true,
@@ -369,7 +370,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "--model_dir=/mnt/models",
                 "--http_port=8080"
                 ],
-                "image": std.join("", [target_registry, "docker.io/kserve/sklearnserver:v0.8.0"]),
+                "image": std.join("", [target_registry, "docker.io/kserve/sklearnserver:v0.9.0"]),
                 "name": "kserve-container",
                 "resources": {
                 "limits": {
@@ -382,7 +383,10 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 }
                 }
             }
-            ],            
+            ],
+            "protocolVersions": [
+            "v1"
+            ],
             "supportedModelFormats": [
             {
                 "autoSelect": true,
@@ -424,7 +428,11 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 }
                 }
             }
-            ],            
+            ],
+            "protocolVersions": [
+            "v1",
+            "grpc-v1"
+            ],
             "supportedModelFormats": [
             {
                 "autoSelect": true,
@@ -473,7 +481,12 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 }
                 }
             }
-            ],            
+            ],
+            "protocolVersions": [
+            "v1",
+            "v2",
+            "grpc-v1"
+            ],
             "supportedModelFormats": [
             {
                 "autoSelect": true,
@@ -513,7 +526,11 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 }
                 }
             }
-            ],            
+            ],
+            "protocolVersions": [
+            "v2",
+            "grpc-v2"
+            ],
             "supportedModelFormats": [
             {
                 "autoSelect": true,
@@ -562,7 +579,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "--http_port=8080",
                 "--nthread=1"
                 ],
-                "image": std.join("", [target_registry, "docker.io/kserve/xgbserver:v0.8.0"]),
+                "image": std.join("", [target_registry, "docker.io/kserve/xgbserver:v0.9.0"]),
                 "name": "kserve-container",
                 "resources": {
                 "limits": {
@@ -575,7 +592,10 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 }
                 }
             }
-            ],            
+            ],
+            "protocolVersions": [
+            "v1"
+            ],
             "supportedModelFormats": [
             {
                 "autoSelect": true,
