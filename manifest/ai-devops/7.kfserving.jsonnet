@@ -201,10 +201,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 }
                 }
             }
-            ],
-            "protocolVersions": [
-            "v1"
-            ],
+            ],            
             "supportedModelFormats": [
             {
                 "autoSelect": true,
@@ -254,10 +251,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 }
                 }
             }
-            ],
-            "protocolVersions": [
-            "v2"
-            ],
+            ],            
             "supportedModelFormats": [
             {
                 "autoSelect": true,
@@ -309,10 +303,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 }
                 }
             }
-            ],
-            "protocolVersions": [
-            "v1"
-            ],
+            ],            
             "supportedModelFormats": [
             {
                 "autoSelect": true,
@@ -349,10 +340,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 }
                 }
             }
-            ],
-            "protocolVersions": [
-            "v1"
-            ],
+            ],            
             "supportedModelFormats": [
             {
                 "autoSelect": true,
@@ -394,10 +382,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 }
                 }
             }
-            ],
-            "protocolVersions": [
-            "v1"
-            ],
+            ],            
             "supportedModelFormats": [
             {
                 "autoSelect": true,
@@ -439,11 +424,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 }
                 }
             }
-            ],
-            "protocolVersions": [
-            "v1",
-            "grpc-v1"
-            ],
+            ],            
             "supportedModelFormats": [
             {
                 "autoSelect": true,
@@ -492,12 +473,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 }
                 }
             }
-            ],
-            "protocolVersions": [
-            "v1",
-            "v2",
-            "grpc-v1"
-            ],
+            ],            
             "supportedModelFormats": [
             {
                 "autoSelect": true,
@@ -537,11 +513,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 }
                 }
             }
-            ],
-            "protocolVersions": [
-            "v2",
-            "grpc-v2"
-            ],
+            ],            
             "supportedModelFormats": [
             {
                 "autoSelect": true,
@@ -603,10 +575,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 }
                 }
             }
-            ],
-            "protocolVersions": [
-            "v1"
-            ],
+            ],            
             "supportedModelFormats": [
             {
                 "autoSelect": true,
