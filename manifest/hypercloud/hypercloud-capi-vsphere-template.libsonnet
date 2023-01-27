@@ -12,158 +12,160 @@
     "Cluster",
     "VSphereCluster",
     "VSphereMachineTemplate",
+    "VSphereMachineTemplate",
     "KubeadmControlPlane",
     "KubeadmConfigTemplate",
     "MachineDeployment",
     "ClusterResourceSet",
     "Secret",
+    "Secret",
     "ConfigMap",
     "ConfigMap",
     "Secret",
     "ConfigMap",
     "ConfigMap",
     "ConfigMap",
+    "Secret",
+    "Secret",
     "ConfigMap"
   ],
   "objects": [
     {
-      "apiVersion": "cluster.x-k8s.io/v1alpha3",
+      "apiVersion": "cluster.x-k8s.io/v1beta1",
       "kind": "Cluster",
       "metadata": {
         "labels": {
-          "cluster.x-k8s.io/cluster-name": "${ClusterName}"
+          "cluster.x-k8s.io/cluster-name": "${CLUSTER_NAME}"
         },
         "annotations": {
-          "federation": "join",
-          "owner": "${Owner}"
+          "owner": "${OWNER}"
         },
-        "name": "${ClusterName}",
-        "namespace": "${Namespace}"
+        "name": "${CLUSTER_NAME}",
+        "namespace": "${NAMESPACE}"
       },
       "spec": {
         "clusterNetwork": {
           "pods": {
             "cidrBlocks": [
-              "${PodCidr}"
+              "${POD_CIDR}"
             ]
           }
         },
         "controlPlaneRef": {
-          "apiVersion": "controlplane.cluster.x-k8s.io/v1alpha3",
+          "apiVersion": "controlplane.cluster.x-k8s.io/v1beta1",
           "kind": "KubeadmControlPlane",
-          "name": "${ClusterName}-control-plane"
+          "name": "${CLUSTER_NAME}"
         },
         "infrastructureRef": {
-          "apiVersion": "infrastructure.cluster.x-k8s.io/v1alpha3",
+          "apiVersion": "infrastructure.cluster.x-k8s.io/v1beta1",
           "kind": "VSphereCluster",
-          "name": "${ClusterName}"
+          "name": "${CLUSTER_NAME}"
         }
       }
     },
     {
-      "apiVersion": "infrastructure.cluster.x-k8s.io/v1alpha3",
+      "apiVersion": "infrastructure.cluster.x-k8s.io/v1beta1",
       "kind": "VSphereCluster",
       "metadata": {
-        "name": "${ClusterName}",
-        "namespace": "${Namespace}"
+        "name": "${CLUSTER_NAME}",
+        "namespace": "${NAMESPACE}"
       },
       "spec": {
-        "cloudProviderConfiguration": {
-          "global": {
-            "secretName": "cloud-provider-vsphere-credentials",
-            "secretNamespace": "kube-system",
-            "thumbprint": "${VcenterThumbprint}"
-          },
-          "network": {
-            "name": "${VcenterNetwork}"
-          },
-          "providerConfig": {
-            "cloud": {
-              "controllerImage": "gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.18.1"
-            }
-          },
-          "virtualCenter": {
-            "${VcenterIp}": {
-              "datacenters": "${VcenterDataCenter}",
-              "thumbprint": "${VcenterThumbprint}"
-            }
-          },
-          "workspace": {
-            "datacenter": "${VcenterDataCenter}",
-            "datastore": "${VcenterDataStore}",
-            "folder": "${VcenterFolder}",
-            "resourcePool": "${VcenterResourcePool}",
-            "server": "${VcenterIp}"
-          }
-        },
         "controlPlaneEndpoint": {
-          "host": "${VcenterKcpIp}",
+          "host": "${CONTROL_PLANE_ENDPOINT_IP}",
           "port": 6443
         },
-        "server": "${VcenterIp}",
-        "thumbprint": "${VcenterThumbprint}"
+        "identityRef": {
+          "kind": "Secret",
+          "name": "${CLUSTER_NAME}"
+        },
+        "server": "${VSPHERE_SERVER}",
+        "thumbprint": "${VSPHERE_TLS_THUMBPRINT}"
       }
     },
     {
-      "apiVersion": "infrastructure.cluster.x-k8s.io/v1alpha3",
+      "apiVersion": "infrastructure.cluster.x-k8s.io/v1beta1",
       "kind": "VSphereMachineTemplate",
       "metadata": {
-        "name": "${ClusterName}",
-        "namespace": "${Namespace}"
+        "name": "${CLUSTER_NAME}",
+        "namespace": "${NAMESPACE}"
       },
       "spec": {
         "template": {
           "spec": {
             "cloneMode": "linkedClone",
-            "datacenter": "${VcenterDataCenter}",
-            "datastore": "${VcenterDataStore}",
-            "diskGiB": "${VcenterDiskSize}",
-            "folder": "${VcenterFolder}",
-            "memoryMiB": "${VcenterMemSize}",
+            "datacenter": "${VSPHERE_DATACENTER}",
+            "datastore": "${VSPHERE_DATASTORE}",
+            "diskGiB": "${MASTER_DISK_SIZE}",
+            "folder": "${VSPHERE_FOLDER}",
+            "memoryMiB": "${MASTER_MEM_SIZE}",
             "network": {
               "devices": [
                 {
                   "dhcp4": true,
-                  "networkName": "${VcenterNetwork}"
+                  "networkName": "${VSPHERE_NETWORK}"
                 }
               ]
             },
-            "numCPUs": "${VcenterCpuNum}",
-            "resourcePool": "${VcenterResourcePool}",
-            "server": "${VcenterIp}",
-            "template": "${VcenterTemplate}",
-            "thumbprint": "${VcenterThumbprint}"
+            "numCPUs": "${MASTER_CPU_NUM}",
+            "os": "Linux",
+            "resourcePool": "${VSPHERE_RESOURCE_POOL}",
+            "server": "${VSPHERE_SERVER}",
+            "storagePolicyName": "",
+            "template": "${VSPHERE_TEMPLATE}",
+            "thumbprint": "${VSPHERE_TLS_THUMBPRINT}"
           }
         }
       }
     },
     {
-      "apiVersion": "controlplane.cluster.x-k8s.io/v1alpha3",
-      "kind": "KubeadmControlPlane",
+      "apiVersion": "infrastructure.cluster.x-k8s.io/v1beta1",
+      "kind": "VSphereMachineTemplate",
       "metadata": {
-        "name": "${ClusterName}-control-plane",
-        "namespace": "${Namespace}",
-        "labels": {
-          "cluster.tmax.io/cluster-name": "${ClusterName}",
-          "cluster.tmax.io/controlplane": "controlplane"
-        }
+        "name": "${CLUSTER_NAME}-worker",
+        "namespace": "${NAMESPACE}"
       },
       "spec": {
-        "infrastructureTemplate": {
-          "apiVersion": "infrastructure.cluster.x-k8s.io/v1alpha3",
-          "kind": "VSphereMachineTemplate",
-          "name": "${ClusterName}"
-        },
+        "template": {
+          "spec": {
+            "cloneMode": "linkedClone",
+            "datacenter": "${VSPHERE_DATACENTER}",
+            "datastore": "${VSPHERE_DATASTORE}",
+            "diskGiB": "${WORKER_DISK_SIZE}",
+            "folder": "${VSPHERE_FOLDER}",
+            "memoryMiB": "${WORKER_MEM_SIZE}",
+            "network": {
+              "devices": [
+                {
+                  "dhcp4": true,
+                  "networkName": "${VSPHERE_NETWORK}"
+                }
+              ]
+            },
+            "numCPUs": "${WORKER_CPU_NUM}",
+            "os": "Linux",
+            "resourcePool": "${VSPHERE_RESOURCE_POOL}",
+            "server": "${VSPHERE_SERVER}",
+            "storagePolicyName": "",
+            "template": "${VSPHERE_TEMPLATE}",
+            "thumbprint": "${VSPHERE_TLS_THUMBPRINT}"
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "controlplane.cluster.x-k8s.io/v1beta1",
+      "kind": "KubeadmControlPlane",
+      "metadata": {
+        "name": "${CLUSTER_NAME}",
+        "namespace": "${NAMESPACE}"
+      },
+      "spec": {
         "kubeadmConfigSpec": {
           "clusterConfiguration": {
             "apiServer": {
               "extraArgs": {
-                "cloud-provider": "external",
-                "oidc-client-id": "hypercloud5",
-                "oidc-groups-claim": "group",
-                "oidc-issuer-url": "${HyperAuthUrl}",
-                "oidc-username-claim": "preferred_username",
-                "oidc-username-prefix": "-"
+                "cloud-provider": "external"
               }
             },
             "controllerManager": {
@@ -174,7 +176,7 @@
           },
           "files": [
             {
-              "content": "apiVersion: v1\nkind: Pod\nmetadata:\n  creationTimestamp: null\n  name: kube-vip\n  namespace: kube-system\nspec:\n  containers:\n  - args:\n    - start\n    env:\n    - name: vip_arp\n      value: \"true\"\n    - name: vip_leaderelection\n      value: \"true\"\n    - name: vip_address\n      value: ${VcenterKcpIp}\n    - name: vip_interface\n      value: eth0\n    - name: vip_leaseduration\n      value: \"15\"\n    - name: vip_renewdeadline\n      value: \"10\"\n    - name: vip_retryperiod\n      value: \"2\"\n    image: plndr/kube-vip:0.3.2\n    imagePullPolicy: IfNotPresent\n    name: kube-vip\n    resources: {}\n    securityContext:\n      capabilities:\n        add:\n        - NET_ADMIN\n        - SYS_TIME\n    volumeMounts:\n    - mountPath: /etc/kubernetes/admin.conf\n      name: kubeconfig\n  hostNetwork: true\n  volumes:\n  - hostPath:\n      path: /etc/kubernetes/admin.conf\n      type: FileOrCreate\n    name: kubeconfig\nstatus: {}\n",
+              "content": "apiVersion: v1\nkind: Pod\nmetadata:\n  creationTimestamp: null\n  name: kube-vip\n  namespace: kube-system\nspec:\n  containers:\n  - args:\n    - manager\n    env:\n    - name: cp_enable\n      value: \"true\"\n    - name: vip_interface\n      value: \"\"\n    - name: address\n      value: ${CONTROL_PLANE_ENDPOINT_IP}\n    - name: port\n      value: \"6443\"\n    - name: vip_arp\n      value: \"true\"\n    - name: vip_leaderelection\n      value: \"true\"\n    - name: vip_leaseduration\n      value: \"15\"\n    - name: vip_renewdeadline\n      value: \"10\"\n    - name: vip_retryperiod\n      value: \"2\"\n    image: ghcr.io/kube-vip/kube-vip:v0.5.5\n    imagePullPolicy: IfNotPresent\n    name: kube-vip\n    resources: {}\n    securityContext:\n      capabilities:\n        add:\n        - NET_ADMIN\n        - NET_RAW\n    volumeMounts:\n    - mountPath: /etc/kubernetes/admin.conf\n      name: kubeconfig\n  hostAliases:\n  - hostnames:\n    - kubernetes\n    ip: 127.0.0.1\n  hostNetwork: true\n  volumes:\n  - hostPath:\n      path: /etc/kubernetes/admin.conf\n      type: FileOrCreate\n    name: kubeconfig\nstatus: {}\n",
               "owner": "root:root",
               "path": "/etc/kubernetes/manifests/kube-vip.yaml"
             }
@@ -202,7 +204,10 @@
             "echo \"::1         ipv6-localhost ipv6-loopback\" >/etc/hosts",
             "echo \"127.0.0.1   localhost\" >>/etc/hosts",
             "echo \"127.0.0.1   {{ ds.meta_data.hostname }}\" >>/etc/hosts",
-            "echo \"{{ ds.meta_data.hostname }}\" >/etc/hostname"
+            "echo \"{{ ds.meta_data.hostname }}\" >/etc/hostname",
+            "echo 'root:dG1heEAyMw==' | chpasswd",
+            "sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config",
+            "systemctl restart sshd"
           ],
           "postKubeadmCommands": [
             "mkdir -p $HOME/.kube",
@@ -213,27 +218,32 @@
             "sed -i 's/--bind-address=127.0.0.1/--bind-address=0.0.0.0/g' /etc/kubernetes/manifests/kube-scheduler.yaml || echo",
             "sed -i \"s/--listen-metrics-urls=http:\\/\\/127.0.0.1:2381/--listen-metrics-urls=http:\\/\\/127.0.0.1:2381,http:\\/\\/{{ ds.meta_data.local_ipv4 }}:2381/g\" /etc/kubernetes/manifests/etcd.yaml || echo"
           ],
-          "useExperimentalRetryJoin": true,
           "users": [
             {
               "name": "root",
               "sshAuthorizedKeys": [
                 ""
-              ],
-              "sudo": "ALL=(ALL) NOPASSWD:ALL"
+              ]
             }
           ]
         },
-        "replicas": "${MasterNum}",
-        "version": "${KubernetesVersion}"
+        "machineTemplate": {
+          "infrastructureRef": {
+            "apiVersion": "infrastructure.cluster.x-k8s.io/v1beta1",
+            "kind": "VSphereMachineTemplate",
+            "name": "${CLUSTER_NAME}"
+          }
+        },
+        "replicas": "${CONTROL_PLANE_MACHINE_COUNT}",
+        "version": "${KUBERNETES_VERSION}"
       }
     },
     {
-      "apiVersion": "bootstrap.cluster.x-k8s.io/v1alpha3",
+      "apiVersion": "bootstrap.cluster.x-k8s.io/v1beta1",
       "kind": "KubeadmConfigTemplate",
       "metadata": {
-        "name": "${ClusterName}-md-0",
-        "namespace": "${Namespace}"
+        "name": "${CLUSTER_NAME}-md-0",
+        "namespace": "${NAMESPACE}"
       },
       "spec": {
         "template": {
@@ -252,15 +262,17 @@
               "echo \"::1         ipv6-localhost ipv6-loopback\" >/etc/hosts",
               "echo \"127.0.0.1   localhost\" >>/etc/hosts",
               "echo \"127.0.0.1   {{ ds.meta_data.hostname }}\" >>/etc/hosts",
-              "echo \"{{ ds.meta_data.hostname }}\" >/etc/hostname"
+              "echo \"{{ ds.meta_data.hostname }}\" >/etc/hostname",
+              "echo 'root:dG1heEAyMw==' | chpasswd",
+              "sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config",
+              "systemctl restart sshd"
             ],
             "users": [
               {
                 "name": "root",
                 "sshAuthorizedKeys": [
                   ""
-                ],
-                "sudo": "ALL=(ALL) NOPASSWD:ALL"
+                ]
               }
             ]
           }
@@ -268,91 +280,102 @@
       }
     },
     {
-      "apiVersion": "cluster.x-k8s.io/v1alpha3",
+      "apiVersion": "cluster.x-k8s.io/v1beta1",
       "kind": "MachineDeployment",
       "metadata": {
         "labels": {
-          "cluster.tmax.io/cluster-name": "${ClusterName}",
-          "cluster.tmax.io/worker": "worker"
+          "cluster.x-k8s.io/cluster-name": "${CLUSTER_NAME}"
         },
-        "name": "${ClusterName}-md-0",
-        "namespace": "${Namespace}"
+        "name": "${CLUSTER_NAME}-md-0",
+        "namespace": "${NAMESPACE}"
       },
       "spec": {
-        "clusterName": "${ClusterName}",
-        "replicas": "${WorkerNum}",
+        "clusterName": "${CLUSTER_NAME}",
+        "replicas": "${WORKER_MACHINE_COUNT}",
         "selector": {
           "matchLabels": {}
         },
         "template": {
           "metadata": {
             "labels": {
-              "cluster.x-k8s.io/cluster-name": "${ClusterName}"
+              "cluster.x-k8s.io/cluster-name": "${CLUSTER_NAME}"
             }
           },
           "spec": {
             "bootstrap": {
               "configRef": {
-                "apiVersion": "bootstrap.cluster.x-k8s.io/v1alpha3",
+                "apiVersion": "bootstrap.cluster.x-k8s.io/v1beta1",
                 "kind": "KubeadmConfigTemplate",
-                "name": "${ClusterName}-md-0"
+                "name": "${CLUSTER_NAME}-md-0"
               }
             },
-            "clusterName": "${ClusterName}",
+            "clusterName": "${CLUSTER_NAME}",
             "infrastructureRef": {
-              "apiVersion": "infrastructure.cluster.x-k8s.io/v1alpha3",
+              "apiVersion": "infrastructure.cluster.x-k8s.io/v1beta1",
               "kind": "VSphereMachineTemplate",
-              "name": "${ClusterName}"
+              "name": "${CLUSTER_NAME}-worker"
             },
-            "version": "${KubernetesVersion}"
+            "version": "${KUBERNETES_VERSION}"
           }
         }
       }
     },
     {
-      "apiVersion": "addons.cluster.x-k8s.io/v1alpha3",
+      "apiVersion": "addons.cluster.x-k8s.io/v1beta1",
       "kind": "ClusterResourceSet",
       "metadata": {
         "labels": {
-          "cluster.x-k8s.io/cluster-name": "${ClusterName}"
+          "cluster.x-k8s.io/cluster-name": "${CLUSTER_NAME}"
         },
-        "name": "${ClusterName}-crs-0",
-        "namespace": "${Namespace}"
+        "name": "${CLUSTER_NAME}-crs-0",
+        "namespace": "${NAMESPACE}"
       },
       "spec": {
         "clusterSelector": {
           "matchLabels": {
-            "cluster.x-k8s.io/cluster-name": "${ClusterName}"
+            "cluster.x-k8s.io/cluster-name": "${CLUSTER_NAME}"
           }
         },
         "resources": [
           {
             "kind": "Secret",
-            "name": "${ClusterName}-vsphere-csi-controller"
+            "name": "${CLUSTER_NAME}-vsphere-csi-controller"
           },
           {
             "kind": "ConfigMap",
-            "name": "${ClusterName}-vsphere-csi-controller-role"
+            "name": "${CLUSTER_NAME}-vsphere-csi-controller-role"
           },
           {
             "kind": "ConfigMap",
-            "name": "${ClusterName}-vsphere-csi-controller-binding"
+            "name": "${CLUSTER_NAME}-vsphere-csi-controller-binding"
           },
           {
             "kind": "Secret",
-            "name": "${ClusterName}-csi-vsphere-config"
+            "name": "${CLUSTER_NAME}-csi-vsphere-config"
           },
           {
             "kind": "ConfigMap",
-            "name": "${ClusterName}-csi.vsphere.vmware.com"
+            "name": "${CLUSTER_NAME}-csi.vsphere.vmware.com"
           },
           {
             "kind": "ConfigMap",
-            "name": "${ClusterName}-vsphere-csi-node"
+            "name": "${CLUSTER_NAME}-vsphere-csi-node"
           },
           {
             "kind": "ConfigMap",
-            "name": "${ClusterName}-vsphere-csi-controller"
+            "name": "${CLUSTER_NAME}-vsphere-csi-controller"
+          },
+          {
+            "kind": "Secret",
+            "name": "${CLUSTER_NAME}-cloud-controller-manager"
+          },
+          {
+            "kind": "Secret",
+            "name": "${CLUSTER_NAME}-cloud-provider-vsphere-credentials"
+          },
+          {
+            "kind": "ConfigMap",
+            "name": "${CLUSTER_NAME}-cpi-manifests"
           }
         ]
       }
@@ -361,8 +384,20 @@
       "apiVersion": "v1",
       "kind": "Secret",
       "metadata": {
-        "name": "${ClusterName}-vsphere-csi-controller",
-        "namespace": "${Namespace}"
+        "name": "${CLUSTER_NAME}",
+        "namespace": "${NAMESPACE}"
+      },
+      "stringData": {
+        "password": "${VSPHERE_PASSWORD}",
+        "username": "${VSPHERE_USERNAME}"
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Secret",
+      "metadata": {
+        "name": "${CLUSTER_NAME}-vsphere-csi-controller",
+        "namespace": "${NAMESPACE}"
       },
       "stringData": {
         "data": "apiVersion: v1\nkind: ServiceAccount\nmetadata:\n  name: vsphere-csi-controller\n  namespace: kube-system\n"
@@ -376,8 +411,8 @@
       },
       "kind": "ConfigMap",
       "metadata": {
-        "name": "${ClusterName}-vsphere-csi-controller-role",
-        "namespace": "${Namespace}"
+        "name": "${CLUSTER_NAME}-vsphere-csi-controller-role",
+        "namespace": "${NAMESPACE}"
       }
     },
     {
@@ -387,19 +422,19 @@
       },
       "kind": "ConfigMap",
       "metadata": {
-        "name": "${ClusterName}-vsphere-csi-controller-binding",
-        "namespace": "${Namespace}"
+        "name": "${CLUSTER_NAME}-vsphere-csi-controller-binding",
+        "namespace": "${NAMESPACE}"
       }
     },
     {
       "apiVersion": "v1",
       "kind": "Secret",
       "metadata": {
-        "name": "${ClusterName}-csi-vsphere-config",
-        "namespace": "${Namespace}"
+        "name": "${CLUSTER_NAME}-csi-vsphere-config",
+        "namespace": "${NAMESPACE}"
       },
       "stringData": {
-        "data": "apiVersion: v1\nkind: Secret\nmetadata:\n  name: csi-vsphere-config\n  namespace: kube-system\nstringData:\n  csi-vsphere.conf: |+\n    [Global]\n    cluster-id = \"${Namespace}/${ClusterName}\"\n\n    [VirtualCenter \"${VcenterIp}\"]\n    insecure-flag = \"true\"\n    user = \"${VcenterId}\"\n    password = \"${VcenterPassword}\"\n    datacenters = \"${VcenterDataCenter}\"\n\n    [Network]\n    public-network = \"${VcenterNetwork}\"\n\ntype: Opaque\n"
+        "data": "apiVersion: v1\nkind: Secret\nmetadata:\n  name: csi-vsphere-config\n  namespace: kube-system\nstringData:\n  csi-vsphere.conf: |+\n    [Global]\n    cluster-id = \"${NAMESPACE}/${CLUSTER_NAME}\"\n    [VirtualCenter \"${VSPHERE_SERVER}\"]\n    user = \"${VSPHERE_USERNAME}\"\n    password = \"${VSPHERE_PASSWORD}\"\n    datacenters = \"${VSPHERE_DATACENTER}\"\n    [Network]\n    public-network = \"${VSPHERE_NETWORK}\"\ntype: Opaque\n"
       },
       "type": "addons.cluster.x-k8s.io/resource-set"
     },
@@ -410,8 +445,8 @@
       },
       "kind": "ConfigMap",
       "metadata": {
-        "name": "${ClusterName}-csi.vsphere.vmware.com",
-        "namespace": "${Namespace}"
+        "name": "${CLUSTER_NAME}-csi.vsphere.vmware.com",
+        "namespace": "${NAMESPACE}"
       }
     },
     {
@@ -421,8 +456,8 @@
       },
       "kind": "ConfigMap",
       "metadata": {
-        "name": "${ClusterName}-vsphere-csi-node",
-        "namespace": "${Namespace}"
+        "name": "${CLUSTER_NAME}-vsphere-csi-node",
+        "namespace": "${NAMESPACE}"
       }
     },
     {
@@ -432,19 +467,43 @@
       },
       "kind": "ConfigMap",
       "metadata": {
-        "name": "${ClusterName}-vsphere-csi-controller",
-        "namespace": "${Namespace}"
+        "name": "${CLUSTER_NAME}-vsphere-csi-controller",
+        "namespace": "${NAMESPACE}"
       }
     },
     {
       "apiVersion": "v1",
+      "kind": "Secret",
+      "metadata": {
+        "name": "${CLUSTER_NAME}-cloud-controller-manager",
+        "namespace": "${NAMESPACE}"
+      },
+      "stringData": {
+        "data": "apiVersion: v1\nkind: ServiceAccount\nmetadata:\n  name: cloud-controller-manager\n  namespace: kube-system\n"
+      },
+      "type": "addons.cluster.x-k8s.io/resource-set"
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Secret",
+      "metadata": {
+        "name": "${CLUSTER_NAME}-cloud-provider-vsphere-credentials",
+        "namespace": "${NAMESPACE}"
+      },
+      "stringData": {
+        "data": "apiVersion: v1\nkind: Secret\nmetadata:\n  name: cloud-provider-vsphere-credentials\n  namespace: kube-system\nstringData:\n  ${VSPHERE_SERVER}.password: ${VSPHERE_PASSWORD}\n  ${VSPHERE_SERVER}.username: ${VSPHERE_USERNAME}\ntype: Opaque\n"
+      },
+      "type": "addons.cluster.x-k8s.io/resource-set"
+    },
+    {
+      "apiVersion": "v1",
       "data": {
-        "data": "apiVersion: v1\ndata:\n  csi-migration: \"false\"\nkind: ConfigMap\nmetadata:\n  name: internal-feature-states.csi.vsphere.vmware.com\n  namespace: kube-system\n"
+        "data": "---\napiVersion: rbac.authorization.k8s.io/v1\nkind: ClusterRole\nmetadata:\n  name: system:cloud-controller-manager\nrules:\n- apiGroups:\n  - \"\"\n  resources:\n  - events\n  verbs:\n  - create\n  - patch\n  - update\n- apiGroups:\n  - \"\"\n  resources:\n  - nodes\n  verbs:\n  - '*'\n- apiGroups:\n  - \"\"\n  resources:\n  - nodes/status\n  verbs:\n  - patch\n- apiGroups:\n  - \"\"\n  resources:\n  - services\n  verbs:\n  - list\n  - patch\n  - update\n  - watch\n- apiGroups:\n  - \"\"\n  resources:\n  - serviceaccounts\n  verbs:\n  - create\n  - get\n  - list\n  - watch\n  - update\n- apiGroups:\n  - \"\"\n  resources:\n  - persistentvolumes\n  verbs:\n  - get\n  - list\n  - watch\n  - update\n- apiGroups:\n  - \"\"\n  resources:\n  - endpoints\n  verbs:\n  - create\n  - get\n  - list\n  - watch\n  - update\n- apiGroups:\n  - \"\"\n  resources:\n  - secrets\n  verbs:\n  - get\n  - list\n  - watch\n- apiGroups:\n  - coordination.k8s.io\n  resources:\n  - leases\n  verbs:\n  - get\n  - watch\n  - list\n  - delete\n  - update\n  - create\n---\napiVersion: rbac.authorization.k8s.io/v1\nkind: ClusterRoleBinding\nmetadata:\n  name: system:cloud-controller-manager\nroleRef:\n  apiGroup: rbac.authorization.k8s.io\n  kind: ClusterRole\n  name: system:cloud-controller-manager\nsubjects:\n- kind: ServiceAccount\n  name: cloud-controller-manager\n  namespace: kube-system\n- kind: User\n  name: cloud-controller-manager\n---\napiVersion: v1\ndata:\n  vsphere.conf: |\n    global:\n      secretName: cloud-provider-vsphere-credentials\n      secretNamespace: kube-system\n      thumbprint: '${VSPHERE_TLS_THUMBPRINT}'\n    vcenter:\n      ${VSPHERE_SERVER}:\n        datacenters:\n        - '${VSPHERE_DATACENTER}'\n        secretName: cloud-provider-vsphere-credentials\n        secretNamespace: kube-system\n        server: '${VSPHERE_SERVER}'\n        thumbprint: '${VSPHERE_TLS_THUMBPRINT}'\nkind: ConfigMap\nmetadata:\n  name: vsphere-cloud-config\n  namespace: kube-system\n---\napiVersion: rbac.authorization.k8s.io/v1\nkind: RoleBinding\nmetadata:\n  name: servicecatalog.k8s.io:apiserver-authentication-reader\n  namespace: kube-system\nroleRef:\n  apiGroup: rbac.authorization.k8s.io\n  kind: Role\n  name: extension-apiserver-authentication-reader\nsubjects:\n- kind: ServiceAccount\n  name: cloud-controller-manager\n  namespace: kube-system\n- kind: User\n  name: cloud-controller-manager\n---\napiVersion: v1\nkind: Service\nmetadata:\n  labels:\n    component: cloud-controller-manager\n  name: cloud-controller-manager\n  namespace: kube-system\nspec:\n  ports:\n  - port: 443\n    protocol: TCP\n    targetPort: 43001\n  selector:\n    component: cloud-controller-manager\n  type: NodePort\n---\napiVersion: apps/v1\nkind: DaemonSet\nmetadata:\n  labels:\n    k8s-app: vsphere-cloud-controller-manager\n  name: vsphere-cloud-controller-manager\n  namespace: kube-system\nspec:\n  selector:\n    matchLabels:\n      k8s-app: vsphere-cloud-controller-manager\n  template:\n    metadata:\n      labels:\n        k8s-app: vsphere-cloud-controller-manager\n    spec:\n      containers:\n      - args:\n        - --v=2\n        - --cloud-provider=vsphere\n        - --cloud-config=/etc/cloud/vsphere.conf\n        image: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.18.1\n        name: vsphere-cloud-controller-manager\n        resources:\n          requests:\n            cpu: 200m\n        volumeMounts:\n        - mountPath: /etc/cloud\n          name: vsphere-config-volume\n          readOnly: true\n      hostNetwork: true\n      serviceAccountName: cloud-controller-manager\n      tolerations:\n      - effect: NoSchedule\n        key: node.cloudprovider.kubernetes.io/uninitialized\n        value: \"true\"\n      - effect: NoSchedule\n        key: node-role.kubernetes.io/master\n      - effect: NoSchedule\n        key: node.kubernetes.io/not-ready\n      volumes:\n      - configMap:\n          name: vsphere-cloud-config\n        name: vsphere-config-volume\n  updateStrategy:\n    type: RollingUpdate\n"
       },
       "kind": "ConfigMap",
       "metadata": {
-        "name": "${ClusterName}-internal-feature-states.csi.vsphere.vmware.com",
-        "namespace": "${Namespace}"
+        "name": "${CLUSTER_NAME}-cpi-manifests",
+        "namespace": "${NAMESPACE}"
       }
     }
   ],
@@ -452,7 +511,7 @@
     {
       "description": "namespace",
       "displayName": "Namespace",
-      "name": "Namespace",
+      "name": "NAMESPACE",
       "required": false,
       "value": "default",
       "valueType": "string"
@@ -460,7 +519,7 @@
     {
       "description": "Cluster Owner",
       "displayName": "Owner",
-      "name": "Owner",
+      "name": "OWNER",
       "required": false,
       "value": "admin",
       "valueType": "string"
@@ -468,7 +527,7 @@
     {
       "description": "Cluster Name",
       "displayName": "Cluster Name",
-      "name": "ClusterName",
+      "name": "CLUSTER_NAME",
       "required": false,
       "value": "clustername",
       "valueType": "string"
@@ -476,7 +535,7 @@
     {
       "description": "Internal IP Cidr Block for Pods",
       "displayName": "Cidr Block",
-      "name": "PodCidr",
+      "name": "POD_CIDR",
       "required": false,
       "value": "0.0.0.0/0",
       "valueType": "string"
@@ -484,7 +543,7 @@
     {
       "description": "vCenter Server IP",
       "displayName": "VCSA IP",
-      "name": "VcenterIp",
+      "name": "VSPHERE_SERVER",
       "required": false,
       "value": "0.0.0.0",
       "valueType": "string"
@@ -492,7 +551,7 @@
     {
       "description": "vCenter User Name",
       "displayName": "User Name",
-      "name": "VcenterId",
+      "name": "VSPHERE_USERNAME",
       "required": false,
       "value": "example@domain.local",
       "valueType": "string"
@@ -500,7 +559,7 @@
     {
       "description": "vCenter User Password",
       "displayName": "User Password",
-      "name": "VcenterPassword",
+      "name": "VSPHERE_PASSWORD",
       "required": false,
       "value": "password",
       "valueType": "string"
@@ -508,7 +567,7 @@
     {
       "description": "vCenter TLS Thumbprint",
       "displayName": "Thumbprint",
-      "name": "VcenterThumbprint",
+      "name": "VSPHERE_TLS_THUMBPRINT",
       "required": false,
       "value": "00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00",
       "valueType": "string"
@@ -516,7 +575,7 @@
     {
       "description": "vCenter Network Name",
       "displayName": "Network Name",
-      "name": "VcenterNetwork",
+      "name": "VSPHERE_NETWORK",
       "required": false,
       "value": "VM Network",
       "valueType": "string"
@@ -524,7 +583,7 @@
     {
       "description": "vCenter DataCenter Name",
       "displayName": "DataCenter Name",
-      "name": "VcenterDataCenter",
+      "name": "VSPHERE_DATACENTER",
       "required": false,
       "value": "Datacenter",
       "valueType": "string"
@@ -532,7 +591,7 @@
     {
       "description": "vCenter DataStore Name",
       "displayName": "DataStore Name",
-      "name": "VcenterDataStore",
+      "name": "VSPHERE_DATASTORE",
       "required": false,
       "value": "datastore1",
       "valueType": "string"
@@ -540,7 +599,7 @@
     {
       "description": "vCenter Folder Name",
       "displayName": "Folder Name",
-      "name": "VcenterFolder",
+      "name": "VSPHERE_FOLDER",
       "required": false,
       "value": "vm",
       "valueType": "string"
@@ -548,39 +607,63 @@
     {
       "description": "vCenter Resource Pool Name",
       "displayName": "Resource Pool Name",
-      "name": "VcenterResourcePool",
+      "name": "VSPHERE_RESOURCE_POOL",
       "required": false,
       "value": "VM Resource",
       "valueType": "string"
     },
     {
-      "description": "VM Disk Size",
-      "displayName": "Disk Size",
-      "name": "VcenterDiskSize",
+      "description": "Master VM Disk Size",
+      "displayName": "Master Disk Size",
+      "name": "MASTER_DISK_SIZE",
       "required": false,
       "value": 25,
       "valueType": "number"
     },
     {
-      "description": "VM Memory Size",
-      "displayName": "Memory Size",
-      "name": "VcenterMemSize",
+      "description": "Master VM Memory Size",
+      "displayName": "Master Memory Size",
+      "name": "MASTER_MEM_SIZE",
       "required": false,
       "value": 8192,
       "valueType": "number"
     },
     {
-      "description": "Number of CPUs",
-      "displayName": "Number of CPUs",
-      "name": "VcenterCpuNum",
+      "description": "Master Number of CPUs",
+      "displayName": "Master Number of CPUs",
+      "name": "MASTER_CPU_NUM",
       "required": false,
       "value": 2,
       "valueType": "number"
     },
     {
+      "description": "Worker Number of CPUs",
+      "displayName": "Worker Number of CPUs",
+      "name": "WORKER_CPU_NUM",
+      "required": false,
+      "value": 2,
+      "valueType": "number"
+    },
+    {
+      "description": "Worker VM Disk Size",
+      "displayName": "Worker Disk Size",
+      "name": "WORKER_DISK_SIZE",
+      "required": false,
+      "value": 25,
+      "valueType": "number"
+    },
+    {
+      "description": "Worker VM Memory Size",
+      "displayName": "Worker Memory Size",
+      "name": "WORKER_MEM_SIZE",
+      "required": false,
+      "value": 8192,
+      "valueType": "number"
+    },
+    {
       "description": "Target Template Name",
       "displayName": "Template Name",
-      "name": "VcenterTemplate",
+      "name": "VSPHERE_TEMPLATE",
       "required": false,
       "value": "ubuntu-1804-kube-v1.17.3",
       "valueType": "string"
@@ -588,7 +671,7 @@
     {
       "description": "Control Plane Endpoint IP",
       "displayName": "Control Plane Endpoint IP",
-      "name": "VcenterKcpIp",
+      "name": "CONTROL_PLANE_ENDPOINT_IP",
       "required": false,
       "value": "0.0.0.0",
       "valueType": "string"
@@ -596,7 +679,7 @@
     {
       "description": "Kubernetes version",
       "displayName": "Kubernetes version",
-      "name": "KubernetesVersion",
+      "name": "KUBERNETES_VERSION",
       "required": false,
       "value": "v1.18.16",
       "valueType": "string"
@@ -604,7 +687,7 @@
     {
       "description": "Number of Master node",
       "displayName": "number of master nodes",
-      "name": "MasterNum",
+      "name": "CONTROL_PLANE_MACHINE_COUNT",
       "required": false,
       "value": 3,
       "valueType": "number"
@@ -612,18 +695,10 @@
     {
       "description": "Number of Worker node",
       "displayName": "number of worker nodes",
-      "name": "WorkerNum",
+      "name": "WORKER_MACHINE_COUNT",
       "required": false,
-      "value": 3,
+      "value": 2,
       "valueType": "number"
-    },
-    {
-      "description": "HyperAuth url for open id connect",
-      "displayName": "HyperAuth URL",
-      "name": "HyperAuthUrl",
-      "required": false,
-      "value": "hyperauth.tmax.co.kr",
-      "valueType": "string"
     }
   ],
   "recommend": true,

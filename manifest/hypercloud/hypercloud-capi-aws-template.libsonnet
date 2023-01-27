@@ -19,15 +19,13 @@
   ],
   "objects": [
     {
-      "apiVersion": "cluster.x-k8s.io/v1alpha3",
+      "apiVersion": "cluster.x-k8s.io/v1beta1",
       "kind": "Cluster",
       "metadata": {
+        "name": "${CLUSTER_NAME}",
         "annotations": {
-          "federation": "join",
-          "owner": "${Owner}"
-        },
-        "name": "${ClusterName}",
-        "namespace": "default"
+          "owner": "${OWNER}"
+        }
       },
       "spec": {
         "clusterNetwork": {
@@ -37,60 +35,60 @@
             ]
           }
         },
-        "controlPlaneRef": {
-          "apiVersion": "controlplane.cluster.x-k8s.io/v1alpha3",
-          "kind": "KubeadmControlPlane",
-          "name": "${ClusterName}-control-plane"
-        },
         "infrastructureRef": {
-          "apiVersion": "infrastructure.cluster.x-k8s.io/v1alpha3",
+          "apiVersion": "infrastructure.cluster.x-k8s.io/v1beta2",
           "kind": "AWSCluster",
-          "name": "${ClusterName}"
+          "name": "${CLUSTER_NAME}"
+        },
+        "controlPlaneRef": {
+          "kind": "KubeadmControlPlane",
+          "apiVersion": "controlplane.cluster.x-k8s.io/v1beta1",
+          "name": "${CLUSTER_NAME}-control-plane"
         }
       }
     },
     {
-      "apiVersion": "infrastructure.cluster.x-k8s.io/v1alpha3",
+      "apiVersion": "infrastructure.cluster.x-k8s.io/v1beta2",
       "kind": "AWSCluster",
       "metadata": {
-        "name": "${ClusterName}",
-        "namespace": "default"
+        "name": "${CLUSTER_NAME}"
       },
       "spec": {
-        "region": "${Region}",
-        "sshKeyName": "${SshKey}"
+        "region": "${AWS_REGION}",
+        "sshKeyName": "${AWS_SSH_KEY_NAME}"
       },
       "bastion": {
         "enabled": false
       }
     },
     {
-      "apiVersion": "controlplane.cluster.x-k8s.io/v1alpha3",
       "kind": "KubeadmControlPlane",
+      "apiVersion": "controlplane.cluster.x-k8s.io/v1beta1",
       "metadata": {
-        "name": "${ClusterName}-control-plane",
-        "namespace": "default"
-      },
-      "labels": {
-        "cluster.tmax.io/cluster-name": "${ClusterName}",
-        "cluster.tmax.io/controlplane": "controlplane"
+        "name": "${CLUSTER_NAME}-control-plane"
       },
       "spec": {
-        "infrastructureTemplate": {
-          "apiVersion": "infrastructure.cluster.x-k8s.io/v1alpha3",
-          "kind": "AWSMachineTemplate",
-          "name": "${ClusterName}-control-plane"
+        "replicas": "${CONTROL_PLANE_MACHINE_COUNT}",
+        "machineTemplate": {
+          "infrastructureRef": {
+            "kind": "AWSMachineTemplate",
+            "apiVersion": "infrastructure.cluster.x-k8s.io/v1beta2",
+            "name": "${CLUSTER_NAME}-control-plane"
+          }
         },
         "kubeadmConfigSpec": {
+          "initConfiguration": {
+            "nodeRegistration": {
+              "name": "{{ ds.meta_data.local_hostname }}",
+              "kubeletExtraArgs": {
+                "cloud-provider": "aws"
+              }
+            }
+          },
           "clusterConfiguration": {
             "apiServer": {
               "extraArgs": {
-                "cloud-provider": "aws",
-                "oidc-client-id": "hypercloud5",
-                "oidc-groups-claim": "group",
-                "oidc-issuer-url": "${HyperAuthUrl}",
-                "oidc-username-claim": "preferred_username",
-                "oidc-username-prefix": "-"
+                "cloud-provider": "aws"
               }
             },
             "controllerManager": {
@@ -99,20 +97,12 @@
               }
             }
           },
-          "initConfiguration": {
-            "nodeRegistration": {
-              "kubeletExtraArgs": {
-                "cloud-provider": "aws"
-              },
-              "name": "{{ ds.meta_data.local_hostname }}"
-            }
-          },
           "joinConfiguration": {
             "nodeRegistration": {
+              "name": "{{ ds.meta_data.local_hostname }}",
               "kubeletExtraArgs": {
                 "cloud-provider": "aws"
-              },
-              "name": "{{ ds.meta_data.local_hostname }}"
+              }
             }
           },
           "postKubeadmCommands": [
@@ -125,108 +115,94 @@
             "sed -i \"s/--listen-metrics-urls=http:\\/\\/127.0.0.1:2381/--listen-metrics-urls=http:\\/\\/127.0.0.1:2381,http:\\/\\/{{ ds.meta_data.local_ipv4 }}:2381/g\" /etc/kubernetes/manifests/etcd.yaml || echo"
           ]
         },
-        "replicas": "${MasterNum}",
-        "version": "${KubernetesVersion}"
+        "version": "${KUBERNETES_VERSION}"
       }
     },
     {
-      "apiVersion": "infrastructure.cluster.x-k8s.io/v1alpha3",
       "kind": "AWSMachineTemplate",
+      "apiVersion": "infrastructure.cluster.x-k8s.io/v1beta2",
       "metadata": {
-        "name": "${ClusterName}-control-plane",
-        "namespace": "default"
+        "name": "${CLUSTER_NAME}-control-plane"
       },
       "spec": {
         "template": {
           "spec": {
+            "instanceType": "${AWS_CONTROL_PLANE_MACHINE_TYPE}",
             "iamInstanceProfile": "control-plane.cluster-api-provider-aws.sigs.k8s.io",
-            "instanceType": "${MasterType}",
-            "sshKeyName": "${SshKey}",
+            "sshKeyName": "${AWS_SSH_KEY_NAME}",
             "rootVolume": {
-              "size": "${MasterDiskSize}"
+              "size": "${MASTER_DISK_SIZE}"
             }
           }
         }
       }
     },
     {
-      "apiVersion": "cluster.x-k8s.io/v1alpha3",
+      "apiVersion": "cluster.x-k8s.io/v1beta1",
       "kind": "MachineDeployment",
       "metadata": {
-        "name": "${ClusterName}-md-0",
-        "namespace": "default",
-        "labels": {
-          "cluster.tmax.io/cluster-name": "${ClusterName}",
-          "cluster.tmax.io/worker": "worker"
-        }
+        "name": "${CLUSTER_NAME}-md-0"
       },
       "spec": {
-        "clusterName": "${ClusterName}",
-        "replicas": "${WorkerNum}",
-        "selector": {},
+        "clusterName": "${CLUSTER_NAME}",
+        "replicas": "${WORKER_MACHINE_COUNT}",
+        "selector": {
+          "matchLabels": null
+        },
         "template": {
           "spec": {
+            "clusterName": "${CLUSTER_NAME}",
+            "version": "${KUBERNETES_VERSION}",
             "bootstrap": {
               "configRef": {
-                "apiVersion": "bootstrap.cluster.x-k8s.io/v1alpha3",
-                "kind": "KubeadmConfigTemplate",
-                "name": "${ClusterName}-md-0"
+                "name": "${CLUSTER_NAME}-md-0",
+                "apiVersion": "bootstrap.cluster.x-k8s.io/v1beta1",
+                "kind": "KubeadmConfigTemplate"
               }
             },
-            "clusterName": "${ClusterName}",
             "infrastructureRef": {
-              "apiVersion": "infrastructure.cluster.x-k8s.io/v1alpha3",
-              "kind": "AWSMachineTemplate",
-              "name": "${ClusterName}-md-0"
-            },
-            "version": "${KubernetesVersion}"
-          }
-        }
-      }
-    },
-    {
-      "apiVersion": "infrastructure.cluster.x-k8s.io/v1alpha3",
-      "kind": "AWSMachineTemplate",
-      "metadata": {
-        "name": "${ClusterName}-md-0",
-        "namespace": "default"
-      },
-      "spec": {
-        "template": {
-          "spec": {
-            "iamInstanceProfile": "nodes.cluster-api-provider-aws.sigs.k8s.io",
-            "instanceType": "${WorkerType}",
-            "sshKeyName": "${SshKey}",
-            "rootVolume": {
-              "size": "${WorkerDiskSize}"
+              "name": "${CLUSTER_NAME}-md-0",
+              "apiVersion": "infrastructure.cluster.x-k8s.io/v1beta2",
+              "kind": "AWSMachineTemplate"
             }
           }
         }
       }
     },
     {
-      "apiVersion": "bootstrap.cluster.x-k8s.io/v1alpha3",
-      "kind": "KubeadmConfigTemplate",
+      "apiVersion": "infrastructure.cluster.x-k8s.io/v1beta2",
+      "kind": "AWSMachineTemplate",
       "metadata": {
-        "name": "${ClusterName}-md-0",
-        "namespace": "default"
+        "name": "${CLUSTER_NAME}-md-0"
       },
       "spec": {
         "template": {
           "spec": {
-            "clusterConfiguration": {
-              "apiServer": {
-                "extraArgs": {
-                  "audit-webhook-mode": "batch"
-                }
-              }
-            },
+            "instanceType": "${AWS_NODE_MACHINE_TYPE}",
+            "iamInstanceProfile": "nodes.cluster-api-provider-aws.sigs.k8s.io",
+            "sshKeyName": "${AWS_SSH_KEY_NAME}",
+            "rootVolume": {
+              "size": "${WORKER_DISK_SIZE}"
+            }
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "bootstrap.cluster.x-k8s.io/v1beta1",
+      "kind": "KubeadmConfigTemplate",
+      "metadata": {
+        "name": "${CLUSTER_NAME}-md-0"
+      },
+      "spec": {
+        "template": {
+          "spec": {
             "joinConfiguration": {
               "nodeRegistration": {
+                "name": "{{ ds.meta_data.local_hostname }}",
                 "kubeletExtraArgs": {
                   "cloud-provider": "aws"
-                },
-                "name": "{{ ds.meta_data.local_hostname }}"
+                }
               }
             }
           }
@@ -238,7 +214,7 @@
     {
       "description": "namespace",
       "displayName": "Namespace",
-      "name": "Namespace",
+      "name": "NAMESPACE",
       "required": false,
       "value": "default",
       "valueType": "string"
@@ -246,7 +222,7 @@
     {
       "description": "Cluster Owner",
       "displayName": "Owner",
-      "name": "Owner",
+      "name": "OWNER",
       "required": false,
       "value": "admin",
       "valueType": "string"
@@ -254,7 +230,7 @@
     {
       "description": "AWS REGION",
       "displayName": "AWS region",
-      "name": "Region",
+      "name": "AWS_REGION",
       "required": false,
       "value": "us-east-1",
       "valueType": "string"
@@ -262,7 +238,7 @@
     {
       "description": "AWS SSH key name",
       "displayName": "AWS SSH key name",
-      "name": "SshKey",
+      "name": "AWS_SSH_KEY_NAME",
       "required": false,
       "value": "default",
       "valueType": "string"
@@ -270,7 +246,7 @@
     {
       "description": "Cluster name",
       "displayName": "ClusterName",
-      "name": "ClusterName",
+      "name": "CLUSTER_NAME",
       "required": false,
       "value": "clustername",
       "valueType": "string"
@@ -278,7 +254,7 @@
     {
       "description": "Kubernetes version",
       "displayName": "Kubernetes version",
-      "name": "KubernetesVersion",
+      "name": "KUBERNETES_VERSION",
       "required": false,
       "value": "v1.18.2",
       "valueType": "string"
@@ -286,7 +262,7 @@
     {
       "description": "Number of Master node",
       "displayName": "number of master nodes",
-      "name": "MasterNum",
+      "name": "CONTROL_PLANE_MACHINE_COUNT",
       "required": false,
       "value": 3,
       "valueType": "number"
@@ -294,7 +270,7 @@
     {
       "description": "Master nodes instance type",
       "displayName": "MasterNodeType",
-      "name": "MasterType",
+      "name": "AWS_CONTROL_PLANE_MACHINE_TYPE",
       "required": false,
       "value": "t3.large",
       "valueType": "string"
@@ -302,7 +278,7 @@
     {
       "description": "Number of Worker node",
       "displayName": "number of worker nodes",
-      "name": "WorkerNum",
+      "name": "WORKER_MACHINE_COUNT",
       "required": false,
       "value": 3,
       "valueType": "number"
@@ -310,7 +286,7 @@
     {
       "description": "Worker nodes instance type",
       "displayName": "WorkerNodeType",
-      "name": "WorkerType",
+      "name": "AWS_NODE_MACHINE_TYPE",
       "required": false,
       "value": "t3.large",
       "valueType": "string"
@@ -318,7 +294,7 @@
     {
       "description": "Master nodes disk type",
       "displayName": "MasterDiskSize",
-      "name": "MasterDiskSize",
+      "name": "MASTER_DISK_SIZE",
       "required": false,
       "value": 20,
       "valueType": "number"
@@ -326,18 +302,10 @@
     {
       "description": "Worker nodes disk type",
       "displayName": "WorkerDiskSize",
-      "name": "WorkerDiskSize",
+      "name": "WORKER_DISK_SIZE",
       "required": false,
       "value": 20,
       "valueType": "number"
-    },
-    {
-      "description": "HyperAuth url for open id connect",
-      "displayName": "HyperAuth URL",
-      "name": "HyperAuthUrl",
-      "required": false,
-      "value": "hyperauth.tmax.co.kr",
-      "valueType": "string"
     }
   ],
   "recommend": true,
