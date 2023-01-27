@@ -19,14 +19,11 @@ spec:
     name: {{ .Values.global.clusterName }}
   project: {{ .Values.spec.project }}
   source:
-    path: manifest/namespace
+    path: manifest/istio/namespace
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
-    helm:
-      releaseName: {{ $ns }}
-      parameters:
-        - name: namespace
-          value: istio-system
+    directory:
+      recurse: false
   syncPolicy:
     {{- if .Values.modules.istio.autoSync }}
     automated:
