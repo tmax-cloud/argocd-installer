@@ -36,120 +36,120 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         }
     },
     {
-        "apiVersion": "apps/v1",
-        "kind": "StatefulSet",
-        "metadata": {
-            "labels": {
-            "app": "kserve",
-            "app.kubernetes.io/name": "kserve",
-            "control-plane": "kserve-controller-manager",
-            "controller-tools.k8s.io": "1.0"
-            },
-            "name": "kserve-controller-manager",
-            "namespace": "kubeflow"
+  "apiVersion": "apps/v1",
+  "kind": "StatefulSet",
+  "metadata": {
+    "labels": {
+      "app": "kserve",
+      "app.kubernetes.io/name": "kserve",
+      "control-plane": "kserve-controller-manager",
+      "controller-tools.k8s.io": "1.0"
+    },
+    "name": "kserve-controller-manager",
+    "namespace": "kubeflow"
+  },
+  "spec": {
+    "selector": {
+      "matchLabels": {
+        "app": "kserve",
+        "app.kubernetes.io/name": "kserve",
+        "control-plane": "kserve-controller-manager",
+        "controller-tools.k8s.io": "1.0"
+      }
+    },
+    "serviceName": "controller-manager-service",
+    "template": {
+      "metadata": {
+        "annotations": {
+          "sidecar.istio.io/inject": "false"
         },
-        "spec": {
-            "selector": {
-            "matchLabels": {
-                "app": "kserve",
-                "app.kubernetes.io/name": "kserve",
-                "control-plane": "kserve-controller-manager",
-                "controller-tools.k8s.io": "1.0"
-            }
-            },
-            "serviceName": "controller-manager-service",
-            "template": {
-            "metadata": {
-                "annotations": {
-                "sidecar.istio.io/inject": "false"
-                },
-                "labels": {
-                "app": "kserve",
-                "app.kubernetes.io/name": "kserve",
-                "control-plane": "kserve-controller-manager",
-                "controller-tools.k8s.io": "1.0"
-                }
-            },
-            "spec": {
-                "containers": [
-                {
-                    "args": [
-                    "--metrics-addr=127.0.0.1:8080"
-                    ],
-                    "command": [
-                    "/manager"
-                    ],
-                    "env": [
-                    {
-                        "name": "POD_NAMESPACE",
-                        "valueFrom": {
-                        "fieldRef": {
-                            "fieldPath": "metadata.namespace"
-                        }
-                        }
-                    },
-                    {
-                        "name": "SECRET_NAME",
-                        "value": "kserve-webhook-server-cert"
-                    }
-                    ],
-                    "image": std.join("", [target_registry, "docker.io/tmaxcloudck/kfserving-controller:v0.7.0-lls"]),
-                    "name": "manager",
-                    "ports": [
-                    {
-                        "containerPort": 9443,
-                        "name": "webhook-server",
-                        "protocol": "TCP"
-                    }
-                    ],
-                    "resources": {
-                    "limits": {
-                        "cpu": "100m",
-                        "memory": "300Mi"
-                    },
-                    "requests": {
-                        "cpu": "100m",
-                        "memory": "200Mi"
-                    }
-                    },
-                    "volumeMounts": [
-                    {
-                        "mountPath": "/tmp/k8s-webhook-server/serving-certs",
-                        "name": "cert",
-                        "readOnly": true
-                    }
-                    ]
-                },
-                {
-                    "args": [
-                    "--secure-listen-address=0.0.0.0:8443",
-                    "--upstream=http://127.0.0.1:8080/",
-                    "--logtostderr=true",
-                    "--v=10"
-                    ],
-                    "image": std.join("", [target_registry, "gcr.io/kubebuilder/kube-rbac-proxy:v0.4.0"]),
-                    "name": "kube-rbac-proxy",
-                    "ports": [
-                    {
-                        "containerPort": 8443,
-                        "name": "https"
-                    }
-                    ]
-                }
-                ],
-                "terminationGracePeriodSeconds": 10,
-                "serviceAccountName": "kserve-controller-manager",
-                "volumes": [
-                {
-                    "name": "cert",
-                    "secret": {
-                    "defaultMode": 420,
-                    "secretName": "kserve-webhook-server-cert"
-                    }
-                }
-                ]
-            }
-            }
+        "labels": {
+          "app": "kserve",
+          "app.kubernetes.io/name": "kserve",
+          "control-plane": "kserve-controller-manager",
+          "controller-tools.k8s.io": "1.0"
         }
+      },
+      "spec": {
+        "containers": [
+          {
+            "args": [
+              "--metrics-addr=127.0.0.1:8080"
+            ],
+            "command": [
+              "/manager"
+            ],
+            "env": [
+              {
+                "name": "POD_NAMESPACE",
+                "valueFrom": {
+                  "fieldRef": {
+                    "fieldPath": "metadata.namespace"
+                  }
+                }
+              },
+              {
+                "name": "SECRET_NAME",
+                "value": "kserve-webhook-server-cert"
+              }
+            ],
+            "image": std.join("", [target_registry, "docker.io/kserve/kserve-controller:v0.7.0"]),
+            "imagePullPolicy": "Always",
+            "name": "manager",
+            "ports": [
+              {
+                "containerPort": 9443,
+                "name": "webhook-server",
+                "protocol": "TCP"
+              }
+            ],
+            "resources": {
+              "limits": {
+                "cpu": "100m",
+                "memory": "300Mi"
+              },
+              "requests": {
+                "cpu": "100m",
+                "memory": "200Mi"
+              }
+            },
+            "volumeMounts": [
+              {
+                "mountPath": "/tmp/k8s-webhook-server/serving-certs",
+                "name": "cert",
+                "readOnly": true
+              }
+            ]
+          },
+          {
+            "args": [
+              "--secure-listen-address=0.0.0.0:8443",
+              "--upstream=http://127.0.0.1:8080/",
+              "--logtostderr=true",
+              "--v=10"
+            ],
+            "image": std.join("", [target_registry, "gcr.io/kubebuilder/kube-rbac-proxy:v0.4.0"]),
+            "name": "kube-rbac-proxy",
+            "ports": [
+              {
+                "containerPort": 8443,
+                "name": "https"
+              }
+            ]
+          }
+        ],
+        "terminationGracePeriodSeconds": 10,
+        "volumes": [
+          {
+            "name": "cert",
+            "secret": {
+              "defaultMode": 420,
+              "secretName": "kserve-webhook-server-cert"
+            }
+          }
+        ]
+      }
     }
+  }
+}
 ]
