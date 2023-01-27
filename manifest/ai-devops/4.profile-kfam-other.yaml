@@ -451,16 +451,7 @@ spec:
   ports:
   - port: 8081
   selector:
-    kustomize.component: profiles
----          
-apiVersion: v1
-kind: Secret
-metadata:
-  annotations:
-    kubernetes.io/service-account.name: profiles-controller-service-account
-  name: profiles-controller-service-account-token
-  namespace: kubeflow
-type: kubernetes.io/service-account-token            
+    kustomize.component: profiles       
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService

@@ -122,23 +122,12 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "mountPath": "/etc/profile-controller",
                         "name": "namespace-labels",
                         "readOnly": true
-                    },
-                    {
-                        "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
-                        "name": "profiles-controller-service-account-token",
-                        "readOnly": true
-                    }
+                    },                    
                     ]
                 }
                 ],
-                "volumes": [
-                {
-                    "name": "profiles-controller-service-account-token",
-                    "secret": {
-                    "defaultMode": 420,
-                    "secretName": "profiles-controller-service-account-token"
-                    }
-                },
+                "serviceAccountName": "profiles-controller-service-account"
+                "volumes": [                
                 {
                     "configMap": {
                     "name": "namespace-labels-data-4df5t8mdgf"
