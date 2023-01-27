@@ -1,0 +1,9 @@
+apiVersion: v1
+appVersion: 1.15.4
+description: Helm chart for deploying Istio cluster resources and CRDs
+keywords:
+- istio
+name: base
+sources:
+- http://github.com/istio/istio
+version: 1.15.4
