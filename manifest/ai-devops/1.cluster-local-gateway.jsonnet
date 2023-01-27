@@ -218,7 +218,11 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     },
                     {
                         "name": "SERVICE_ACCOUNT",
-                        "value": "cluster-local-gateway-service-account"
+                        "valueFrom": {
+                        "fieldRef": {
+                            "fieldPath": "spec.serviceAccountName"
+                        }
+                        }
                     },
                     {
                         "name": "ISTIO_META_WORKLOAD_NAME",
@@ -245,7 +249,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "value": "Kubernetes"
                     }
                     ],
-                    "image": std.join("", [target_registry, "docker.io/istio/proxyv2:1.15.1"]),
+                    "image": std.join("", [target_registry, "docker.io/istio/proxyv2:1.14.1"]),
                     "imagePullPolicy": "IfNotPresent",
                     "name": "istio-proxy",
                     "ports": [
@@ -338,11 +342,6 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "mountPath": "/etc/istio/ingressgateway-ca-certs",
                         "name": "ingressgateway-ca-certs",
                         "readOnly": true
-                    },
-                    {
-                        "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
-                        "name": "cluster-local-gateway-service-account-token",
-                        "readOnly": true
                     }
                     ]
                 }
@@ -353,6 +352,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "runAsNonRoot": true,
                 "runAsUser": 1337
                 },
+                "serviceAccountName": "cluster-local-gateway-service-account",
                 "volumes": [
                 {
                     "emptyDir": {},
@@ -429,17 +429,10 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "optional": true,
                     "secretName": "istio-ingressgateway-ca-certs"
                     }
-                },
-                {
-                    "name": "cluster-local-gateway-service-account-token",
-                    "secret": {
-                    "defaultMode": 420,
-                    "secretName": "cluster-local-gateway-service-account-token"
-                    }
                 }
                 ]
             }
             }
         }
-    }
+    }    
 ]

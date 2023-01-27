@@ -119,12 +119,3 @@ spec:
     matchLabels:
       app: cluster-local-gateway
       istio: cluster-local-gateway
----          
-apiVersion: v1
-kind: Secret
-metadata:
-  annotations:
-    kubernetes.io/service-account.name: cluster-local-gateway-service-account
-  name: cluster-local-gateway-service-account-token
-  namespace: istio-system
-type: kubernetes.io/service-account-token   
