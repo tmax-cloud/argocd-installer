@@ -62,7 +62,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         }
                     }
                     ],
-                    "image": std.join("", [target_registry,"docker.io/kubeflow/training-operator:v1-e1434f6"]),
+                    "image": std.join("", [target_registry, "docker.io/kubeflow/training-operator:v1-e1434f6"]),
                     "livenessProbe": {
                     "httpGet": {
                         "path": "/healthz",

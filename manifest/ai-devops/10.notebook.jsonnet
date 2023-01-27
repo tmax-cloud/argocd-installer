@@ -123,7 +123,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         }
                     }
                     ],
-                    "image": std.join("", [target_registry,"docker.io/tmaxcloudck/notebook-controller-go:b0.2.7"]),
+                    "image": std.join("", [target_registry, "docker.io/tmaxcloudck/notebook-controller-go:b0.2.7"]),
                     "imagePullPolicy": "Always",
                     "name": "notebook-controller",
                     "volumeMounts": [
