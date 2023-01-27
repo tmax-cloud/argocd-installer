@@ -25,9 +25,9 @@ clusterDomain: cluster.local
 ## @param image.rootless Wether or not to pull the rootless version of Gitea, only works on Gitea 1.14.x or higher
 image:
   registry: ""
-  repository: gitea/gitea
+  repository: docker.io/gitea/gitea
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: 1.18.0
   pullPolicy: Always
   rootless: false # only possible when running 1.14 or later
 
