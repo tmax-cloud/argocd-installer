@@ -245,7 +245,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "value": "Kubernetes"
                     }
                     ],
-                    "image": std.join("", [target_registry, "docker.io/istio/proxyv2:1.14.1"]),
+                    "image": std.join("", [target_registry, "docker.io/istio/proxyv2:1.15.1"]),
                     "imagePullPolicy": "IfNotPresent",
                     "name": "istio-proxy",
                     "ports": [
