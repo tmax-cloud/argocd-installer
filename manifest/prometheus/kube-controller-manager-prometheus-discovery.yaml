@@ -1,20 +1,20 @@
-apiVersion: v1
 kind: Service
+apiVersion: v1
 metadata:
-  labels:
-    component: kube-controller-manager
   name: kube-controller-manager-prometheus-discovery
   namespace: kube-system
+  labels:
+    component: kube-controller-manager
 spec:
-  clusterIP: None
   ports:
-  - name: https-metrics
-    port: 10257
-    protocol: TCP
-    targetPort: 10257
+    - name: https-metrics
+      protocol: TCP
+      port: 10257
+      targetPort: 10257
   selector:
     component: kube-controller-manager
-  sessionAffinity: None
+  clusterIP: None
   type: ClusterIP
+  sessionAffinity: None
 status:
   loadBalancer: {}
