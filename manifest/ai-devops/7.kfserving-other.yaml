@@ -17483,3 +17483,12 @@ webhooks:
     resources:
     - trainedmodels
   sideEffects: None      
+---          
+apiVersion: v1
+kind: Secret
+metadata:
+  annotations:
+    kubernetes.io/service-account.name: kserve-controller-manager
+  name: kserve-controller-manager-token
+  namespace: kubeflow
+type: kubernetes.io/service-account-token 
