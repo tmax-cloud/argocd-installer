@@ -75,6 +75,13 @@ modules:
       # default 30
       syncWaitTime: 30
 
+  ### istio version: 1.15.4 for kubeflow
+  istio:
+    enabled: true
+    autoSync: true
+    # none | error | warn | info | debug
+    logLevel: info
+
   ### strimzi-kafka-operator
   strimziKafka:
     enabled: true
