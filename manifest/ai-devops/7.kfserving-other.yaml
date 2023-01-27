@@ -20224,3 +20224,190 @@ webhooks:
         resources:
           - trainedmodels
     sideEffects: None
+---
+apiVersion: v1
+data:
+  agent: |-
+    {
+        "image" : "kserve/agent:v0.10.0",
+        "memoryRequest": "100Mi",
+        "memoryLimit": "1Gi",
+        "cpuRequest": "100m",
+        "cpuLimit": "1"
+    }
+  batcher: |-
+    {
+        "image" : "kserve/agent:v0.10.0",
+        "memoryRequest": "1Gi",
+        "memoryLimit": "1Gi",
+        "cpuRequest": "1",
+        "cpuLimit": "1"
+    }
+  credentials: |-
+    {
+       "gcs": {
+           "gcsCredentialFileName": "gcloud-application-credentials.json"
+       },
+       "s3": {
+           "s3AccessKeyIDName": "AWS_ACCESS_KEY_ID",
+           "s3SecretAccessKeyName": "AWS_SECRET_ACCESS_KEY",
+           "s3Endpoint": "",
+           "s3UseHttps": "",
+           "s3Region": "",
+           "s3VerifySSL": "",
+           "s3UseVirtualBucket": "",
+           "s3UseAnonymousCredential": "",
+           "s3CABundle": ""
+       }
+    }
+  deploy: |-
+    {
+      "defaultDeploymentMode": "Serverless"
+    }
+  explainers: |-
+    {
+        "alibi": {
+            "image" : "kserve/alibi-explainer",
+            "defaultImageVersion": "latest"
+        },
+        "aix": {
+            "image" : "kserve/aix-explainer",
+            "defaultImageVersion": "latest"
+        },
+        "art": {
+            "image" : "kserve/art-explainer",
+            "defaultImageVersion": "latest"
+        }
+    }
+  ingress: |-
+    {
+      "ingressGateway": "kubeflow/kubeflow-gateway",
+      "ingressService": "istio-ingressgateway.istio-system.svc.cluster.local",
+      "localGateway": "knative-serving/knative-local-gateway",
+      "localGatewayService": "knative-local-gateway.istio-system.svc.cluster.local",
+      "ingressDomain": "example.com",
+      "ingressClassName": "istio",
+      "domainTemplate": "{{ .Name }}-{{ .Namespace }}.{{ .IngressDomain }}",
+      "urlScheme": "http",
+      "disableIstioVirtualHost": false
+    }
+  logger: |-
+    {
+        "image" : "kserve/agent:v0.10.0",
+        "memoryRequest": "100Mi",
+        "memoryLimit": "1Gi",
+        "cpuRequest": "100m",
+        "cpuLimit": "1",
+        "defaultUrl": "http://default-broker"
+    }
+  metricsAggregator: |-
+    {
+      "enableMetricAggregation": "false",
+      "enablePrometheusScraping" : "false"
+    }
+  router: |-
+    {
+        "image" : "kserve/router:v0.10.0",
+        "memoryRequest": "100Mi",
+        "memoryLimit": "1Gi",
+        "cpuRequest": "100m",
+        "cpuLimit": "1"
+    }
+  storageInitializer: |-
+    {
+        "image" : "kserve/storage-initializer:v0.10.0",
+        "memoryRequest": "100Mi",
+        "memoryLimit": "1Gi",
+        "cpuRequest": "100m",
+        "cpuLimit": "1",
+        "storageSpecSecretName": "storage-config"
+    }
+kind: ConfigMap
+metadata:
+  labels:
+    app: kserve
+    app.kubernetes.io/name: kserve
+  name: inferenceservice-config
+  namespace: kubeflow    
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: kserve
+    app.kubernetes.io/name: kserve
+    control-plane: kserve-controller-manager
+    controller-tools.k8s.io: "1.0"
+  name: kserve-controller-manager
+  namespace: kubeflow
+spec:
+  selector:
+    matchLabels:
+      app: kserve
+      app.kubernetes.io/name: kserve
+      control-plane: kserve-controller-manager
+      controller-tools.k8s.io: "1.0"
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container: manager
+        sidecar.istio.io/inject: "false"
+      labels:
+        app: kserve
+        app.kubernetes.io/name: kserve
+        control-plane: kserve-controller-manager
+        controller-tools.k8s.io: "1.0"
+    spec:
+      containers:
+        - args:
+            - --metrics-addr=127.0.0.1:8080
+            - --leader-elect
+          command:
+            - /manager
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: SECRET_NAME
+              value: kserve-webhook-server-cert
+          image: kserve/kserve-controller:v0.10.0
+          imagePullPolicy: Always
+          name: manager
+          ports:
+            - containerPort: 9443
+              name: webhook-server
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 100m
+              memory: 300Mi
+            requests:
+              cpu: 100m
+              memory: 200Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+          volumeMounts:
+            - mountPath: /tmp/k8s-webhook-server/serving-certs
+              name: cert
+              readOnly: true
+        - args:
+            - --secure-listen-address=0.0.0.0:8443
+            - --upstream=http://127.0.0.1:8080/
+            - --logtostderr=true
+            - --v=10
+          image: gcr.io/kubebuilder/kube-rbac-proxy:v0.13.1
+          name: kube-rbac-proxy
+          ports:
+            - containerPort: 8443
+              name: https
+              protocol: TCP
+      securityContext:
+        runAsNonRoot: true
+      serviceAccountName: kserve-controller-manager
+      terminationGracePeriodSeconds: 10
+      volumes:
+        - name: cert
+          secret:
+            defaultMode: 420
+            secretName: kserve-webhook-server-cert  
