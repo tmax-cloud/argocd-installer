@@ -4,7 +4,7 @@ backoff:
   duration: "5s"
   factor: 2
   maxDuration: "3m0s"
-{{ end -}}
+{{- end }}
 
 # hyperauth.domain.com
 {{- define "hyperAuth.domain" -}}
