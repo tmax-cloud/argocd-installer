@@ -244,6 +244,7 @@ modules:
   ### catalog controller
   catalogController:
     enabled: true
+    vLevel: 0
 
   ### helm-apiserver
   helmApiserver:
@@ -341,6 +342,8 @@ modules:
   ### redis-operator
   redis:
     enabled: true
+    # info, debug, error 기입 가능(대소문자 유의)
+    logLevel: info
 
   ### image validating webhook
   imageValidatingWebhook:
