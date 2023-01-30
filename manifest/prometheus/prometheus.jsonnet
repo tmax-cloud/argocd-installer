@@ -630,188 +630,210 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 	  }
 	},
   {
-    "apiVersion": "apps/v1",
-    "kind": "Deployment",
-    "metadata": {
-      "labels": {
-        "app.kubernetes.io/component": "metrics-adapter",
-        "app.kubernetes.io/name": "prometheus-adapter",
-        "app.kubernetes.io/part-of": "kube-prometheus",
-        "app.kubernetes.io/version": "0.9.1"
-      },
-      "name": "prometheus-adapter",
-      "namespace": "monitoring"
-    },
-    "spec": {
-      "replicas": 2,
-      "selector": {
-        "matchLabels": {
-          "app.kubernetes.io/component": "metrics-adapter",
-          "app.kubernetes.io/name": "prometheus-adapter",
-          "app.kubernetes.io/part-of": "kube-prometheus"
-        }
-      },
-      "strategy": {
-        "rollingUpdate": {
-          "maxSurge": 1,
-          "maxUnavailable": 1
-        }
-      },
-      "template": {
-        "metadata": {
-          "labels": {
-            "app.kubernetes.io/component": "metrics-adapter",
-            "app.kubernetes.io/name": "prometheus-adapter",
-            "app.kubernetes.io/part-of": "kube-prometheus",
-            "app.kubernetes.io/version": "0.9.1"
-          }
-        },
-        "spec": {
-          "containers": [
-            {
-              "args": [
-                "--cert-dir=/var/run/serving-cert",
-                "--config=/etc/adapter/config.yaml",
-                "--logtostderr=true",
-                "--metrics-relist-interval=1m",
-                "--prometheus-url=http://prometheus-k8s.monitoring.svc:9090/",
-                "--secure-port=6443",
-                "--tls-cipher-suites=TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_GCM_SHA256,TLS_RSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA"
-              ],
-              "image": std.join("",
-                [
-                  target_registry,
-                  prometheus_adapter_image_repo,
-                  "/prometheus-adapter:",
-                  prometheus_adapter_version
-                ]
-              ),
-              "name": "prometheus-adapter",
-              "ports": [
-                {
-                "containerPort": 6443
-                }
-              ],
-              "resources": {
-                "limits": {
-                  "cpu": "250m",
-                  "memory": "180Mi"
-                },
-                "requests": {
-                  "cpu": "102m",
-                  "memory": "180Mi"
-                }
-              },
-              "volumeMounts": [
-                {
-                  "mountPath": "/tmp",
-                  "name": "tmpfs",
-                  "readOnly": false
-                },
-                {
-                  "mountPath": "/var/run/serving-cert",
-                  "name": "volume-serving-cert",
-                  "readOnly": false
-                },
-				] + (
-                 if timezone != "UTC" then [
-                   {
-                     "name": "timezone-config",
-                     "mountPath": "/etc/localtime"
-                   }
-                 ] else []
-               ) + [
-                {
-                  "mountPath": "/etc/adapter",
-                  "name": "config",
-                  "readOnly": false
-                }
-              ]
-            }
-          ],
-          "nodeSelector": {
-            "kubernetes.io/os": "linux"
-          },
-          "serviceAccountName": "prometheus-adapter",
-          "volumes": [
-            {
-              "emptyDir": {},
-              "name": "tmpfs"
-            },
-            {
-              "emptyDir": {},
-              "name": "volume-serving-cert"
-            },
-            {
-              "configMap": {
-                "name": "adapter-config"
-              },
-              "name": "config"
-            }
-			] + (
-            if timezone != "UTC" then [
-            {
-                "name": "timezone-config",
-                "hostPath": {
-                  "path": std.join("", ["/usr/share/zoneinfo/", timezone])
-                 }
-              }
-            ] else []
-            ),
-        }
-      }
-    }
-  },
+	  "apiVersion": "apps/v1",
+	  "kind": "Deployment",
+	  "metadata": {
+		"labels": {
+		  "app.kubernetes.io/component": "metrics-adapter",
+		  "app.kubernetes.io/name": "prometheus-adapter",
+		  "app.kubernetes.io/part-of": "kube-prometheus",
+		  "app.kubernetes.io/version": "0.10.0"
+		},
+		"name": "prometheus-adapter",
+		"namespace": "monitoring"
+	  },
+	  "spec": {
+		"replicas": 2,
+		"selector": {
+		  "matchLabels": {
+			"app.kubernetes.io/component": "metrics-adapter",
+			"app.kubernetes.io/name": "prometheus-adapter",
+			"app.kubernetes.io/part-of": "kube-prometheus"
+		  }
+		},
+		"strategy": {
+		  "rollingUpdate": {
+			"maxSurge": 1,
+			"maxUnavailable": 1
+		  }
+		},
+		"template": {
+		  "metadata": {
+			"labels": {
+			  "app.kubernetes.io/component": "metrics-adapter",
+			  "app.kubernetes.io/name": "prometheus-adapter",
+			  "app.kubernetes.io/part-of": "kube-prometheus",
+			  "app.kubernetes.io/version": "0.10.0"
+			}
+		  },
+		  "spec": {
+			"automountServiceAccountToken": true,
+			"containers": [
+			  {
+				"args": [
+				  "--cert-dir=/var/run/serving-cert",
+				  "--config=/etc/adapter/config.yaml",
+				  "--logtostderr=true",
+				  "--metrics-relist-interval=1m",
+				  "--prometheus-url=http://prometheus-k8s.monitoring.svc:9090/",
+				  "--secure-port=6443",
+				  "--tls-cipher-suites=TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_GCM_SHA256,TLS_RSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA"
+				],
+				"image": std.join("",
+					[
+					  target_registry,
+					  prometheus_adapter_image_repo,
+					  "/prometheus-adapter:",
+					  prometheus_adapter_version
+					]
+				  ),
+				"livenessProbe": {
+				  "failureThreshold": 5,
+				  "httpGet": {
+					"path": "/livez",
+					"port": "https",
+					"scheme": "HTTPS"
+				  },
+				  "initialDelaySeconds": 30,
+				  "periodSeconds": 5
+				},
+				"name": "prometheus-adapter",
+				"ports": [
+				  {
+					"containerPort": 6443,
+					"name": "https"
+				  }
+				],
+				"readinessProbe": {
+				  "failureThreshold": 5,
+				  "httpGet": {
+					"path": "/readyz",
+					"port": "https",
+					"scheme": "HTTPS"
+				  },
+				  "initialDelaySeconds": 30,
+				  "periodSeconds": 5
+				},
+				"resources": {
+				  "limits": {
+					"cpu": "250m",
+					"memory": "180Mi"
+				  },
+				  "requests": {
+					"cpu": "102m",
+					"memory": "180Mi"
+				  }
+				},
+				"securityContext": {
+				  "allowPrivilegeEscalation": false,
+				  "capabilities": {
+					"drop": [
+					  "ALL"
+					]
+				  },
+				  "readOnlyRootFilesystem": true
+				},
+				"volumeMounts": [
+				  {
+					"mountPath": "/tmp",
+					"name": "tmpfs",
+					"readOnly": false
+				  },
+				  {
+					"mountPath": "/var/run/serving-cert",
+					"name": "volume-serving-cert",
+					"readOnly": false
+				  },
+				  ] + (
+					 if timezone != "UTC" then [
+					   {
+						 "name": "timezone-config",
+						 "mountPath": "/etc/localtime"
+					   }
+					 ] else []
+				   ) + [
+				  {
+					"mountPath": "/etc/adapter",
+					"name": "config",
+					"readOnly": false
+				  }
+				]
+			  }
+			],
+			"nodeSelector": {
+			  "kubernetes.io/os": "linux"
+			},
+			"serviceAccountName": "prometheus-adapter",
+			"volumes": [
+			  {
+				"emptyDir": {},
+				"name": "tmpfs"
+			  },
+			  {
+				"emptyDir": {},
+				"name": "volume-serving-cert"
+			  },
+			  {
+				"configMap": {
+				  "name": "adapter-config"
+				},
+				"name": "config"
+			  }
+			]
+		  }
+		}
+	  }
+	},
   {
-    "apiVersion": "monitoring.coreos.com/v1",
-    "kind": "Prometheus",
-    "metadata": {
-      "labels": {
-        "app.kubernetes.io/component": "prometheus",
-        "app.kubernetes.io/name": "prometheus",
-        "app.kubernetes.io/part-of": "kube-prometheus",
-        "app.kubernetes.io/version": "2.30.3",
-        "prometheus": "k8s"
-      },
-      "name": "k8s",
-      "namespace": "monitoring"
-    },
-    "spec": {
-      "alerting": {
-        "alertmanagers": [
-          {
-            "apiVersion": "v2",
-            "name": "alertmanager-main",
-            "namespace": "monitoring",
-            "port": "web"
-          }
-        ]
-      },
-      "enableFeatures": [],
-      "externalLabels": {},
-      "image": std.join("",
-        [
-          target_registry,
-          prometheus_image_repo,
-          "/prometheus:",
-          prometheus_version
-        ]
-      ),
-      "storage": {
-        "volumeClaimTemplate": {
-          "spec": {
-            "accessModes": [
-              "ReadWriteMany"
-            ],
-            "resources": {
-              "requests": {
-                "storage": prometheus_pvc
-              }
-            }
-          }
-        }
-      },
-	  "volumeMounts": [
+	  "apiVersion": "monitoring.coreos.com/v1",
+	  "kind": "Prometheus",
+	  "metadata": {
+		"labels": {
+		  "app.kubernetes.io/component": "prometheus",
+		  "app.kubernetes.io/instance": "k8s",
+		  "app.kubernetes.io/name": "prometheus",
+		  "app.kubernetes.io/part-of": "kube-prometheus",
+		  "app.kubernetes.io/version": "2.41.0"
+		},
+		"name": "k8s",
+		"namespace": "monitoring"
+	  },
+	  "spec": {
+		"alerting": {
+		  "alertmanagers": [
+			{
+			  "apiVersion": "v2",
+			  "name": "alertmanager-main",
+			  "namespace": "monitoring",
+			  "port": "web"
+			}
+		  ]
+		},
+		"enableFeatures": [],
+		"externalLabels": {},
+		 "image": std.join("",
+			[
+			  target_registry,
+			  prometheus_image_repo,
+			  "/prometheus:",
+			  prometheus_version
+			]
+		  ),
+		"storage": {
+			"volumeClaimTemplate": {
+			  "spec": {
+				"accessModes": [
+				  "ReadWriteMany"
+				],
+				"resources": {
+				  "requests": {
+					"storage": prometheus_pvc
+				  }
+				}
+			  }
+			}
+		  },
+		"volumeMounts": [
 	    ] + (
                if timezone != "UTC" then [
                  {
@@ -831,44 +853,42 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             }
           ] else []
         ),
-			 
-      "nodeSelector": {
-        "kubernetes.io/os": "linux"
-      },
-      "podMetadata": {
-        "labels": {
-          "app.kubernetes.io/component": "prometheus",
-          "app.kubernetes.io/name": "prometheus",
-          "app.kubernetes.io/part-of": "kube-prometheus",
-          "app.kubernetes.io/version": "2.30.3"
-        }
-      },
-      "podMonitorNamespaceSelector": {},
-      "podMonitorSelector": {},
-      "probeNamespaceSelector": {},
-      "probeSelector": {},
-      "replicas": 1,
-      "resources": {
-        "requests": {
-          "cpu": "100m",
-          "memory": "2Gi"
-        },
-        "limits": {
-          "cpu": "100m",
-          "memory": "2Gi"
-        }
-      },
-      "ruleNamespaceSelector": {},
-      "ruleSelector": {},
-      "securityContext": {
-        "fsGroup": 2000,
-        "runAsNonRoot": true,
-        "runAsUser": 1000
-      },
-      "serviceAccountName": "prometheus-k8s",
-      "serviceMonitorNamespaceSelector": {},
-      "serviceMonitorSelector": {},
-      "version": "2.30.3"
-    }
-  }
+		"nodeSelector": {
+		  "kubernetes.io/os": "linux"
+		},
+		"podMetadata": {
+		  "labels": {
+			"app.kubernetes.io/component": "prometheus",
+			"app.kubernetes.io/instance": "k8s",
+			"app.kubernetes.io/name": "prometheus",
+			"app.kubernetes.io/part-of": "kube-prometheus",
+			"app.kubernetes.io/version": "2.41.0"
+		  }
+		},
+		"podMonitorNamespaceSelector": {},
+		"podMonitorSelector": {},
+		"probeNamespaceSelector": {},
+		"probeSelector": {},
+		"replicas": 1,
+		"resources": {
+		  "requests": {
+			"memory": "1Gi"
+		  },
+		  "limits": {
+			"memory": "1Gi"
+		  }
+		},
+		"ruleNamespaceSelector": {},
+		"ruleSelector": {},
+		"securityContext": {
+		  "fsGroup": 2000,
+		  "runAsNonRoot": true,
+		  "runAsUser": 1000
+		},
+		"serviceAccountName": "prometheus-k8s",
+		"serviceMonitorNamespaceSelector": {},
+		"serviceMonitorSelector": {},
+		"version": "2.41.0"
+	  }
+}
 ]
