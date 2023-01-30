@@ -239,6 +239,7 @@ modules:
       version: 0.1.5
     templateOperator:
       version: 0.2.8
+    logLevel: info
 
   ### catalog controller
   catalogController:
