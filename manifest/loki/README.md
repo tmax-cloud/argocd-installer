@@ -11,7 +11,7 @@ argocd에서 loki-promtail 배포를 하기 위해서는 application/loki.yaml�
   value: "private_registry for image pull"
   
 - name: log_level
-  value: "log_level settings for loki stack, ex) info, error, debug"
+  value: "log_level settings for loki stack, ex) error, warn, info, debug"
   
 - name: loki_image_tag
   value: "Loki image"
