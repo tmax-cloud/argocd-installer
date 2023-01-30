@@ -64,12 +64,12 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             ],
             "resources": {
                 "limits": {
-                  "cpu": "250m",
-                  "memory": "64Mi"
+                  "cpu": "1000m",
+                  "memory": "1Gi"
                 },
                 "requests": {
-                  "cpu": "50m",
-                  "memory": "16Mi"
+                  "cpu": "100m",
+                  "memory": "128Mi"
                 }
             },
             "readinessProbe": {
