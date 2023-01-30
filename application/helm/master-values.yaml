@@ -19,7 +19,11 @@ modules:
   ### calico
   calico:
     enabled: false
-
+    logLevel: info
+    logSeverityFile: info
+    logSeverityScreen: info
+    logSeveritySys: info
+    
   ### gitlab
   gitlab:
     enabled: true
