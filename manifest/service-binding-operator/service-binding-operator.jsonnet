@@ -62,6 +62,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "protocol": "TCP"
               }
             ],
+            "resources": {
+              "limits": {
+                "cpu": "1000m",
+                "memory": "1Gi"
+              },
+              "requests": {
+                "cpu": "100m",
+                "memory": "128Mi"
+              }
+            },
             "readinessProbe": {
               "httpGet": {
                 "path": "/readyz",
