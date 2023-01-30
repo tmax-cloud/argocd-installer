@@ -125,6 +125,7 @@ modules:
   ### strimzi-kafka-operator
   strimziKafka:
     enabled: true
+    # ERROR | WARNING | INFO | DEBUG | TRACE 반드시 대문자로 기입
     logLevel: INFO
 
   ### service-binding-operator
