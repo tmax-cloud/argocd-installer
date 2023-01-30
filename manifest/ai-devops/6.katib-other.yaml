@@ -1455,8 +1455,7 @@ metadata:
 webhooks:
 - admissionReviewVersions:
   - v1
-  clientConfig:
-    caBundle: Cg==
+  clientConfig:    
     service:
       name: katib-controller
       namespace: kubeflow
@@ -1476,8 +1475,7 @@ webhooks:
   sideEffects: None
 - admissionReviewVersions:
   - v1
-  clientConfig:
-    caBundle: Cg==
+  clientConfig:    
     service:
       name: katib-controller
       namespace: kubeflow
@@ -1507,8 +1505,7 @@ metadata:
 webhooks:
 - admissionReviewVersions:
   - v1
-  clientConfig:
-    caBundle: Cg==
+  clientConfig:    
     service:
       name: katib-controller
       namespace: kubeflow

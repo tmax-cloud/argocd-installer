@@ -1958,8 +1958,7 @@ spec:
   conversion:
     strategy: "Webhook"
     webhook:
-      clientConfig:
-        caBundle: "Cg=="
+      clientConfig:        
         service:
           name: "kserve-webhook-server-service"
           namespace: "kubeflow"
@@ -19839,7 +19838,6 @@ metadata:
     app.kubernetes.io/name: kserve
     rbac.authorization.kubeflow.org/aggregate-to-kubeflow-admin: "true"
   name: kubeflow-kserve-admin
-rules: []
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -20080,8 +20078,7 @@ metadata:
 webhooks:
   - admissionReviewVersions:
       - v1beta1
-    clientConfig:
-      caBundle: Cg==
+    clientConfig:      
       service:
         name: kserve-webhook-server-service
         namespace: kubeflow
@@ -20101,8 +20098,7 @@ webhooks:
     sideEffects: None
   - admissionReviewVersions:
       - v1beta1
-    clientConfig:
-      caBundle: Cg==
+    clientConfig:      
       service:
         name: kserve-webhook-server-service
         namespace: kubeflow
@@ -20141,8 +20137,7 @@ metadata:
 webhooks:
   - admissionReviewVersions:
       - v1beta1
-    clientConfig:
-      caBundle: Cg==
+    clientConfig:      
       service:
         name: kserve-webhook-server-service
         namespace: kubeflow
@@ -20173,8 +20168,7 @@ metadata:
 webhooks:
   - admissionReviewVersions:
       - v1beta1
-    clientConfig:
-      caBundle: Cg==
+    clientConfig:      
       service:
         name: kserve-webhook-server-service
         namespace: kubeflow
@@ -20205,8 +20199,7 @@ metadata:
 webhooks:
   - admissionReviewVersions:
       - v1beta1
-    clientConfig:
-      caBundle: Cg==
+    clientConfig:      
       service:
         name: kserve-webhook-server-service
         namespace: kubeflow
