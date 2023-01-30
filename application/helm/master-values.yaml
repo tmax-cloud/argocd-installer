@@ -253,7 +253,7 @@ modules:
     # default를 사용하지 않고 싶은 경우에는 storage class이름을 기입
     storageClass: default
     # 지정 가능: fatal(0), error(1), warn(2), info(3), debug(4), trace(5)
-    logLevel: error
+    logLevel: info
 
   ### hypercloud
   hyperCloud:
@@ -281,7 +281,7 @@ modules:
     # timescaledb.<테이블 이름>.retention : 청크 테이블 보관 기간
     timescaledb:
       # timescaledb의 경우, DEBUG5, DEBUG4, DEBUG3, DEBUG2, DEBUG1, INFO, NOTICE, WARNING, ERROR, LOG, FATAL, PANIC 기입 가능(대소문자 유의)
-      logLevel: WARNING
+      logLevel: INFO
       audit:
         chunk: "7 days"
         retention: "1 years"
@@ -313,13 +313,13 @@ modules:
       logLevel: info
     # redis의 경우 debug, verbose, notice, warning 기입 가능 (대소문자 유의, warning은 error 급) 
     redis:
-      logLevel: warning
+      logLevel: verbose
     # database(postgres)의 경우 DEBUG5, DEBUG4, DEBUG3, DEBUG2, DEBUG1, INFO, NOTICE, WARNING, ERROR, LOG, FATAL, PANIC 기입 가능(대소문자 유의)
     database:
-      logLevel: ERROR
+      logLevel: INFO
     # portal의 경우 debug, info, notice, warn, error, crit, alert, emerg 기입 가능 (대소문자 유의)
     portal:
-      logLevel: error
+      logLevel: info
     storageClass: nfs
     storageClassDatabase: nfs
 
@@ -345,7 +345,7 @@ modules:
   imageValidatingWebhook:
     enabled: true
       # debug, info, error 기입 가능 (대소문자 유의)
-    logLevel: error
+    logLevel: info
 
   ### nfs-subdir-external-provisioner
   nfs:
