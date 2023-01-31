@@ -463,6 +463,9 @@ nginx:
     requests:
       memory: 256Mi
       cpu: 100m
+    limits:
+      memory: 512Mi
+      cpu: 500m
   revisionHistoryLimit: 10
   nodeSelector: {}
   tolerations: []
@@ -854,10 +857,10 @@ database:
     priorityClassName:
     initContainer:
       migrator: {}
-      resources:
-       requests:
-         memory: 128Mi
-         cpu: 100m
+      # resources:
+      #  requests:
+      #    memory: 128Mi
+      #    cpu: 100m
       permissions: {}
       # resources:
       #  requests:
@@ -938,10 +941,13 @@ redis:
 exporter:
   replicas: 1
   revisionHistoryLimit: 10
-  # resources:
-  #  requests:
-  #    memory: 256Mi
-  #    cpu: 100m
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+    limits:
+      memory: 512Mi
+      cpu: 500m
   podAnnotations: {}
   serviceAccountName: ""
   # mount the service account token
