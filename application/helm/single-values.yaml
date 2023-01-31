@@ -123,12 +123,16 @@ modules:
     subdomain: argocd
     repoServer:
       replicas: 1
+      logLevel: "info" # debug, info, warn, error
     redis:
       replicas: 1
+      logLevel: "notice" # warning, notice, verbose, debug
     argocdServer:
       replicas: 1
+      logLevel: "info" # debug, info, warn, error
     controller:
       replicas: 1
+      logLevel: "info" # debug, info, warn, error
     ingress:
       enableTraefik: true
       secretName:

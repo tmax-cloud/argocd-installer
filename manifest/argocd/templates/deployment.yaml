@@ -37,6 +37,8 @@ spec:
         - ""
         - --appendonly
         - "no"
+        - --loglevel
+        - {{ .Values.redis.logLevel }}
         {{- if .Values.global.registry.is_offline }}
         image: {{ .Values.global.registry.private_registry }}/{{ .Values.image.redis.repository }}:{{ .Values.image.redis.tag }}
         {{- else }}
@@ -44,6 +46,13 @@ spec:
         {{- end }}
         imagePullPolicy: Always
         name: redis
+        resources:
+          limits:
+            cpu: 500m
+            memory: 256Mi
+          requests:
+            cpu: 250m
+            memory: 128Mi
         ports:
         - containerPort: 6379
         volumeMounts:
@@ -105,6 +114,8 @@ spec:
         - argocd-repo-server
         - --redis
         - argocd-redis:6379
+        - --loglevel
+        - {{ .Values.repoServer.logLevel }}
         env:
         - name: ARGOCD_RECONCILIATION_TIMEOUT
           valueFrom:
@@ -198,6 +209,13 @@ spec:
           initialDelaySeconds: 30
           periodSeconds: 5
         name: argocd-repo-server
+        resources:
+          limits:
+            cpu: 1
+            memory: 512Mi
+          requests:
+            cpu: 250m 
+            memory: 256Mi
         ports:
         - containerPort: 8081
         - containerPort: 8084
@@ -330,6 +348,8 @@ spec:
         - --staticassets
         - /shared/app
         - --insecure
+        - --loglevel
+        - {{ .Values.argocdServer.logLevel }}
         env:
         - name: ARGOCD_SERVER_INSECURE
           valueFrom:
@@ -488,6 +508,13 @@ spec:
           initialDelaySeconds: 3
           periodSeconds: 30
         name: argocd-server
+        resources:
+          limits:
+            cpu: 500m
+            memory: 256Mi
+          requests:
+            cpu: 125m
+            memory: 128Mi
         ports:
         - containerPort: 8080
         - containerPort: 8083
