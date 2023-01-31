@@ -434,7 +434,7 @@
         "namespace": "${NAMESPACE}"
       },
       "stringData": {
-        "data": "apiVersion: v1\nkind: Secret\nmetadata:\n  name: csi-vsphere-config\n  namespace: kube-system\nstringData:\n  csi-vsphere.conf: |+\n    [Global]\n    cluster-id = \"${NAMESPACE}/${CLUSTER_NAME}\"\n    [VirtualCenter \"${VSPHERE_SERVER}\"]\n    user = \"${VSPHERE_USERNAME}\"\n    password = \"${VSPHERE_PASSWORD}\"\n    datacenters = \"${VSPHERE_DATACENTER}\"\n    [Network]\n    public-network = \"${VSPHERE_NETWORK}\"\ntype: Opaque\n"
+        "data": "apiVersion: v1\nkind: Secret\nmetadata:\n  name: csi-vsphere-config\n  namespace: kube-system\nstringData:\n  csi-vsphere.conf: |+\n    [Global]\n    cluster-id = \"${NAMESPACE}/${CLUSTER_NAME}\"\n    insecure-flag = \"1\"\n    \n    [VirtualCenter \"${VSPHERE_SERVER}\"]\n    user = \"${VSPHERE_USERNAME}\"\n    password = \"${VSPHERE_PASSWORD}\"\n    datacenters = \"${VSPHERE_DATACENTER}\"\n\n    [Network]\n    public-network = \"${VSPHERE_NETWORK}\"\n\ntype: Opaque\n"
       },
       "type": "addons.cluster.x-k8s.io/resource-set"
     },
