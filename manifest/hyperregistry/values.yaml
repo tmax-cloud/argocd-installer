@@ -431,6 +431,9 @@ nginx:
     requests:
       memory: 256Mi
       cpu: 100m
+    limits:
+      memory: 512Mi
+      cpu: 500m
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -863,25 +866,28 @@ redis:
   podAnnotations: {}
 
 exporter:
-    replicas: 1
-  # resources:
-  #  requests:
-  #    memory: 256Mi
-  #    cpu: 100m
-    podAnnotations: {}
-    serviceAccountName: ""
-    # mount the service account token
-    automountServiceAccountToken: false
-    image:
-      repository: docker.io/tmaxcloudck/harbor-exporter
-      tag: 2.4.1
-    nodeSelector: {}
-    tolerations: []
-    affinity: {}
-    cacheDuration: 23
-    cacheCleanInterval: 14400
-    ## The priority class to run the pod as
-    priorityClassName:
+  replicas: 1
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+    limits:
+      memory: 512Mi
+      cpu: 500m
+  podAnnotations: {}
+  serviceAccountName: ""
+  # mount the service account token
+  automountServiceAccountToken: false
+  image:
+    repository: docker.io/tmaxcloudck/harbor-exporter
+    tag: 2.4.1
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  cacheDuration: 23
+  cacheCleanInterval: 14400
+  ## The priority class to run the pod as
+  priorityClassName:
 
 metrics:
   enabled: false
