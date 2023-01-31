@@ -10,6 +10,9 @@ argocd에서 Opensearch-fluentd 배포를 하기 위해서는 application/opense
 - name: private_registry
   value: "private_registry for image pull"
   
+- name: log_level
+  value: "log_level settings for opensearch stack. ex) info, error, debug"
+
 - name: os_image_tag
   value: "OpenSearch image"
   
@@ -51,6 +54,8 @@ argocd에서 Opensearch-fluentd 배포를 하기 위해서는 application/opense
   value: false
 - name: private_registry
   value: 172.22.6.2:5000
+- name: log_level
+  value: info
 - name: os_image_tag
   value: 1.2.3
 - name: busybox_image_tag

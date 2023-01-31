@@ -140,6 +140,9 @@ modules:
   ### opensearch
   opensearch:
     enabled: true
+    # opensearch-dashboards에서 지원하는 loglevel에 대한 config 설정을 기준으로 함.
+    # 사용 가능한 값 : error, info, debug
+    logLevel: info
     os:
       version: 1.2.3
       limitMemory: 8Gi
@@ -160,6 +163,8 @@ modules:
   ### Loki
   loki:
     enabled: true
+    # 사용 가능한 값 : error, warn, info, debug
+    logLevel: info
     loki: 
       version: 2.6.0
       volumeSize: 50Gi
