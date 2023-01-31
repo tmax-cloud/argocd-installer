@@ -286,23 +286,23 @@ modules:
   ### cluster-api
   capi:
     enabled: true
-    providers:
+    # verbose - debug(0), info(1), warning(2), error(3), fatal(4, 5, 6...)
+    verbose: 1
+    provider:
       aws:
         enabled: true
-        # description: ...
-        # credential은 다음과 같이 생성
-        # cat << EOF | base64
-        # > [default]
-        # > aws_access_key_id = {{ AWS ACCESS KEY }}
-        # > aws_secret_access_key = {{ AWS SECRET ACCESS KEY }} 
-        # > region = {{ default region}} ex) ap-northeast-2
-        # > EOF
-        credentials: "VGhpcyBpcyBhbiBhd3MgY3JlZGVudGlhbAo="
+        credentials:
+          accessKeyID: access-key
+          secretAccessKeyID: secret-access-key
+        # verbose - debug(0), info(1), warning(2), error(3), fatal(4, 5, 6...)
+        verbose: 1
       vsphere:
         enabled: true
         credentials:
           username: "user"
           password: "password"
+        # verbose - debug(0), info(1), warning(2), error(3), fatal(4, 5, 6...)
+        verbose: 1
 
   ### template service broker
   tsb:

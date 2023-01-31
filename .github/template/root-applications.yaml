@@ -57,9 +57,9 @@ spec:
           value: "true"
         - name: modules.capi.enabled
           value: "true"
-        - name: modules.capi.providers.aws.enabled
+        - name: modules.capi.provider.aws.enabled
           value: "true"
-        - name: modules.capi.providers.vsphere.enabled
+        - name: modules.capi.provider.vsphere.enabled
           value: "true"
         - name: modules.tsb.enabled
           value: "true"
