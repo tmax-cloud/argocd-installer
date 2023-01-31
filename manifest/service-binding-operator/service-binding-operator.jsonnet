@@ -40,7 +40,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "args": [
               "--leader-elect",
               "--zap-encoder=json",
-              "--zap-log-level=", log_level
+              std.join("", ["--zap-log-level=", log_level])
             ],
             "command": [
               "/manager"
