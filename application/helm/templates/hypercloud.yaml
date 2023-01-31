@@ -39,9 +39,9 @@ spec:
           - name: storageClass
             value: {{ .Values.modules.hyperCloud.storageClass }}
           - name: aws_enabled
-            value: "{{ .Values.modules.capi.providers.aws.enabled }}"
+            value: "{{ .Values.modules.capi.provider.aws.enabled }}"
           - name: vsphere_enabled
-            value: "{{ .Values.modules.capi.providers.vsphere.enabled }}"
+            value: "{{ .Values.modules.capi.provider.vsphere.enabled }}"
           - name: time_zone
             value: {{ .Values.global.timeZone }}
           - name: domain

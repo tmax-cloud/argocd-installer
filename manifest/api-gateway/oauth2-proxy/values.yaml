@@ -188,13 +188,13 @@ ingress:
   #  - hosts:
   #      - oauth2-proxy.ck1-1.link
 
-resources: {}
-  # limits:
-  #   cpu: 100m
-  #   memory: 300Mi
-# requests:
-#   cpu: 100m
-#   memory: 300Mi
+resources:
+  limits:
+    cpu: 100m
+    memory: 300Mi
+  requests:
+    cpu: 100m
+    memory: 300Mi
 
 extraVolumes: []
 # - name: ca-bundle-cert

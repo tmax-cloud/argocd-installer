@@ -213,9 +213,9 @@ persistence:
 
 ## @param extraVolumes Additional volumes to mount to the Gitea statefulset
 extraVolumes: []
-# - name: postgres-ssl-vol
+# - name: selfsigned-ca
 #   secret:
-#     secretName: gitea-postgres-ssl
+#     secretName: <시크릿 이름>
 
 ## @param extraContainerVolumeMounts Mounts that are only mapped into the Gitea runtime/main container, to e.g. override custom templates.
 extraContainerVolumeMounts: []
@@ -229,9 +229,9 @@ extraInitVolumeMounts: []
 ## As an example, can be used to mount a client cert when connecting to an external Postgres server.
 ## @param extraVolumeMounts **DEPRECATED** Additional volume mounts for init containers and the Gitea main container
 extraVolumeMounts: []
-# - name: postgres-ssl-vol
+# - name: selfsigned-ca
 #   readOnly: true
-#   mountPath: "/pg-ssl"
+#   mountPath: /etc/ssl/certs
 
 ## @section Init
 ## @param initPreScript Bash shell script copied verbatim to the start of the init-container.
@@ -294,11 +294,11 @@ gitea:
   # Either specify inline `key` and `secret` or refer to them via `existingSecret`
   ## @param gitea.oauth OAuth configuration
   oauth:
-    - name: 'oauth name ex)giteaOAuth'
-      provider: 'client protocol ex)openidConnect'
-      key: 'client name ex)gitea'
-      secret: 'client secret'
-      autoDiscoverUrl: 'ex)https://hyperauth.{domain}/auth/realms/tmax/.well-known/openid-configuration'
+    - name: 'giteaOAuth' # oauth name
+      provider: 'openidConnect' # client protocol
+      key: 'gitea' # client name
+      secret: 'tmax_client_secret'
+      autoDiscoverUrl: 'https://hyperauth.testdomain.com/auth/realms/tmax/.well-known/openid-configuration'
     # - name: 'OAuth 1'
     #   provider:
     #   key:

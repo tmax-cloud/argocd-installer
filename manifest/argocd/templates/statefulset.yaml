@@ -36,6 +36,8 @@ spec:
       containers:
       - command:
         - argocd-application-controller
+        - --loglevel
+        - {{ .Values.controller.logLevel }}
         env:
         - name: ARGOCD_RECONCILIATION_TIMEOUT
           valueFrom:
@@ -140,6 +142,13 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 10
         name: argocd-application-controller
+        resources:
+          limits:
+            cpu: 2
+            memory: 2Gi
+          requests:
+            cpu: 250m
+            memory: 1Gi
         ports:
         - containerPort: 8082
         readinessProbe:

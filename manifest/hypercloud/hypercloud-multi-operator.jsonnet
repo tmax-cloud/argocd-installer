@@ -84,8 +84,20 @@ local capi_vsphere_upgrade_template = import 'hypercloud-capi-vsphere-upgrade-te
                   "name": "AUTH_SUBDOMAIN",
                   "value": hyperauth_subdomain
                 },
+                {
+                  "name": "ARGO_APP_DELETE",
+                  "value": "true"
+                },
+                {
+                  "name": "OIDC_CLIENT_SET",
+                  "value": "false"
+                },
+                {
+                  "name": "DEV_MODE",
+                  "value": "false"
+                },
               ],
-              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-multi-operator:b5.0.37.1"]),
+              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-multi-operator:b5.1.1.0"]),
               "name": "manager",
               "ports": [
                 {
