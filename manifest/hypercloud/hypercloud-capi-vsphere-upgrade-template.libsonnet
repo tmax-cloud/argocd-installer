@@ -13,34 +13,36 @@
   ],
   "objects": [
     {
-      "apiVersion": "infrastructure.cluster.x-k8s.io/v1alpha3",
+      "apiVersion": "infrastructure.cluster.x-k8s.io/v1beta1",
       "kind": "VSphereMachineTemplate",
       "metadata": {
-        "name": "${ClusterName}-${KubernetesVersion}",
-        "namespace": "${Namespace}"
+        "name": "${UPGRADE_TEMPLATE_NAME}",
+        "namespace": "${NAMESPACE}"
       },
       "spec": {
         "template": {
           "spec": {
             "cloneMode": "linkedClone",
-            "datacenter": "${VcenterDataCenter}",
-            "datastore": "${VcenterDataStore}",
-            "diskGiB": "${VcenterDiskSize}",
-            "folder": "${VcenterFolder}",
-            "memoryMiB": "${VcenterMemSize}",
+            "datacenter": "${VSPHERE_DATACENTER}",
+            "datastore": "${VSPHERE_DATASTORE}",
+            "diskGiB": "${DISK_SIZE}",
+            "folder": "${VSPHERE_FOLDER}",
+            "memoryMiB": "${MEM_SIZE}",
             "network": {
               "devices": [
                 {
                   "dhcp4": true,
-                  "networkName": "${VcenterNetwork}"
+                  "networkName": "${VSPHERE_NETWORK}"
                 }
               ]
             },
-            "numCPUs": "${VcenterCpuNum}",
-            "resourcePool": "${VcenterResourcePool}",
-            "server": "${VcenterIp}",
-            "template": "${VcenterTemplate}",
-            "thumbprint": "${VcenterThumbprint}"
+            "numCPUs": "${CPU_NUM}",
+            "os": "Linux",
+            "resourcePool": "${VSPHERE_RESOURCE_POOL}",
+            "server": "${VSPHERE_SERVER}",
+            "storagePolicyName": "${VSPHERE_STORAGE_POLICY}",
+            "template": "${VSPHERE_TEMPLATE}",
+            "thumbprint": "${VSPHERE_TLS_THUMBPRINT}"
           }
         }
       }
@@ -50,23 +52,23 @@
     {
       "description": "namespace",
       "displayName": "Namespace",
-      "name": "Namespace",
+      "name": "NAMESPACE",
       "required": false,
       "value": "default",
       "valueType": "string"
     },
     {
-      "description": "Cluster Name",
-      "displayName": "Cluster Name",
-      "name": "ClusterName",
+      "description": "upgrade template name",
+      "displayName": "upgrade template name",
+      "name": "UPGRADE_TEMPLATE_NAME",
       "required": false,
-      "value": "clustername",
+      "value": "upgrade_template_name",
       "valueType": "string"
     },
     {
       "description": "vCenter Server IP",
       "displayName": "VCSA IP",
-      "name": "VcenterIp",
+      "name": "VSPHERE_SERVER",
       "required": false,
       "value": "0.0.0.0",
       "valueType": "string"
@@ -74,7 +76,7 @@
     {
       "description": "vCenter TLS Thumbprint",
       "displayName": "Thumbprint",
-      "name": "VcenterThumbprint",
+      "name": "VSPHERE_TLS_THUMBPRINT",
       "required": false,
       "value": "00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00",
       "valueType": "string"
@@ -82,7 +84,7 @@
     {
       "description": "vCenter Network Name",
       "displayName": "Network Name",
-      "name": "VcenterNetwork",
+      "name": "VSPHERE_NETWORK",
       "required": false,
       "value": "VM Network",
       "valueType": "string"
@@ -90,7 +92,7 @@
     {
       "description": "vCenter DataCenter Name",
       "displayName": "DataCenter Name",
-      "name": "VcenterDataCenter",
+      "name": "VSPHERE_DATACENTER",
       "required": false,
       "value": "Datacenter",
       "valueType": "string"
@@ -98,7 +100,7 @@
     {
       "description": "vCenter DataStore Name",
       "displayName": "DataStore Name",
-      "name": "VcenterDataStore",
+      "name": "VSPHERE_DATASTORE",
       "required": false,
       "value": "datastore1",
       "valueType": "string"
@@ -106,7 +108,7 @@
     {
       "description": "vCenter Folder Name",
       "displayName": "Folder Name",
-      "name": "VcenterFolder",
+      "name": "VSPHERE_FOLDER",
       "required": false,
       "value": "vm",
       "valueType": "string"
@@ -114,7 +116,7 @@
     {
       "description": "vCenter Resource Pool Name",
       "displayName": "Resource Pool Name",
-      "name": "VcenterResourcePool",
+      "name": "VSPHERE_RESOURCE_POOL",
       "required": false,
       "value": "VM Resource",
       "valueType": "string"
@@ -122,7 +124,7 @@
     {
       "description": "VM Disk Size",
       "displayName": "Disk Size",
-      "name": "VcenterDiskSize",
+      "name": "DISK_SIZE",
       "required": false,
       "value": 25,
       "valueType": "number"
@@ -130,7 +132,7 @@
     {
       "description": "VM Memory Size",
       "displayName": "Memory Size",
-      "name": "VcenterMemSize",
+      "name": "MEM_SIZE",
       "required": false,
       "value": 8192,
       "valueType": "number"
@@ -138,7 +140,7 @@
     {
       "description": "Number of CPUs",
       "displayName": "Number of CPUs",
-      "name": "VcenterCpuNum",
+      "name": "CPU_NUM",
       "required": false,
       "value": 2,
       "valueType": "number"
@@ -146,7 +148,7 @@
     {
       "description": "Target Template Name",
       "displayName": "Template Name",
-      "name": "VcenterTemplate",
+      "name": "VSPHERE_TEMPLATE",
       "required": false,
       "value": "ubuntu-1804-kube-v1.19.6",
       "valueType": "string"
@@ -154,7 +156,7 @@
     {
       "description": "Kubernetes version",
       "displayName": "Kubernetes version",
-      "name": "KubernetesVersion",
+      "name": "KUBERNETES_VERSION",
       "required": false,
       "value": "v1.19.6",
       "valueType": "string"
