@@ -365,6 +365,8 @@ modules:
     path: /nfs-storage
     # nfs provisioner를 default storageClass로 설정
     defaultClass: not
+    # logLevel 0 ~ 5 가능
+    logLevel: 0
 
   ### ceph-csi-cephfs
   cephfs:
@@ -377,6 +379,8 @@ modules:
     key: AQCeBcZftAEvExAAultsKBpNpiWWGi06Md7mmw==
     # cephfs csi를 default storageClass로 설정, ex: default / not
     defaultClass: not
+    # logLevel 0 ~ 5 가능
+    logLevel: 0
 
   ### ceph-csi-rbd
   rbd:
@@ -389,6 +393,8 @@ modules:
     key: AQCeBcZftAEvExAAultsKBpNpiWWGi06Md7mmw==
     # rbd csi를 default storageClass로 설정, ex: default / not
     defaultClass: not
+    # logLevel 0 ~ 5 가능
+    logLevel: 0
   
   ### efs-csi
   efs:
@@ -397,3 +403,5 @@ modules:
     fileSystemId: fs-0ce741ec0e2ea2fa2
     # efs csi를 default storageClass로 설정, ex: default / not
     defaultClass: not
+    # logLevel 0 ~ 5 가능
+    logLevel: 0
