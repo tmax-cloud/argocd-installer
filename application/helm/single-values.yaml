@@ -183,7 +183,7 @@ modules:
       version: v0.0.10
       imageRepo: docker.io/tmaxcloudck/grafana-operator
     grafana:
-      version: "8.2.2"
+      version: "9.3.2"
       imageRepo: grafana/grafana
 
 
