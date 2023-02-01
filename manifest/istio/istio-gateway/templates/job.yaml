@@ -12,7 +12,11 @@ spec:
     spec:
       containers:
         - name: rollout-restart
+          {{- if .Values.job.privateRegistry }}
+          image: {{.Values.job.privateRegistry}}/bitnami/kubectl:1.25.5
+          {{- else }}
           image: bitnami/kubectl:1.25.5
+          {{- end }}
           command:
           - /bin/bash
           - -c
