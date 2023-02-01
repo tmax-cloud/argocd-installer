@@ -67,7 +67,7 @@ extraArgs:
   #  scope: "openid profile email groups"
 image:
   repository: "docker.io/tmaxcloudck/oauth2-proxy"
-  tag: "v7.3.0"
+  tag: "v7.3.1"
   pullPolicy: "IfNotPresent"
   # Optionally specify an array of imagePullSecrets.
   # Secrets must be manually created in the namespace.
