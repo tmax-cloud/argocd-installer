@@ -12,6 +12,9 @@ rbac:
   # when using http://gateway-api.org/.
   enabled: true
 
+job:
+  privateRegistry: ""
+
 serviceAccount:
   # If set, a service account will be created. Otherwise, the default is used
   create: true

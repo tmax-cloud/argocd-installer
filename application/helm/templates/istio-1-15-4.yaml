@@ -118,6 +118,11 @@ spec:
     targetRevision: {{ .Values.spec.source.targetRevision }}
     helm:
       releaseName: ingressgateway
+      parameters:
+      {{- if .Values.global.network.disabled }}
+        - name: job.privateRegistry
+          value: {{ .Values.global.privateRegistry }}
+      {{- end }}
   syncPolicy:
     {{- if .Values.modules.istio.autoSync }}
     automated:
