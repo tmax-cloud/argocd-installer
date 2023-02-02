@@ -422,7 +422,7 @@ serviceAccount:
 # Additional serviceAccount annotations (e.g. for oidc authentication)
 serviceAccountAnnotations: {}
 
-resources: {}
+resources:
   requests:
     cpu: "100m"
     memory: "50Mi"

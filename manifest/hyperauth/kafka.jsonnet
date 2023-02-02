@@ -8,7 +8,8 @@ function (
   hypercloud_domain_host="tmaxcloud.org",
   storage_class="default",
   timezone_setting="UTC",
-  self_signed="false"
+  self_signed="false",
+  log_level="INFO"
 )
 
 if is_kafka_enabled == "true" then [
