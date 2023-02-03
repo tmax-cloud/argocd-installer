@@ -2,17 +2,17 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   labels:
-    app.kubernetes.io/component: prometheus
-    app.kubernetes.io/instance: k8s
-    app.kubernetes.io/name: prometheus
+    app.kubernetes.io/component: exporter
+    app.kubernetes.io/name: node-exporter
     app.kubernetes.io/part-of: kube-prometheus
-    app.kubernetes.io/version: 2.41.0
-  name: prometheus-k8s
+    app.kubernetes.io/version: 1.5.0
+  name: node-exporter
+  namespace: monitoring
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: prometheus-k8s
+  name: node-exporter
 subjects:
 - kind: ServiceAccount
-  name: prometheus-k8s
+  name: node-exporter
   namespace: monitoring

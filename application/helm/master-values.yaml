@@ -232,15 +232,15 @@ modules:
   prometheus:
     enabled: true
     versions:
-      prometheus: v2.30.3
+      prometheus: v2.41.0
       cmReload: v0.0.1
-      cmReloader: v0.51.2
-      operator: v0.51.2
-      alertManager: v0.23.0
-      kubeRbacProxy: v0.11.0
-      kubeStateMetrics: v2.2.3
-      nodeExporter: v1.2.2
-      adapter: v0.9.1
+      cmReloader: v0.62.0
+      operator: v0.62.0
+      alertManager: v0.25.0
+      kubeRbacProxy: v0.14.0
+      kubeStateMetrics: v2.7.0
+      nodeExporter: v1.5.0
+      adapter: v0.10.0
     pvcSize: 10Gi
 
   ### grafana-operator
@@ -252,8 +252,8 @@ modules:
       version: v0.0.10
       imageRepo: docker.io/tmaxcloudck/grafana-operator
     grafana:
-      version: "8.2.2"
-      imageRepo: grafana/grafana
+      version: "9.3.2"
+      imageRepo: docker.io/grafana/grafana
 
 
   ### service-mesh
