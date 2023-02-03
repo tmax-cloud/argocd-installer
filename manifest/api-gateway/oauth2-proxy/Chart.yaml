@@ -1,0 +1,18 @@
+apiVersion: v2
+version: "1.0.6"
+appVersion: "7.3.1"
+dependencies:
+- alias: redis
+  condition: redis.enabled
+  name: redis
+  repository: file://charts/redis
+  version: 16.4.5
+description: A reverse proxy that provides authentication with Hyperauth (keycloak)
+home: https://tmax-cloud.github.io/charts/
+kubeVersion: '>=1.9.0-0'
+name: oauth2-proxy
+sources:
+- https://github.com/oauth2-proxy/oauth2-proxy
+maintainers:
+  - name: jinsoo_youn
+    email: jinsoo_youn@tmax.co.kr

@@ -1,0 +1,25 @@
+# Default values for sonarqube-tmax.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+global:
+  timezone: UTC
+  registry:
+    is_offline: false
+    private_registry: 172.22.6.2:5000
+
+tls:
+  enabled: true
+
+pvc:
+  storageClassName: ""
+  storage: 30Gi
+  
+ingress:
+  hosts:
+    domain: testdomain.com
+    subdomain: sonarqube
+
+image:
+  sonarqube:
+    repo: sonarqube
+    tag: 9.8.0-community

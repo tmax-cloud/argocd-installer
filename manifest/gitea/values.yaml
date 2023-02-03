@@ -25,9 +25,9 @@ clusterDomain: cluster.local
 ## @param image.rootless Wether or not to pull the rootless version of Gitea, only works on Gitea 1.14.x or higher
 image:
   registry: ""
-  repository: gitea/gitea
+  repository: docker.io/gitea/gitea
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: 1.18.0
   pullPolicy: Always
   rootless: false # only possible when running 1.14 or later
 
@@ -148,17 +148,17 @@ tls:
 ## @section StatefulSet
 #
 ## @param resources Kubernetes resources
-resources: {}
+resources:
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
 
 ## Use an alternate scheduler, e.g. "stork".
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
@@ -213,9 +213,9 @@ persistence:
 
 ## @param extraVolumes Additional volumes to mount to the Gitea statefulset
 extraVolumes: []
-# - name: postgres-ssl-vol
+# - name: selfsigned-ca
 #   secret:
-#     secretName: gitea-postgres-ssl
+#     secretName: <시크릿 이름>
 
 ## @param extraContainerVolumeMounts Mounts that are only mapped into the Gitea runtime/main container, to e.g. override custom templates.
 extraContainerVolumeMounts: []
@@ -229,9 +229,9 @@ extraInitVolumeMounts: []
 ## As an example, can be used to mount a client cert when connecting to an external Postgres server.
 ## @param extraVolumeMounts **DEPRECATED** Additional volume mounts for init containers and the Gitea main container
 extraVolumeMounts: []
-# - name: postgres-ssl-vol
+# - name: selfsigned-ca
 #   readOnly: true
-#   mountPath: "/pg-ssl"
+#   mountPath: /etc/ssl/certs
 
 ## @section Init
 ## @param initPreScript Bash shell script copied verbatim to the start of the init-container.
@@ -294,11 +294,11 @@ gitea:
   # Either specify inline `key` and `secret` or refer to them via `existingSecret`
   ## @param gitea.oauth OAuth configuration
   oauth:
-    - name: 'giteaOAuth'
-      provider: 'openidConnect'
-      key: 'gitea'
-      secret: 'b9909ff9-cee8-4394-b287-1f596a8791cd'
-      autoDiscoverUrl: 'https://hyperauth.tmaxcloud.org/auth/realms/tmax/.well-known/openid-configuration'
+    - name: 'giteaOAuth' # oauth name
+      provider: 'openidConnect' # client protocol
+      key: 'gitea' # client name
+      secret: 'tmax_client_secret'
+      autoDiscoverUrl: 'https://hyperauth.testdomain.com/auth/realms/tmax/.well-known/openid-configuration'
     # - name: 'OAuth 1'
     #   provider:
     #   key:

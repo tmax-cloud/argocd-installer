@@ -24,6 +24,8 @@ spec:
             value: "{{ .Values.global.network.disabled }}"
           - name: private_registry
             value: {{ .Values.global.privateRegistry }}
+          - name: log_level
+            value: {{ .Values.modules.loki.logLevel }}
           - name: loki_image_tag
             value: {{ .Values.modules.loki.loki.version }}
           - name: loki_volume_size

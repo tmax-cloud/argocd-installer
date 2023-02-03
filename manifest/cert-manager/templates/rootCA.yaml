@@ -1,0 +1,53 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "5"
+  labels:
+    {{- include "cert-manager.labels" . | nindent 4 }}
+  name: tmaxcloud-ca-selfsigned
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "6"
+  labels:
+    {{- include "cert-manager.labels" . | nindent 4 }}
+  name: tmaxcloud-ca
+spec:
+  isCA: true
+  commonName: tmax-cloud
+  secretName: tmaxcloud-ca
+  duration: 8760h0m0s # 360d=1y
+  renewBefore: 720h0m0s # 30d
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 2048
+  usages:
+  - digital signature
+  - key encipherment
+  issuerRef:
+    name: tmaxcloud-ca-selfsigned
+    kind: ClusterIssuer
+    group: cert-manager.io
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "7"
+  labels:
+    {{- include "cert-manager.labels" . | nindent 4 }}
+  name: tmaxcloud-issuer
+spec:
+  ca:
+    secretName: tmaxcloud-ca
+
+

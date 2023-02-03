@@ -20,13 +20,25 @@ spec:
       labels:
         {{- include "jwt-decode-auth.selectorLabels" . | nindent 8 }}
     spec:
+      automountServiceAccountToken: false
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      volumes:
+        - name: jwt-token
+          secret:
+            defaultMode: 420
+            secretName: {{ template "jwt-decode-auth.serviceAccountName" . }}
+{{- if .Values.timeZone }}
+{{- if not (eq .Values.timeZone "UTC") }}
+        - name: timezone-config
+          hostPath:
+            path: "/usr/share/zoneinfo/{{ .Values.timeZone }}"
+{{- end }}
+{{- end }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -35,15 +47,15 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           env:
             - name: JWKS_URL
-              value: "https://{{ .Values.hyperauth.address }}/auth/realms/{{ .Values.hyperauth.realm }}/protocol/openid-connect/certs"
+              value: "https://{{ .Values.hyperAuth.address }}/auth/realms/{{ .Values.hyperAuth.realm }}/protocol/openid-connect/certs"
             - name: AUTH_HEADER_KEY
               value: Authorization
             - name: CACHE_ENABLED
               value: "true"
             - name: LOG_LEVEL
-              value: debug
+              value: {{ .Values.logInfo.logLevel }}
             - name: LOG_TYPE
-              value: pretty
+              value: {{ .Values.logInfo.logType }}
             - name: MAX_CACHE_KEYS
               value: "10000"
             - name: PORT
@@ -52,34 +64,30 @@ spec:
               value: jwt-token-validated
             - name: MULTI_CLUSTER_PREFIX
               value: multicluster
-            - name: SECRET_CACHE_TTL
-              value: "300"
           volumeMounts:
-            - name: gateway-token
-              mountPath: /var/run/secrets/kubernetes.io/serviceaccount
-              readOnly: true
-          {{- if not (eq .Values.timeZone "UTC") }}
+{{- if .Values.timeZone }}
+{{- if not (eq .Values.timeZone "UTC") }}
             - mountPath: /etc/localtime
               name: timezone-config
-          {{- end }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+{{- end }}
+{{- end }}
+            - name: jwt-token
+              mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+              readOnly: true
           ports:
             - name: http
               containerPort: 8080
               protocol: TCP
+          livenessProbe:
+            httpGet:
+              port: http
+              path: /ping
+          readinessProbe:
+            httpGet:
+              port: http
+              path: /ping
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-      volumes:
-        - name: gateway-token
-          secret:
-            defaultMode: 420
-            secretName: gateway-token
-      {{- if not (eq .Values.timeZone "UTC") }}
-        - name: timezone-config
-          hostPath:
-            path: "/usr/share/zoneinfo/{{ .Values.timeZone }}"
-      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

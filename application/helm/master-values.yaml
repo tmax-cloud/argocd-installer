@@ -19,6 +19,11 @@ modules:
   ### calico
   calico:
     enabled: false
+    # 사용 가능 한 값 : Debug, Info, Warning, Error, Fatal
+    logLevel: info
+    logSeverityFile: info
+    logSeverityScreen: info
+    logSeveritySys: info
 
   ### gitlab
   gitlab:
@@ -31,22 +36,42 @@ modules:
     # 미리 설치된 gitlab과 sync해야 하는 경우 default storageclass는 사용할 수 없음    
       storageClassName: "nfs"
     oidc:
-      enabled: true
+      enabled: false
 
   ### gitea
   gitea:
-    enabled: true
+    enabled: false
     subdomain: gitea
+
+  ### sonarqube
+  sonarqube:
+    enabled: false
+
+  ### nexus
+  nexus:
+    enabled: false
+    persistence:
+      enabled: true
+      storageClass: ""
+
+  ### cert-manager
+  certManager:
+    enabled: true
+    autoSync: true
+    # ErrorLevel=0 WarnLevel=1 InfoLevel=2 ExtendedInfoLevel=3 DebugLevel=4 TraceLevel=5
+    logLevel: 2
 
   ### gateway-bootstrap
   gatewayBootstrap:
     enabled: true
-    # cloud provider의 load balancer 서비스(ex. aws nlb)를 사용하기 위해서는
+    autoSync: true
+    # load balancer를 사용할 수 있는 경우(ex. aws lb, metallb)
     # LoadBalancer로 값을 변경
-    svc_type: NodePort
+    service:
+      type: LoadBalancer
     tls:
       selfsigned:
-        enabled: false
+        enabled: true
       # acme로 할 경우, domain에 입력한 주소를 가지고 있어야함
       acme:
         enabled: false
@@ -60,33 +85,55 @@ modules:
         # 자세한 내용은 https://letsencrypt.org/docs/staging-environment/#rate-limits 참조
         # staging / production 중 택1하여 기입하여야 하며, 각각 테스트용 / 운영용을 의미함
         environment: production
-    certManager:
-      enabled: true
-      # default 300
-      syncWaitTime: 300
+
     console:
       enabled: true
-      multiCluster:
-        enabled: true
-      # default 0
-      syncWaitTime: 0
+      version: 5.2.20.0
       subdomain: console
+      mcMode: true
+      chatbotEmbed: true
+      customProductName: hypercloud
+      k8sPublicEndpoint: https://kubernetes.default.svc
+      svcType: LoadBalancer
+      logInfo:
+        # trace | debug | info | warn | crit // 주로 "debug"를 사용
+        logLevel: "info"
+        # json | pretty
+        logType: "pretty"
+
     gateway:
       enabled: true
-      # default 120
-      syncWaitTime: 120
+      version: v2.8.7
+      logInfo:
+        # DEBUG, PANIC, FATAL, ERROR, WARN, and INFO
+        logLevel: "INFO"
+        # common, json
+        logType: "common"
+
     jwtDecodeAuth:
       enabled: true
-      # default 30
-      syncWaitTime: 30
+      version: 5.0.0.4
+      logInfo:
+        # trace | debug | info | warn | crit // 주로 "debug"를 사용
+        logLevel: "info"
+        # json | pretty
+        logType: "pretty"
+
+    oauth2Proxy:
+      enabled: true
+      version: v7.3.0
 
   ### strimzi-kafka-operator
   strimziKafka:
     enabled: true
+    # ERROR | WARNING | INFO | DEBUG | TRACE 반드시 대문자로 기입
+    logLevel: INFO
 
   ### service-binding-operator
   serviceBinding:
     enabled: true
+    # 사용 가능 한 값 : DEBUG, INFO, ERROR
+    LOG_LEVEL: INFO
     
   ### hyperauth
   hyperAuth:
@@ -98,6 +145,12 @@ modules:
     storageClass: default
     # do not edit tmaxClientSecret!
     tmaxClientSecret: tmax_client_secret
+
+    # keycloak, hyperauth, kafka, jboss 로그레벨을 하나의 환경변수로 통합 조절
+    # 사용 가능 한 값 : ALL, DEBUG, ERROR, FATAL, INFO, OFF, TRACE, WARN
+    LOG_LEVEL: INFO
+    kafka: 
+      enabled: true
 
   ### efk
   efk:
@@ -125,12 +178,16 @@ modules:
     subdomain: argocd
     repoServer:
       replicas: 1
+      logLevel: "info" # debug, info, warn, error
     redis:
       replicas: 1
+      logLevel: "notice" # warning, notice, verbose, debug
     argocdServer:
       replicas: 1
+      logLevel: "info" # debug, info, warn, error
     controller:
       replicas: 1
+      logLevel: "info" # debug, info, warn, error
     ingress:
       enableTraefik: true
       secretName:
@@ -138,8 +195,11 @@ modules:
   ### opensearch
   opensearch:
     enabled: true
+    logLevel: info
+    # opensearch-dashboards에서 지원하는 loglevel에 대한 config 설정을 기준으로 함.
+    # 사용 가능한 값 : error, info, debug
     os:
-      version: 1.2.3
+      version: 1.3.7
       limitMemory: 8Gi
       requestMemory: 5Gi
       jvmHeap: "-Xms4g -Xmx4g"
@@ -147,11 +207,11 @@ modules:
     busyBox:
       version: 1.32.0
     dashboard:
-      version: 1.2.0
+      version: 1.3.7
       svcType: ClusterIP
       subdomain: opensearch-dashboard
     fluentd:
-      version: fluentd-v1.4.2-debian-elasticsearch-1.1
+      version: fluentd-v1.15.3-debian-elasticsearch-1.0
       # default로 주는 경우 default storage class를 사용
       # default를 사용하지 않고 싶은 경우에는 storage class이름을 기입
       storageClass: default
@@ -159,12 +219,14 @@ modules:
   ### Loki
   loki:
     enabled: true
+    logLevel: info
+    # 사용 가능한 값 : error, warn, info, debug
     loki: 
-      version: 2.6.0
+      version: 2.7.1
       volumeSize: 50Gi
       storageClass: default
     promtail:
-      version: 2.6.0
+      version: 2.7.1
   
   ### prometheus
   prometheus:
@@ -191,7 +253,7 @@ modules:
       imageRepo: docker.io/tmaxcloudck/grafana-operator
     grafana:
       version: "9.3.2"
-      imageRepo: grafana/grafana
+      imageRepo: docker.io/grafana/grafana
 
 
   ### service-mesh
@@ -199,50 +261,70 @@ modules:
     ### istio
     istio:
       enabled: true
+      # :(scope) 를 기준으로 앞, default, ads, all, attributes, authn, configmapcontroller, grpcAdapter, mcp, model, pkica, rbac, rootcertrotator, secretcontroller, serverca, validation, validationController, validationServer
+      # :(scope) 를 기준으로 뒤, debug, info, warn, error, fatal, none 
+      istiodPilotDiscoveryLoglevel: default:info
+      # :(scope) 를 기준으로 앞, default, all, authn, cache, citadelclient, configmapcontroller, googleca, model, rbac, sds, secretfetcher, stsclient, stsserver, token, validation, vault
+      # :(scope) 를 기준으로 뒤, debug, info, warn, error, fatal, none 
+      ingressgatewayPilotAgentLoglevel: default:info
+      # none, error, warn, info, debug
+      envoyProxyLoglevel: warning
 
     ### jaeger
     jaeger:
       enabled: true
       subdomain: jaeger
+      # debug, info, warn, error
+      jaegerCollectorLoglevel: info
+      # debug, info, warn, error
+      jaegerAgentLoglevel: info
+      # debug, info, warn, error
+      jaegerQueryLoglevel: info
+      # debug, info, warning, error, fatal, panic
+      gatekeeperLoglevel: info
 
     ### kiali
     kiali:
       enabled: true
       subdomain: kiali
+      # "3" : info, "4": debug, "5": trace
+      kialiLoglevel: "3"
 
   ### cluster-api
   capi:
     enabled: true
-    providers:
+    # verbose - debug(0), info(1), warning(2), error(3), fatal(4, 5, 6...)
+    verbose: 1
+    provider:
       aws:
         enabled: true
-        # description: ...
-        # credential은 다음과 같이 생성
-        # cat << EOF | base64
-        # > [default]
-        # > aws_access_key_id = {{ AWS ACCESS KEY }}
-        # > aws_secret_access_key = {{ AWS SECRET ACCESS KEY }} 
-        # > region = {{ default region}} ex) ap-northeast-2
-        # > EOF
-        credentials: "VGhpcyBpcyBhbiBhd3MgY3JlZGVudGlhbAo="
+        credentials:
+          accessKeyID: access-key
+          secretAccessKeyID: secret-access-key
+        # verbose - debug(0), info(1), warning(2), error(3), fatal(4, 5, 6...)
+        verbose: 1
       vsphere:
         enabled: true
         credentials:
           username: "user"
           password: "password"
+        # verbose - debug(0), info(1), warning(2), error(3), fatal(4, 5, 6...)
+        verbose: 1
 
   ### template service broker
   tsb:
     enabled: true
-    version: 0.1.4
+    version: 0.1.6
     clusterTsb:
-      version: 0.1.4
+      version: 0.1.6
     templateOperator:
-      version: 0.2.7
+      version: 0.2.8
+    logLevel: info
 
   ### catalog controller
   catalogController:
     enabled: true
+    vLevel: 0
 
   ### helm-apiserver
   helmApiserver:
@@ -336,28 +418,19 @@ modules:
   cicd:
     enabled: true
     subdomain: cicd-webhook
+    logLevel: info
 
   ### redis-operator
   redis:
     enabled: true
+    # info, debug, error 기입 가능(대소문자 유의)
+    logLevel: info
 
   ### image validating webhook
   imageValidatingWebhook:
     enabled: true
       # debug, info, error 기입 가능 (대소문자 유의)
     logLevel: error
-
-  ### ai-devops
-  # 해당 모듈 제외 
-  aiDevops:
-    enabled: false
-    namespace: "kubeflow"
-    knativeNamespace: "knative-serving"
-    notebookSvcType: "Ingress"
-  job:
-      imagePullSecrets: []
-#      imagePullSecrets:
-#        - name: regcred
 
   ### nfs-subdir-external-provisioner
   nfs:
@@ -368,7 +441,9 @@ modules:
     path: /nfs-storage
     # nfs provisioner를 default storageClass로 설정, ex: default / not
     defaultClass: not
-
+    # logLevel 0 ~ 5 가능
+    logLevel: 0
+  
   ### ceph-csi-cephfs
   cephfs:
     enabled: false
@@ -380,6 +455,8 @@ modules:
     key: AQCeBcZftAEvExAAultsKBpNpiWWGi06Md7mmw==
     # cephfs csi를 default storageClass로 설정, ex: default / not
     defaultClass: not
+    # logLevel 0 ~ 5 가능
+    logLevel: 0
 
   ### ceph-csi-rbd
   rbd:
@@ -392,7 +469,9 @@ modules:
     key: AQCeBcZftAEvExAAultsKBpNpiWWGi06Md7mmw==
     # rbd csi를 default storageClass로 설정, ex: default / not
     defaultClass: not
-  
+    # logLevel 0 ~ 5 가능
+    logLevel: 0
+
   ### efs-csi
   efs:
     enabled: false
@@ -400,3 +479,5 @@ modules:
     fileSystemId: fs-0ce741ec0e2ea2fa2
     # efs csi를 default storageClass로 설정, ex: default / not
     defaultClass: not
+    # logLevel 0 ~ 5 가능
+    logLevel: 0

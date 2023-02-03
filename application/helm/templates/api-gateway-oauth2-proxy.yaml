@@ -1,0 +1,71 @@
+{{- if .Values.modules.gatewayBootstrap.console.enabled }}
+{{ $isMaster := eq .Values.global.cluster "master" }}
+{{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
+{{ $module := "oauth2-proxy" }}
+{{ $hyperAuthDomain := include "hyperAuth.domain" . }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  labels:
+    cluster: {{ ternary "master" $prefix $isMaster }}
+  name: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+      - RespectIgnoreDifferences=true
+    retry:
+      limit: 1
+      backoff:
+        duration: "10s"
+        factor: 2
+        maxDuration: "1m0s"
+    {{- if .Values.modules.gatewayBootstrap.autoSync }}
+    automated:
+      # IMS 298144
+      # 강제로 변경하지 못하게 selfHeal: false로 설정
+      selfHeal: false
+      prune: true
+    {{- end }}
+  destination:
+    name: {{ .Values.global.clusterName }}
+    namespace: api-gateway-system
+  project: {{ .Values.spec.project }}
+  source:
+    path: manifest/api-gateway/oauth2-proxy
+    repoURL: {{ .Values.spec.source.repoURL }}
+    targetRevision: {{ .Values.spec.source.targetRevision }}
+    helm:
+      releaseName: oauth2-proxy
+      valueFiles:
+        - values.yaml
+      parameters:
+        - name: timeZone
+          value: {{ .Values.global.timeZone | default "UTC" }}
+        - name: domain
+          value: {{ .Values.global.domain }}
+        - name: config.hyperAuth.address
+          value: {{ include "hyperAuth.domain" . }}
+        - name: config.clientSecret
+          value: {{ include "hyperAuth.tmaxClientSecret" . }}
+        - name: config.hyperAuth.realm
+          value: "tmax"
+        - name: config.clientID
+          value: "hypercloud5"
+        - name: config.cookieSecret
+          ## cookie secret 자동 생성 기능 추가
+          ## openssl rand -base64 32 | tr -- '+/' '-_'
+          {{- $randomString := randAlphaNum 32 | b64enc | replace "+" "-" | replace "/" "_" }}
+          value: {{ $randomString }}
+        {{- if .Values.global.network.disabled }}
+        - name: image.repository
+          value: {{ .Values.global.privateRegistry }}/docker.io/tmaxcloudck/oauth2-proxy
+        {{- end }}
+        - name: image.tag
+          value: {{ .Values.modules.gatewayBootstrap.oauth2Proxy.version | default "v7.3.0" }}
+{{- end }}

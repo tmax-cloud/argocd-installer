@@ -1,0 +1,129 @@
+{{- if .Values.modules.gatewayBootstrap.gateway.enabled }}
+{{ $isMaster := eq .Values.global.cluster "master" }}
+{{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
+{{ $module := "gateway" }}
+{{ $ns := "ns-api-gateway-system" }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  labels:
+    cluster: {{ ternary "master" $prefix $isMaster }}
+  name: {{ ternary $ns (printf "%s-%s" $prefix $ns) $isMaster }}
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-3"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+    {{- if .Values.modules.gatewayBootstrap.autoSync }}
+    automated:
+      selfHeal: true
+      prune: true
+    {{- end }}
+  destination:
+    name: {{ .Values.global.clusterName }}
+  project: {{ .Values.spec.project }}
+  source:
+    path: manifest/namespace
+    repoURL: {{ .Values.spec.source.repoURL }}
+    targetRevision: {{ .Values.spec.source.targetRevision }}
+    helm:
+      releaseName: {{ $ns }}
+      parameters:
+        - name: namespace
+          value: api-gateway-system
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  labels:
+    cluster: {{ ternary "master" $prefix $isMaster }}
+  name: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+      - RespectIgnoreDifferences=true
+    retry:
+      limit: 3
+      backoff:
+        duration: "30s"
+        factor: 2
+        maxDuration: "3m0s"
+    {{- if .Values.modules.gatewayBootstrap.autoSync }}
+    automated:
+      selfHeal: true
+      prune: true
+    {{- end }}
+  destination:
+    name: {{ .Values.global.clusterName }}
+    namespace: api-gateway-system
+  project: {{ .Values.spec.project }}
+  source:
+    path: manifest/api-gateway/gateway
+    repoURL: {{ .Values.spec.source.repoURL }}
+    targetRevision: {{ .Values.spec.source.targetRevision }}
+    helm:
+      releaseName: {{ $module }}
+      parameters:
+        - name: traefik.service.type
+          value: {{ .Values.modules.gatewayBootstrap.service.type | default "LoadBalancer" }}
+      {{- with .Values.modules.gatewayBootstrap.tls }}
+      {{- if .acme.enabled }}
+        - name: tls.acme.enabled
+          value: "true"
+        - name: tls.acme.email
+          value: {{ .acme.email }}
+        - name: tls.acme.dns.accessKeyID
+          value: {{ .acme.dns.accessKeyID }}
+        - name: tls.acme.dns.accessKeySecret
+          value: {{ .acme.dns.accessKeySecret }}
+        - name: tls.acme.dns.hostedZoneID
+          value: {{ .acme.dns.hostedZoneID }}
+        - name: tls.acme.environment
+          value: {{ .acme.environment }}
+        - name: tls.domain
+          value: {{ $.Values.global.domain }}
+        - name: tls.selfsigned.enabled
+          value: "false"
+      {{- else if .selfsigned.enabled }}
+        - name: tls.selfsigned.enabled
+          value: "true"
+        - name: tls.domain
+          value: {{ $.Values.global.domain }}
+        - name: tls.acme.enabled
+          value: "false"
+      {{- else }}
+        - name: tls.selfsigned.enabled
+          value: "false"
+        - name: tls.acme.enabled
+          value: "false"
+      {{- end }}
+      {{- end }}
+      {{- if not (eq .Values.global.timeZone "UTC") }}
+        - name: traefik.env[0].name
+          value: TZ
+        - name: traefik.env[0].value
+          value: {{ .Values.global.timeZone }}
+      {{- end }}
+      {{- if .Values.global.network.disabled }}
+        - name: image.name
+          value: {{ .Values.global.privateRegistry }}/docker.io/library/traefik
+      {{- end }}
+        - name: traefik.image.tag
+          value: {{ .Values.modules.gatewayBootstrap.gateway.version | default "v2.8.7" }}
+      {{- with .Values.modules.gatewayBootstrap.gateway.logInfo }}
+        - name: traefik.logs.general.level
+          value: {{ .logLevel }}
+        - name: traefik.logs.general.format
+          value: {{ .logType }}
+      {{- end }}
+{{- end }}

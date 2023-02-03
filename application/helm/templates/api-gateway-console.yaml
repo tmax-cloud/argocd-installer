@@ -1,0 +1,78 @@
+{{- if .Values.modules.gatewayBootstrap.console.enabled }}
+{{ $isMaster := eq .Values.global.cluster "master" }}
+{{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
+{{ $module := "console" }}
+{{ $hyperAuthDomain := include "hyperAuth.domain" . }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  labels:
+    cluster: {{ ternary "master" $prefix $isMaster }}
+  name: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+      - RespectIgnoreDifferences=true
+    retry:
+      limit: 1
+      backoff:
+        duration: "10s"
+        factor: 2
+        maxDuration: "1m0s"
+    {{- if .Values.modules.gatewayBootstrap.autoSync }}
+    automated:
+      selfHeal: true
+      prune: true
+    {{- end }}
+  destination:
+    name: {{ .Values.global.clusterName }}
+    namespace: api-gateway-system
+  project: {{ .Values.spec.project }}
+  source:
+    path: manifest/api-gateway/console
+    repoURL: {{ .Values.spec.source.repoURL }}
+    targetRevision: {{ .Values.spec.source.targetRevision }}
+    helm:
+      releaseName: console
+      valueFiles:
+        - values.yaml
+      parameters:
+        - name: timeZone
+          value: {{ .Values.global.timeZone | default "UTC" }}
+        - name: domain
+          value: {{ .Values.global.domain }}
+        - name: subDomain
+          value: {{ .Values.modules.gatewayBootstrap.console.subdomain | default "console" }}
+        - name: config.hyperAuth.realm
+          value: "tmax"
+        - name: config.hyperAuth.clientID
+          value: "hypercloud5"
+        - name: config.hyperAuth.address
+          value: {{ include "hyperAuth.domain" . }}
+        {{- with .Values.modules.gatewayBootstrap.console }}
+        - name: config.mcMode
+          value: {{ .mcMode | quote | default "true" }}
+        - name: config.chatbotEmbed
+          value: {{ .chatbotEmbed | quote | default "true" }}
+        - name: config.logType
+          value: {{ .logInfo.logType | default "pretty" }}
+        - name: config.logLevel
+          value: {{ .logInfo.logLevel | default "debug" }}
+        - name: config.customProductName
+          value: {{ .customProductName | default "HyperCloud" }}
+        - name: config.k8sPublicEndpoint
+          value: {{ .k8sPublicEndpoint | default "https://kubernetes.default.svc" }}
+        {{- end }}
+        {{- if .Values.global.network.disabled }}
+        - name: image.repository
+          value: {{ .Values.global.privateRegistry }}/docker.io/tmaxcloudck/hypercloud-console
+        {{- end }}
+        - name: image.tag
+          value: {{ .Values.modules.gatewayBootstrap.console.version | default "latest" }}
+{{- end }}

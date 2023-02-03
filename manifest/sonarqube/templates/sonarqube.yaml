@@ -1,0 +1,83 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sonarqube-deployment
+  labels:
+    app: sonarqube
+  namespace: sonarqube
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sonarqube
+  template:
+    metadata:
+      labels:
+        app: sonarqube
+    spec:
+      securityContext:
+        fsGroup: 999
+        runAsUser: 999
+      containers:
+      - name: master
+        {{- if .Values.global.registry.is_offline }}
+        image: "{{ .Values.global.registry.private_registry }}/{{ .Values.image.sonarqube.repo }}:{{ .Values.image.sonarqube.tag }}"
+        {{- else }}
+        image: "{{ .Values.image.sonarqube.repo }}:{{ .Values.image.sonarqube.tag }}"
+        {{- end }}
+        ports:
+        - containerPort: 9000
+        # readinessProbe:
+        #   httpGet:
+        #     path: /
+        #     port: 9000
+        #   periodSeconds: 10
+        #   timeoutSeconds: 5
+        #   successThreshold: 2
+        #   failureThreshold: 5
+        # env:
+        # - name: JENKINS_OPTS
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: jenkins
+        #       key: options
+        # - name: JAVA_OPTS
+        #   value: '-Xmx4000m'
+        volumeMounts:
+        - mountPath: /opt/sonarqube/conf
+          name: sonarqube-conf
+        - mountPath: /opt/sonarqube/data
+          name: sonarqube-data
+        - mountPath: /opt/sonarqube/logs
+          name: sonarqube-logs
+        {{- if ne .Values.global.timezone "UTC" }}
+        - name: timezone-config
+          mountPath: /etc/localtime
+        {{- end }}
+        resources:
+          limits:
+            cpu: 2000m
+            memory: 4500Mi
+          requests:
+            cpu: 1000m
+            memory: 4000Mi
+      volumes:
+      - name: sonarqube-conf
+        persistentVolumeClaim:
+          claimName: sonarqube-conf-pvc
+      - name: sonarqube-data
+        persistentVolumeClaim:
+          claimName: sonarqube-data-pvc
+      - name: sonarqube-logs
+        persistentVolumeClaim:
+          claimName: sonarqube-logs-pvc
+      - name: sonarqube-account-secret
+        secret:
+          defaultMode: 420
+          secretName: sonarqube-account-secret
+      {{- if ne .Values.global.timezone "UTC" }}
+      - name: timezone-config
+        hostPath:
+          path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.global.timezone }}
+      {{- end }}

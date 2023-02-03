@@ -17,7 +17,7 @@ metadata:
     helm.sh/chart: {{ template "traefik.chart" . }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/instance: {{ .Release.Name }}
-  name: "tmax-cloud"
+  name: tmax-cloud
 spec:
   controller: traefik.io/ingress-controller
 {{- end }}

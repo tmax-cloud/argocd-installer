@@ -17,7 +17,11 @@ function(
     cni_image_repo="calico/cni",
     pod2daemon_image_repo="calico/pod2daemon-flexvol",
     node_image_repo="calico/node",
-    controllers_image_repo="calico/kube-controllers"
+    controllers_image_repo="calico/kube-controllers",
+    log_level="info",//cni network config loglevel 변수
+    logSeverityFile="info",//file의 loglevel 변수
+    logSeverityScreen="info",//stdout의 loglevel 변수
+    logSeveritySys="info"//syslog level  
 )
   local target_registry = if is_offline == "false" then "" else private_registry + "/";
 [
@@ -32,7 +36,7 @@ function(
       "typha_service_name": "none",
       "calico_backend": calico_backend,
         "veth_mtu": veth_mtu,
-      "cni_network_config": "{\n  \"name\": \"k8s-pod-network\",\n  \"cniVersion\": \"0.3.1\",\n  \"plugins\": [\n    {\n      \"type\": \"calico\",\n      \"log_level\": \"info\",\n      \"log_file_path\": \"/var/log/calico/cni/cni.log\",\n      \"datastore_type\": \"kubernetes\",\n      \"nodename\": \"__KUBERNETES_NODE_NAME__\",\n      \"mtu\": __CNI_MTU__,\n      \"ipam\": {\n          \"type\": \"calico-ipam\"\n      },\n      \"policy\": {\n          \"type\": \"k8s\"\n      },\n      \"kubernetes\": {\n          \"kubeconfig\": \"__KUBECONFIG_FILEPATH__\"\n      }\n    },\n    {\n      \"type\": \"portmap\",\n      \"snat\": true,\n      \"capabilities\": {\"portMappings\": true}\n    },\n    {\n      \"type\": \"bandwidth\",\n      \"capabilities\": {\"bandwidth\": true}\n    }\n  ]\n}"
+      "cni_network_config": std.join("", ["{\n  \"name\": \"k8s-pod-network\",\n  \"cniVersion\": \"0.3.1\",\n  \"plugins\": [\n    {\n      \"type\": \"calico\",\n      \"log_level\": \"",log_level, "\",\n      \"log_file_path\": \"/var/log/calico/cni/cni.log\",\n      \"datastore_type\": \"kubernetes\",\n      \"nodename\": \"__KUBERNETES_NODE_NAME__\",\n      \"mtu\": __CNI_MTU__,\n      \"ipam\": {\n          \"type\": \"calico-ipam\"\n      },\n      \"policy\": {\n          \"type\": \"k8s\"\n      },\n      \"kubernetes\": {\n          \"kubeconfig\": \"__KUBECONFIG_FILEPATH__\"\n      }\n    },\n    {\n      \"type\": \"portmap\",\n      \"snat\": true,\n      \"capabilities\": {\"portMappings\": true}\n    },\n    {\n      \"type\": \"bandwidth\",\n      \"capabilities\": {\"bandwidth\": true}\n    }\n  ]\n}"])
     }
   },
   {
@@ -3684,7 +3688,7 @@ function(
                 },
                 {
                   "name": "FELIX_LOGSEVERITYSCREEN",
-                  "value": "info"
+                  "value": log_level
                 },
                 {
                   "name": "FELIX_HEALTHENABLED",
@@ -3975,7 +3979,10 @@ function(
     },
     "spec": {
       "vxlanPort": vxlanPort,
-      "vxlanVNI": vxlanVNI
+      "vxlanVNI": vxlanVNI,
+      "logSeverityFile":logSeverityFile,
+      "logSeverityScreen": logSeverityScreen,
+      "logSeveritySys":logSeveritySys
     }
   },
   {
@@ -3985,7 +3992,18 @@ function(
       "name": "default"
     },
     "spec": {
-      "asNumber": asNumber
+      "asNumber": asNumber,
+      "logSeverityScreen": logSeverityScreen
+    }
+  },
+  {
+    "apiVersion": "crd.projectcalico.org/v1",
+    "kind": "KubeControllersConfiguration",
+    "metadata": {
+      "name": "default"
+    },
+    "spec": {
+      "logSeverityScreen": logSeverityScreen
     }
   }
 ]

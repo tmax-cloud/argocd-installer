@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sonar-ingress
+  namespace: sonarqube
+  labels:
+    ingress.tmaxcloud.org/name: sonarqube
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+spec:
+  ingressClassName: tmax-cloud
+  {{- if .Values.tls.enabled }}
+  tls:
+  - hosts:
+    - {{ .Values.ingress.hosts.subdomain }}.{{ .Values.ingress.hosts.domain }}
+  {{- end }}
+  rules:
+    - host: {{ .Values.ingress.hosts.subdomain }}.{{ .Values.ingress.hosts.domain }}
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: sonarqube-service
+                port:
+                  number: 9000

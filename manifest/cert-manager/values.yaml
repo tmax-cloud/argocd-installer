@@ -1,0 +1,54 @@
+# Default values for cert-manager.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+fullnameOverride: ""
+## crd 선행 설치
+## kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.9.1/cert-manager.crds.yaml
+cert-manager:
+##  Error: 0, Warning: 1, infoLevel: 3, debug: 4
+  global:
+    logLevel: 2
+  enabled: true
+  fullnameOverride: cert-manager
+  installCRDs: true
+  extraArgs:
+    - "--dns01-recursive-nameservers=8.8.8.8:53"
+    - "--dns01-recursive-nameservers-only"
+    - "--enable-certificate-owner-ref=true"
+#  image:
+#    repository: imageRepository
+#  cainjector:
+#    image:
+#      repository: imageRepository
+#  webhook:
+#    image:
+#      repository: imageRepository
+## 파드에 imagePullSecrets 이 없는 경우, ServiceAccount 의 imagePullSecrets 이 파드에 추가된다
+## https://kubernetes.io/ko/docs/reference/access-authn-authz/service-accounts-admin/
+#  global:
+#    imagePullSecrets:
+#      - name: regcred
+  resources:
+   limits:
+     cpu: 100m
+     memory: 128Mi
+   requests:
+     cpu: 100m
+     memory: 128Mi
+  cainjector:
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+  webhook:
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi

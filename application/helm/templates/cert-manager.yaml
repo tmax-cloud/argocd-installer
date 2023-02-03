@@ -1,0 +1,99 @@
+{{- if .Values.modules.certManager.enabled }}
+{{ $isMaster := eq .Values.global.cluster "master" }}
+{{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
+{{ $module := "cert-manager" }}
+{{ $ns := "ns-cert-manager" }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  labels:
+    cluster: {{ ternary "master" $prefix $isMaster }}
+  name: {{ ternary $ns (printf "%s-%s" $prefix $ns) $isMaster }}
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-5"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+    {{- if .Values.modules.certManager.autoSync }}
+    automated:
+      selfHeal: true
+      prune: true
+    {{- end }}
+  destination:
+    name: {{ .Values.global.clusterName }}
+  project: {{ .Values.spec.project }}
+  source:
+    path: manifest/namespace
+    repoURL: {{ .Values.spec.source.repoURL }}
+    targetRevision: {{ .Values.spec.source.targetRevision }}
+    helm:
+      releaseName: {{ $ns }}
+      parameters:
+        - name: namespace
+          value: cert-manager
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  labels:
+    cluster: {{ ternary "master" $prefix $isMaster }}
+  name: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-4"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+      - RespectIgnoreDifferences=true
+    {{- if .Values.modules.certManager.autoSync }}
+    automated:
+      selfHeal: true
+      prune: true
+    {{- end }}
+    retry:
+      limit: 3
+      backoff:
+        duration: "30s"
+        factor: 2
+        maxDuration: "3m0s"
+  destination:
+    name: {{ .Values.global.clusterName }}
+    namespace: cert-manager
+  project: {{ .Values.spec.project }}
+  source:
+    path: manifest/cert-manager
+    repoURL: {{ .Values.spec.source.repoURL }}
+    targetRevision: {{ .Values.spec.source.targetRevision }}
+    helm:
+      releaseName: {{ $module }}
+      valueFiles:
+        - values.yaml
+      parameters:
+      {{- $value := (.Values.modules.certManager.logLevel | toString) }}
+      {{- $valueIsValid := regexMatch "^[0-5]" $value }}
+      {{- if $valueIsValid }}
+        - name: cert-manager.global.logLevel
+          value: {{ $value | quote }}
+      {{- else }}
+        - name: cert-manager.global.logLevel
+          value: "2"
+      {{- end }}
+      {{- if .Values.global.network.disabled }}
+        - name: cert-manager.image.repository
+          value: "{{ .Values.global.privateRegistry }}/quay.io/jetstack/cert-manager-controller"
+        - name: cert-manager.cainjector.image.repository
+          value: "{{ .Values.global.privateRegistry }}/quay.io/jetstack/cert-manager-cainjector"
+        - name: cert-manager.webhook.image.repository
+          value: "{{ .Values.global.privateRegistry }}/quay.io/jetstack/cert-manager-webhook"
+        - name: cert-manager.startupapicheck.image.repository
+          value: "{{ .Values.global.privateRegistry }}/quay.io/jetstack/cert-manager-ctl"
+      {{- end }}
+---
+{{- end }}

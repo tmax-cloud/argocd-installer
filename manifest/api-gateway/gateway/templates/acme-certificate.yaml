@@ -1,0 +1,17 @@
+{{- if .Values.tls.acme.enabled }}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ .Values.tls.acme.dns.type }}-acme-crt
+  labels:
+    {{- include "gateway.labels" . | nindent 4 }}
+spec:
+  secretName: {{ .Values.tls.acme.dns.type }}-acme-crt-secret
+  dnsNames:
+    - {{ .Values.tls.domain | quote}}
+    - {{ printf "*.%s" .Values.tls.domain | quote }}
+  issuerRef:
+    name: {{ printf "%s-letsencrypt-%s" .Values.tls.acme.dns.type .Values.tls.acme.environment }}
+    kind: Issuer
+{{- end }}

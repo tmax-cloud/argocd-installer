@@ -54,6 +54,16 @@ local gcr_registry = if is_offline == "false" then "" else private_registry + "/
             {
               "name": "tekton-triggers-controller",
               "image": std.join("", [gcr_registry,"gcr.io/tekton-releases/github.com/tektoncd/triggers/cmd/controller:v0.15.0"]),
+              "resources": {
+                "requests": {
+                  "cpu": "100m",
+                  "memory": "100Mi"
+                },
+                "limits": {
+                  "cpu": "500m",
+                  "memory": "500Mi"
+                }
+              },
               "args": [
                 "-logtostderr",
                 "-stderrthreshold",
@@ -178,6 +188,16 @@ local gcr_registry = if is_offline == "false" then "" else private_registry + "/
             {
               "name": "webhook",
               "image": std.join("", [gcr_registry,"gcr.io/tekton-releases/github.com/tektoncd/triggers/cmd/webhook:v0.15.0"]),
+              "resources": {
+                "requests": {
+                  "cpu": "100m",
+                  "memory": "100Mi"
+                },
+                "limits": {
+                  "cpu": "500m",
+                  "memory": "500Mi"
+                }
+              },
               "env": [
                 {
                   "name": "SYSTEM_NAMESPACE",
@@ -292,6 +312,16 @@ local gcr_registry = if is_offline == "false" then "" else private_registry + "/
             {
               "name": "tekton-triggers-core-interceptors",
               "image": std.join("",[gcr_registry,"gcr.io/tekton-releases/github.com/tektoncd/triggers/cmd/interceptors:v0.15.0"]),
+              "resources": {
+                "requests": {
+                  "cpu": "100m",
+                  "memory": "100Mi"
+                },
+                "limits": {
+                  "cpu": "500m",
+                  "memory": "500Mi"
+                }
+              },
               "args": [
                 "-logtostderr",
                 "-stderrthreshold",

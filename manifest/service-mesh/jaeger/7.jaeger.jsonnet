@@ -5,12 +5,16 @@ function(
   cluster_name="master",
   tmax_client_secret="tmax_client_secret",
   HYPERAUTH_DOMAIN="hyperauth.domain",
-  GATEKEER_VERSION="10.0.0",
+  GATEKEEPER_VERSION="v1.0.2",
   CUSTOM_DOMAIN_NAME="custom-domain",
   CUSTOM_CLUSTER_ISSUER="tmaxcloud-issuer",
   jaeger_client_id="jaeger",
   jaeger_subdomain="jaeger",
   storage_type="opensearch",
+  jaeger_collector_log_level="info",
+  jaeger_agent_log_level="info",
+  jaeger_query_log_level="info",
+  gatekeeper_log_level="info",
   time_zone="UTC"
 )
 
@@ -217,7 +221,8 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
               "image": std.join("", [target_registry, "docker.io/jaegertracing/jaeger-collector:", JAEGER_VERSION]),
               "name": "jaeger-collector",
               "args": [
-                "--config-file=/conf/collector.yaml"
+                "--config-file=/conf/collector.yaml",
+                std.join("", ["--log-level=", jaeger_collector_log_level])
               ],
               "ports": [
                 {
@@ -413,7 +418,7 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
           "containers": [
             {
               "name": "gatekeeper",
-              "image": std.join("", [target_registry, "quay.io/keycloak/keycloak-gatekeeper:", GATEKEER_VERSION]),
+              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/gatekeeper:", GATEKEEPER_VERSION]),
               "imagePullPolicy": "Always",
               "args": [
                 std.join("", ["--client-id=", jaeger_client_id]),
@@ -436,7 +441,7 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
                 "--forbidden-page=/html/access-forbidden.html",
                 std.join("", ["--resources=uri=/*|roles=", jaeger_client_id, ":jaeger-manager"]),
                 "--enable-encrypted-token",
-                "--verbose"
+                std.join("", ["--log-level=", gatekeeper_log_level])
               ],
               "ports": [
                 {
@@ -464,7 +469,8 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
             },
             {
               "args": [
-                "--config-file=/conf/query.yaml"
+                "--config-file=/conf/query.yaml",
+                std.join("", ["--log-level=", jaeger_query_log_level])
               ],
               "env": [
                 {
@@ -662,7 +668,8 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
               "image": std.join("", [target_registry, "docker.io/jaegertracing/jaeger-agent:", JAEGER_VERSION]),
               "name": "jaeger-agent",
               "args": [
-                "--config-file=/conf/agent.yaml"
+                "--config-file=/conf/agent.yaml",
+                std.join("", ["--log-level=", jaeger_agent_log_level])
               ],
               "volumeMounts": [
                 {

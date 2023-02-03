@@ -24,6 +24,8 @@ spec:
             value: {{ .Values.global.privateRegistry }}
           - name: time_zone
             value: {{ .Values.global.timeZone }}
+          - name: log_level
+            value: "{{ .Values.modules.redis.logLevel }}"
     path: manifest/redis-operator
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }} 

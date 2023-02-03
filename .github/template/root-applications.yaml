@@ -1,0 +1,106 @@
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: "{{root}}-applications"
+  namespace: argocd
+spec:
+  destination:
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    helm:
+      valueFiles:
+        - shared-values.yaml
+        - "{{root}}-values.yaml"
+      parameters:
+        # 모든 모듈 enabled
+        - name: modules.calico.enabled
+          value: "true"
+        - name: modules.gitlab.enabled
+          value: "true"
+        - name: modules.nexus.enabled
+          value: "true"
+        - name: modules.gitea.enabled
+          value: "true"
+        - name: modules.gatewayBootstrap.enabled
+          value: "true"
+        - name: modules.gatewayBootstrap.autoSync
+          value: "false"
+        - name: modules.certManager.enabled
+          value: "true"
+        - name: modules.certManager.autoSync
+          value: "false"
+
+        - name: modules.strimziKafka.enabled
+          value: "true"
+        - name: modules.serviceBinding.enabled
+          value: "true"
+        - name: modules.hyperAuth.enabled
+          value: "true"
+        - name: modules.argocd.enabled
+          value: "true"
+        - name: modules.opensearch.enabled
+          value: "true"
+        - name: modules.loki.enabled
+          value: "true"
+        - name: modules.prometheus.enabled
+          value: "true"
+        - name: modules.grafanaOperator.enabled
+          value: "true"
+        - name: modules.serviceMesh.istio.enabled
+          value: "true"
+        - name: modules.serviceMesh.jaeger.enabled
+          value: "true"
+        - name: modules.serviceMesh.kiali.enabled
+          value: "true"
+        - name: modules.capi.enabled
+          value: "true"
+        - name: modules.capi.provider.aws.enabled
+          value: "true"
+        - name: modules.capi.provider.vsphere.enabled
+          value: "true"
+        - name: modules.tsb.enabled
+          value: "true"
+        - name: modules.catalogController.enabled
+          value: "true"
+        - name: modules.helmApiserver.enabled
+          value: "true"
+        - name: modules.hyperCloud.enabled
+          value: "true"
+        - name: modules.hyperregistry.enabled
+          value: "true"
+        - name: modules.tektonPipeline.enabled
+          value: "true"
+        - name: modules.tektonTrigger.enabled
+          value: "true"
+        - name: modules.cicd.enabled
+          value: "true"
+        - name: modules.redis.enabled
+          value: "true"
+        - name: modules.imageValidatingWebhook.istio.enabled
+          value: "true"
+        - name: modules.nfs.enabled
+          value: "true"
+        - name: modules.cephfs.enabled
+          value: "true"
+        - name: modules.rbd.enabled
+          value: "true"
+        - name: modules.efs.enabled
+          value: "true"
+        
+        # destination 세팅 
+        - name: global.clusterName
+          value: in-cluster
+        - name: global.clusterNamespace
+          value: default
+        - name: spec.source.repoURL
+          value: {{repoURL}}
+        - name: spec.source.targetRevision
+          value: {{targetRevision}}
+
+
+    path: application/helm
+    repoURL: {{repoURL}}
+    targetRevision: {{targetRevision}}

@@ -1,7 +1,8 @@
 function (
   is_offline="false",
   private_registry="registry.hypercloud.org",
-  time_zone="UTC"
+  time_zone="UTC",
+  log_level="INFO"
 )
 
 
@@ -39,13 +40,13 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "args": [
               "--leader-elect",
               "--zap-encoder=json",
-              "--zap-log-level=info"
+              std.join("", ["--zap-log-level=", log_level])
             ],
             "command": [
               "/manager"
             ],
             "imagePullPolicy": "Always",
-            "image": std.join("", [target_registry, "docker.io/tmaxcloudck/service-binding-operator:1.0.0"]),
+            "image": std.join("", [target_registry, "quay.io/redhat-developer/servicebinding-operator@sha256:30bf7f0f21024bb2e1e4db901b1f5e89ab56e0f3197a919d2bbb670f3fe5223a"]),
             "livenessProbe": {
               "httpGet": {
                 "path": "/healthz",
@@ -62,6 +63,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "protocol": "TCP"
               }
             ],
+            "resources": {
+                "limits": {
+                  "cpu": "1000m",
+                  "memory": "1Gi"
+                },
+                "requests": {
+                  "cpu": "100m",
+                  "memory": "128Mi"
+                }
+            },
             "readinessProbe": {
               "httpGet": {
                 "path": "/readyz",
