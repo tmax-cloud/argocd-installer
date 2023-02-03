@@ -616,5 +616,29 @@ local target_registry = if is_offline == "false" then "" else private_registry +
       }
     ]
   }
+},
+{
+  "apiVersion": "v1",
+  "data": {
+    "agent": std.join("", ["{\n    \"image\" : \"", target_registry, "docker.io/kserve/agent:v0.10.0\",\n    \"memoryRequest\": \"100Mi\",\n    \"memoryLimit\": \"1Gi\",\n    \"cpuRequest\": \"100m\",\n    \"cpuLimit\": \"1\"\n}"]),
+    "batcher": std.join("", ["{\n    \"image\" : \"", target_registry, "docker.io/kserve/agent:v0.10.0\",\n    \"memoryRequest\": \"1Gi\",\n    \"memoryLimit\": \"1Gi\",\n    \"cpuRequest\": \"1\",\n    \"cpuLimit\": \"1\"\n}"]),
+    "credentials": "{\n   \"gcs\": {\n       \"gcsCredentialFileName\": \"gcloud-application-credentials.json\"\n   },\n   \"s3\": {\n       \"s3AccessKeyIDName\": \"AWS_ACCESS_KEY_ID\",\n       \"s3SecretAccessKeyName\": \"AWS_SECRET_ACCESS_KEY\",\n       \"s3Endpoint\": \"\",\n       \"s3UseHttps\": \"\",\n       \"s3Region\": \"\",\n       \"s3VerifySSL\": \"\",\n       \"s3UseVirtualBucket\": \"\",\n       \"s3UseAnonymousCredential\": \"\",\n       \"s3CABundle\": \"\"\n   }\n}",
+    "deploy": "{\n  \"defaultDeploymentMode\": \"Serverless\"\n}",
+    "explainers": std.join("", ["{\n    \"alibi\": {\n        \"image\" : \"", target_registry, "docker.io/kserve/alibi-explainer\",\n        \"defaultImageVersion\": \"v0.10.0\"\n    },\n    \"aix\": {\n        \"image\" : \"", target_registry, "docker.io/kserve/aix-explainer\",\n        \"defaultImageVersion\": \"v0.10.0\"\n    },\n    \"art\": {\n        \"image\" : \"", target_registry, "docker.io/kserve/art-explainer\",\n        \"defaultImageVersion\": \"v0.10.0\"\n    }\n}"]),
+    "ingress": "{\n  \"ingressGateway\": \"kubeflow/kubeflow-gateway\",\n  \"ingressService\": \"ingressgateway.istio-system.svc.cluster.local\",\n  \"localGateway\": \"knative-serving/knative-local-gateway\",\n  \"localGatewayService\": \"knative-local-gateway.istio-system.svc.cluster.local\",\n  \"ingressDomain\": \"example.com\",\n  \"ingressClassName\": \"istio\",\n  \"domainTemplate\": \"{{ .Name }}-{{ .Namespace }}.{{ .IngressDomain }}\",\n  \"urlScheme\": \"http\",\n  \"disableIstioVirtualHost\": false\n}",
+    "logger": std.join("", ["{\n    \"image\" : \"", target_registry, "docker.io/kserve/agent:v0.10.0\",\n    \"memoryRequest\": \"100Mi\",\n    \"memoryLimit\": \"1Gi\",\n    \"cpuRequest\": \"100m\",\n    \"cpuLimit\": \"1\",\n    \"defaultUrl\": \"http://default-broker\"\n}"]),
+    "metricsAggregator": "{\n  \"enableMetricAggregation\": \"false\",\n  \"enablePrometheusScraping\" : \"false\"\n}",
+    "router": std.join("", ["{\n    \"image\" : \"", target_registry, "docker.io/kserve/router:v0.10.0\",\n    \"memoryRequest\": \"100Mi\",\n    \"memoryLimit\": \"1Gi\",\n    \"cpuRequest\": \"100m\",\n    \"cpuLimit\": \"1\"\n}"]),
+    "storageInitializer": std.join("", ["{\n    \"image\" : \"", target_registry, "docker.io/kserve/storage-initializer:v0.10.0\",\n    \"memoryRequest\": \"100Mi\",\n    \"memoryLimit\": \"1Gi\",\n    \"cpuRequest\": \"100m\",\n    \"cpuLimit\": \"1\",\n    \"storageSpecSecretName\": \"storage-config\"\n}"])
+  },
+  "kind": "ConfigMap",
+  "metadata": {
+    "labels": {
+      "app": "kserve",
+      "app.kubernetes.io/name": "kserve"
+    },
+    "name": "inferenceservice-config",
+    "namespace": "kubeflow"
+  }
 }
 ]    
