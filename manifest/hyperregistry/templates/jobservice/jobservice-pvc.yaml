@@ -1,23 +1,26 @@
-{{- $jobservice := .Values.persistence.persistentVolumeClaim.jobservice -}}
-{{- if and .Values.persistence.enabled (not $jobservice.existingClaim) (has "file" .Values.jobservice.jobLoggers) }}
+{{- $jobLog := .Values.persistence.persistentVolumeClaim.jobservice.jobLog -}}
+{{- if and .Values.persistence.enabled (not $jobLog.existingClaim) (has "file" .Values.jobservice.jobLoggers) }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: {{ template "harbor.jobservice" . }}
-  {{- if eq .Values.persistence.resourcePolicy "keep" }}
   namespace: {{ .Values.namespace }}
   annotations:
+  {{- range $key, $value := $jobLog.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  {{- if eq .Values.persistence.resourcePolicy "keep" }}
     helm.sh/resource-policy: keep
   {{- end }}
   labels:
 {{ include "harbor.labels" . | indent 4 }}
     component: jobservice
 spec:
-  accessModes:
-    - {{ $jobservice.accessMode }}
+  accessModes: 
+    - {{ $jobLog.accessMode }}
   resources:
     requests:
-      storage: {{ $jobservice.size }}
+      storage: {{ $jobLog.size }}
   {{- if .Values.storageClass }}
     {{- if eq "-" .Values.storageClass }}
   storageClassName: ""

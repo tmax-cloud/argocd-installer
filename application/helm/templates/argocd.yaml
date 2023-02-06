@@ -27,12 +27,20 @@ spec:
           value: {{ .Values.modules.argocd.subdomain }}
         - name: repoServer.replicas
           value: "{{ .Values.modules.argocd.repoServer.replicas }}"
+        - name: repoServer.logLevel
+          value: "{{ .Values.modules.argocd.repoServer.logLevel }}"
         - name: redis.replicas
           value: "{{ .Values.modules.argocd.redis.replicas }}"
+        - name: redis.logLevel
+          value: "{{ .Values.modules.argocd.redis.logLevel }}"
         - name: argocdServer.replicas
           value: "{{ .Values.modules.argocd.argocdServer.replicas }}"
+        - name: argocdServer.logLevel
+          value: "{{ .Values.modules.argocd.argocdServer.logLevel }}"
         - name: controller.replicas
           value: "{{ .Values.modules.argocd.controller.replicas }}"
+        - name: controller.logLevel
+          value: "{{ .Values.modules.argocd.controller.logLevel }}"
         - name: timezone
           value: {{ .Values.global.timeZone }}
     path: manifest/argocd

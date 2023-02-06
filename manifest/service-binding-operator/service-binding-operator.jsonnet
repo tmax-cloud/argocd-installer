@@ -1,7 +1,8 @@
 function (
   is_offline="false",
   private_registry="registry.hypercloud.org",
-  time_zone="UTC"
+  time_zone="UTC",
+  log_level="INFO"
 )
 
 
@@ -39,7 +40,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "args": [
               "--leader-elect",
               "--zap-encoder=json",
-              "--zap-log-level=info"
+              std.join("", ["--zap-log-level=", log_level])
             ],
             "command": [
               "/manager"
@@ -64,12 +65,12 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             ],
             "resources": {
                 "limits": {
-                  "cpu": "250m",
-                  "memory": "64Mi"
+                  "cpu": "1000m",
+                  "memory": "1Gi"
                 },
                 "requests": {
-                  "cpu": "50m",
-                  "memory": "16Mi"
+                  "cpu": "100m",
+                  "memory": "128Mi"
                 }
             },
             "readinessProbe": {

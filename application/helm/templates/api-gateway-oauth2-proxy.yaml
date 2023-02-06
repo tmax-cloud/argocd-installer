@@ -27,7 +27,9 @@ spec:
         maxDuration: "1m0s"
     {{- if .Values.modules.gatewayBootstrap.autoSync }}
     automated:
-      selfHeal: true
+      # IMS 298144
+      # 강제로 변경하지 못하게 selfHeal: false로 설정
+      selfHeal: false
       prune: true
     {{- end }}
   destination:
@@ -55,10 +57,11 @@ spec:
           value: "tmax"
         - name: config.clientID
           value: "hypercloud5"
-        {{- with .Values.modules.gatewayBootstrap.console }}
         - name: config.cookieSecret
-          value: {{ .cookieSecret | default "DVlYFBWPbb7JxehybnQ2VeRqDW5NBk8HNMi2eIMt3jg=" }}
-        {{- end }}
+          ## cookie secret 자동 생성 기능 추가
+          ## openssl rand -base64 32 | tr -- '+/' '-_'
+          {{- $randomString := randAlphaNum 32 | b64enc | replace "+" "-" | replace "/" "_" }}
+          value: {{ $randomString }}
         {{- if .Values.global.network.disabled }}
         - name: image.repository
           value: {{ .Values.global.privateRegistry }}/docker.io/tmaxcloudck/oauth2-proxy

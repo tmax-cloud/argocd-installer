@@ -24,6 +24,8 @@ spec:
             value: "{{ .Values.global.network.disabled }}"
           - name: private_registry
             value: {{ .Values.global.privateRegistry }}
+          - name: log_level
+            value: {{ .Values.modules.opensearch.logLevel }}
           - name: os_image_tag
             value: {{ .Values.modules.opensearch.os.version }}
           - name: busybox_image_tag

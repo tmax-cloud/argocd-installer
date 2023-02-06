@@ -7,7 +7,7 @@ function (
   keycloak_addr="",
   grafana_pvc="10Gi",
   grafana_version="8.2.2",
-  grafana_image_repo="grafana/grafana",
+  grafana_image_repo="docker.io/grafana/grafana",
   ingress_domain="",
   admin_user="test@test.co.kr",
   is_master_cluster="true",

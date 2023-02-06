@@ -28,11 +28,17 @@ spec:
         - name: gitea.config.server.DOMAIN
           value: {{ printf "%s.%s" .Values.modules.gitea.subdomain .Values.global.domain }}
         - name: gitea.config.server.ROOT_URL
-          value: {{ printf "http://%s.%s" .Values.modules.gitea.subdomain .Values.global.domain }}
+          value: {{ printf "https://%s.%s" .Values.modules.gitea.subdomain .Values.global.domain }}
         - name: gitea.config.server.SSH_DOMAIN
           value: {{ printf "%s.%s" .Values.modules.gitea.subdomain .Values.global.domain }}
         - name: gitea.config.log.LEVEL
           value: {{ .Values.modules.gitea.logLevel }}
+        - name: gitea.oauth[0].key
+          value: {{ ternary "gitea" (printf "%s-gitea" $prefix) $isMaster }}
+        - name: gitea.oauth[0].secret
+          value: {{ include "hyperAuth.tmaxClientSecret" . }}
+        - name: gitea.oauth[0].autoDiscoverUrl
+          value: https://{{ include "hyperAuth.domain" . }}/auth/realms/tmax/.well-known/openid-configuration"
     path: manifest/gitea
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}

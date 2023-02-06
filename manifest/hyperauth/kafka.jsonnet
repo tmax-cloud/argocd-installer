@@ -26,7 +26,7 @@ if is_kafka_enabled == "true" then [
     },
     "spec": {
       "kafka": {
-        "version": "2.8.0",
+        "version": "3.3.1",
         "replicas": 3,
         "resources": {
             "limits": {

@@ -18,10 +18,10 @@ function(
     pod2daemon_image_repo="calico/pod2daemon-flexvol",
     node_image_repo="calico/node",
     controllers_image_repo="calico/kube-controllers",
-    log_level="info",
-    logSeverityFile="INFO",
-    logSeverityScreen="INFO",
-    logSeveritySys="INFO"
+    log_level="info",//cni network config loglevel 변수
+    logSeverityFile="info",//file의 loglevel 변수
+    logSeverityScreen="info",//stdout의 loglevel 변수
+    logSeveritySys="info"//syslog level  
 )
   local target_registry = if is_offline == "false" then "" else private_registry + "/";
 [
