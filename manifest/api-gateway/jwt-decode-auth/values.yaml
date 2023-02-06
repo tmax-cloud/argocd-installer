@@ -4,6 +4,7 @@
 fullnameOverride: "jwt-decode-auth"
 
 hyperAuth:
+  # 호스트 주소만 기입 (예, hypercloud.tmaxcloud.org)
   address: ""
   realm: ""
 timeZone: ""
