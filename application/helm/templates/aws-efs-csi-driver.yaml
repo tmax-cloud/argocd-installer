@@ -26,6 +26,12 @@ spec:
         {{- end }}
         - name: timeZone
           value: {{ .Values.global.timeZone }}
+        - name: node.logLevel
+          value: "{{ .Values.modules.efs.logLevel }}"
+          forceString: true
+        - name: controller.logLevel
+          value: "{{ .Values.modules.efs.logLevel }}"
+          forceString: true
         {{- if .Values.global.network.disabled }}
         - name: image.repository
           value: "{{ .Values.global.privateRegistry }}/aws-efs-csi-driver"

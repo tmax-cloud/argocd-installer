@@ -7,7 +7,7 @@ function (
   keycloak_addr="",
   grafana_pvc="10Gi",
   grafana_version="8.2.2",
-  grafana_image_repo="grafana/grafana",
+  grafana_image_repo="docker.io/grafana/grafana",
   ingress_domain="",
   admin_user="test@test.co.kr",
   is_master_cluster="true",
@@ -96,110 +96,109 @@ local admin_info = if is_master_cluster == "true" then "" else "admin_user = " +
       }
     },
     "spec": {
-    "replicas": 1,
-    "selector": {
-      "matchLabels": {
-        "app": "grafana"
-      }
-    },
-    "template": {
-      "metadata": {
-        "creationTimestamp": null,
-        "labels": {
+      "replicas": 1,
+      "selector": {
+        "matchLabels": {
           "app": "grafana"
         }
       },
-      "spec": {
-        "nodeSelector": {
-          "beta.kubernetes.io/os": "linux"
+      "template": {
+        "metadata": {
+          "creationTimestamp": null,
+          "labels": {
+            "app": "grafana"
+          }
         },
-        "restartPolicy": "Always",
-        "serviceAccountName": "grafana",
-        "schedulerName": "default-scheduler",
-        "terminationGracePeriodSeconds": 30,
-        "securityContext": {
-          "runAsUser": 65534,
-          "runAsNonRoot": true
-        },
-        "containers": [
-          {
-            "resources": {
-              "limits": {
-                "cpu": "200m",
-                "memory": "200Mi"
-              },
-              "requests": {
-                "cpu": "100m",
-                "memory": "100Mi"
-              }
-            },
-            "readinessProbe": {
-              "httpGet": {
-                "path": "/api/health",
-                "port": "http",
-                "scheme": "HTTP"
-              },
-              "timeoutSeconds": 1,
-              "periodSeconds": 10,
-              "successThreshold": 1,
-              "failureThreshold": 3
-            },
-            "terminationMessagePath": "/dev/termination-log",
-            "name": "grafana",
-            "ports": [
-              {
-                "name": "http",
-                "containerPort": 3000,
-                "protocol": "TCP"
-              }
-            ],
-            "imagePullPolicy": "IfNotPresent",
-            "volumeMounts": [
-
-              {
-                "name": "grafana-storage",
-                "mountPath": "/var/lib/grafana"
-              },
-              {
-                "name": "grafana-config",
-                "mountPath": "/etc/grafana"
-              },
-              {
-                "name": "grafana-datasources",
-                "mountPath": "/etc/grafana/provisioning/datasources"
-              },
-              {
-                "name": "grafana-dashboards",
-                "mountPath": "/etc/grafana/provisioning/dashboards"
-              },
-              {
-                "name": "grafana-dashboard-k8s-resources-namespace",
-                "mountPath": "/grafana-dashboard-definitions/0/k8s-resources-namespace"
-              },
-              {
-                "name": "grafana-dashboard-hyperauth",
-                "mountPath": "/grafana-dashboard-definitions/0/hyperauth"
-              }
-			  ] + (
-				  if timezone != "UTC" then [
-            {
-              "name": "timezone-config",
-              "mountPath": "/etc/localtime"
-            }
-				  ] else []
-				),
-        }
-            ],
-            "terminationMessagePolicy": "File",
-            "image": std.join("",
-              [
-                target_registry,
-                grafana_image_repo,
-                ":",
-                grafana_version
-              ]
-            )
+        "spec": {
+          "nodeSelector": {
+            "beta.kubernetes.io/os": "linux"
           },
+          "restartPolicy": "Always",
+          "serviceAccountName": "grafana",
+          "schedulerName": "default-scheduler",
+          "terminationGracePeriodSeconds": 30,
+          "securityContext": {
+            "runAsUser": 65534,
+            "runAsNonRoot": true
+          },
+          "containers": [
+            {
+              "resources": {
+                "limits": {
+                  "cpu": "200m",
+                  "memory": "200Mi"
+                },
+                "requests": {
+                  "cpu": "100m",
+                  "memory": "100Mi"
+                }
+              },
+              "readinessProbe": {
+                "httpGet": {
+                  "path": "/api/health",
+                  "port": "http",
+                  "scheme": "HTTP"
+                },
+                "timeoutSeconds": 1,
+                "periodSeconds": 10,
+                "successThreshold": 1,
+                "failureThreshold": 3
+              },
+              "terminationMessagePath": "/dev/termination-log",
+              "name": "grafana",
+              "ports": [
+                {
+                  "name": "http",
+                  "containerPort": 3000,
+                  "protocol": "TCP"
+                }
+              ],
+              "imagePullPolicy": "IfNotPresent",
+              "volumeMounts": [
+                {
+                  "name": "grafana-storage",
+                  "mountPath": "/var/lib/grafana"
+                },
+                {
+                  "name": "grafana-config",
+                  "mountPath": "/etc/grafana"
+                },
+                {
+                  "name": "grafana-datasources",
+                  "mountPath": "/etc/grafana/provisioning/datasources"
+                },
+                {
+                  "name": "grafana-dashboards",
+                  "mountPath": "/etc/grafana/provisioning/dashboards"
+                },
+                {
+                  "name": "grafana-dashboard-k8s-resources-namespace",
+                  "mountPath": "/grafana-dashboard-definitions/0/k8s-resources-namespace"
+                },
+                {
+                  "name": "grafana-dashboard-hyperauth",
+                  "mountPath": "/grafana-dashboard-definitions/0/hyperauth"
+                }
+              ] + (
+                if timezone != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  }
+                ] else []
+              ),
+            }
+          ],
+          "terminationMessagePolicy": "File",
+          "image": std.join("",
+            [
+              target_registry,
+              grafana_image_repo,
+              ":",
+              grafana_version
+            ]
+          )
+        },
         "serviceAccount": "grafana",
         "volumes": [
           {
@@ -243,16 +242,16 @@ local admin_info = if is_master_cluster == "true" then "" else "admin_user = " +
               "defaultMode": 420
             }
           }
-		  ] + (
-			  if timezone != "UTC" then [
-				{
-				  "name": "timezone-config",
-				  "hostPath": {
-					"path": std.join("", ["/usr/share/zoneinfo/", timezone])
-				   }
-				 }
-			  ] else []
-			),
+        ] + (
+          if timezone != "UTC" then [
+            {
+              "name": "timezone-config",
+              "hostPath": {
+                "path": std.join("", ["/usr/share/zoneinfo/", timezone])
+              }
+            }
+          ] else []
+        ),
         "dnsPolicy": "ClusterFirst"
       }
     },
@@ -265,7 +264,7 @@ local admin_info = if is_master_cluster == "true" then "" else "admin_user = " +
     },
     "revisionHistoryLimit": 10,
     "progressDeadlineSeconds": 600
-    },
+  },
   {
     "apiVersion": "networking.k8s.io/v1",
     "kind": "Ingress",

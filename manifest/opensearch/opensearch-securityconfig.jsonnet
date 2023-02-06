@@ -19,6 +19,7 @@ function (
   custom_clusterissuer="tmaxcloud-issuer",
   is_master_cluster="true",
   opensearch_subdomain="opensearch-dashboard",
+  log_level="info",
   storageClass="default"
 )
 

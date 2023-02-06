@@ -28,6 +28,9 @@ spec:
         {{- end }}
         - name: timeZone
           value: {{ .Values.global.timeZone }}
+        - name: logLevel
+          value: "{{ .Values.modules.nfs.logLevel }}"
+          forceString: true
         {{- if .Values.global.network.disabled }}
         - name: image.repository
           value: "{{ .Values.global.privateRegistry }}/nfs-subdir-external-provisioner"
