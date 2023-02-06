@@ -20,6 +20,8 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "CUSTOM_DOMAIN": custom_domain_name,
             "GATEKEEPER_VERSION": gatekeeper_version,
             "LOG_LEVEL": gatekeeper_log_level,
+            "IS_CLOSED": is_offline,
+            "REGISTRY_NAME": target_registry
         },
         "kind": "ConfigMap",
         "metadata": {
@@ -121,9 +123,27 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                             "name": "notebook-controller-config"
                         }
                         }
+                    },
+                    {
+                        "name": "IS_CLOSED",
+                        "valueFrom": {
+                        "configMapKeyRef": {
+                            "key": "IS_CLOSED",
+                            "name": "notebook-controller-config"
+                        }
+                        }
+                    },
+                    {
+                        "name": "REGISTRY_NAME",
+                        "valueFrom": {
+                        "configMapKeyRef": {
+                            "key": "REGISTRY_NAME",
+                            "name": "notebook-controller-config"
+                        }
+                        }
                     }
                     ],
-                    "image": std.join("", [target_registry, "docker.io/tmaxcloudck/notebook-controller-go:b0.2.7"]),
+                    "image": std.join("", [target_registry, "docker.io/tmaxcloudck/notebook-controller-go:b0.2.8"]),
                     "imagePullPolicy": "Always",
                     "name": "notebook-controller",
                     "volumeMounts": [

@@ -3,6 +3,14 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
+    "job": {
+      "type": "object",
+      "properties": {
+        "privateRegistry": {
+          "type": "string"
+        }
+      }
+    },
     "global": {
       "type": "object"
     },
