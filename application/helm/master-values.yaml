@@ -19,6 +19,11 @@ modules:
   ### calico
   calico:
     enabled: false
+    # 사용 가능 한 값 : Debug, Info, Warning, Error, Fatal
+    logLevel: info
+    logSeverityFile: info
+    logSeverityScreen: info
+    logSeveritySys: info
 
   ### gitlab
   gitlab:
@@ -90,10 +95,14 @@ modules:
   ### strimzi-kafka-operator
   strimziKafka:
     enabled: true
+    # ERROR | WARNING | INFO | DEBUG | TRACE 반드시 대문자로 기입
+    logLevel: INFO
 
   ### service-binding-operator
   serviceBinding:
     enabled: true
+    # 사용 가능 한 값 : DEBUG, INFO, ERROR
+    LOG_LEVEL: INFO
     
   ### hyperauth
   hyperAuth:
@@ -105,7 +114,12 @@ modules:
     storageClass: default
     # do not edit tmaxClientSecret!
     tmaxClientSecret: tmax_client_secret
-  
+    # keycloak, hyperauth, kafka, jboss 로그레벨을 하나의 환경변수로 통합 조절
+    # 사용 가능 한 값 : ALL, DEBUG, ERROR, FATAL, INFO, OFF, TRACE, WARN
+    LOG_LEVEL: INFO
+    kafka: 
+      enabled: true
+      
   ### ai-devops
   aiDevops:
     enabled: true
@@ -139,19 +153,26 @@ modules:
     subdomain: argocd
     repoServer:
       replicas: 1
+      logLevel: "info" # debug, info, warn, error
     redis:
       replicas: 1
+      logLevel: "notice" # warning, notice, verbose, debug
     argocdServer:
       replicas: 1
+      logLevel: "info" # debug, info, warn, error
     controller:
       replicas: 1
+      logLevel: "info" # debug, info, warn, error
     ingress:
       enableTraefik: true
       secretName:
-     
+
   ### opensearch
   opensearch:
     enabled: true
+    # opensearch-dashboards에서 지원하는 loglevel에 대한 config 설정을 기준으로 함.
+    # 사용 가능한 값 : error, info, debug
+    logLevel: info
     os:
       version: 1.2.3
       limitMemory: 8Gi
@@ -172,7 +193,9 @@ modules:
   
   ### Loki
   loki:
-    enabled: true
+    enabled: true    
+    # 사용 가능한 값 : error, warn, info, debug
+    logLevel: info
     loki: 
       version: 2.6.0
       volumeSize: 50Gi
@@ -205,7 +228,7 @@ modules:
       imageRepo: docker.io/tmaxcloudck/grafana-operator
     grafana:
       version: "8.2.2"
-      imageRepo: grafana/grafana
+      imageRepo: docker.io/grafana/grafana
 
 
   ### service-mesh
@@ -248,15 +271,17 @@ modules:
   ### template service broker
   tsb:
     enabled: true
-    version: 0.1.4
+    version: 0.1.5
     clusterTsb:
-      version: 0.1.4
+      version: 0.1.5
     templateOperator:
-      version: 0.2.7
+      version: 0.2.8
+    logLevel: info
 
   ### catalog controller
   catalogController:
     enabled: true
+    vLevel: 0
 
   ### helm-apiserver
   helmApiserver:
@@ -267,7 +292,7 @@ modules:
     # default를 사용하지 않고 싶은 경우에는 storage class이름을 기입
     storageClass: default
     # 지정 가능: fatal(0), error(1), warn(2), info(3), debug(4), trace(5)
-    logLevel: error
+    logLevel: info
 
   ### hypercloud
   hyperCloud:
@@ -295,7 +320,7 @@ modules:
     # timescaledb.<테이블 이름>.retention : 청크 테이블 보관 기간
     timescaledb:
       # timescaledb의 경우, DEBUG5, DEBUG4, DEBUG3, DEBUG2, DEBUG1, INFO, NOTICE, WARNING, ERROR, LOG, FATAL, PANIC 기입 가능(대소문자 유의)
-      logLevel: WARNING
+      logLevel: INFO
       audit:
         chunk: "7 days"
         retention: "1 years"
@@ -327,13 +352,13 @@ modules:
       logLevel: info
     # redis의 경우 debug, verbose, notice, warning 기입 가능 (대소문자 유의, warning은 error 급) 
     redis:
-      logLevel: warning
+      logLevel: verbose
     # database(postgres)의 경우 DEBUG5, DEBUG4, DEBUG3, DEBUG2, DEBUG1, INFO, NOTICE, WARNING, ERROR, LOG, FATAL, PANIC 기입 가능(대소문자 유의)
     database:
-      logLevel: ERROR
+      logLevel: INFO
     # portal의 경우 debug, info, notice, warn, error, crit, alert, emerg 기입 가능 (대소문자 유의)
     portal:
-      logLevel: error
+      logLevel: info
     storageClass: nfs
     storageClassDatabase: nfs
 
@@ -354,12 +379,14 @@ modules:
   ### redis-operator
   redis:
     enabled: true
+    # info, debug, error 기입 가능(대소문자 유의)
+    logLevel: info
 
   ### image validating webhook
   imageValidatingWebhook:
     enabled: true
       # debug, info, error 기입 가능 (대소문자 유의)
-    logLevel: error
+    logLevel: info
 
   ### nfs-subdir-external-provisioner
   nfs:
@@ -370,6 +397,8 @@ modules:
     path: /nfs-storage
     # nfs provisioner를 default storageClass로 설정, ex: default / not
     defaultClass: not
+    # logLevel 0 ~ 5 가능
+    logLevel: 0
 
   ### ceph-csi-cephfs
   cephfs:
@@ -382,6 +411,8 @@ modules:
     key: AQCeBcZftAEvExAAultsKBpNpiWWGi06Md7mmw==
     # cephfs csi를 default storageClass로 설정, ex: default / not
     defaultClass: not
+    # logLevel 0 ~ 5 가능
+    logLevel: 0
 
   ### ceph-csi-rbd
   rbd:
@@ -394,6 +425,8 @@ modules:
     key: AQCeBcZftAEvExAAultsKBpNpiWWGi06Md7mmw==
     # rbd csi를 default storageClass로 설정, ex: default / not
     defaultClass: not
+    # logLevel 0 ~ 5 가능
+    logLevel: 0
   
   ### efs-csi
   efs:
@@ -402,3 +435,5 @@ modules:
     fileSystemId: fs-0ce741ec0e2ea2fa2
     # efs csi를 default storageClass로 설정, ex: default / not
     defaultClass: not
+    # logLevel 0 ~ 5 가능
+    logLevel: 0

@@ -2,6 +2,7 @@ function (
   is_offline="false",
   private_registry="172.22.6.2:5000",
   time_zone="UTC",
+  log_level="info"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -39,7 +40,8 @@ local target_registry = if is_offline == "false" then "" else private_registry +
               "/manager"
             ],
             "args": [
-              "--leader-elect"
+              "--leader-elect",
+              std.join("", ["--zap-log-level=", log_level])
             ],
             "image": std.join("", [target_registry, "docker.io/tmaxcloudck/redis-operator:v0.11.1"]),
             "imagePullPolicy": "Always",

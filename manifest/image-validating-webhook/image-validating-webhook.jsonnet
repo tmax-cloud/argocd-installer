@@ -40,6 +40,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
               "args": [
                 std.join("", ["--zap-log-level=", log_level])
               ],
+              "resources": {
+                  "limits": {
+                      "cpu": "300m",
+                      "memory": "512Mi"
+                  },
+                  "requests": {
+                      "cpu": "100m",
+                      "memory": "256Mi"
+                  }
+              },
               "volumeMounts": [
                 {
                   "mountPath": "/etc/webhook/certs",

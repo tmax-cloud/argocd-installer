@@ -376,13 +376,13 @@ updateStrategy:
 
 # set loglevel
 # core, chartmuseum, jobservice, notary-server, notary-signer, registry, trivy (debug, info, warning, error or fatal)
-mainsLogLevel: error
+mainsLogLevel: info
 # redis (debug, verbose, notice, warning)
-redisLogLevel: warning
+redisLogLevel: verbose
 # database[postgres] (DEBUG5, DEBUG4, DEBUG3, DEBUG2, DEBUG1, INFO, NOTICE, WARNING, ERROR, LOG, FATAL, PANIC)
-databaseLogLevel: ERROR
+databaseLogLevel: INFO
 # portal (debug, info, notice, warn, error, crit, alert, emerg)
-portalLogLevel: error
+portalLogLevel: info
 
 # The initial password of Harbor admin. Change it from portal after launching Harbor
 harborAdminPassword: "admin"
@@ -427,10 +427,13 @@ nginx:
   # mount the service account token
   automountServiceAccountToken: false
   replicas: 1
-  # resources:
-  #  requests:
-  #    memory: 256Mi
-  #    cpu: 100m
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+    limits:
+      memory: 512Mi
+      cpu: 500m
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -448,10 +451,13 @@ portal:
   # mount the service account token
   automountServiceAccountToken: false
   replicas: 1
-  # resources:
-  #  requests:
-  #    memory: 256Mi
-  #    cpu: 100m
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+    limits:
+      cpu: 1
+      memory: 1Gi
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -473,10 +479,13 @@ core:
   startupProbe:
     enabled: true
     initialDelaySeconds: 10
-  # resources:
-  #  requests:
-  #    memory: 256Mi
-  #    cpu: 100m
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 200m
+    limits:
+      cpu: 1
+      memory: 1Gi
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -515,11 +524,13 @@ jobservice:
     # - stdout
   # The jobLogger sweeper duration (ignored if `jobLogger` is `stdout`)
   loggerSweeperDuration: 14 #days
-
-  # resources:
-  #   requests:
-  #     memory: 256Mi
-  #     cpu: 100m
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 200m
+    limits:
+      cpu: 1
+      memory: 1Gi
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -541,19 +552,24 @@ registry:
     image:
       repository: docker.io/tmaxcloudck/registry-photon
       tag: 2.4.1
-    # resources:
-    #  requests:
-    #    memory: 256Mi
-    #    cpu: 100m
+    resources:
+      requests:
+        memory: 1Gi
+        cpu: 500m
+      limits:
+        cpu: 1
+        memory: 2Gi
   controller:
     image:
       repository: docker.io/tmaxcloudck/harbor-registryctl
       tag: 2.4.1
-
-    # resources:
-    #  requests:
-    #    memory: 256Mi
-    #    cpu: 100m
+    resources:
+      requests:
+        memory: 1Gi
+        cpu: 500m
+      limits:
+        cpu: 1
+        memory: 2Gi
   replicas: 1
   nodeSelector: {}
   tolerations: []
@@ -600,10 +616,13 @@ chartmuseum:
     repository: docker.io/tmaxcloudck/chartmuseum-photon
     tag: 2.4.1
   replicas: 1
-  # resources:
-  #  requests:
-  #    memory: 256Mi
-  #    cpu: 100m
+  resources:
+    requests:
+      memory: 128Mi
+      cpu: 100m
+    limits:
+      cpu: 1
+      memory: 1Gi
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -696,10 +715,13 @@ notary:
       repository: docker.io/tmaxcloudck/notary-server-photon
       tag: 2.4.1
     replicas: 1
-    # resources:
-    #  requests:
-    #    memory: 256Mi
-    #    cpu: 100m
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
     nodeSelector: {}
     tolerations: []
     affinity: {}
@@ -716,10 +738,13 @@ notary:
       repository: docker.io/tmaxcloudck/notary-signer-photon
       tag: 2.4.1
     replicas: 1
-    # resources:
-    #  requests:
-    #    memory: 256Mi
-    #    cpu: 100m
+    resources:	
+      requests:	
+        cpu: 100m	
+        memory: 128Mi	
+      limits:	
+        cpu: 500m	
+        memory: 512Mi
     nodeSelector: {}
     tolerations: []
     affinity: {}
@@ -753,10 +778,13 @@ database:
     # More details see:
     # https://github.com/tmaxcloudck/harbor/issues/15034
     shmSizeLimit: 512Mi
-    # resources:
-    #  requests:
-    #    memory: 256Mi
-    #    cpu: 100m
+    resources:	
+      requests:	
+        cpu: 500m	
+        memory: 512Mi	
+      limits:	
+        cpu: 1	
+        memory: 1Gi
     nodeSelector: {}
     tolerations: []
     affinity: {}
@@ -764,15 +792,11 @@ database:
     priorityClassName:
     initContainer:
       migrator: {}
-      # resources:
-      #  requests:
-      #    memory: 128Mi
-      #    cpu: 100m
+      resources:
+        requests:
+          memory: 128Mi
+          cpu: 100m
       permissions: {}
-      # resources:
-      #  requests:
-      #    memory: 128Mi
-      #    cpu: 100m
   external:
     host: "192.168.0.1"
     port: "5432"
@@ -811,10 +835,13 @@ redis:
     image:
       repository: docker.io/tmaxcloudck/redis-photon
       tag: 2.4.1
-    # resources:
-    #  requests:
-    #    memory: 256Mi
-    #    cpu: 100m
+    resources:	
+      requests:	
+        cpu: 500m	
+        memory: 512Mi	
+      limits:	
+        cpu: 1	
+        memory: 1Gi
     nodeSelector: {}
     tolerations: []
     affinity: {}
@@ -839,25 +866,28 @@ redis:
   podAnnotations: {}
 
 exporter:
-    replicas: 1
-  # resources:
-  #  requests:
-  #    memory: 256Mi
-  #    cpu: 100m
-    podAnnotations: {}
-    serviceAccountName: ""
-    # mount the service account token
-    automountServiceAccountToken: false
-    image:
-      repository: docker.io/tmaxcloudck/harbor-exporter
-      tag: 2.4.1
-    nodeSelector: {}
-    tolerations: []
-    affinity: {}
-    cacheDuration: 23
-    cacheCleanInterval: 14400
-    ## The priority class to run the pod as
-    priorityClassName:
+  replicas: 1
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+    limits:
+      memory: 512Mi
+      cpu: 500m
+  podAnnotations: {}
+  serviceAccountName: ""
+  # mount the service account token
+  automountServiceAccountToken: false
+  image:
+    repository: docker.io/tmaxcloudck/harbor-exporter
+    tag: 2.4.1
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  cacheDuration: 23
+  cacheCleanInterval: 14400
+  ## The priority class to run the pod as
+  priorityClassName:
 
 metrics:
   enabled: false

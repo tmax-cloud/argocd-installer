@@ -97,7 +97,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "--resync-interval",
                 "5m",
                 "--broker-relist-interval",
-                "24h",
+                "5m",
                 "--operation-polling-maximum-backoff-duration",
                 "20m",
                 "--osb-api-request-timeout",
