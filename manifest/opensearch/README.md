@@ -10,6 +10,9 @@ argocd에서 Opensearch-fluentd 배포를 하기 위해서는 application/opense
 - name: private_registry
   value: "private_registry for image pull"
   
+- name: log_level
+  value: "log_level settings for opensearch stack. ex) info, error, debug"
+  
 - name: os_image_tag
   value: "OpenSearch image"
   
@@ -51,14 +54,16 @@ argocd에서 Opensearch-fluentd 배포를 하기 위해서는 application/opense
   value: false
 - name: private_registry
   value: 172.22.6.2:5000
+- name: log_level
+  value: info
 - name: os_image_tag
-  value: 1.2.3
+  value: 1.3.7
 - name: busybox_image_tag
   value: 1.32.0
 - name: os_volume_size
   value: 50Gi
 - name: dashboard_image_tag
-  value: 1.2.0
+  value: 1.3.7
 - name: dashboard_svc_type
   value: ClusterIP
 - name: opensearch_client_id
@@ -72,5 +77,5 @@ argocd에서 Opensearch-fluentd 배포를 하기 위해서는 application/opense
 - name: custom_domain_name
   value: tmaxcloud.org
 - name: fluentd_image_tag
-  value: fluentd-v1.4.2-debian-elasticsearch-1.1
+  value: fluentd-v1.15.3-debian-elasticsearch-1.0
 ```

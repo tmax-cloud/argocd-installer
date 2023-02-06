@@ -3,7 +3,8 @@ function (
   private_registry = "registry.tmaxcloud.org",
   custom_domain = "tmaxcloud.org",
   cicd_subdomain = "cicd-webhook",
-  timezone="UTC"
+  timezone="UTC",
+  log_level="info"
 
 )
 
@@ -42,6 +43,9 @@ local cicd_domain = std.join("", [cicd_subdomain, ".", custom_domain]);
               "command": [
                 "/controller"
               ],
+              "args": [
+                std.join("", ["--zap-log-level=", log_level])
+              ],
               "image": std.join("", [target_registry, "docker.io/tmaxcloudck/cicd-operator:v0.4.14"]),
               "imagePullPolicy": "Always",
               "name": "manager",
@@ -49,6 +53,10 @@ local cicd_domain = std.join("", [cicd_subdomain, ".", custom_domain]);
                 "requests": {
                   "cpu": "100m",
                   "memory": "100Mi"
+                },
+                "limits": {
+                  "cpu": "500m",
+                  "memory": "500Mi"
                 }
               },
               "volumeMounts": [
@@ -125,6 +133,9 @@ local cicd_domain = std.join("", [cicd_subdomain, ".", custom_domain]);
               "command": [
                 "/blocker"
               ],
+              "args": [
+                std.join("", ["--zap-log-level=", log_level])
+              ],
               "image": std.join("", [target_registry, "docker.io/tmaxcloudck/cicd-blocker:v0.4.14"]),
               "imagePullPolicy": "Always",
               "name": "manager",
@@ -132,6 +143,10 @@ local cicd_domain = std.join("", [cicd_subdomain, ".", custom_domain]);
                 "requests": {
                   "cpu": "100m",
                   "memory": "100Mi"
+                },
+                "limits": {
+                  "cpu": "500m",
+                  "memory": "500Mi"
                 }
               },
               "volumeMounts": [

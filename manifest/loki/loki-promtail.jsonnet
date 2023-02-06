@@ -2,11 +2,12 @@ function (
   timezone="UTC",
   is_offline="false",
   private_registry="172.22.6.2:5000",
-  loki_image_tag="2.6.0",
+  loki_image_tag="2.7.1",
   loki_volume_size="50Gi",
-  promtail_image_tag="2.6.0",
+  promtail_image_tag="2.7.1",
   custom_clusterissuer="tmaxcloud-issuer",
   is_master_cluster="true",
+  log_level="info",
   storage_class="default"
 )
 

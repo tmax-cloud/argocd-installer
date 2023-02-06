@@ -19,6 +19,11 @@ modules:
   ### calico
   calico:
     enabled: false
+    # 사용 가능 한 값 : Debug, Info, Warning, Error, Fatal
+    logLevel: info
+    logSeverityFile: info
+    logSeverityScreen: info
+    logSeveritySys: info
 
   ### gitlab
   gitlab:
@@ -53,7 +58,9 @@ modules:
   certManager:
     enabled: true
     autoSync: true
-    
+    # ErrorLevel=0 WarnLevel=1 InfoLevel=2 ExtendedInfoLevel=3 DebugLevel=4 TraceLevel=5
+    logLevel: 2
+
   ### gateway-bootstrap
   gatewayBootstrap:
     enabled: true
@@ -78,6 +85,7 @@ modules:
         # 자세한 내용은 https://letsencrypt.org/docs/staging-environment/#rate-limits 참조
         # staging / production 중 택1하여 기입하여야 하며, 각각 테스트용 / 운영용을 의미함
         environment: production
+
     console:
       enabled: true
       version: 5.2.20.0
@@ -88,30 +96,44 @@ modules:
       k8sPublicEndpoint: https://kubernetes.default.svc
       svcType: LoadBalancer
       logInfo:
-        logLevel: "debug"
+        # trace | debug | info | warn | crit // 주로 "debug"를 사용
+        logLevel: "info"
+        # json | pretty
         logType: "pretty"
-      cookieSecret: ""
 
     gateway:
       enabled: true
       version: v2.8.7
+      logInfo:
+        # DEBUG, PANIC, FATAL, ERROR, WARN, and INFO
+        logLevel: "INFO"
+        # common, json
+        logType: "common"
 
     jwtDecodeAuth:
       enabled: true
       version: 5.0.0.4
+      logInfo:
+        # trace | debug | info | warn | crit // 주로 "debug"를 사용
+        logLevel: "info"
+        # json | pretty
+        logType: "pretty"
 
     oauth2Proxy:
       enabled: true
       version: v7.3.0
 
-
   ### strimzi-kafka-operator
   strimziKafka:
     enabled: true
+    # ERROR | WARNING | INFO | DEBUG | TRACE 반드시 대문자로 기입
+    logLevel: INFO
 
   ### service-binding-operator
   serviceBinding:
     enabled: true
+    # 사용 가능 한 값 : DEBUG, INFO, ERROR
+    LOG_LEVEL: INFO
     
   ### hyperauth
   hyperAuth:
@@ -156,12 +178,16 @@ modules:
     subdomain: argocd
     repoServer:
       replicas: 1
+      logLevel: "info" # debug, info, warn, error
     redis:
       replicas: 1
+      logLevel: "notice" # warning, notice, verbose, debug
     argocdServer:
       replicas: 1
+      logLevel: "info" # debug, info, warn, error
     controller:
       replicas: 1
+      logLevel: "info" # debug, info, warn, error
     ingress:
       enableTraefik: true
       secretName:
@@ -169,8 +195,11 @@ modules:
   ### opensearch
   opensearch:
     enabled: true
+    logLevel: info
+    # opensearch-dashboards에서 지원하는 loglevel에 대한 config 설정을 기준으로 함.
+    # 사용 가능한 값 : error, info, debug
     os:
-      version: 1.2.3
+      version: 1.3.7
       limitMemory: 8Gi
       requestMemory: 5Gi
       jvmHeap: "-Xms4g -Xmx4g"
@@ -178,11 +207,11 @@ modules:
     busyBox:
       version: 1.32.0
     dashboard:
-      version: 1.2.0
+      version: 1.3.7
       svcType: ClusterIP
       subdomain: opensearch-dashboard
     fluentd:
-      version: fluentd-v1.4.2-debian-elasticsearch-1.1
+      version: fluentd-v1.15.3-debian-elasticsearch-1.0
       # default로 주는 경우 default storage class를 사용
       # default를 사용하지 않고 싶은 경우에는 storage class이름을 기입
       storageClass: default
@@ -190,26 +219,28 @@ modules:
   ### Loki
   loki:
     enabled: true
+    logLevel: info
+    # 사용 가능한 값 : error, warn, info, debug
     loki: 
-      version: 2.6.0
+      version: 2.7.1
       volumeSize: 50Gi
       storageClass: default
     promtail:
-      version: 2.6.0
+      version: 2.7.1
   
   ### prometheus
   prometheus:
     enabled: true
     versions:
-      prometheus: v2.30.3
+      prometheus: v2.41.0
       cmReload: v0.0.1
-      cmReloader: v0.51.2
-      operator: v0.51.2
-      alertManager: v0.23.0
-      kubeRbacProxy: v0.11.0
-      kubeStateMetrics: v2.2.3
-      nodeExporter: v1.2.2
-      adapter: v0.9.1
+      cmReloader: v0.62.0
+      operator: v0.62.0
+      alertManager: v0.25.0
+      kubeRbacProxy: v0.14.0
+      kubeStateMetrics: v2.7.0
+      nodeExporter: v1.5.0
+      adapter: v0.10.0
     pvcSize: 10Gi
 
   ### grafana-operator
@@ -221,8 +252,8 @@ modules:
       version: v0.0.10
       imageRepo: docker.io/tmaxcloudck/grafana-operator
     grafana:
-      version: "8.2.2"
-      imageRepo: grafana/grafana
+      version: "9.3.2"
+      imageRepo: docker.io/grafana/grafana
 
 
   ### service-mesh
@@ -262,23 +293,23 @@ modules:
   ### cluster-api
   capi:
     enabled: true
-    providers:
+    # verbose - debug(0), info(1), warning(2), error(3), fatal(4, 5, 6...)
+    verbose: 1
+    provider:
       aws:
         enabled: true
-        # description: ...
-        # credential은 다음과 같이 생성
-        # cat << EOF | base64
-        # > [default]
-        # > aws_access_key_id = {{ AWS ACCESS KEY }}
-        # > aws_secret_access_key = {{ AWS SECRET ACCESS KEY }} 
-        # > region = {{ default region}} ex) ap-northeast-2
-        # > EOF
-        credentials: "VGhpcyBpcyBhbiBhd3MgY3JlZGVudGlhbAo="
+        credentials:
+          accessKeyID: access-key
+          secretAccessKeyID: secret-access-key
+        # verbose - debug(0), info(1), warning(2), error(3), fatal(4, 5, 6...)
+        verbose: 1
       vsphere:
         enabled: true
         credentials:
           username: "user"
           password: "password"
+        # verbose - debug(0), info(1), warning(2), error(3), fatal(4, 5, 6...)
+        verbose: 1
 
   ### template service broker
   tsb:
@@ -288,7 +319,7 @@ modules:
       version: 0.1.6
     templateOperator:
       version: 0.2.8
-    logLevel: error
+    logLevel: info
 
   ### catalog controller
   catalogController:
@@ -387,6 +418,7 @@ modules:
   cicd:
     enabled: true
     subdomain: cicd-webhook
+    logLevel: info
 
   ### redis-operator
   redis:
@@ -409,7 +441,9 @@ modules:
     path: /nfs-storage
     # nfs provisioner를 default storageClass로 설정, ex: default / not
     defaultClass: not
-
+    # logLevel 0 ~ 5 가능
+    logLevel: 0
+  
   ### ceph-csi-cephfs
   cephfs:
     enabled: false
@@ -421,6 +455,8 @@ modules:
     key: AQCeBcZftAEvExAAultsKBpNpiWWGi06Md7mmw==
     # cephfs csi를 default storageClass로 설정, ex: default / not
     defaultClass: not
+    # logLevel 0 ~ 5 가능
+    logLevel: 0
 
   ### ceph-csi-rbd
   rbd:
@@ -433,7 +469,9 @@ modules:
     key: AQCeBcZftAEvExAAultsKBpNpiWWGi06Md7mmw==
     # rbd csi를 default storageClass로 설정, ex: default / not
     defaultClass: not
-  
+    # logLevel 0 ~ 5 가능
+    logLevel: 0
+
   ### efs-csi
   efs:
     enabled: false
@@ -441,3 +479,5 @@ modules:
     fileSystemId: fs-0ce741ec0e2ea2fa2
     # efs csi를 default storageClass로 설정, ex: default / not
     defaultClass: not
+    # logLevel 0 ~ 5 가능
+    logLevel: 0

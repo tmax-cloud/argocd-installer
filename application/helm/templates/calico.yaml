@@ -23,6 +23,14 @@ spec:
             value: "{{ .Values.global.network.disabled }}"
           - name: private_registry
             value: {{ .Values.global.privateRegistry }}
+          - name: log_level
+            value: {{ .Values.modules.calico.logLevel }}
+          - name: logSeverityFile
+            value: {{ .Values.modules.calico.logSeverityFile }}
+          - name: logSeverityScreen
+            value: {{ .Values.modules.calico.logSeverityScreen }}
+          - name: logSeveritySys
+            value: {{ .Values.modules.calico.logSeveritySys }}
     path: manifest/calico
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}

@@ -2,23 +2,24 @@ function (
   timezone="UTC",
   is_offline="false",
   private_registry="172.22.6.2:5000",
-  os_image_tag="1.2.3",
+  os_image_tag="1.3.7",
   busybox_image_tag="1.32.0",
   os_resource_limit_memory="8Gi",
   os_resource_request_memory="5Gi",
   os_jvm_heap="-Xms4g -Xmx4g",
   os_volume_size="50Gi",
-  dashboard_image_tag="1.2.0",
+  dashboard_image_tag="1.3.7",
   dashboard_svc_type="ClusterIP",
   opensearch_client_id="opensearch",
   tmax_client_secret="tmax_client_secret",
   hyperauth_url="172.23.4.105",
   hyperauth_realm="tmax",
   custom_domain_name="domain_name",
-  fluentd_image_tag="fluentd-v1.4.2-debian-elasticsearch-1.1",
+  fluentd_image_tag="fluentd-v1.15.3-debian-elasticsearch-1.0",
   custom_clusterissuer="tmaxcloud-issuer",
   is_master_cluster="true",
   opensearch_subdomain="opensearch-dashboard",
+  log_level="info",
   storageClass="default"
 )
 
@@ -27,6 +28,8 @@ local os_image_path = "docker.io/opensearchproject/opensearch:" + os_image_tag;
 local busybox_image_path = "docker.io/busybox:" + busybox_image_tag;
 local dashboard_image_path = "docker.io/opensearchproject/opensearch-dashboards:" + dashboard_image_tag;
 local fluentd_image_path = "docker.io/tmaxcloudck/hypercloud:" + fluentd_image_tag;
+local dashboards_log_level = if log_level == "error" then "quiet: true" else if log_level == "debug" then "verbose: true" else "quiet: false";
+local fluentd_log_level = if log_level == "error" then "-qq " else if log_level == "debug" then "-v " else "";
 
 [
   {
@@ -92,6 +95,11 @@ local fluentd_image_path = "docker.io/tmaxcloudck/hypercloud:" + fluentd_image_t
                   "name": "config",
                   "mountPath": "/usr/share/opensearch/config/opensearch.yml",
                   "subPath": "opensearch.yml"
+                },
+                {
+                  "name": "log4j2",
+                  "mountPath": "/usr/share/opensearch/config/log4j2.properties",
+                  "subPath": "log4j2.properties"
                 },
                 {
                   "name": "opensearch-cert",
@@ -167,6 +175,12 @@ local fluentd_image_path = "docker.io/tmaxcloudck/hypercloud:" + fluentd_image_t
               "name": "config",
               "configMap": {
                 "name": "opensearch-config"
+              }
+            },
+            {
+              "name": "log4j2",
+              "configMap": {
+                "name": "opensearch-log4j2-config"
               }
             },
             {
@@ -287,6 +301,27 @@ local fluentd_image_path = "docker.io/tmaxcloudck/hypercloud:" + fluentd_image_t
       ]
     }  
   },
+  {
+    "apiVersion": "v1",
+    "kind": "ConfigMap",
+    "metadata": {
+      "name": "opensearch-log4j2-config",
+      "namespace": "kube-logging"
+    },
+    "data": {
+      "log4j2.properties": std.join("\n", 
+        [
+          "status = error", 
+          "appender.console.type = Console",
+          "appender.console.name = console",
+          "appender.console.layout.type = PatternLayout",
+          "appender.console.layout.pattern = [%d{ISO8601}][%-5p][%-25c{1.}] [%node_name]%marker %m%n",
+          std.join("", ["rootLogger.level = ", log_level]),
+          "rootLogger.appenderRef.console.ref = console"
+        ]
+      )
+    }
+  }
   {
     "apiVersion": "apps/v1",
     "kind": "Deployment",
@@ -469,6 +504,11 @@ local fluentd_image_path = "docker.io/tmaxcloudck/hypercloud:" + fluentd_image_t
             {
               "name": "fluentd",
               "image": std.join("",[target_registry, fluentd_image_path]),
+              "command": [
+                "/bin/bash",
+                "-c",
+                std.join("", ["fluentd ", fluentd_log_level, "-c /fluentd/etc/fluent.conf -p /fluentd/plugins"])
+              ],
               "env": [
                 {
                   "name": "FLUENT_OPENSEARCH_HOST",
@@ -624,6 +664,7 @@ local fluentd_image_path = "docker.io/tmaxcloudck/hypercloud:" + fluentd_image_t
         [
           "server.name: dashboards", 
           "server.host: '0.0.0.0'",
+          std.join("", ["logging.", dashboards_log_level]),
           "opensearch.username: admin",
           "opensearch.password: admin",
           "opensearch.ssl.verificationMode: none",
@@ -654,6 +695,7 @@ local fluentd_image_path = "docker.io/tmaxcloudck/hypercloud:" + fluentd_image_t
           std.join("", ["opensearch_security.openid.client_id: ", opensearch_client_id]),
           std.join("", ["opensearch_security.openid.client_secret: ", tmax_client_secret]),
           std.join("", ["opensearch_security.openid.base_redirect_url: https://", opensearch_subdomain, ".", custom_domain_name]),
+          std.join("", ["logging.", dashboards_log_level]),
           "opensearch_security.openid.verify_hostnames: false",
           "opensearch_security.cookie.secure: false"
         ]

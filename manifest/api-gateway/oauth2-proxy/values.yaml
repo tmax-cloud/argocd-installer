@@ -67,7 +67,7 @@ extraArgs:
   #  scope: "openid profile email groups"
 image:
   repository: "docker.io/tmaxcloudck/oauth2-proxy"
-  tag: "v7.3.0"
+  tag: "v7.3.1"
   pullPolicy: "IfNotPresent"
   # Optionally specify an array of imagePullSecrets.
   # Secrets must be manually created in the namespace.
@@ -149,7 +149,7 @@ authenticatedEmailsFile:
   # It's a simpler way to maintain only one configmap (user list) instead changing it for each oauth2-proxy service.
   # Be aware the value name in the extern config map in data needs to be named to "restricted_user_access" or to the
   # provided value in restrictedUserAccessKey field.
-  template: ""
+  templates: ""
   # The configmap/secret key under which the list of email access is stored
   # Defaults to "restricted_user_access" if not filled-in, but can be overridden to allow flexibility
   restrictedUserAccessKey: ""
@@ -188,13 +188,13 @@ ingress:
   #  - hosts:
   #      - oauth2-proxy.ck1-1.link
 
-resources: {}
-  # limits:
-  #   cpu: 100m
-  #   memory: 300Mi
-# requests:
-#   cpu: 100m
-#   memory: 300Mi
+resources:
+  limits:
+    cpu: 100m
+    memory: 300Mi
+  requests:
+    cpu: 100m
+    memory: 300Mi
 
 extraVolumes: []
 # - name: ca-bundle-cert

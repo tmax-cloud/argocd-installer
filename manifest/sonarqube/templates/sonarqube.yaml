@@ -112,13 +112,13 @@ spec:
         - mountPath: /opt/sonarqube/conf/
           name: concat-dir
         {{- end }}
-        # resources:
-        #   limits:
-        #     cpu: 2000m
-        #     memory: 4500Mi
-        #   requests:
-        #     cpu: 1000m
-        #     memory: 4000Mi
+        resources:
+          limits:
+            cpu: 2000m
+            memory: 4500Mi
+          requests:
+            cpu: 1000m
+            memory: 4000Mi
       volumes:
       - name: sonarqube-conf
         persistentVolumeClaim:
