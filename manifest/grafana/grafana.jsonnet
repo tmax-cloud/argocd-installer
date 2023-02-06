@@ -2,13 +2,9 @@ function (
   timezone="UTC",
   is_offline="false",
   private_registry="172.22.6.2:5000",
-  client_id="grafana",
-  tmax_client_secret="tmax_client_secret",
-  keycloak_addr="",
   grafana_pvc="10Gi",
   grafana_version="8.2.2",
   grafana_image_repo="docker.io/grafana/grafana",
-  ingress_domain="",
   is_master_cluster="true",
   grafana_subdomain="grafana"
 )
