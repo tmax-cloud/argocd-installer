@@ -31,6 +31,8 @@ spec:
           value: {{ printf "https://%s.%s" .Values.modules.gitea.subdomain .Values.global.domain }}
         - name: gitea.config.server.SSH_DOMAIN
           value: {{ printf "%s.%s" .Values.modules.gitea.subdomain .Values.global.domain }}
+        - name: gitea.config.log.LEVEL
+          value: {{ .Values.modules.gitea.logLevel }}
         - name: gitea.oauth[0].key
           value: {{ ternary "gitea" (printf "%s-gitea" $prefix) $isMaster }}
         - name: gitea.oauth[0].secret

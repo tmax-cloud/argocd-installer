@@ -34,11 +34,13 @@ modules:
       storageClassName: "default"
     oidc:
       enabled: false
+    logLevel: INFO
 
   ###gitea
   gitea:
     enabled: false
     subdomain: gitea
+    logLevel: Info
 
   ### nexus
   nexus:
@@ -46,11 +48,13 @@ modules:
     persistence:
       enabled: true
       storageClass: ""
+    logLevel: INFO
 
 
   ### sonarqube
   sonarqube:
     enabled: false
+    logLevel: INFO
 
   ### cert-manager
   certManager:
@@ -403,10 +407,12 @@ modules:
   tektonPipeline:
     enabled: true
     #namespace: tekton-pipelines
+    logLevel: info
 
   ### tekton trigger
   tektonTrigger:
     enabled: true
+    logLevel: info
 
   ### cicd operator
   cicd:
