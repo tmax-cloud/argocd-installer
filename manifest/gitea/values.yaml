@@ -318,6 +318,8 @@ gitea:
       DOMAIN: gitea.testdomain.com
       ROOT_URL: http://gitea.testdomain.com
       SSH_DOMAIN: gitea.testdomain.com
+    log:
+      LEVEL: Info # "Trace", "Debug", "Info", "Warn", "Error", "Critical" or "None"
   #  APP_NAME: "Gitea: Git with a cup of tea"
   #  RUN_MODE: dev
   #

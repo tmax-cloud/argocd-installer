@@ -44,6 +44,9 @@ spec:
         #       key: options
         # - name: JAVA_OPTS
         #   value: '-Xmx4000m'
+        env:
+        - name: SONAR_LOG_LEVEL
+          value: {{ .Values.global.logLevel }}
         volumeMounts:
         - mountPath: /opt/sonarqube/conf
           name: sonarqube-conf

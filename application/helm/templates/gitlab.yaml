@@ -33,6 +33,8 @@ spec:
           value: {{ .Values.modules.gitlab.pvc.storage }}
         - name: pvc.storageClassName
           value: {{ .Values.modules.gitlab.pvc.storageClassName }}
+        - name: global.logLevel
+          value: "{{ .Values.modules.gitlab.logLevel }}"
         ## oidc 
         - name: keycloak.enabled
           value: "{{ .Values.modules.gitlab.oidc.enabled }}"
