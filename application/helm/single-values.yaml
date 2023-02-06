@@ -228,7 +228,7 @@ modules:
   serviceMesh:
     ### istio
     istio:
-      enabled: true
+      enabled: false
 
     ### jaeger
     jaeger:
