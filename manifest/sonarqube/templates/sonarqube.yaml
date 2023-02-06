@@ -19,6 +19,56 @@ spec:
       securityContext:
         fsGroup: 999
         runAsUser: 999
+      initContainers:
+        - name: install-plugins
+          image: curlimages/curl:7.76.1
+          imagePullPolicy: {{ .Values.image.pullPolicy  }}
+          command: ["sh",
+            "-e",
+            "/tmp/scripts/install_plugins.sh"]
+          volumeMounts:
+            - mountPath: /opt/sonarqube/extensions/plugins
+              name: sonarqube
+              subPath: extensions/plugins
+            - name: install-plugins
+              mountPath: /tmp/scripts/
+            {{- if .Values.plugins.netrcCreds }}
+            - name: plugins-netrc-file
+              mountPath: /root
+            {{- end }}
+          env:
+            - name: http_proxy
+              value: ""
+            - name: https_proxy
+              value: ""
+            - name: no_proxy
+              value: ""
+          {{- with .Values.env }}
+            {{- . | toYaml | trim | nindent 12 }}
+          {{- end }}
+        - name: concat-properties
+          image: busybox:1.32
+          imagePullPolicy: {{ .Values.image.pullPolicy  }}
+          command: 
+          - sh
+          - -c
+          - |
+            #!/bin/sh
+            if [ -f /tmp/props/sonar.properties ]; then
+              cat /tmp/props/sonar.properties > /tmp/result/sonar.properties
+            fi
+            if [ -f /tmp/props/secret.properties ]; then
+              cat /tmp/props/secret.properties > /tmp/result/sonar.properties
+            fi
+            if [ -f /tmp/props/sonar.properties -a -f /tmp/props/secret.properties ]; then
+              awk 1 /tmp/props/sonar.properties /tmp/props/secret.properties > /tmp/result/sonar.properties
+            fi
+          volumeMounts:
+            - mountPath: /tmp/props/sonar.properties
+              name: config
+              subPath: sonar.properties
+            - mountPath: /tmp/result
+              name: concat-dir
       containers:
       - name: master
         {{- if .Values.global.registry.is_offline }}
@@ -54,9 +104,16 @@ spec:
           name: sonarqube-data
         - mountPath: /opt/sonarqube/logs
           name: sonarqube-logs
+        - mountPath: /opt/sonarqube/extensions/plugins
+          name: sonarqube
+          subPath: extensions/plugins
         {{- if ne .Values.global.timezone "UTC" }}
         - name: timezone-config
           mountPath: /etc/localtime
+        {{- end }}
+        {{- if or .Values.sonarProperties }}
+        - mountPath: /opt/sonarqube/conf/
+          name: concat-dir
         {{- end }}
         resources:
           limits:
@@ -75,12 +132,37 @@ spec:
       - name: sonarqube-logs
         persistentVolumeClaim:
           claimName: sonarqube-logs-pvc
+      {{- if or .Values.sonarProperties }}
+      - name: config
+        configMap:
+          name: sonarqube-config
+          items:
+          - key: sonar.properties
+            path: sonar.properties
+      {{- end }}
+      - name: install-plugins
+        configMap:
+          name: install-plugins
+          items:
+            - key: install_plugins.sh
+              path: install_plugins.sh
       - name: sonarqube-account-secret
         secret:
           defaultMode: 420
           secretName: sonarqube-account-secret
+      {{- if or .Values.sonarProperties }}
+      - name : concat-dir
+        emptyDir: {}
+      {{- end }}
       {{- if ne .Values.global.timezone "UTC" }}
       - name: timezone-config
         hostPath:
           path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.global.timezone }}
       {{- end }}
+      - name: sonarqube
+        {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: sonarqube-pvc
+        {{- else }}
+        emptyDir: {}
+        {{- end }}
