@@ -46,7 +46,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
               "/manager"
             ],
             "imagePullPolicy": "Always",
-            "image": std.join("", [target_registry, "quay.io/redhat-developer/servicebinding-operator@sha256:30bf7f0f21024bb2e1e4db901b1f5e89ab56e0f3197a919d2bbb670f3fe5223a"]),
+            "image": std.join("", [target_registry, "quay.io/redhat-developer/servicebinding-operator:b3693e45"]),
             "livenessProbe": {
               "httpGet": {
                 "path": "/healthz",
