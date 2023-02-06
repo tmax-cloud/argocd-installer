@@ -1,8 +1,8 @@
 {{- if eq .Values.expose.type "ingress" }}
 {{- $ingress := .Values.expose.ingress -}}
 {{- $tls := .Values.expose.tls -}}
+{{- if eq .Values.expose.ingress.controller "gce" }}
   {{- $_ := set . "portal_path" "/*" -}}
-  {{- if eq .Values.expose.ingress.controller "gce" }}
   {{- $_ := set . "api_path" "/api/*" -}}
   {{- $_ := set . "service_path" "/service/*" -}}
   {{- $_ := set . "v2_path" "/v2/*" -}}
@@ -21,7 +21,7 @@
   {{- $_ := set . "portal_path" "/" -}}
   {{- $_ := set . "api_path" "/api/" -}}
   {{- $_ := set . "service_path" "/service/" -}}
-  {{- $_ := set . "v2_path" "/v2" -}}
+  {{- $_ := set . "v2_path" "/v2/" -}}
   {{- $_ := set . "chartrepo_path" "/chartrepo/" -}}
   {{- $_ := set . "controller_path" "/c/" -}}
   {{- $_ := set . "notary_path" "/" -}}
@@ -42,7 +42,9 @@ metadata:
 
   labels:
 {{ include "harbor.labels" . | indent 4 }}
-{{ toYaml $ingress.labels | indent 4 }}
+{{- if $ingress.harbor.labels }}
+{{ toYaml $ingress.harbor.labels | indent 4 }}
+{{- end }}
   annotations:
 {{ toYaml $ingress.annotations | indent 4 }}
 {{- if .Values.internalTLS.enabled }}
@@ -161,6 +163,9 @@ metadata:
 
   labels:
 {{ include "harbor.labels" . | indent 4 }}
+{{- if $ingress.notary.labels }}
+{{ toYaml $ingress.notary.labels | indent 4 }}
+{{- end }}
   annotations:
 {{ toYaml $ingress.annotations | indent 4 }}
 {{- if eq .Values.expose.ingress.controller "ncp" }}
