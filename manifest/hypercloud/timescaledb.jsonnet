@@ -9,7 +9,6 @@ function (
   hyperauth_subdomain="hyperauth",
   console_subdomain="console",
   kubectl_timeout="21600",
-  hyperregistry_enabled="true",
   storageClass="default",
   aws_enabled="true",
   vsphere_enabled="true",

@@ -27,8 +27,7 @@ function (
   timescaledb_metering_day_retention_policy="1 years",
   timescaledb_metering_month_chunk_time_interval="1 years",
   timescaledb_metering_month_retention_policy="1 years",
-  timescaledb_metering_year_retention_policy="1 years",
-  timescaledb_metering_year_retention_policy="10 years"
+  timescaledb_metering_year_retention_policy="10 years",
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
