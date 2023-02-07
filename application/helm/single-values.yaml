@@ -39,6 +39,7 @@ modules:
   gitea:
     enabled: false
     subdomain: gitea
+    logLevel: Info
       
   ### gateway-bootstrap
   gatewayBootstrap:
