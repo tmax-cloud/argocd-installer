@@ -1,0 +1,44 @@
+{{ if .Values.modules.grafana.enabled }}
+{{ $isMaster := eq .Values.global.cluster "master" }}
+{{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
+{{ $module := "grafana" }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  labels:
+    cluster: {{ ternary "master" $prefix $isMaster }}
+  name: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
+  namespace: argocd
+spec:
+  destination:
+    name: {{ .Values.global.clusterName }}
+    namespace: monitoring
+  project: {{ .Values.spec.project }}
+  source:
+    directory:
+      jsonnet:
+        tlas:
+          - name: is_offline
+            value: "{{ .Values.global.network.disabled }}"
+          - name: private_registry
+            value: {{ .Values.global.privateRegistry }}
+          - name: tmax_client_secret
+            value: {{ include "hyperAuth.tmaxClientSecret" . }}
+          - name: keycloak_addr
+            value: {{ include "hyperAuth.domain" . }}
+          - name: grafana_pvc_size
+            value: {{ .Values.modules.grafana.pvcSize }}
+          - name: grafana_version
+            value: {{ .Values.modules.grafana.version }}
+          - name: grafana_image_repo
+            value: {{ .Values.modules.grafana.imageRepo }}
+          - name: is_master_cluster
+            value: "{{ $isMaster }}"
+          - name: grafana_subdomain
+            value: {{ .Values.modules.grafana.subdomain }}
+          - name: timezone
+            value: {{ .Values.global.timeZone }}
+    path: manifest/grafana
+    repoURL: {{ .Values.spec.source.repoURL }}
+    targetRevision: {{ .Values.spec.source.targetRevision }}
+{{ end }}

@@ -27,17 +27,15 @@ function (
   timescaledb_metering_day_retention_policy="1 years",
   timescaledb_metering_month_chunk_time_interval="1 years",
   timescaledb_metering_month_retention_policy="1 years",
-  timescaledb_metering_year_retention_policy="1 years",
-  timescaledb_metering_year_retention_policy="10 years"
+  timescaledb_metering_year_retention_policy="10 years",
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
 local capi_aws_template = import 'hypercloud-capi-aws-template.libsonnet';
 local capi_vsphere_template = import 'hypercloud-capi-vsphere-template.libsonnet';
 local capi_vsphere_upgrade_template = import 'hypercloud-capi-vsphere-upgrade-template.libsonnet';
-
-[
-  {
+local etc_manifest = import 'hypercloud-multi-operator.libsonnet';
+local deployment =  {
     "apiVersion": "apps/v1",
     "kind": "Deployment",
     "metadata": {
@@ -84,8 +82,20 @@ local capi_vsphere_upgrade_template = import 'hypercloud-capi-vsphere-upgrade-te
                   "name": "AUTH_SUBDOMAIN",
                   "value": hyperauth_subdomain
                 },
+                {
+                  "name": "ARGO_APP_DELETE",
+                  "value": "true"
+                },
+                {
+                  "name": "OIDC_CLIENT_SET",
+                  "value": "false"
+                },
+                {
+                  "name": "DEV_MODE",
+                  "value": "false"
+                },
               ],
-              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-multi-operator:b5.0.37.1"]),
+              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hypercloud-multi-operator:b5.1.1.0"]),
               "name": "manager",
               "ports": [
                 {
@@ -188,10 +198,14 @@ local capi_vsphere_upgrade_template = import 'hypercloud-capi-vsphere-upgrade-te
         }
       }
     }
-  }
-] + (if aws_enabled == "true" then [
-  capi_aws_template
-] else []) + (if vsphere_enabled == "true" then [
-  capi_vsphere_template,
-  capi_vsphere_upgrade_template,
-] else [])
+  };
+  
+if hypercloud_hpcd_mode != "multi" then [] else [deployment] + 
+  etc_manifest +
+if aws_enabled == "true" && vsphere_enabled == "true" 
+  then [capi_aws_template, capi_vsphere_template, capi_vsphere_upgrade_template]
+else if aws_enabled == "true" 
+  then [capi_aws_template]
+else if vsphere_enabled == "true"
+  then [capi_vsphere_template, capi_vsphere_upgrade_template] 
+else []

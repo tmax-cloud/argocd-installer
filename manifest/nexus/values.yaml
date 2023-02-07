@@ -27,7 +27,7 @@ deploymentStrategy: Recreate
 image:
   # Sonatype Official Public Image
   repository: sonatype/nexus3
-  tag: 3.43.0
+  tag: 3.45.0
   pullPolicy: IfNotPresent
 imagePullSecrets:
 # for image registries that require login, specify the name of the existing
@@ -54,9 +54,9 @@ nexus:
     - name: NEXUS_SECURITY_RANDOMPASSWORD
       value: "true"
   properties:
-    override: false
+    override: true
     data:
-      nexus.scripts.allowCreation: true
+      root.level: "INFO"
       # See this article for ldap configuratioon options https://support.sonatype.com/hc/en-us/articles/216597138-Setting-Advanced-LDAP-Connection-Properties-in-Nexus-Repository-Manager
       # nexus.ldap.env.java.naming.security.authentication: simple
   # nodeSelector:

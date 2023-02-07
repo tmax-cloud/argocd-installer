@@ -17,6 +17,7 @@ modules:
   ###calico
   calico:
     enabled: true
+    # 사용 가능 한 값 : Debug, Info, Warning, Error, Fatal
     logLevel: info
     logSeverityFile: info
     logSeverityScreen: info
@@ -33,11 +34,13 @@ modules:
       storageClassName: "default"
     oidc:
       enabled: false
+    logLevel: INFO
 
   ###gitea
   gitea:
     enabled: false
     subdomain: gitea
+    logLevel: Info
 
   ### nexus
   nexus:
@@ -45,11 +48,13 @@ modules:
     persistence:
       enabled: true
       storageClass: ""
+    logLevel: INFO
 
 
   ### sonarqube
   sonarqube:
     enabled: false
+    logLevel: INFO
 
   ### cert-manager
   certManager:
@@ -122,11 +127,14 @@ modules:
   ### strimzi-kafka-operator
   strimziKafka:
     enabled: true
+    # ERROR | WARNING | INFO | DEBUG | TRACE 반드시 대문자로 기입
     logLevel: INFO
 
   ### service-binding-operator
   serviceBinding:
     enabled: false
+    # 사용 가능 한 값 : DEBUG, INFO, ERROR
+    LOG_LEVEL: INFO
 
   ### hyperauth
   hyperAuth:
@@ -170,12 +178,16 @@ modules:
     subdomain: argocd
     repoServer:
       replicas: 1
+      logLevel: "info" # debug, info, warn, error
     redis:
       replicas: 1
+      logLevel: "notice" # warning, notice, verbose, debug
     argocdServer:
       replicas: 1
+      logLevel: "info" # debug, info, warn, error
     controller:
       replicas: 1
+      logLevel: "info" # debug, info, warn, error
     ingress:
       enableTraefik: true
       secretName:
@@ -219,15 +231,15 @@ modules:
   prometheus:
     enabled: true
     versions:
-      prometheus: v2.30.3
+      prometheus: v2.41.0
       cmReload: v0.0.1
-      cmReloader: v0.51.2
-      operator: v0.51.2
-      alertManager: v0.23.0
-      kubeRbacProxy: v0.11.0
-      kubeStateMetrics: v2.2.3
-      nodeExporter: v1.2.2
-      adapter: v0.9.1
+      cmReloader: v0.62.0
+      operator: v0.62.0
+      alertManager: v0.25.0
+      kubeRbacProxy: v0.14.0
+      kubeStateMetrics: v2.7.0
+      nodeExporter: v1.5.0
+      adapter: v0.10.0
     pvcSize: 10Gi
 
   ### grafana-operator
@@ -239,10 +251,17 @@ modules:
       version: v0.0.10
       imageRepo: docker.io/tmaxcloudck/grafana-operator
     grafana:
-      version: "8.2.2"
-      imageRepo: grafana/grafana
+      version: "9.3.2"
+      imageRepo: docker.io/grafana/grafana
 
-
+   ### grafana
+  grafana:
+    enabled: false
+    subdomain: grafana
+    pvcSize: 10Gi
+    version: "9.3.2"
+    imageRepo: docker.io/grafana/grafana
+    
   ### service-mesh
   serviceMesh:
     ### istio
@@ -280,23 +299,23 @@ modules:
   ### cluster-api
   capi:
     enabled: false
-    providers:
+    # verbose - debug(0), info(1), warning(2), error(3), fatal(4, 5, 6...)
+    verbose: 1
+    provider:
       aws:
         enabled: false
-        # description: ...
-        # credential은 다음과 같이 생성
-        # cat << EOF | base64
-        # > [default]
-        # > aws_access_key_id = {{ AWS ACCESS KEY }}
-        # > aws_secret_access_key = {{ AWS SECRET ACCESS KEY }} 
-        # > region = {{ default region}} ex) ap-northeast-2
-        # > EOF
-        credentials: "VGhpcyBpcyBhbiBhd3MgY3JlZGVudGlhbAo="
+        credentials:
+          accessKeyID: access-key
+          secretAccessKeyID: secret-access-key
+        # verbose - debug(0), info(1), warning(2), error(3), fatal(4, 5, 6...)
+        verbose: 1
       vsphere:
         enabled: false
         credentials:
           username: "user"
           password: "password"
+        # verbose - debug(0), info(1), warning(2), error(3), fatal(4, 5, 6...)
+        verbose: 1
 
   ### template service broker
   tsb:
@@ -395,10 +414,12 @@ modules:
   tektonPipeline:
     enabled: true
     #namespace: tekton-pipelines
+    logLevel: info
 
   ### tekton trigger
   tektonTrigger:
     enabled: true
+    logLevel: info
 
   ### cicd operator
   cicd:
@@ -467,3 +488,4 @@ modules:
     defaultClass: not
     # logLevel 0 ~ 5 가능
     logLevel: 0
+

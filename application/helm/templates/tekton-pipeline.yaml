@@ -24,6 +24,8 @@ spec:
             value: {{ .Values.global.timeZone }}                     
           - name: private_registry
             value: {{ .Values.global.privateRegistry }}
+          - name: log_level
+            value: "{{ .Values.modules.tektonPipeline.logLevel }}"
     path: manifest/tekton-pipeline
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}

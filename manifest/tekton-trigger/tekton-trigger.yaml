@@ -1053,47 +1053,47 @@ data:
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: config-logging-triggers
-  namespace: tekton-pipelines
-  labels:
-    app.kubernetes.io/instance: default
-    app.kubernetes.io/part-of: tekton-triggers
-data:
-  # Common configuration for all knative codebase
-  zap-logger-config: |
-    {
-      "level": "info",
-      "development": false,
-      "sampling": {
-        "initial": 100,
-        "thereafter": 100
-      },
-      "outputPaths": ["stdout"],
-      "errorOutputPaths": ["stderr"],
-      "encoding": "json",
-      "encoderConfig": {
-        "timeKey": "ts",
-        "levelKey": "level",
-        "nameKey": "logger",
-        "callerKey": "caller",
-        "messageKey": "msg",
-        "stacktraceKey": "stacktrace",
-        "lineEnding": "",
-        "levelEncoder": "",
-        "timeEncoder": "iso8601",
-        "durationEncoder": "",
-        "callerEncoder": ""
-      }
-    }
-  # Log level overrides
-  loglevel.controller: "info"
-  loglevel.webhook: "info"
-  loglevel.eventlistener: "info"
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: config-logging-triggers
+#   namespace: tekton-pipelines
+#   labels:
+#     app.kubernetes.io/instance: default
+#     app.kubernetes.io/part-of: tekton-triggers
+# data:
+#   # Common configuration for all knative codebase
+#   zap-logger-config: |
+#     {
+#       "level": "info",
+#       "development": false,
+#       "sampling": {
+#         "initial": 100,
+#         "thereafter": 100
+#       },
+#       "outputPaths": ["stdout"],
+#       "errorOutputPaths": ["stderr"],
+#       "encoding": "json",
+#       "encoderConfig": {
+#         "timeKey": "ts",
+#         "levelKey": "level",
+#         "nameKey": "logger",
+#         "callerKey": "caller",
+#         "messageKey": "msg",
+#         "stacktraceKey": "stacktrace",
+#         "lineEnding": "",
+#         "levelEncoder": "",
+#         "timeEncoder": "iso8601",
+#         "durationEncoder": "",
+#         "callerEncoder": ""
+#       }
+#     }
+#   # Log level overrides
+#   loglevel.controller: "info"
+#   loglevel.webhook: "info"
+#   loglevel.eventlistener: "info"
 
----
+# ---
 # Copyright 2019 The Tekton Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
