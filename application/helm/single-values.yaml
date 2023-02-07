@@ -259,7 +259,7 @@ modules:
     enabled: false
     subdomain: grafana
     pvcSize: 10Gi
-    version:"9.3.2"
+    version: "9.3.2"
     imageRepo: docker.io/grafana/grafana
     
   ### service-mesh
