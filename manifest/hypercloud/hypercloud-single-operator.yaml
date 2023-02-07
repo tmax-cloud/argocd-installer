@@ -562,13 +562,19 @@ metadata:
     cert-manager.io/inject-ca-from: hypercloud5-system/hypercloud-single-operator-serving-cert
   name: hypercloud-single-operator-validating-webhook-configuration
 webhooks:
-- clientConfig:
+- admissionReviewVersions:
+  - v1beta1
+  clientConfig:
     service:
       name: hypercloud-single-operator-webhook-service
       namespace: hypercloud5-system
       path: /validate-claim-tmax-io-v1alpha1-namespaceclaim
+      port: 443
   failurePolicy: Fail
+  matchPolicy: Exact
   name: vnamespaceclaim.kb.io
+  namespaceSelector: {}
+  objectSelector: {}
   rules:
   - apiGroups:
     - claim.tmax.io
@@ -580,13 +586,22 @@ webhooks:
     resources:
     - namespaceclaims
     - namespaceclaims/status
-- clientConfig:
+    scope: '*'
+  sideEffects: None
+  timeoutSeconds: 30
+- admissionReviewVersions:
+  - v1beta1
+  clientConfig:
     service:
       name: hypercloud-single-operator-webhook-service
       namespace: hypercloud5-system
       path: /validate-claim-tmax-io-v1alpha1-resourcequotaclaim
+      port: 443
   failurePolicy: Fail
+  matchPolicy: Exact
   name: vresourcequotaclaim.kb.io
+  namespaceSelector: {}
+  objectSelector: {}
   rules:
   - apiGroups:
     - claim.tmax.io
@@ -598,13 +613,22 @@ webhooks:
     resources:
     - resourcequotaclaims
     - resourcequotaclaims/status
-- clientConfig:
+    scope: '*'
+  sideEffects: None
+  timeoutSeconds: 30
+- admissionReviewVersions:
+  - v1beta1
+  clientConfig:
     service:
       name: hypercloud-single-operator-webhook-service
       namespace: hypercloud5-system
       path: /validate-claim-tmax-io-v1alpha1-rolebindingclaim
+      port: 443
   failurePolicy: Fail
+  matchPolicy: Exact
   name: vrolebindingclaim.kb.io
+  namespaceSelector: {}
+  objectSelector: {}
   rules:
   - apiGroups:
     - claim.tmax.io
@@ -615,3 +639,6 @@ webhooks:
     - UPDATE
     resources:
     - rolebindingclaims/status
+    scope: '*'
+  sideEffects: None
+  timeoutSeconds: 30
