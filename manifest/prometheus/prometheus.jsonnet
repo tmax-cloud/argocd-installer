@@ -418,7 +418,17 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 			"nodeSelector": {
 			  "kubernetes.io/os": "linux"
 			},
-			"serviceAccountName": "kube-state-metrics"
+			"serviceAccountName": "kube-state-metrics",
+			"volumes": (
+				if timezone != "UTC" then [
+				{
+					"name": "timezone-config",
+					"hostPath": {
+					  "path": std.join("", ["/usr/share/zoneinfo/", timezone])
+					 }
+				  }
+				] else []
+			)
 		  }
 		}
 	  }
@@ -780,7 +790,18 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 				},
 				"name": "config"
 			  }
-			]
+			] + (
+			if timezone != "UTC" then [
+			{
+				"name": "timezone-config",
+				"hostPath": {
+				  "path": std.join("", ["/usr/share/zoneinfo/", timezone])
+				 }
+			}
+			] 
+			else []
+			)
+		  }
 		  }
 		}
 	  }
