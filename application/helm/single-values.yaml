@@ -122,7 +122,7 @@ modules:
 
     oauth2Proxy:
       enabled: false
-      version: v7.3.0
+      version: v7.3.1
 
   ### strimzi-kafka-operator
   strimziKafka:
@@ -254,7 +254,7 @@ modules:
       version: "9.3.2"
       imageRepo: docker.io/grafana/grafana
 
-   ### grafana
+  ### grafana
   grafana:
     enabled: false
     subdomain: grafana
