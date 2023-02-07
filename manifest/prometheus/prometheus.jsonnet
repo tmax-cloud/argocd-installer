@@ -804,8 +804,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 		  }
 		  }
 		}
-	  }
-	},
+	  },
   {
 	  "apiVersion": "monitoring.coreos.com/v1",
 	  "kind": "Prometheus",
