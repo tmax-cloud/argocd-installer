@@ -883,7 +883,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "value": "knative.dev/net-istio"
                     }
                     ],
-                    "image": std.join("", [target_registry, "gcr.io/knative-releases/knative.dev/net-istio/cmd/controller:v1.2.5"]),
+                    "image": std.join("", [target_registry, "gcr.io/knative-releases/knative.dev/net-istio/cmd/controller:v1.2.0"]),
                     "name": "controller",
                     "ports": [
                     {
@@ -1002,7 +1002,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "value": "net-istio-webhook"
                     }
                     ],
-                    "image": std.join("", [target_registry, "gcr.io/knative-releases/knative.dev/net-istio/cmd/webhook:v1.2.5"]),
+                    "image": std.join("", [target_registry, "gcr.io/knative-releases/knative.dev/net-istio/cmd/webhook:v1.2.0"]),
                     "name": "webhook",
                     "ports": [
                     {
