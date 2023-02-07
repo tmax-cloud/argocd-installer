@@ -51,11 +51,13 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 {
                     "args": [
                     "server",
+                    "--console-address",
+                    ":9001",
                     "/data"
                     ],
                     "env": [
                     {
-                        "name": "MINIO_ACCESS_KEY",
+                        "name": "MINIO_ROOT_USER",
                         "valueFrom": {
                         "secretKeyRef": {
                             "key": "accesskey",
@@ -64,7 +66,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         }
                     },
                     {
-                        "name": "MINIO_SECRET_KEY",
+                        "name": "MINIO_ROOT_PASSWORD",
                         "valueFrom": {
                         "secretKeyRef": {
                             "key": "secretkey",
@@ -78,6 +80,9 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "ports": [
                     {
                         "containerPort": 9000
+                    },
+                    {
+                        "containerPort": 9001
                     }
                     ],
                     "volumeMounts": [
