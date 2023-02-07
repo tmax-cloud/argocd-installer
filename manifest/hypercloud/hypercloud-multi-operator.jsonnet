@@ -197,3 +197,4 @@ else if aws_enabled == "true"
   then [capi_aws_template]
 else if vsphere_enabled == "true"
   then [capi_vsphere_template, capi_vsphere_upgrade_template] 
+else []
