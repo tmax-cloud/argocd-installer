@@ -27,7 +27,7 @@ modules:
 
   ### gitlab
   gitlab:
-    enabled: true
+    enabled: false
     subdomain: gitlab
     pvc:
       storage: 30Gi
@@ -41,7 +41,7 @@ modules:
 
   ### gitea
   gitea:
-    enabled: false
+    enabled: true
     subdomain: gitea
     logLevel: Info
 
