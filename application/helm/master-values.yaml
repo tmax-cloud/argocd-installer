@@ -38,6 +38,7 @@ modules:
     oidc:
       enabled: false
     logLevel: INFO
+    # "Trace", "Debug", "Info", "Warn", "Error", "Critical" or "None"
 
   ### gitea
   gitea:
