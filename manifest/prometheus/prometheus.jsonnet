@@ -893,10 +893,12 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 		"replicas": 1,
 		"resources": {
 		  "requests": {
-			"memory": "1Gi"
+		  	"cpu": "100m",
+			"memory": "4Gi"
 		  },
 		  "limits": {
-			"memory": "1Gi"
+		  	"cpu": "100m",
+			"memory": "4Gi"
 		  }
 		},
 		"ruleNamespaceSelector": {},
