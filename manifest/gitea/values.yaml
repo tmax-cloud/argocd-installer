@@ -316,7 +316,7 @@ gitea:
     server:
       PROTOCOL: http
       DOMAIN: gitea.testdomain.com
-      ROOT_URL: http://gitea.testdomain.com
+      ROOT_URL: https://gitea.testdomain.com
       SSH_DOMAIN: gitea.testdomain.com
     webhook:
       ALLOWED_HOST_LIST: '*'
