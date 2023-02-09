@@ -41,6 +41,7 @@ modules:
     enabled: false
     subdomain: gitea
     logLevel: Info
+    # "Trace", "Debug", "Info", "Warn", "Error", "Critical" or "None"
 
   ### nexus
   nexus:

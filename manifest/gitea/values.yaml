@@ -154,8 +154,8 @@ resources:
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   limits:
-    cpu: 100m
-    memory: 128Mi
+    cpu: 1
+    memory: 2Gi
   requests:
     cpu: 100m
     memory: 128Mi
@@ -262,8 +262,8 @@ gitea:
   admin:
     #existingSecret: gitea-admin-secret
     existingSecret:
-    username: gitea_admin
-    password: r8sA8CPHD9!bt6d
+    username: root
+    password: password
     email: "gitea@local.domain"
 
   ## @param gitea.metrics.enabled Enable Gitea metrics
@@ -318,6 +318,8 @@ gitea:
       DOMAIN: gitea.testdomain.com
       ROOT_URL: http://gitea.testdomain.com
       SSH_DOMAIN: gitea.testdomain.com
+    webhook:
+      ALLOWED_HOST_LIST: '*'
     log:
       LEVEL: Info # "Trace", "Debug", "Info", "Warn", "Error", "Critical" or "None"
   #  APP_NAME: "Gitea: Git with a cup of tea"
@@ -420,7 +422,7 @@ memcached:
 ## @param postgresql.global.postgresql.servicePort PostgreSQL port (overrides service.port)
 ## @param postgresql.persistence.size PVC Storage Request for PostgreSQL volume
 postgresql:
-  enabled: true
+  enabled: false
   global:
     postgresql:
       postgresqlDatabase: gitea
@@ -462,7 +464,7 @@ mysql:
 ## @param mariadb.primary.service.port Port to connect to MariaDB service
 ## @param mariadb.primary.persistence.size Persistence size for MariaDB
 mariadb:
-  enabled: false
+  enabled: true
   auth:
     database: gitea
     username: gitea
