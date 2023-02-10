@@ -34,11 +34,17 @@ cert-manager:
      memory: 128Mi
   cainjector:
     resources:
+      limits:
+        cpu: 100m
+        memory: 512Mi
       requests:
         cpu: 100m
         memory: 128Mi
   webhook:
     resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
       requests:
         cpu: 100m
         memory: 128Mi
