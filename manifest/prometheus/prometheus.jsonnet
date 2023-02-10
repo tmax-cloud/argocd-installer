@@ -822,11 +822,11 @@ local target_registry = if is_offline == "false" then "" else private_registry +
       "resources": {
         "requests": {
           "cpu": "100m",
-          "memory": "2Gi"
+          "memory": "4Gi"
         },
         "limits": {
           "cpu": "100m",
-          "memory": "2Gi"
+          "memory": "4Gi"
         }
       },
       "ruleNamespaceSelector": {},
