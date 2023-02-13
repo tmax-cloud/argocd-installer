@@ -7,6 +7,11 @@ domain: ""
 subDomain: "console"
 timeZone: "UTC"
 
+busybox:
+  image:
+    repository: "docker.io/library/busybox"
+    tag: "1.28"
+
 config:
   hyperAuth:
     address: ""

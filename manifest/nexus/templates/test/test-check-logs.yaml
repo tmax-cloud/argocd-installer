@@ -15,8 +15,8 @@ spec:
       command: ["/bin/sh"]
       args: ["-c", "cat /nexus-data/log/nexus.log | grep {{ .Chart.AppVersion }} || exit 1"]
       volumeMounts:
-         - mountPath: /nexus-data	
-           name: {{ template "nexus.name" . }}-data
+        - mountPath: /nexus-data	
+          name: {{ template "nexus.name" . }}-data
   volumes:
     - name: {{ template "nexus.name" . }}-data          
       persistentVolumeClaim:
