@@ -20,29 +20,41 @@ spec:
         - name: global.registry.is_offline
           value: "{{ .Values.global.network.disabled }}"
         - name: global.registry.private_registry
-          value: {{ .Values.global.privateRegistry }}
-        - name: ingress.hosts.domain
-          value: {{ .Values.global.domain }}
-        - name: ingress.hosts.subdomain
-          value: {{ .Values.modules.argocd.subdomain }}
-        - name: repoServer.replicas
-          value: "{{ .Values.modules.argocd.repoServer.replicas }}"
-        - name: repoServer.logLevel
-          value: "{{ .Values.modules.argocd.repoServer.logLevel }}"
+          value: "{{ .Values.global.privateRegistry }}"
+        - name: global.timezone
+          value: "{{ .Values.global.timeZone }}"
+        - name: argoIngress.hosts.domain
+          value: "{{ .Values.global.domain }}"
+        - name: argoIngress.hosts.subdomain
+          value: "{{ .Values.modules.argocd.subdomain }}"
+        - name: appsetController.replicas
+          value: {{ .Values.modules.argocd.appsetController.replicas }}
+        - name: appsetController.loglevel
+          value: "{{ .Values.modules.argocd.appsetController.loglevel }}"
         - name: redis.replicas
-          value: "{{ .Values.modules.argocd.redis.replicas }}"
-        - name: redis.logLevel
-          value: "{{ .Values.modules.argocd.redis.logLevel }}"
+          value: {{ .Values.modules.argocd.redis.replicas }}
+        - name: redis.loglevel
+          value: "{{ .Values.modules.argocd.redis.loglevel }}"
         - name: argocdServer.replicas
-          value: "{{ .Values.modules.argocd.argocdServer.replicas }}"
-        - name: argocdServer.logLevel
-          value: "{{ .Values.modules.argocd.argocdServer.logLevel }}"
+          value: {{ .Values.modules.argocd.argocdServer.replicas }}
+        - name: argocdServer.loglevel
+          value: "{{ .Values.modules.argocd.argocdServer.loglevel }}"
+        - name: dex.replicas
+          value: {{ .Values.modules.argocd.dex.replicas }}
+        - name: dex.loglevel
+          value: "{{ .Values.modules.argocd.dex.loglevel }}"
+        - name: repoServer.replicas:
+          value: {{ .Values.modules.argocd.repoServer.replicas }}
+        - name: repoServer.loglevel
+          value: "{{ .Values.modules.argocd.repoServer.loglevel }}"
+        - name: notification.replicas
+          value: {{ .Values.modules.argocd.controller.replicas }}
+        - name: notification.loglevel
+          value: "{{ .Values.modules.argocd.controller.loglevel }}"
         - name: controller.replicas
-          value: "{{ .Values.modules.argocd.controller.replicas }}"
-        - name: controller.logLevel
-          value: "{{ .Values.modules.argocd.controller.logLevel }}"
-        - name: timezone
-          value: {{ .Values.global.timeZone }}
+          value: {{ .Values.modules.argocd.controller.replicas }}
+        - name: controller.loglevel
+          value: "{{ .Values.modules.argocd.controller.loglevel }}"
     path: manifest/argocd
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}

@@ -5,13 +5,6 @@ metadata:
     app.kubernetes.io/name: argocd-cm
     app.kubernetes.io/part-of: argocd
   name: argocd-cm
-data:
-  resource.customizations: |
-    networking.k8s.io/Ingress:
-      health.lua: |
-        hs = {}
-        hs.status = "Healthy"
-        return hs
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -28,6 +21,11 @@ metadata:
     app.kubernetes.io/name: argocd-gpg-keys-cm
     app.kubernetes.io/part-of: argocd
   name: argocd-gpg-keys-cm
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-notifications-cm
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -57,7 +55,6 @@ metadata:
   name: argocd-ssh-known-hosts-cm
 ---
 apiVersion: v1
-data: null
 kind: ConfigMap
 metadata:
   labels:

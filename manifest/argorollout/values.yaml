@@ -1,0 +1,32 @@
+replicas: 1
+
+global:
+  registry:
+    is_offline: false
+    private_registry:
+  time_zone: Asia/Seoul
+
+
+image: #repo, noti, contoller = argoserver
+  rollout: 
+    repository: quay.io/argoproj/argo-rollouts
+    tag: v1.4.0
+  rolloutDashboard:
+    repository: quay.io/argoproj/kubectl-argo-rollouts
+    tag: v1.4.0
+
+rollout:
+  replicas: 1
+  loglevel: "info" # debug, info, warn, error
+rolloutDashboard:
+  replicas: 1
+  loglevel: "info" # debug, info, warn, error
+
+argorolloutIngress:
+  hosts:
+    domain: testrollout123.com
+    subdomain: argocdrollout
+  tls:
+    enabled: true
+    secretName:
+  enableTraefik: false

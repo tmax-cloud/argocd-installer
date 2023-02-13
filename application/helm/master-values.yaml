@@ -181,18 +181,41 @@ modules:
   argocd:
     enabled: true
     subdomain: argocd
-    repoServer:
+    appsetController:
       replicas: 1
-      logLevel: "info" # debug, info, warn, error
+      loglevel: "info"
     redis:
       replicas: 1
-      logLevel: "notice" # warning, notice, verbose, debug
+      loglevel: "notice" # warning, notice, verbose, debug
     argocdServer:
       replicas: 1
-      logLevel: "info" # debug, info, warn, error
+      loglevel: "info" # debug, info, warn, error
+    dex:
+      replicas: 1
+      loglevel: "info" # debug, info, warn, error
+    repoServer:
+      replicas: 1
+      loglevel: "info" # debug, info, warn, error
+    notification:
+      replicas: 1
+      loglevel: "info" # debug, info, warn, error
     controller:
       replicas: 1
-      logLevel: "info" # debug, info, warn, error
+      loglevel: "info" # debug, info, warn, error
+    ingress:
+      enableTraefik: true
+      secretName:
+
+  ### argorollouts
+  argorollout:
+    enabled: true
+    subdomain: argorollouts
+    rollout:
+      replicas: 1
+      loglevel: "info"
+    rolloutDashboard:
+      replicas: 1
+      loglevel: "info"
     ingress:
       enableTraefik: true
       secretName:
