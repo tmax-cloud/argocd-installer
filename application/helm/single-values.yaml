@@ -90,7 +90,7 @@ modules:
         environment: production
     console:
       enabled: false
-      version: 5.2.20.0
+      version: 5.2.25.0
       subdomain: console
       mcMode: true
       chatbotEmbed: true
