@@ -40,8 +40,8 @@ modules:
   gitea:
     enabled: false
     subdomain: gitea
-    logLevel: Info
     # "Trace", "Debug", "Info", "Warn", "Error", "Critical" or "None"
+    logLevel: Info
 
   ### nexus
   nexus:
@@ -49,12 +49,14 @@ modules:
     persistence:
       enabled: true
       storageClass: ""
+    # "TRACE", "DEBUG", "INFO", "WARN", "ERROR" or "OFF"
     logLevel: INFO
 
 
   ### sonarqube
   sonarqube:
     enabled: false
+    # TRACE, DEBUG, INFO
     logLevel: INFO
     subdomain: sonarqube
 

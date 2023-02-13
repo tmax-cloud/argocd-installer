@@ -44,11 +44,13 @@ modules:
   gitea:
     enabled: true
     subdomain: gitea
+    # "Trace", "Debug", "Info", "Warn", "Error", "Critical" or "None"
     logLevel: Info
 
   ### sonarqube
   sonarqube:
     enabled: false
+    # TRACE, DEBUG, INFO
     logLevel: INFO
     subdomain: sonarqube
 
@@ -58,6 +60,7 @@ modules:
     persistence:
       enabled: true
       storageClass: ""
+    # "TRACE", "DEBUG", "INFO", "WARN", "ERROR" or "OFF"
     logLevel: INFO
 
   ### cert-manager
