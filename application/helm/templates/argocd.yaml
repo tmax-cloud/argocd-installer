@@ -43,7 +43,7 @@ spec:
           value: "{{ .Values.modules.argocd.dex.replicas }}"
         - name: dex.loglevel
           value: "{{ .Values.modules.argocd.dex.loglevel }}"
-        - name: repoServer.replicas:
+        - name: repoServer.replicas
           value: "{{ .Values.modules.argocd.repoServer.replicas }}"
         - name: repoServer.loglevel
           value: "{{ .Values.modules.argocd.repoServer.loglevel }}"
