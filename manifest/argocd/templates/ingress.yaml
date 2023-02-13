@@ -1,4 +1,4 @@
-{{- if .Values.ingress.enableTraefik }}
+{{- if .Values.argoIngress.enableTraefik }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -11,16 +11,16 @@ metadata:
     cert-manager.io/cluster-issuer: custom_clusterissuer
 spec:
   ingressClassName: tmax-cloud
-  {{- if .Values.ingress.tls.enabled }}
+  {{- if .Values.argoIngress.tls.enabled }}
   tls:
   - hosts:
-      - {{ .Values.ingress.hosts.subdomain }}.{{ .Values.ingress.hosts.domain }}
-    {{- if .Values.ingress.tls.secretName }}
-    secretName: {{ .Values.ingress.tls.secretName}}
+      - {{ .Values.argoIngress.hosts.subdomain }}.{{ .Values.argoIngress.hosts.domain }}
+    {{- if .Values.argoIngress.tls.secretName }}
+    secretName: {{ .Values.argoIngress.tls.secretName}}
     {{- end }}
   {{- end }}
   rules:
-  - host: {{ .Values.ingress.hosts.subdomain }}.{{ .Values.ingress.hosts.domain }}
+  - host: {{ .Values.argoIngress.hosts.subdomain }}.{{ .Values.argoIngress.hosts.domain }}
     http:
       paths:
       - path: /
@@ -42,7 +42,7 @@ metadata:
     nginx.ingress.kubernetes.io/ssl-passthrough: "true"
 spec:
   rules:
-  - host: {{ .Values.ingress.hosts.subdomain }}.{{ .Values.ingress.hosts.domain }}
+  - host: {{ .Values.argoIngress.hosts.subdomain }}.{{ .Values.argoIngress.hosts.domain }}
     http:
       paths:
       - path: /
@@ -52,12 +52,12 @@ spec:
             name: argocd-server
             port:
               name: https
-  {{- if .Values.ingress.tls.enabled }}
+  {{- if .Values.argoIngress.tls.enabled }}
   tls:
   - hosts:
-      - {{ .Values.ingress.hosts.subdomain }}.{{ .Values.ingress.hosts.domain }}
-    {{- if .Values.ingress.tls.secretName }}
-    secretName: {{ .Values.ingress.tls.secretName}}
+      - {{ .Values.argoIngress.hosts.subdomain }}.{{ .Values.argoIngress.hosts.domain }}
+    {{- if .Values.argoIngress.tls.secretName }}
+    secretName: {{ .Values.argoIngress.tls.secretName}}
     {{- end }}
   {{- end }}
 {{- end }}

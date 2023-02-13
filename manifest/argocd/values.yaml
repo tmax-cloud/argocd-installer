@@ -1,44 +1,50 @@
-# Default values for argocd.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
 replicas: 1
 
 global:
-    registry:
-      is_offline: false
-      private_registry: test-registry.com
+  registry:
+    is_offline: false
+    private_registry:
+  time_zone: Asia/Seoul
 
-image:
+
+image: #repo, noti, contoller = argoserver
   redis:
-    repository: docker.io/library/redis
-    tag: 6.2.6-alpine
+    repository: redis
+    tag: 7.0.7-alpine
   argocdServer:
     repository: quay.io/argoproj/argocd
-    tag: v2.2.5
+    tag: v2.5.7
+  dex:
+    repository:  ghcr.io/dexidp/dex
+    tag: v2.35.3
 
-
-repoServer:
-  replicas: 1
-  logLevel: "info" # debug, info, warn, error
+appsetController:
+  relicas: 1
+  loglevel: "info" # debug, info, warn, error
 redis:
   replicas: 1
-  logLevel: "notice" # warning, notice, verbose, debug
+  loglevel: "notice" # warning, notice, verbose, debug
 argocdServer:
   replicas: 1
-  logLevel: "info" # debug, info, warn, error
+  loglevel: "info" # debug, info, warn, error
+dex:
+  replicas: 1
+  loglevel: "info" # debug, info, warn, error
+repoServer:
+  replicas: 1
+  loglevel: "info" # debug, info, warn, error
+notification:
+  replicaes: 1
+  loglevel: "info" # defug, info, warn, error
 controller:
   replicas: 1
-  logLevel: "info" # debug, info, warn, error
+  loglevel: "info" # debug, info, warn, error
 
-ingress:
+argoIngress:
   hosts:
     domain: test123.com
     subdomain: argocd
   tls:
     enabled: true
     secretName:
-  enableTraefik: true
-
-timezone: "UTC"
-
+  enableTraefik: false

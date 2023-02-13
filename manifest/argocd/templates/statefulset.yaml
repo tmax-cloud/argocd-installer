@@ -7,12 +7,10 @@ metadata:
     app.kubernetes.io/part-of: argocd
   name: argocd-application-controller
 spec:
-  replicas: {{ .Values.controller.replicas }}
   selector:
     matchLabels:
       app.kubernetes.io/name: argocd-application-controller
   serviceName: argocd-application-controller
-
   template:
     metadata:
       labels:
@@ -36,13 +34,28 @@ spec:
       containers:
       - command:
         - argocd-application-controller
-        - --loglevel
-        - {{ .Values.controller.logLevel }}
+        - --loglevel # debug, info, warn, error
+        - {{ .Values.controller.loglevel }}
+        resources:
+          limits:
+            cpu: 1
+            memory: 1Gi
+          requests:
+            cpu: 500m
+            memory: 500Mi
         env:
+        - name: ARGOCD_CONTROLLER_REPLICAS
+          value: "1"
         - name: ARGOCD_RECONCILIATION_TIMEOUT
           valueFrom:
             configMapKeyRef:
               key: timeout.reconciliation
+              name: argocd-cm
+              optional: true
+        - name: ARGOCD_HARD_RECONCILIATION_TIMEOUT
+          valueFrom:
+            configMapKeyRef:
+              key: timeout.hard.reconciliation
               name: argocd-cm
               optional: true
         - name: ARGOCD_APPLICATION_CONTROLLER_REPO_SERVER
@@ -105,6 +118,12 @@ spec:
               key: controller.repo.server.strict.tls
               name: argocd-cmd-params-cm
               optional: true
+        - name: ARGOCD_APPLICATION_CONTROLLER_PERSIST_RESOURCE_HEALTH
+          valueFrom:
+            configMapKeyRef:
+              key: controller.resource.health.persist
+              name: argocd-cmd-params-cm
+              optional: true
         - name: ARGOCD_APP_STATE_CACHE_EXPIRATION
           valueFrom:
             configMapKeyRef:
@@ -115,6 +134,12 @@ spec:
           valueFrom:
             configMapKeyRef:
               key: redis.server
+              name: argocd-cmd-params-cm
+              optional: true
+        - name: REDIS_COMPRESSION
+          valueFrom:
+            configMapKeyRef:
+              key: redis.compression
               name: argocd-cmd-params-cm
               optional: true
         - name: REDISDB
@@ -129,26 +154,25 @@ spec:
               key: controller.default.cache.expiration
               name: argocd-cmd-params-cm
               optional: true
+        - name: ARGOCD_APPLICATION_CONTROLLER_OTLP_ADDRESS
+          valueFrom:
+            configMapKeyRef:
+              key: otlp.address
+              name: argocd-cmd-params-cm
+              optional: true
+        - name: ARGOCD_APPLICATION_NAMESPACES
+          valueFrom:
+            configMapKeyRef:
+              key: application.namespaces
+              name: argocd-cmd-params-cm
+              optional: true
         {{- if .Values.global.registry.is_offline }}
         image: {{ .Values.global.registry.private_registry }}/{{ .Values.image.argocdServer.repository }}:{{ .Values.image.argocdServer.tag }}
         {{- else }}
         image: {{ .Values.image.argocdServer.repository }}:{{ .Values.image.argocdServer.tag }}
         {{- end }}
         imagePullPolicy: Always
-        livenessProbe:
-          httpGet:
-            path: /healthz
-            port: 8082
-          initialDelaySeconds: 5
-          periodSeconds: 10
         name: argocd-application-controller
-        resources:
-          limits:
-            cpu: 2
-            memory: 2Gi
-          requests:
-            cpu: 250m
-            memory: 1Gi
         ports:
         - containerPort: 8082
         readinessProbe:
@@ -161,28 +185,23 @@ spec:
           allowPrivilegeEscalation: false
           capabilities:
             drop:
-            - all
+            - ALL
           readOnlyRootFilesystem: true
           runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
         volumeMounts:
-        {{- if ne .Values.timezone "UTC" }}
-        - name: timezone-config
-          mountPath: /etc/localtime
-        {{- end }}
         - mountPath: /app/config/controller/tls
           name: argocd-repo-server-tls
         - mountPath: /home/argocd
           name: argocd-home
-        - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
-          name: argocd-application-controller-secret
+        {{- if ne .Values.global.time_zone "UTC" }}
+        - name: timezone-config
+          mountPath: /etc/localtime
+        {{- end }}
         workingDir: /home/argocd
       serviceAccountName: argocd-application-controller
       volumes:
-      {{- if ne .Values.timezone "UTC" }}
-      - name: timezone-config
-        hostPath:
-          path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.timezone }}
-      {{- end }}
       - emptyDir: {}
         name: argocd-home
       - name: argocd-repo-server-tls
@@ -196,6 +215,8 @@ spec:
             path: ca.crt
           optional: true
           secretName: argocd-repo-server-tls
-      - name: argocd-application-controller-secret
-        secret:
-          secretName: argocd-application-controller-token
+      {{- if ne .Values.global.time_zone "UTC" }}
+      - name: timezone-config
+        hostPath:
+          path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.global.time_zone }}
+      {{- end }}
