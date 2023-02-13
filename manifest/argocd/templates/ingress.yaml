@@ -51,7 +51,7 @@ spec:
           service:
             name: argocd-server
             port:
-              name: https
+              name: http
   {{- if .Values.argoIngress.tls.enabled }}
   tls:
   - hosts:
