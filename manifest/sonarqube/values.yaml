@@ -28,6 +28,12 @@ sonarProperties:
   sonar.auth.oidc.issuerUri: issuerUri 'ex)https://hyperauth.tmaxcloud.org/auth/realms/tmax'
 
 image:
+  curlimages:
+    repo: docker.io/curlimages/curl
+    tag: 7.76.1
+  busybox:
+    repo: docker.io/library/busybox
+    tag: 1.32
   sonarqube:
     repo: docker.io/sonarqube
     tag: 9.8.0-community

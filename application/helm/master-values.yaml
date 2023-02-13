@@ -50,6 +50,7 @@ modules:
   sonarqube:
     enabled: false
     logLevel: INFO
+    subdomain: sonarqube
 
   ### nexus
   nexus:
