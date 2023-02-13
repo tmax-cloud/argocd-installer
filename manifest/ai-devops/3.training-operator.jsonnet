@@ -90,11 +90,11 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "resources": {
                     "limits": {
                         "cpu": "100m",
-                        "memory": "30Mi"
+                        "memory": "300Mi"
                     },
                     "requests": {
                         "cpu": "100m",
-                        "memory": "20Mi"
+                        "memory": "200Mi"
                     }
                     },
                     "securityContext": {

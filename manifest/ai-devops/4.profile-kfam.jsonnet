@@ -68,6 +68,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "periodSeconds": 30
                     },
                     "name": "kfam",
+                    "resources": {
+                    "limits": {
+                        "cpu": "1",
+                        "memory": "2.5Gi"
+                    },
+                    "requests": {
+                        "cpu": "20m",
+                        "memory": "250Mi"
+                    }
+                    },
                     "ports": [
                     {
                         "containerPort": 8081,
@@ -116,6 +126,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     },
                     "initialDelaySeconds": 5,
                     "periodSeconds": 10
+                    },
+                    "resources": {
+                    "limits": {
+                        "cpu": "1",
+                        "memory": "2.5Gi"
+                    },
+                    "requests": {
+                        "cpu": "20m",
+                        "memory": "250Mi"
+                    }
                     },
                     "volumeMounts": [
                     {

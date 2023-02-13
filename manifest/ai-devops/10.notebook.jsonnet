@@ -146,6 +146,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "image": std.join("", [target_registry, "docker.io/tmaxcloudck/notebook-controller-go:b0.2.8"]),
                     "imagePullPolicy": "Always",
                     "name": "notebook-controller",
+                    "resources": {
+                        "limits": {
+                            "cpu": "1",
+                            "memory": "3Gi"
+                        },
+                        "requests": {
+                            "cpu": "20m",
+                            "memory": "300Mi"
+                        }
+                    },
                     "volumeMounts": [
                     {
                         "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",

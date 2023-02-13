@@ -92,6 +92,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "protocol": "TCP"
                 }
                 ],
+                "resources": {
+                    "limits": {
+                        "cpu": "1",
+                        "memory": "4Gi"
+                    },
+                    "requests": {
+                        "cpu": "30m",
+                        "memory": "400Mi"
+                    }
+                },
                 "volumeMounts": [
                 {
                     "mountPath": "/tmp/cert",
@@ -186,6 +196,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "periodSeconds": 60
                 },
                 "name": "katib-db-manager",
+                "resources": {
+                    "limits": {
+                        "cpu": "1",
+                        "memory": "2Gi"
+                    },
+                    "requests": {
+                        "cpu": "20m",
+                        "memory": "100Mi"
+                    }
+                },
                 "ports": [
                 {
                     "containerPort": 6789,
@@ -295,6 +315,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 },
                 "failureThreshold": 60,
                 "periodSeconds": 15
+                },
+                "resources": {
+                    "limits": {
+                        "cpu": "1",
+                        "memory": "4Gi"
+                    },
+                    "requests": {
+                        "cpu": "1",
+                        "memory": "2Gi"
+                    }
                 },
                 "volumeMounts": [
                 {
