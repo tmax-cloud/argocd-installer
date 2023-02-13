@@ -21,7 +21,11 @@ spec:
         runAsUser: 999
       initContainers:
         - name: install-plugins
-          image: curlimages/curl:7.76.1
+          {{- if .Values.global.registry.is_offline }}
+          image: "{{ .Values.global.registry.private_registry }}/{{ .Values.image.curlimages.repo }}:{{ .Values.image.curlimages.tag }}"
+          {{- else }}
+          image: "{{ .Values.image.curlimages.repo }}:{{ .Values.image.curlimages.tag }}"
+          {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy  }}
           command: ["sh",
             "-e",
@@ -47,7 +51,11 @@ spec:
             {{- . | toYaml | trim | nindent 12 }}
           {{- end }}
         - name: concat-properties
-          image: busybox:1.32
+          {{- if .Values.global.registry.is_offline }}
+          image: "{{ .Values.global.registry.private_registry }}/{{ .Values.image.busybox.repo }}:{{ .Values.image.busybox.tag }}"
+          {{- else }}
+          image: "{{ .Values.image.busybox.repo }}:{{ .Values.image.busybox.tag }}"
+          {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy  }}
           command: 
           - sh
