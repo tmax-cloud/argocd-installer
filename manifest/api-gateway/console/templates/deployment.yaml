@@ -28,7 +28,7 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
         - name: init-check-middleware
-          image: busybox:1.28
+          image: "{{ .Values.busybox.image.repository }}:{{ .Values.busybox.image.tag }}"
           # Wait 30 seconds for a middleware service
           {{- if regexMatch "5.[2-9].[0-9]*.[0-9]*" (.Values.image.tag | default .Chart.AppVersion ) }}
           command: ['sh', '-c', 'for i in {1..10}; do sleep 3; if nslookup oauth2-proxy.api-gateway-system.svc; then exit 0; fi; done; exit 1']
@@ -133,7 +133,7 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
         - name: init-check-middleware
-          image: busybox:1.28
+          image: "{{ .Values.busybox.image.repository }}:{{ .Values.busybox.image.tag }}"
           # Wait 30 seconds for a middleware service
           {{- if regexMatch "5.[2-9].[0-9]*.[0-9]*" (.Values.image.tag | default "5.2.10.0") }}
           command: ['sh', '-c', 'for i in {1..10}; do sleep 3; if nslookup oauth2-proxy.api-gateway-system.svc; then exit 0; fi; done; exit 1']

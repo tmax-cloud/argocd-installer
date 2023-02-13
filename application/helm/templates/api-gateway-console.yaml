@@ -72,6 +72,8 @@ spec:
         {{- if .Values.global.network.disabled }}
         - name: image.repository
           value: {{ .Values.global.privateRegistry }}/docker.io/tmaxcloudck/hypercloud-console
+        - name: busybox.image.repository
+          value: {{ .Values.global.privateRegistry }}/docker.io/library/busybox
         {{- end }}
         - name: image.tag
           value: {{ .Values.modules.gatewayBootstrap.console.version | default "latest" }}

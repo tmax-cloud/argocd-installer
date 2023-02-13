@@ -219,7 +219,7 @@ modules:
     ingress:
       enableTraefik: true
       secretName:
-     
+
   ### opensearch
   opensearch:
     enabled: true
