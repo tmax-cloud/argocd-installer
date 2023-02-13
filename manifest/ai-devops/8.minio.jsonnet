@@ -85,6 +85,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "containerPort": 9001
                     }
                     ],
+                    "resources": {
+                        "limits": {
+                            "cpu": "1",
+                            "memory": "1Gi"
+                        },
+                        "requests": {
+                            "cpu": "20m",
+                            "memory": "100Mi"
+                        }
+                    },
                     "volumeMounts": [
                     {
                         "mountPath": "/data",
