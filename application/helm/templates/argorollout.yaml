@@ -24,11 +24,11 @@ spec:
         - name: global.timezone
           value: "{{ .Values.global.timeZone }}"
         - name: rollout.replicas
-          value: {{ .Values.modules.argorollout.rollout.replicas }}
+          value: "{{ .Values.modules.argorollout.rollout.replicas }}"
         - name: rollout.loglevel
           value: "{{ .Values.modules.argorollout.rollout.loglevel }}"
         - name: rolloutDashboard.replicas
-          value: {{ .Values.modules.argorollout.rolloutDashboard.replicas }}
+          value: "{{ .Values.modules.argorollout.rolloutDashboard.replicas }}"
         - name: rolloutDashboard.loglevel
           value: "{{ .Values.modules.argorollout.rolloutDashboard.loglevel }}"
         - name: argorolloutIngress.hosts.domain
