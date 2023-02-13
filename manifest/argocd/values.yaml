@@ -9,7 +9,7 @@ global:
 
 image: #repo, noti, contoller = argoserver
   redis:
-    repository: redis
+    repository: docker.io/library/redis
     tag: 7.0.7-alpine
   argocdServer:
     repository: quay.io/argoproj/argocd
