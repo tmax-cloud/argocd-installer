@@ -110,7 +110,7 @@ if is_kafka_enabled == "true" then [
       },
       "kafkaExporter": {
         "topicRegex": ".*",
-        "groupRegex": ".*"
+        "groupRegex": ".*",
         "resources": {
             "limits": {
               "cpu": "200m",
