@@ -69,6 +69,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                   "name": "https"
                 }
               ],
+              "resources": {
+                "limits": {
+                  "cpu": "100m",
+                  "memory": "300Mi"
+                },
+                "requests": {
+                  "cpu": "10m",
+                  "memory": "50Mi"
+                },
+              },
               "volumeMounts": [
                 {
                   "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
@@ -104,6 +114,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                   "protocol": "TCP"
                 }
               ],
+              "resources": {
+                "limits": {
+                  "cpu": "100m",
+                  "memory": "300Mi"
+                },
+                "requests": {
+                  "cpu": "10m",
+                  "memory": "100Mi"
+                },       
+              },              
               "readinessProbe": {
                 "httpGet": {
                   "path": "/readyz",
@@ -211,6 +231,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                   "name": "https"
                 }
               ],
+              "resources": {
+                "limits": {
+                  "cpu": "100m",
+                  "memory": "300Mi"
+                },
+                "requests": {
+                  "cpu": "10m",
+                  "memory": "50Mi"
+                },
+              },
               "volumeMounts": [
                 {
                   "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
@@ -239,6 +269,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                   "protocol": "TCP"
                 }
               ],
+              "resources": {
+                "limits": {
+                  "cpu": "100m",
+                  "memory": "300Mi"
+                },
+                "requests": {
+                  "cpu": "10m",
+                  "memory": "100Mi"
+                },       
+              },
               "readinessProbe": {
                 "httpGet": {
                   "path": "/readyz",
