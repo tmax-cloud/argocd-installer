@@ -50,6 +50,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                   "name": "https"
                 }
               ],
+              "resources": {
+                "limits": {
+                  "cpu": "100m",
+                  "memory": "300Mi"
+                },
+                "requests": {
+                  "cpu": "10m",
+                  "memory": "50Mi"
+                },
+              },
               "volumeMounts": [
                 {
                   "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
@@ -83,6 +93,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                   "protocol": "TCP"
                 }
               ],
+              "resources": {
+                "limits": {
+                  "cpu": "100m",
+                  "memory": "300Mi"
+                },
+                "requests": {
+                  "cpu": "10m",
+                  "memory": "100Mi"
+                },       
+              },
               "readinessProbe": {
                 "httpGet": {
                   "path": "/readyz",
@@ -178,6 +198,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
               "name": "https"
             }
             ],
+            "resources": {
+              "limits": {
+                "cpu": "100m",
+                "memory": "300Mi"
+              },
+              "requests": {
+                "cpu": "10m",
+                "memory": "50Mi"
+              },
+            },
             "volumeMounts": [
             {
               "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
@@ -216,6 +246,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "protocol": "TCP"
               }
               ],
+              "resources": {
+                "limits": {
+                  "cpu": "100m",
+                  "memory": "300Mi"
+                },
+                "requests": {
+                  "cpu": "10m",
+                  "memory": "100Mi"
+                },       
+              },     
               "readinessProbe": {
                 "httpGet": {
                   "path": "/readyz",
@@ -323,6 +363,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                   "name": "https"
                 }
               ],
+              "resources": {
+                "limits": {
+                  "cpu": "100m",
+                  "memory": "300Mi"
+                },
+                "requests": {
+                  "cpu": "10m",
+                  "memory": "50Mi"
+                },
+              },          
               "volumeMounts": [
                 {
                   "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
@@ -343,6 +393,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
               "image": std.join("", [target_registry, "us.gcr.io/k8s-artifacts-prod/cluster-api/kubeadm-bootstrap-controller:v0.3.16"]),
               "imagePullPolicy": "IfNotPresent",
               "name": "manager",
+              "resources": {
+                "limits": {
+                  "cpu": "100m",
+                  "memory": "300Mi"
+                },
+                "requests": {
+                  "cpu": "10m",
+                  "memory": "100Mi"
+                },       
+              },
               "volumeMounts": [
                 {
                   "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
@@ -432,6 +492,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                   "name": "https"
                 }
               ],
+              "resources": {
+                "limits": {
+                  "cpu": "100m",
+                  "memory": "300Mi"
+                },
+                "requests": {
+                  "cpu": "10m",
+                  "memory": "50Mi"
+                },
+              },     
               "volumeMounts": [
                 {
                   "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
@@ -459,6 +529,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                   "protocol": "TCP"
                 }
               ],
+              "resources": {
+                "limits": {
+                  "cpu": "100m",
+                  "memory": "300Mi"
+                },
+                "requests": {
+                  "cpu": "10m",
+                  "memory": "100Mi"
+                },       
+              },              
               "volumeMounts": [
                 {
                   "mountPath": "/tmp/k8s-webhook-server/serving-certs",
@@ -560,6 +640,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "name": "https"
               }
             ],
+            "resources": {
+              "limits": {
+                "cpu": "100m",
+                "memory": "300Mi"
+              },
+              "requests": {
+                "cpu": "10m",
+                "memory": "50Mi"
+              },
+            },     
             "volumeMounts": [
               {
                 "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
@@ -579,6 +669,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "image": std.join("", [target_registry, "us.gcr.io/k8s-artifacts-prod/cluster-api/kubeadm-control-plane-controller:v0.3.16"]),
             "imagePullPolicy": "IfNotPresent",
             "name": "manager",
+            "resources": {
+              "limits": {
+                "cpu": "100m",
+                "memory": "300Mi"
+              },
+              "requests": {
+                "cpu": "10m",
+                "memory": "100Mi"
+              },       
+            },
             "volumeMounts": [
               {
                 "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
@@ -668,6 +768,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                   "name": "https"
                 }
               ],
+              "resources": {
+                "limits": {
+                  "cpu": "100m",
+                  "memory": "300Mi"
+                },
+                "requests": {
+                  "cpu": "10m",
+                  "memory": "50Mi"
+                },
+              },
               "volumeMounts": [
                 {
                   "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
@@ -694,6 +804,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                   "protocol": "TCP"
                 }
               ],
+              "resources": {
+                "limits": {
+                  "cpu": "100m",
+                  "memory": "300Mi"
+                },
+                "requests": {
+                  "cpu": "10m",
+                  "memory": "100Mi"
+                },       
+              },
               "volumeMounts": [
                 {
                   "mountPath": "/tmp/k8s-webhook-server/serving-certs",
