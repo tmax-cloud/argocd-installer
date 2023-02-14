@@ -67,6 +67,7 @@ spec:
           httpGet:
             path: /readyz
             port: healthz
+        resources: {{ toYaml .Values.provider.aws.resources | nindent 10 }}
         volumeMounts:
         - mountPath: /tmp/k8s-webhook-server/serving-certs
           name: cert
