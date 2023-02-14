@@ -24,6 +24,9 @@ timeZone: UTC
 # 5 for trace level verbosity.
 logLevel: 0
 
+# Set info logs to stderr
+logtostderr: false
+
 # For creating the StorageClass automatically:
 storageClass:
   create: true

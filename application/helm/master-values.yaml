@@ -502,7 +502,7 @@ modules:
     path: /nfs-storage
     # nfs provisioner를 default storageClass로 설정, ex: default / not
     defaultClass: not
-    # logLevel 0 ~ 5 가능
+    # logLevel 0 ~ 6 가능 (0: error, 1: info, 5: debug)
     logLevel: 0
   
   ### ceph-csi-cephfs
