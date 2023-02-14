@@ -11,6 +11,14 @@ capi:
   # verbose - debug(0), info(1), warning(2), error(3), fatal(4, 5 ,6...)     
   verbose: 1
 
+  resources: 
+    limits:
+      cpu: 100m
+      memory: 300Mi
+    requests:
+      cpu: 10m
+      memory: 100Mi
+
 provider: 
   aws:
     enabled: true
@@ -20,6 +28,14 @@ provider:
       region: ap-northeast-2
       accessKeyID: access-key
       secretAccessKeyID: secret-access-key
+    
+    resources: 
+      limits:
+        cpu: 100m
+        memory: 300Mi
+      requests:
+        cpu: 10m
+        memory: 100Mi
 
   vsphere: 
     enabled: true
@@ -29,3 +45,10 @@ provider:
       username: username
       password: password
 
+    resources: 
+      limits:
+        cpu: 100m
+        memory: 300Mi
+      requests:
+        cpu: 10m
+        memory: 100Mi

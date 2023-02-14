@@ -57,6 +57,7 @@ spec:
         - containerPort: 9440
           name: healthz
           protocol: TCP
+        resources: {{ toYaml .Values.capi.resources | nindent 10 }}
         readinessProbe:
           httpGet:
             path: /readyz
@@ -145,6 +146,7 @@ spec:
         - containerPort: 9440
           name: healthz
           protocol: TCP
+        resources: {{ toYaml .Values.capi.resources | nindent 10 }}
         readinessProbe:
           httpGet:
             path: /readyz
@@ -225,6 +227,7 @@ spec:
           httpGet:
             path: /readyz
             port: healthz
+        resources: {{ toYaml .Values.capi.resources | nindent 10 }}
         volumeMounts:
         - mountPath: /tmp/k8s-webhook-server/serving-certs
           name: cert
