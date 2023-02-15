@@ -538,7 +538,6 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
                 "successThreshold": 1,
                 "timeoutSeconds": 4
               },
-              "resources": {},
               "terminationMessagePath": "/dev/termination-log",
               "terminationMessagePolicy": "File",
               "volumeMounts": [
