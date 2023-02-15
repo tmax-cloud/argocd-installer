@@ -16,6 +16,7 @@ webhooks:
     rules:
 ## tmax.io
       - operations: ["CREATE","UPDATE"]
+        apiGroups: ["claim.tmax.io"]
         apiVersions: ["*"]
         resources: ["*"]
       - operations: ["CREATE","UPDATE"]

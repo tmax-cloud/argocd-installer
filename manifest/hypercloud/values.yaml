@@ -3,6 +3,7 @@
 # Declare variables to be passed into your templates.
 
 global:
+  domain: tmaxcloud.org
   offline: 
     enabled: false
     registry: registry.hypercloud.org
@@ -12,29 +13,26 @@ global:
     clientSecret: tmax_client_secret
     subDomain: hyperauth
 
-  domain: tmaxcloud.org
-
   console:
     subDomain: console
   
   timeZone: Asia/Seoul # UTC or Asia/Seoul
-
   hpcdMode: multi # single or multi
 
 
+# hc-apiserver
 apiServer:
   version: b5.1.1.0
-
   logLevel: INFO
 
   kubectl:
     timeout: "21600"
+
   kafka:
     enabled: true
 
 timescaleDB:
   version: b5.0.0.0
-
   storageClass: default
   logLevel: WARNING
   
@@ -60,16 +58,18 @@ timescaleDB:
       chunkTimeInterval: "1 years"
       retentionPolicy: "10 years"
 
+
+# hc-single-operator
 singleOperator:
   version: b5.1.1.0
-    
   logLevel: info
 
   rbacProxy:  
     version: "v0.5.0"
 
 
-# hpcd mode = multi일 때만 설치 
+# hpcd mode = multi일 때만 설치
+# hc-multi-operator 
 multiOperator:
   version: b5.1.1.0
   logLevel: info

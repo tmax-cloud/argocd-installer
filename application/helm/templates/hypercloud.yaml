@@ -15,67 +15,73 @@ spec:
     namespace: hypercloud5-system
   project: {{ .Values.spec.project }}
   source:
-    directory:
-      jsonnet:
-        tlas:
-          - name: is_offline
-            value: "{{ .Values.global.network.disabled }}"
-          - name: private_registry
-            value: {{ .Values.global.privateRegistry }}
-          - name: hypercloud_hpcd_mode
-            value: {{ .Values.modules.hyperCloud.mode }}
-          - name: hypercloud_kafka_enabled
-            value: "{{ .Values.modules.hyperCloud.kafka.enabled }}"
-          - name: hyperauth_url
-            value: {{ include "hyperAuth.domain" . }}
-          - name: hyperauth_client_secret
-            value: {{ include "hyperAuth.tmaxClientSecret" . }}
-          - name: console_subdomain
-            value: {{ .Values.modules.gatewayBootstrap.console.subdomain }}
-          - name: hyperauth_subdomain
-            value: {{ include "hyperAuth.subdomain" . }}
-          - name: kubectl_timeout
-            value: "{{ .Values.modules.hyperCloud.kubectl.timeout }}"
-          - name: storageClass
-            value: {{ .Values.modules.hyperCloud.storageClass }}
-          - name: aws_enabled
-            value: "{{ .Values.modules.capi.provider.aws.enabled }}"
-          - name: vsphere_enabled
-            value: "{{ .Values.modules.capi.provider.vsphere.enabled }}"
-          - name: time_zone
-            value: {{ .Values.global.timeZone }}
-          - name: domain
-            value: {{ .Values.global.domain }}
-          - name: multi_operator_log_level
-            value: "{{ .Values.modules.hyperCloud.multiOperator.logLevel }}"
-          - name: single_operator_log_level
-            value: "{{ .Values.modules.hyperCloud.singleOperator.logLevel }}"
-          - name: api_server_log_level
-            value: "{{ .Values.modules.hyperCloud.apiServer.logLevel }}"
-          - name: timescaledb_log_level
-            value: "{{ .Values.modules.hyperCloud.timescaledb.logLevel }}"
-          - name: timescaledb_audit_chunk_time_interval
-            value: {{ .Values.modules.hyperCloud.timescaledb.audit.chunk }}
-          - name: timescaledb_audit_retention_policy
-            value: {{ .Values.modules.hyperCloud.timescaledb.audit.retention }}
-          - name: timescaledb_event_chunk_time_interval
-            value: {{ .Values.modules.hyperCloud.timescaledb.event.chunk }}
-          - name: timescaledb_event_retention_policy
-            value: {{ .Values.modules.hyperCloud.timescaledb.event.retention }}
-          - name: timescaledb_metering_hour_chunk_time_interval
-            value: {{ .Values.modules.hyperCloud.timescaledb.metering_hour.chunk }}
-          - name: timescaledb_metering_hour_retention_policy
-            value: {{ .Values.modules.hyperCloud.timescaledb.metering_hour.retention }}
-          - name: timescaledb_metering_day_chunk_time_interval
-            value: {{ .Values.modules.hyperCloud.timescaledb.metering_day.chunk }}
-          - name: timescaledb_metering_day_retention_policy
-            value: {{ .Values.modules.hyperCloud.timescaledb.metering_day.retention }}
-          - name: timescaledb_metering_month_chunk_time_interval
-            value: {{ .Values.modules.hyperCloud.timescaledb.metering_month.chunk }}
-          - name: timescaledb_metering_month_retention_policy
-            value: {{ .Values.modules.hyperCloud.timescaledb.metering_month.retention }}
-          - name: timescaledb_metering_year_retention_policy
-            value: {{ .Values.modules.hyperCloud.timescaledb.metering_year.retention }}
+    helm:
+      parameters:
+      # global
+      - name: global.offline.enabled
+        value: "{{ .Values.global.network.disabled }}"
+      - name: global.offline.registry
+        value: "{{ .Values.global.privateRegistry }}"
+      - name: global.hpcdMode
+        value: "{{ .Values.modules.hyperCloud.mode }}"
+      - name: global.hyperAuth.url
+        value: {{ include "hyperAuth.domain" . }}
+      - name: global.hyperAuth.clientSecret
+        value: {{ include "hyperAuth.tmaxClientSecret" . }}
+      - name: global.hyperAuth.subDomain
+        value: {{ include "hyperAuth.subdomain" . }}
+      - name: global.console.subDomain
+        value: "{{ .Values.modules.gatewayBootstrap.console.subdomain }}"
+      - name: global.timeZone
+        value: "{{ .Values.global.timeZone }}"
+      - name: global.domain
+        value: "{{ .Values.global.domain }}"
+      # hc-apiserver
+      - name: apiServer.kubectl.timeout
+        value: "{{ .Values.modules.hyperCloud.kubectl.timeout }}"
+      - name: apiServer.kafka.enabled
+        value: "{{ .Values.modules.hyperCloud.kafka.enabled }}"
+      - name: apiServer.logLevel
+        value: "{{ .Values.modules.hyperCloud.apiServer.logLevel }}"
+      # hc-multi-operator
+      - name: multiOperator.aws.enabled
+        value: "{{ .Values.modules.capi.provider.aws.enabled }}"
+      - name: multiOperator.vsphere.enabled
+        value: "{{ .Values.modules.capi.provider.vsphere.enabled }}"
+      - name: multiOperator.logLevel
+        value: "{{ .Values.modules.hyperCloud.multiOperator.logLevel }}"
+      # hc-single-operator
+      - name: singleOperator.logLevel
+        value: "{{ .Values.modules.hyperCloud.singleOperator.logLevel }}"
+      # timescaledb
+      - name: timescaleDB.logLevel
+        value: "{{ .Values.modules.hyperCloud.timescaledb.logLevel }}"
+      - name: timescaleDB.storageClass
+        value: "{{ .Values.modules.hyperCloud.storageClass }}"
+      - name: timescaleDB.audit.chunkTimeInterval
+        value: "{{ .Values.modules.hyperCloud.timescaledb.audit.chunk }}"
+      - name: timescaleDB.audit.retentionPolicy
+        value: "{{ .Values.modules.hyperCloud.timescaledb.audit.retention }}"
+      - name: timescaleDB.event.chunkTimeInterval
+        value: "{{ .Values.modules.hyperCloud.timescaledb.event.chunk }}"
+      - name: timescaleDB.event.retentionPolicy
+        value: "{{ .Values.modules.hyperCloud.timescaledb.event.retention }}"
+      - name: timescaleDB.metering.hour.chunkTimeInterval
+        value: "{{ .Values.modules.hyperCloud.timescaledb.metering_hour.chunk }}"
+      - name: timescaleDB.metering.hour.retentionPolicy
+        value: "{{ .Values.modules.hyperCloud.timescaledb.metering_hour.retention }}"
+      - name: timescaleDB.metering.day.chunkTimeInterval
+        value: "{{ .Values.modules.hyperCloud.timescaledb.metering_day.chunk }}"
+      - name: timescaleDB.metering.day.retentionPolicy
+        value: "{{ .Values.modules.hyperCloud.timescaledb.metering_day.retention }}"
+      - name: timescaleDB.metering.month.chunkTimeInterval
+        value: "{{ .Values.modules.hyperCloud.timescaledb.metering_month.chunk }}"
+      - name: timescaleDB.metering.month.retentionPolicy
+        value: "{{ .Values.modules.hyperCloud.timescaledb.metering_month.retention }}"
+      - name: timescaleDB.metering.year.chunkTimeInterval
+        value: "{{ .Values.modules.hyperCloud.timescaledb.metering_year.chunk }}"
+      - name: timescaleDB.metering.year.retentionPolicy
+        value: "{{ .Values.modules.hyperCloud.timescaledb.metering_year.retention }}"
     path: manifest/hypercloud
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
