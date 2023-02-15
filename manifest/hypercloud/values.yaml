@@ -9,7 +9,7 @@ global:
     registry: registry.hypercloud.org
     
   hyperAuth:
-    url: hyperauth.172.22.6.18.nip.io
+    url: hyperauth.tmaxcloud.org
     clientSecret: tmax_client_secret
     subDomain: hyperauth
 
