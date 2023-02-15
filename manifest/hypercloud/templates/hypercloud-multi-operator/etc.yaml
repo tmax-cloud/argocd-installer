@@ -496,7 +496,7 @@ spec:
   dnsNames:
   - hypercloud-multi-operator-webhook-service.hypercloud5-system.svc
   - hypercloud-multi-operator-webhook-service.hypercloud5-system.svc.cluster.local
-  isCA: false
+  # isCA: false
   issuerRef:
     group: cert-manager.io
     kind: ClusterIssuer
