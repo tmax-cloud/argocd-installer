@@ -216,6 +216,16 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
             {
               "image": std.join("", [target_registry, "docker.io/jaegertracing/jaeger-collector:", JAEGER_VERSION]),
               "name": "jaeger-collector",
+              "resources": {
+                "limits": {
+                  "cpu": "1000m",
+                  "memory": "2Gi",
+                },
+                "requests": {
+                  "cpu": "100m",
+                  "memory": "256Mi"
+                }
+              },
               "args": [
                 "--config-file=/conf/collector.yaml"
               ],
@@ -444,6 +454,16 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
                   "name": "gatekeeper"
                 }
               ],
+              "resources": {
+                "limits": {
+                  "cpu": "1000m",
+                  "memory": "2Gi"
+                },
+                "requests": {
+                  "cpu": "100m",
+                  "memory": "256Mi"
+                }
+              },
               "volumeMounts": [
                 {
                   "name": "gatekeeper-files",
@@ -484,6 +504,16 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
               "image": std.join("", [target_registry, "docker.io/jaegertracing/jaeger-query:", JAEGER_VERSION]),
               "imagePullPolicy": "IfNotPresent",
               "name": "jaeger-query",
+              "resources": {
+                "limits": {
+                  "cpu": "1000m",
+                  "memory": "2Gi"
+                },
+                "requests": {
+                  "cpu": "100m",
+                  "memory": "256Mi"
+                }
+              },
               "ports": [
                 {
                   "containerPort": 16686,
@@ -502,7 +532,6 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
                 "successThreshold": 1,
                 "timeoutSeconds": 4
               },
-              "resources": {},
               "terminationMessagePath": "/dev/termination-log",
               "terminationMessagePolicy": "File",
               "volumeMounts": [
@@ -664,6 +693,16 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
               "args": [
                 "--config-file=/conf/agent.yaml"
               ],
+              "resources": {
+                "limits": {
+                  "cpu": "100m",
+                  "memory": "128Mi"
+                },
+                "requests": {
+                  "cpu": "50m",
+                  "memory": "64Mi"
+                }
+              },
               "volumeMounts": [
                 {
                   "name": "jaeger-configuration-volume",
