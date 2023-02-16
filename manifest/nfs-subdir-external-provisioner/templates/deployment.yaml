@@ -47,6 +47,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args:
             - "--v={{ .Values.logLevel }}"
+            - "--logtostderr={{ .Values.logtostderr }}"
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           volumeMounts:
