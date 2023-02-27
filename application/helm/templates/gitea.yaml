@@ -38,7 +38,7 @@ spec:
         - name: gitea.oauth[0].secret
           value: {{ include "hyperAuth.tmaxClientSecret" . }}
         - name: gitea.oauth[0].autoDiscoverUrl
-          value: https://{{ include "hyperAuth.domain" . }}/auth/realms/tmax/.well-known/openid-configuration"
+          value: https://{{ include "hyperAuth.domain" . }}/auth/realms/tmax/.well-known/openid-configuration
     path: manifest/gitea
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
