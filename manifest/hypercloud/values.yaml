@@ -1,0 +1,83 @@
+# Default values for hypercloud.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+global:
+  domain: tmaxcloud.org
+  offline: 
+    enabled: false
+    registry: registry.hypercloud.org
+    
+  hyperAuth:
+    url: hyperauth.tmaxcloud.org
+    clientSecret: tmax_client_secret
+    subDomain: hyperauth
+
+  console:
+    subDomain: console
+  
+  timeZone: Asia/Seoul # UTC or Asia/Seoul
+  hpcdMode: multi # single or multi
+
+
+# hc-apiserver
+apiServer:
+  version: b5.0.37.0
+  logLevel: INFO
+
+  kubectl:
+    timeout: "21600"
+
+  kafka:
+    enabled: true
+
+timescaleDB:
+  version: b5.0.0.0
+  storageClass: default
+  logLevel: WARNING
+  
+  audit: 
+    chunkTimeInterval: "7 days"
+    retentionPolicy: "1 years" 
+  
+  event: 
+    chunkTimeInterval: "1 days"
+    retentionPolicy: "1 months"
+  
+  metering: 
+    hour: 
+      chunkTimeInterval: "1 days"
+      retentionPolicy: "1 months"
+    day: 
+      chunkTimeInterval: "1 months"
+      retentionPolicy: "1 years"
+    month: 
+      chunkTimeInterval: "1 years"
+      retentionPolicy: "1 years"
+    year: 
+      chunkTimeInterval: "1 years"
+      retentionPolicy: "10 years"
+
+
+# hc-single-operator
+singleOperator:
+  version: b5.0.37.0
+  logLevel: info
+
+  rbacProxy:  
+    version: "v0.5.0"
+
+
+# hpcd mode = multi일 때만 설치
+# hc-multi-operator 
+multiOperator:
+  version: b5.0.37.1
+  logLevel: info
+
+  aws: 
+    enabled: true
+  vsphere:
+    enabled: true
+
+  rbacProxy:  
+    version: "v0.5.0"
