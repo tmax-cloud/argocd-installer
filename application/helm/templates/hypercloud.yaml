@@ -45,9 +45,9 @@ spec:
         value: "{{ .Values.modules.hyperCloud.apiServer.logLevel }}"
       # hc-multi-operator
       - name: multiOperator.aws.enabled
-        value: "{{ .Values.modules.capi.provider.aws.enabled }}"
+        value: "{{ .Values.modules.capi.providers.aws.enabled }}"
       - name: multiOperator.vsphere.enabled
-        value: "{{ .Values.modules.capi.provider.vsphere.enabled }}"
+        value: "{{ .Values.modules.capi.providers.vsphere.enabled }}"
       - name: multiOperator.logLevel
         value: "{{ .Values.modules.hyperCloud.multiOperator.logLevel }}"
       # hc-single-operator

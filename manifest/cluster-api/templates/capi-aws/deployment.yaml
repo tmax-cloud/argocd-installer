@@ -1,4 +1,4 @@
-{{- if .Values.provider.aws.enabled -}}
+{{- if .Values.providers.aws.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -39,7 +39,7 @@ spec:
         - --leader-elect
         - --feature-gates=EKS=true,EKSEnableIAM=false,EKSAllowAddRoles=false,EKSFargate=false,MachinePool=false,EventBridgeInstanceState=false,AutoControllerIdentityCreator=true,BootstrapFormatIgnition=false,ExternalResourceGC=false
         - --metrics-bind-addr=127.0.0.1:8080
-        - --v={{ .Values.provider.aws.verbose }}
+        - --v={{ .Values.providers.aws.verbose }}
         env:
         - name: AWS_SHARED_CREDENTIALS_FILE
           value: /home/.aws/credentials
@@ -67,7 +67,7 @@ spec:
           httpGet:
             path: /readyz
             port: healthz
-        resources: {{ toYaml .Values.provider.aws.resources | nindent 10 }}
+        resources: {{ toYaml .Values.providers.aws.resources | nindent 10 }}
         volumeMounts:
         - mountPath: /tmp/k8s-webhook-server/serving-certs
           name: cert

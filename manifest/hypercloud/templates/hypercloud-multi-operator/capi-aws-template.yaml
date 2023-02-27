@@ -58,7 +58,7 @@ objects:
     kubeadmConfigSpec:
       initConfiguration:
         nodeRegistration:
-          name: {{`'{{ ds.meta_data.local_hostname }}'`}}
+          name: '{{`{{ ds.meta_data.local_hostname }}`}}'
           kubeletExtraArgs:
             cloud-provider: aws
       clusterConfiguration:
@@ -70,7 +70,7 @@ objects:
             cloud-provider: aws
       joinConfiguration:
         nodeRegistration:
-          name: {{`'{{ ds.meta_data.local_hostname }}'`}}
+          name: '{{`{{ ds.meta_data.local_hostname }}`}}'
           kubeletExtraArgs:
             cloud-provider: aws
       postKubeadmCommands:
@@ -137,7 +137,7 @@ objects:
       spec:
         joinConfiguration:
           nodeRegistration:
-            name: {{`'{{ ds.meta_data.local_hostname }}'`}}
+            name: '{{`{{ ds.meta_data.local_hostname }}`}}'
             kubeletExtraArgs:
               cloud-provider: aws
 parameters:

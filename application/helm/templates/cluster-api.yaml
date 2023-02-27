@@ -30,24 +30,24 @@ spec:
           value: "{{ .Values.modules.capi.verbose }}"
 
           # aws 
-        - name: provider.aws.enabled
-          value: "{{ .Values.modules.capi.provider.aws.enabled }}"
-        - name: provider.aws.verbose
-          value: "{{ .Values.modules.capi.provider.aws.verbose }}"
-        - name: provider.aws.credentials.accessKeyID
-          value: "{{ .Values.modules.capi.provider.aws.credentials.accessKeyID }}"
-        - name: provider.aws.credentials.secretAccessKeyID
-          value: "{{ .Values.modules.capi.provider.aws.credentials.secretAccessKeyID }}"
+        - name: providers.aws.enabled
+          value: "{{ .Values.modules.capi.providers.aws.enabled }}"
+        - name: providers.aws.verbose
+          value: "{{ .Values.modules.capi.providers.aws.verbose }}"
+        - name: providers.aws.credentials.accessKeyID
+          value: "{{ .Values.modules.capi.providers.aws.credentials.accessKeyID }}"
+        - name: providers.aws.credentials.secretAccessKeyID
+          value: "{{ .Values.modules.capi.providers.aws.credentials.secretAccessKeyID }}"
         
         # vsphere
-        - name: provider.vsphere.enabled
-          value: "{{ .Values.modules.capi.provider.vsphere.enabled }}"
-        - name: provider.vsphere.verbose
-          value: "{{ .Values.modules.capi.provider.vsphere.verbose }}"
-        - name: provider.vsphere.credentials.username
-          value: "{{ .Values.modules.capi.provider.vsphere.credentials.username }}"
-        - name: provider.vsphere.credentials.password
-          value: "{{ .Values.modules.capi.provider.vsphere.credentials.password }}"
+        - name: providers.vsphere.enabled
+          value: "{{ .Values.modules.capi.providers.vsphere.enabled }}"
+        - name: providers.vsphere.verbose
+          value: "{{ .Values.modules.capi.providers.vsphere.verbose }}"
+        - name: providers.vsphere.credentials.username
+          value: "{{ .Values.modules.capi.providers.vsphere.credentials.username }}"
+        - name: providers.vsphere.credentials.password
+          value: "{{ .Values.modules.capi.providers.vsphere.credentials.password }}"
 
     path: manifest/cluster-api
     repoURL: {{ .Values.spec.source.repoURL }}
