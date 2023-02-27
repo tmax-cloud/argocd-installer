@@ -1,0 +1,149 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hypercloud5-api-server-service
+  namespace: hypercloud5-system
+spec:
+  ports:
+  - port: 443
+    targetPort: https
+    name: https
+  selector:
+    hypercloud5: api-server
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: smtp-secret
+  namespace: hypercloud5-system
+type: Opaque
+data:
+  SMTP_USERNAME: bm8tcmVwbHktdGNAdG1heC5jby5rcg==
+  SMTP_PASSWORD: IUB0Y2Ruc2R1ZHhsYTEx
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: token-secret
+  namespace: hypercloud5-system
+type: Opaque
+data:
+  ACCESS_TOKEN: dG1heEAxMw==
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hypercloud5-api-server
+  namespace: hypercloud5-system
+  labels:
+    hypercloud5: api-server
+    name: hypercloud5-api-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      hypercloud5: api-server
+  template:
+    metadata:
+      name: hypercloud5-api-server
+      namespace: hypercloud5-system
+      labels:
+        hypercloud5: api-server
+    spec:
+      serviceAccount: hypercloud5-admin
+      containers:
+      - name: hypercloud5-api-server
+        {{- if .Values.global.offline.enabled }}
+        image: {{ .Values.global.offline.registry }}/tmaxcloudck/hypercloud-api-server:{{ .Values.apiServer.version }}
+        {{- else }}
+        image: tmaxcloudck/hypercloud-api-server:{{ .Values.apiServer.version }}
+        {{- end }}
+        imagePullPolicy: IfNotPresent
+        args:
+        - --log-level={{ .Values.apiServer.logLevel }}
+        env:
+          - name: HC_MODE
+            value: {{ .Values.global.hpcdMode }} # multi / single 
+          - name: INVITATION_TOKEN_EXPIRED_DATE
+            value: "7days" # 7days, 1hours, 1minutes
+          - name: GODEBUG
+            value: "x509ignoreCN=0"  
+          - name: SIDECAR_IMAGE
+            value: "fluent/fluent-bit:1.5-debug"
+          - name: KAFKA_ENABLED
+            value: "{{ .Values.apiServer.kafka.enabled }}"
+          - name: KAFKA_GROUP_ID
+            value: "hypercloud-api-server"
+          - name: HC_DOMAIN
+            value: {{ .Values.global.domain }}
+          - name: CONSOLE_SUBDOMAIN
+            value: {{ .Values.global.console.subDomain }}
+          - name: KUBECTL_TIMEOUT
+            value: "{{ .Values.apiServer.kubectl.timeout }}"
+        ports:
+        - containerPort: 443
+          name: https 
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "500Mi"
+          requests:
+            cpu: "300m"
+            memory: "100Mi"
+        volumeMounts:
+        - name: version-config
+          mountPath: /go/src/version/version.config
+          subPath: version.config
+        - name: kafka
+          mountPath: /go/src/etc/ssl
+          readOnly: true
+        - name: hypercloud5-api-server-certs
+          mountPath: /run/secrets/tls
+          readOnly: true
+        - name: token-secret
+          mountPath: /run/secrets/token
+          readOnly: true
+        - name: smtp-secret
+          mountPath: /run/secrets/smtp
+          readOnly: true
+        - name: html
+          mountPath: /run/configs/html
+          readOnly: true
+        - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+          name: hypercloud5-api-server-service-account-token
+          readOnly: true
+        {{- include "hypercloud.volumeMounts.timeZone" . | nindent 8 }}
+      volumes:
+      - name : html
+        configMap:
+          name : html-config
+      - name : version-config
+        configMap:
+          name : version-config
+      - name: hypercloud5-api-server-certs
+        secret:
+          secretName: hypercloud5-api-server-certs
+      - name: smtp-secret
+        secret:
+          secretName: smtp-secret
+          items:
+          - key: SMTP_USERNAME
+            path: username
+          - key: SMTP_PASSWORD
+            path: password
+      - name: kafka
+        secret:
+          secretName: hypercloud-kafka-secret
+      - name: token-secret
+        secret:
+          secretName: token-secret
+          items:
+          - key: ACCESS_TOKEN
+            path: accessSecret
+      - name: hypercloud5-api-server-service-account-token
+        secret:
+          defaultMode: 420
+          secretName: hypercloud5-api-server-service-account-token
+      {{- include "hypercloud.volumes.timeZone" . | nindent 6 }}
