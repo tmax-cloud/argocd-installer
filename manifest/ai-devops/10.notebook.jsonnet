@@ -11,7 +11,7 @@ function (
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
-local serverstransport = "api-gateway-system-tmaxcloud@kubernetescrd"
+local serverstransport = "tmaxcloud@file"
 [
     {
         "apiVersion": "v1",
