@@ -1,0 +1,51 @@
+# Default values for sonarqube-tmax.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+global:
+  timezone: UTC
+  registry:
+    is_offline: false
+    private_registry: 172.22.6.2:5000
+  logLevel: INFO # TRACE, DEBUG, INFO
+
+tls:
+  enabled: true
+
+pvc:
+  storageClassName: ""
+  storage: 30Gi
+  
+ingress:
+  hosts:
+    domain: testdomain.com
+    subdomain: sonarqube
+
+sonarProperties:
+  sonar.core.serverBaseURL: 'serverBaseURL ex)https://sonarqube.testdomain.com'
+  sonar.auth.oidc.clientId.secured: 'client name ex)sonarqube'
+  sonar.auth.oidc.clientSecret.secured: 'client secret'
+  sonar.auth.oidc.enabled: true
+  sonar.auth.oidc.issuerUri: issuerUri 'ex)https://hyperauth.tmaxcloud.org/auth/realms/tmax'
+
+image:
+  curlimages:
+    repo: docker.io/curlimages/curl
+    tag: 7.76.1
+  busybox:
+    repo: docker.io/library/busybox
+    tag: 1.32
+  sonarqube:
+    repo: docker.io/sonarqube
+    tag: 9.8.0-community
+
+persistence:
+  enabled: true
+  storageClass:
+  accessMode: ReadWriteOnce
+  size: 5Gi
+
+plugins:
+  install:
+    - "https://github.com/vaulttec/sonar-auth-oidc/releases/download/v2.1.1/sonar-auth-oidc-plugin-2.1.1.jar"
+  noCheckCertificate: false
+  netrcCreds: ""

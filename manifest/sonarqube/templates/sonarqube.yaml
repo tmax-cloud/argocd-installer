@@ -1,0 +1,176 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sonarqube-deployment
+  labels:
+    app: sonarqube
+  namespace: sonarqube
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sonarqube
+  template:
+    metadata:
+      labels:
+        app: sonarqube
+    spec:
+      securityContext:
+        fsGroup: 999
+        runAsUser: 999
+      initContainers:
+        - name: install-plugins
+          {{- if .Values.global.registry.is_offline }}
+          image: "{{ .Values.global.registry.private_registry }}/{{ .Values.image.curlimages.repo }}:{{ .Values.image.curlimages.tag }}"
+          {{- else }}
+          image: "{{ .Values.image.curlimages.repo }}:{{ .Values.image.curlimages.tag }}"
+          {{- end }}
+          imagePullPolicy: {{ .Values.image.pullPolicy  }}
+          command: ["sh",
+            "-e",
+            "/tmp/scripts/install_plugins.sh"]
+          volumeMounts:
+            - mountPath: /opt/sonarqube/extensions/plugins
+              name: sonarqube
+              subPath: extensions/plugins
+            - name: install-plugins
+              mountPath: /tmp/scripts/
+            {{- if .Values.plugins.netrcCreds }}
+            - name: plugins-netrc-file
+              mountPath: /root
+            {{- end }}
+          env:
+            - name: http_proxy
+              value: ""
+            - name: https_proxy
+              value: ""
+            - name: no_proxy
+              value: ""
+          {{- with .Values.env }}
+            {{- . | toYaml | trim | nindent 12 }}
+          {{- end }}
+        - name: concat-properties
+          {{- if .Values.global.registry.is_offline }}
+          image: "{{ .Values.global.registry.private_registry }}/{{ .Values.image.busybox.repo }}:{{ .Values.image.busybox.tag }}"
+          {{- else }}
+          image: "{{ .Values.image.busybox.repo }}:{{ .Values.image.busybox.tag }}"
+          {{- end }}
+          imagePullPolicy: {{ .Values.image.pullPolicy  }}
+          command: 
+          - sh
+          - -c
+          - |
+            #!/bin/sh
+            if [ -f /tmp/props/sonar.properties ]; then
+              cat /tmp/props/sonar.properties > /tmp/result/sonar.properties
+            fi
+            if [ -f /tmp/props/secret.properties ]; then
+              cat /tmp/props/secret.properties > /tmp/result/sonar.properties
+            fi
+            if [ -f /tmp/props/sonar.properties -a -f /tmp/props/secret.properties ]; then
+              awk 1 /tmp/props/sonar.properties /tmp/props/secret.properties > /tmp/result/sonar.properties
+            fi
+          volumeMounts:
+            - mountPath: /tmp/props/sonar.properties
+              name: config
+              subPath: sonar.properties
+            - mountPath: /tmp/result
+              name: concat-dir
+      containers:
+      - name: master
+        {{- if .Values.global.registry.is_offline }}
+        image: "{{ .Values.global.registry.private_registry }}/{{ .Values.image.sonarqube.repo }}:{{ .Values.image.sonarqube.tag }}"
+        {{- else }}
+        image: "{{ .Values.image.sonarqube.repo }}:{{ .Values.image.sonarqube.tag }}"
+        {{- end }}
+        ports:
+        - containerPort: 9000
+        # readinessProbe:
+        #   httpGet:
+        #     path: /
+        #     port: 9000
+        #   periodSeconds: 10
+        #   timeoutSeconds: 5
+        #   successThreshold: 2
+        #   failureThreshold: 5
+        # env:
+        # - name: JENKINS_OPTS
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: jenkins
+        #       key: options
+        # - name: JAVA_OPTS
+        #   value: '-Xmx4000m'
+        env:
+        - name: SONAR_LOG_LEVEL
+          value: {{ .Values.global.logLevel }}
+        volumeMounts:
+        - mountPath: /opt/sonarqube/conf
+          name: sonarqube-conf
+        - mountPath: /opt/sonarqube/data
+          name: sonarqube-data
+        - mountPath: /opt/sonarqube/logs
+          name: sonarqube-logs
+        - mountPath: /opt/sonarqube/extensions/plugins
+          name: sonarqube
+          subPath: extensions/plugins
+        {{- if ne .Values.global.timezone "UTC" }}
+        - name: timezone-config
+          mountPath: /etc/localtime
+        {{- end }}
+        {{- if or .Values.sonarProperties }}
+        - mountPath: /opt/sonarqube/conf/
+          name: concat-dir
+        {{- end }}
+        resources:
+          limits:
+            cpu: 2000m
+            memory: 4500Mi
+          requests:
+            cpu: 1000m
+            memory: 4000Mi
+      volumes:
+      - name: sonarqube-conf
+        persistentVolumeClaim:
+          claimName: sonarqube-conf-pvc
+      - name: sonarqube-data
+        persistentVolumeClaim:
+          claimName: sonarqube-data-pvc
+      - name: sonarqube-logs
+        persistentVolumeClaim:
+          claimName: sonarqube-logs-pvc
+      {{- if or .Values.sonarProperties }}
+      - name: config
+        configMap:
+          name: sonarqube-config
+          items:
+          - key: sonar.properties
+            path: sonar.properties
+      {{- end }}
+      - name: install-plugins
+        configMap:
+          name: install-plugins
+          items:
+            - key: install_plugins.sh
+              path: install_plugins.sh
+      - name: sonarqube-account-secret
+        secret:
+          defaultMode: 420
+          secretName: sonarqube-account-secret
+      {{- if or .Values.sonarProperties }}
+      - name : concat-dir
+        emptyDir: {}
+      {{- end }}
+      {{- if ne .Values.global.timezone "UTC" }}
+      - name: timezone-config
+        hostPath:
+          path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.global.timezone }}
+      {{- end }}
+      - name: sonarqube
+        {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: sonarqube-pvc
+        {{- else }}
+        emptyDir: {}
+        {{- end }}

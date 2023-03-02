@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sonarqube-config
+  labels:
+    app: sonarqube
+data:
+  sonar.properties: |
+  {{- range $key, $val := .Values.sonarProperties }}
+    {{ $key }}={{ $val }}
+  {{- end }}
