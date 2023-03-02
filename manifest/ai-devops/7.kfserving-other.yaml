@@ -1958,8 +1958,7 @@ spec:
   conversion:
     strategy: "Webhook"
     webhook:
-      clientConfig:
-        caBundle: "Cg=="
+      clientConfig:        
         service:
           name: "kserve-webhook-server-service"
           namespace: "kubeflow"
