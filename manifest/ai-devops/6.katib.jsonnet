@@ -7,7 +7,7 @@ function (
     hyperauth_realm="tmax",
     console_subdomain="console",    
     gatekeeper_log_level="info",    
-    gatekeeper_version="v1.0.2"
+    gatekeeper_version="v1.0.2"    
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
