@@ -11,7 +11,7 @@ function (
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
-local serverstransport = "insecure@file"
+local serverstransport = "insecure@file";
 [
     {
         "apiVersion": "v1",
