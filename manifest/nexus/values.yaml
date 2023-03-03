@@ -52,7 +52,7 @@ nexus:
         -XX:+UseCGroupMemoryLimitForHeap
         -Djava.util.prefs.userRoot=/nexus-data/javaprefs
     - name: NEXUS_SECURITY_RANDOMPASSWORD
-      value: "true"
+      value: "false"
   properties:
     override: true
     data:
