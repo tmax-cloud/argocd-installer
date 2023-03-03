@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: install-plugins
+  labels:
+    app: sonarqube
+  namespace: sonarqube
+data:
+  install_plugins.sh: |-
+    {{- if .Values.plugins.install }}
+      [ -e /opt/sonarqube/extensions/plugins/* ] && rm /opt/sonarqube/extensions/plugins/*
+      cd /opt/sonarqube/extensions/plugins
+      {{- range $index, $val := .Values.plugins.install }}
+      curl {{ if $.Values.plugins.noCheckCertificate }}--insecure{{ end }} {{ if $.Values.plugins.netrcCreds }}--netrc-file /root/.netrc{{ end }} -fsSLO {{ $val | quote }}
+      {{- end }}
+    {{- end }}

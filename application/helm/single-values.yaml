@@ -40,6 +40,22 @@ modules:
     enabled: false
     subdomain: gitea
     logLevel: Info
+    
+  ### sonarqube
+  sonarqube:
+    enabled: false
+    # TRACE, DEBUG, INFO
+    logLevel: INFO
+    subdomain: sonarqube
+
+  ### nexus
+  nexus:
+    enabled: false
+    persistence:
+      enabled: true
+      storageClass: ""
+    # "TRACE", "DEBUG", "INFO", "WARN", "ERROR" or "OFF"
+    logLevel: INFO
       
   ### gateway-bootstrap
   gatewayBootstrap:
