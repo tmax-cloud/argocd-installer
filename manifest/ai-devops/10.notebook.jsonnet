@@ -7,10 +7,11 @@ function (
     hyperauth_realm="tmax",
     console_subdomain="console",    
     gatekeeper_log_level="info",    
-    gatekeeper_version="v1.0.2"
+    gatekeeper_version="v1.0.2"    
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
+local serverstransport = "insecure@file"
 [
     {
         "apiVersion": "v1",
@@ -21,7 +22,8 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "GATEKEEPER_VERSION": gatekeeper_version,
             "LOG_LEVEL": gatekeeper_log_level,
             "IS_CLOSED": is_offline,
-            "REGISTRY_NAME": target_registry
+            "REGISTRY_NAME": target_registry,
+            "SERVERSTRANSPORT": serverstransport
         },
         "kind": "ConfigMap",
         "metadata": {
@@ -141,9 +143,18 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                             "name": "notebook-controller-config"
                         }
                         }
+                    },
+                    {
+                        "name": "SERVERSTRANSPORT",
+                        "valueFrom": {
+                        "configMapKeyRef": {
+                            "key": "SERVERSTRANSPORT",
+                            "name": "notebook-controller-config"
+                        }
+                        }
                     }
                     ],
-                    "image": std.join("", [target_registry, "docker.io/tmaxcloudck/notebook-controller-go:b0.2.8"]),
+                    "image": std.join("", [target_registry, "docker.io/tmaxcloudck/notebook-controller-go:b0.2.10"]),
                     "imagePullPolicy": "Always",
                     "name": "notebook-controller",
                     "resources": {
