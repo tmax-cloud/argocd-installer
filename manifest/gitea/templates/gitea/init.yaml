@@ -94,8 +94,9 @@ stringData:
     function configure_oauth() {
       {{- if .Values.gitea.oauth }}
       {{- range $idx, $value := .Values.gitea.oauth }}
-      local OAUTH_NAME={{ (printf "%s" $value.name) | squote }}
+      local OAUTH_NAME=giteaOAuth
       local AUTH_ID=$(gitea admin auth list --vertical-bars | grep -E "\|${OAUTH_NAME}\s+\|" | grep -iE '\|OAuth2\s+\|' | awk -F " "  "{print \$1}")
+      gitea admin auth list --vertical-bars
 
       if [[ -z "${AUTH_ID}" ]]; then
         echo "No oauth configuration found with name '${OAUTH_NAME}'. Installing it now..."
