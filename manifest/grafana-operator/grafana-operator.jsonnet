@@ -231,6 +231,12 @@ local admin_info = if is_master_cluster == "true" then "" else "admin_user = " +
 		"deployment": {
 		  "replicas": 1
 		},
+		"dataStorage": {
+		  "accessModes": [
+		    "ReadWriteOnce"
+		    ],
+		  "size": grafana_pvc_size
+		},
 		"ingress": {
 		  "enabled": true,
 		  "ingressClassName": "tmax-cloud",
