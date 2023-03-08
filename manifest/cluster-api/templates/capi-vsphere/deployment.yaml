@@ -1,4 +1,4 @@
-{{- if .Values.provider.vsphere.enabled -}}
+{{- if .Values.providers.vsphere.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -23,7 +23,7 @@ spec:
       - args:
         - --leader-elect
         - --logtostderr
-        - --v={{ .Values.provider.vsphere.verbose }}
+        - --v={{ .Values.providers.vsphere.verbose }}
         - --feature-gates=NodeAntiAffinity=false,NodeLabeling=false
         {{- if .Values.global.network.disabled }}
         image: "{{ .Values.global.network.registry }}/gcr.io/cluster-api-provider-vsphere/release/manager:v1.5.1"
@@ -47,7 +47,7 @@ spec:
           httpGet:
             path: /readyz
             port: healthz
-        resources: {{ toYaml .Values.provider.vsphere.resources | nindent 10 }}
+        resources: {{ toYaml .Values.providers.vsphere.resources | nindent 10 }}
         volumeMounts:
         - mountPath: /tmp/k8s-webhook-server/serving-certs
           name: cert
