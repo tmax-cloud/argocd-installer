@@ -11,7 +11,7 @@ spec:
       match: PathPrefix(`/api/kubernetes`)
       priority: 100
       middlewares:
-
+        - name: {{ .Release.Namespace }}-jwt-decode-auth@kubernetescrd
         - name: kubernetes-stripprefix@file
       services:
         - kind: Service
