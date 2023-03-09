@@ -444,7 +444,7 @@ spec:
     strategy: Webhook
     webhook:
       clientConfig:
-        caBundle: Cg==
+        # caBundle: Cg==
         service:
           name: capv-webhook-service
           namespace: capv-system
@@ -1218,7 +1218,7 @@ spec:
     strategy: Webhook
     webhook:
       clientConfig:
-        caBundle: Cg==
+        # caBundle: Cg==
         service:
           name: capv-webhook-service
           namespace: capv-system
@@ -1446,7 +1446,7 @@ spec:
     strategy: Webhook
     webhook:
       clientConfig:
-        caBundle: Cg==
+        # caBundle: Cg==
         service:
           name: capv-webhook-service
           namespace: capv-system
@@ -1799,7 +1799,7 @@ spec:
     strategy: Webhook
     webhook:
       clientConfig:
-        caBundle: Cg==
+        # caBundle: Cg==
         service:
           name: capv-webhook-service
           namespace: capv-system
@@ -2201,7 +2201,7 @@ spec:
     strategy: Webhook
     webhook:
       clientConfig:
-        caBundle: Cg==
+        # caBundle: Cg==
         service:
           name: capv-webhook-service
           namespace: capv-system
@@ -3605,7 +3605,7 @@ spec:
     strategy: Webhook
     webhook:
       clientConfig:
-        caBundle: Cg==
+        # caBundle: Cg==
         service:
           name: capv-webhook-service
           namespace: capv-system
@@ -4794,7 +4794,7 @@ spec:
     strategy: Webhook
     webhook:
       clientConfig:
-        caBundle: Cg==
+        # caBundle: Cg==
         service:
           name: capv-webhook-service
           namespace: capv-system
