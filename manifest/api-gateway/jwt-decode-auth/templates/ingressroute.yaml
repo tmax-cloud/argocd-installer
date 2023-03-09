@@ -14,6 +14,7 @@ spec:
       match: PathPrefix(`/api/kubernetes`)
       priority: 100
       middlewares:
+        - name: api-gateway-system-jwt-decode-auth@kubernetescrd
         - name: api-gateway-system-kubernetes-stripprefix@kubernetescrd
       services:
         - kind: Service
