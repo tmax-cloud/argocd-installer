@@ -9,11 +9,13 @@ spec:
     accessControlAllowMethods: [ "GET", "POST", "PUT", "DELETE", "OPTIONS" ]
     ## https://github.com/traefik/traefik/issues/8961
     accessControlAllowHeaders: [ "Accept", "Authorization", "Content-Type", "Origin" ]
+{{- if eq .Values.cluster.type "master" }}
     accessControlAllowOriginList:
       - "https://console.{{ .Values.tls.domain }}"
 {{- if .Values.tls.domain }}
     accessControlAllowOriginListRegex:
       - "https://([a-z]+)\\.{{ (split "." .Values.tls.domain)._0 }}\\.{{ (split "." .Values.tls.domain)._1 }}"
+{{- end }}
 {{- end }}
     accessControlMaxAge: 100
     addVaryHeader: true
