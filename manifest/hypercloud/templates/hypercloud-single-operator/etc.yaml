@@ -1,0 +1,268 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: hypercloud-single-operator-service-account
+  namespace: hypercloud5-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: hypercloud-single-operator-leader-election-role
+  namespace: hypercloud5-system
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - ""
+  resources:
+  - configmaps/status
+  verbs:
+  - get
+  - update
+  - patch
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: hypercloud-single-operator-manager-role
+rules:
+- apiGroups:
+  - '*'
+  resources:
+  - '*'
+  verbs:
+  - '*'
+- apiGroups:
+  - rbac.authorization.k8s.io.tmax.io
+  resources:
+  - rolebindings
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - rbac.authorization.k8s.io.tmax.io
+  resources:
+  - rolebindings/status
+  verbs:
+  - get
+  - patch
+  - update
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: hypercloud-single-operator-metrics-reader
+rules:
+- nonResourceURLs:
+  - /metrics
+  verbs:
+  - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: hypercloud-single-operator-proxy-role
+rules:
+- apiGroups:
+  - authentication.k8s.io
+  resources:
+  - tokenreviews
+  verbs:
+  - create
+- apiGroups:
+  - authorization.k8s.io
+  resources:
+  - subjectaccessreviews
+  verbs:
+  - create
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: hypercloud-single-operator-leader-election-rolebinding
+  namespace: hypercloud5-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: hypercloud-single-operator-leader-election-role
+subjects:
+- kind: ServiceAccount
+  name: hypercloud-single-operator-service-account
+  namespace: hypercloud5-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: hypercloud-single-operator-manager-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: hypercloud-single-operator-manager-role
+subjects:
+- kind: ServiceAccount
+  name: hypercloud-single-operator-service-account
+  namespace: hypercloud5-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: hypercloud-single-operator-proxy-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: hypercloud-single-operator-proxy-role
+subjects:
+- kind: ServiceAccount
+  name: hypercloud-single-operator-service-account
+  namespace: hypercloud5-system
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  annotations:
+    kubernetes.io/service-account.name: hypercloud-single-operator-service-account
+  name: hypercloud-single-operator-service-account-token
+  namespace: hypercloud5-system
+type: kubernetes.io/service-account-token
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    hypercloud: single-operator
+  name: hypercloud-single-operator-controller-manager-metrics-service
+  namespace: hypercloud5-system
+spec:
+  ports:
+  - name: https
+    port: 8443
+    targetPort: https
+  selector:
+    hypercloud: single-operator
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hypercloud-single-operator-webhook-service
+  namespace: hypercloud5-system
+spec:
+  ports:
+  - port: 443
+    targetPort: 9443
+  selector:
+    hypercloud: single-operator
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: hypercloud-single-operator-serving-cert
+  namespace: hypercloud5-system
+spec:
+  dnsNames:
+  - hypercloud-single-operator-webhook-service.hypercloud5-system.svc
+  - hypercloud-single-operator-webhook-service.hypercloud5-system.svc.cluster.local
+  issuerRef:
+    kind: ClusterIssuer
+    name: tmaxcloud-issuer
+  secretName: hypercloud-single-operator-webhook-server-cert
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  annotations:
+    cert-manager.io/inject-ca-from: hypercloud5-system/hypercloud-single-operator-serving-cert
+  name: hypercloud-single-operator-validating-webhook-configuration
+webhooks:
+- admissionReviewVersions:
+  - v1beta1
+  - v1
+  clientConfig:
+    service:
+      name: hypercloud-single-operator-webhook-service
+      namespace: hypercloud5-system
+      path: /validate-claim-tmax-io-v1alpha1-namespaceclaim
+  failurePolicy: Fail
+  name: vnamespaceclaim.kb.io
+  rules:
+  - apiGroups:
+    - claim.tmax.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    - DELETE
+    resources:
+    - namespaceclaims
+    - namespaceclaims/status
+  sideEffects: NoneOnDryRun
+- admissionReviewVersions:
+  - v1beta1
+  - v1
+  clientConfig:
+    service:
+      name: hypercloud-single-operator-webhook-service
+      namespace: hypercloud5-system
+      path: /validate-claim-tmax-io-v1alpha1-resourcequotaclaim
+  failurePolicy: Fail
+  name: vresourcequotaclaim.kb.io
+  rules:
+  - apiGroups:
+    - claim.tmax.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    - DELETE
+    resources:
+    - resourcequotaclaims
+    - resourcequotaclaims/status
+  sideEffects: NoneOnDryRun
+- admissionReviewVersions:
+  - v1beta1
+  - v1
+  clientConfig:
+    service:
+      name: hypercloud-single-operator-webhook-service
+      namespace: hypercloud5-system
+      path: /validate-claim-tmax-io-v1alpha1-rolebindingclaim
+  failurePolicy: Fail
+  name: vrolebindingclaim.kb.io
+  rules:
+  - apiGroups:
+    - claim.tmax.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    - DELETE
+    resources:
+    - rolebindingclaims
+    - rolebindingclaims/status
+  sideEffects: NoneOnDryRun
