@@ -634,7 +634,7 @@ local fluentd_log_level = if log_level == "error" then "-qq " else if log_level 
         "app": "opensearch-dashboards"
       },
       "annotations": {
-        "traefik.ingress.kubernetes.io/service.serverstransport": "tmaxcloud@file"
+        "traefik.ingress.kubernetes.io/service.serverstransport": "insecure@file"
       }
     },
     "spec": {
