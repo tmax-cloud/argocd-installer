@@ -34,7 +34,7 @@ data:
           headers:
             accessControlAllowMethods: [ "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH" ]
             accessControlAllowHeaders: [ "Accept", "Authorization", "Content-Type", "Locatee-Smart-Signage-Token", "Origin" ]
-            {{- if eq .Values.cluster "master" }}
+            {{- if eq .Values.global.cluster "master" }}
             accessControlAllowOriginList:
               - "https://console.{{ .Values.tls.domain }}"
               - "https://multicluster.{{ .Values.tls.domain }}"
