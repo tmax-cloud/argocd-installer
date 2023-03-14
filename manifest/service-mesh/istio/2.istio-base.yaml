@@ -2081,7 +2081,6 @@ spec:
                                 type: integer
                               idleTimeout:
                                 description: "%destinationrules.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.subsets.items.properties.trafficPolicy.properties.connectionPool.properties.http.properties.idleTimeout"
-                                  pool connections.
                                 type: string
                               maxRequestsPerConnection:
                                 description: "%destinationrules.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.subsets.items.properties.trafficPolicy.properties.connectionPool.properties.http.properties.maxRequestsPerConnection"
@@ -2166,7 +2165,6 @@ spec:
                                   properties:
                                     from:
                                       description: "%destinationrules.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.subsets.items.properties.trafficPolicy.properties.loadBalancer.properties.localityLbSetting.properties.distribute.items.properties.from"
-                                        e.g.
                                       format: string
                                       type: string
                                     to:
