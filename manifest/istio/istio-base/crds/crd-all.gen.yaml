@@ -3313,7 +3313,6 @@ spec:
                           type: string
                         cipherSuites:
                           description: "%sidecars.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.ingress.items.properties.tls.properties.cipherSuites"
-                            cipher list.'
                           items:
                             type: string
                           type: array
@@ -5884,7 +5883,6 @@ spec:
                       type: string
                     jwks:
                       description: "%requestauthentications.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.jwtRules.items.properties.jwks"
-                        of the JWT.
                       type: string
                     jwks_uri:
                       type: string
