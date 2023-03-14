@@ -28,6 +28,8 @@ spec:
         - {{ .Values.modules.gateway.source.helm.valueFiles }}
       {{- end }}
       parameters:
+        - name: global.cluster
+          value: {{ .Values.global.cluster }}      
       {{- if not (eq .Values.global.timeZone "UTC") }}
         - name: traefik.env[0].name
           value: TZ
