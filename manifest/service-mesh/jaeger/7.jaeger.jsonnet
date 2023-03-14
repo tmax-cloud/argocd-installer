@@ -130,57 +130,6 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
     "apiVersion": "v1",
     "kind": "ConfigMap",
     "metadata": {
-      "name": "jaeger-configuration",
-      "namespace": "istio-system",
-      "labels": {
-        "app": "jaeger",
-        "app.kubernetes.io/name": "jaeger"
-      }
-    },
-    "data": {
-      "span-storage-type": "opensearch",
-      "collector": std.join("\n", 
-        [
-          "es:",
-          "  server-urls: https://opensearch.kube-logging.svc:9200",
-          "  tls:",
-          "    enabled: true",
-          "    ca: /ca/cert/ca.crt",
-          "    cert: /ca/cert/tls.crt",
-          "    key: /ca/cert/tls.key",
-          "  username: admin",
-          "  password: admin",
-          "collector:",
-          "  zipkin:",
-          "    host-port: 9411"
-        ]
-      ),
-      "query": std.join("\n",
-        [
-          "es:",
-          "  server-urls: https://opensearch.kube-logging.svc:9200",
-          "  tls:",
-          "    enabled: true",
-          "    ca: /ca/cert/ca.crt",
-          "    cert: /ca/cert/tls.crt",
-          "    key: /ca/cert/tls.key",
-          "  username: admin",
-          "  password: admin"
-        ]
-      ),
-      "agent": std.join("\n",
-        [
-          "reporter:",
-          "  grpc:",
-          "    host-port: \"jaeger-collector:14250\""
-        ]
-      )
-    }
-  },
-  {
-    "apiVersion": "v1",
-    "kind": "ConfigMap",
-    "metadata": {
       "name": "jaeger-sampling-configuration",
       "namespace": "istio-system",
       "labels": {
