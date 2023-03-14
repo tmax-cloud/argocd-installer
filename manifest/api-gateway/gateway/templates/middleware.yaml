@@ -9,7 +9,7 @@ spec:
     accessControlAllowMethods: [ "GET", "POST", "PUT", "DELETE", "OPTIONS" ]
     ## https://github.com/traefik/traefik/issues/8961
     accessControlAllowHeaders: [ "Accept", "Authorization", "Content-Type", "Origin" ]
-{{- if eq .Values.cluster "master" }}
+{{- if eq .Values.global.cluster "master" }}
     accessControlAllowOriginList:
       - "https://console.{{ .Values.tls.domain }}"
 {{- if .Values.tls.domain }}
