@@ -481,7 +481,7 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
                   "mountPath": "/html"
                 },
                 {
-                  "name": "jaeger-certs",
+                  "name": "secret",
                   "mountPath": "/etc/secrets",
                   "readOnly": true
                 }
@@ -553,7 +553,7 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
                   "mountPath": "/plugin"
                 },
                 {
-                  "name": "jaeger-certs",
+                  "name": "secret",
                   "mountPath": "/ca/cert",
                   "readOnly": true
                 }
@@ -591,7 +591,7 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
           "terminationGracePeriodSeconds": 30,
           "volumes": [
             {
-              "name": "jaeger-certs",
+              "name": "secret",
               "secret": {
                 "defaultMode": 420,
                 "secretName": "jaeger-secret"
