@@ -138,7 +138,7 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
       }
     },
     "data": {
-      "sampling": "{default_strategy:{param:1,type:probabilistic}}"
+      "sampling": '{"default_strategy":{"param":1,"type":"probabilistic"}}'
     }
   },
   {
@@ -153,7 +153,7 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
       }
     },
     "data": {
-      "ui": "{dependencies:{memuEnabled:false}}"
+      "ui": '{"dependencies":{"menuEnabled":false}}'
     }
   },
   {
