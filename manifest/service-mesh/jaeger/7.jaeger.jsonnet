@@ -258,10 +258,6 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
                 {
                   "name": "SPAN_STORAGE_TYPE",
                   "value": "grpc-plugin"
-                },
-                {
-                  "name": "COLLECTOR_OTLP_ENABLED",
-                  "value": true
                 }
               ]
             }
