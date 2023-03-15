@@ -570,8 +570,8 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
               "resources": {},
               "volumeMounts": [
                 {
-                  "name": "jaeger-sampling-configuration-volume",
-                  "mountPath": "/etc/jaeger/sampling",
+                  "name": "jaeger-ui-configuration-volume",
+                  "mountPath": "/etc/config",
                   "readOnly": true
                 },
                 {
