@@ -259,6 +259,19 @@ menuTabs:
         label: CI/CD
         menuType: CONTAINER
       - innerMenus:
+          - kind: Notebook
+            menuType: REGISTERED_MENU
+          - kind: Experiment
+            menuType: REGISTERED_MENU
+          - kind: TrainingJob
+            menuType: REGISTERED_MENU
+          - kind: InferenceService
+            menuType: REGISTERED_MENU
+          - kind: TrainedModel
+            menuType: REGISTERED_MENU
+        label: AIDevOps
+        menuType: CONTAINER
+      - innerMenus:
           - kind: Kafka
             menuType: REGISTERED_MENU
           - kind: KafkaConnect
