@@ -380,6 +380,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         }
       }
     ],
+    "multiModel": true,
     "protocolVersions": [
       "v1"
     ],
@@ -535,6 +536,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         }
       }
     ],
+    "multiModel": true,
     "protocolVersions": [
       "v2",
       "grpc-v2"
@@ -605,6 +607,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         }
       }
     ],
+    "multiModel": true,
     "protocolVersions": [
       "v1"
     ],
@@ -627,7 +630,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
     "explainers": std.join("", ["{\n    \"alibi\": {\n        \"image\" : \"", target_registry, "docker.io/kserve/alibi-explainer\",\n        \"defaultImageVersion\": \"v0.10.0\"\n    },\n    \"aix\": {\n        \"image\" : \"", target_registry, "docker.io/kserve/aix-explainer\",\n        \"defaultImageVersion\": \"v0.10.0\"\n    },\n    \"art\": {\n        \"image\" : \"", target_registry, "docker.io/kserve/art-explainer\",\n        \"defaultImageVersion\": \"v0.10.0\"\n    }\n}"]),
     "ingress": "{\n  \"ingressGateway\": \"kubeflow/kubeflow-gateway\",\n  \"ingressService\": \"ingressgateway.istio-system.svc.cluster.local\",\n  \"localGateway\": \"knative-serving/knative-local-gateway\",\n  \"localGatewayService\": \"knative-local-gateway.istio-system.svc.cluster.local\",\n  \"ingressDomain\": \"example.com\",\n  \"ingressClassName\": \"istio\",\n  \"domainTemplate\": \"{{ .Name }}-{{ .Namespace }}.{{ .IngressDomain }}\",\n  \"urlScheme\": \"http\",\n  \"disableIstioVirtualHost\": false\n}",
     "logger": std.join("", ["{\n    \"image\" : \"", target_registry, "docker.io/kserve/agent:v0.10.0\",\n    \"memoryRequest\": \"100Mi\",\n    \"memoryLimit\": \"1Gi\",\n    \"cpuRequest\": \"100m\",\n    \"cpuLimit\": \"1\",\n    \"defaultUrl\": \"http://default-broker\"\n}"]),
-    "metricsAggregator": "{\n  \"enableMetricAggregation\": \"false\",\n  \"enablePrometheusScraping\" : \"false\"\n}",
+    "metricsAggregator": "{\n  \"enableMetricAggregation\": \"false\",\n  \"enablePrometheusScraping\" : \"false\"\n}",    
     "router": std.join("", ["{\n    \"image\" : \"", target_registry, "docker.io/kserve/router:v0.10.0\",\n    \"memoryRequest\": \"100Mi\",\n    \"memoryLimit\": \"1Gi\",\n    \"cpuRequest\": \"100m\",\n    \"cpuLimit\": \"1\"\n}"]),
     "storageInitializer": std.join("", ["{\n    \"image\" : \"", target_registry, "docker.io/kserve/storage-initializer:v0.10.0\",\n    \"memoryRequest\": \"100Mi\",\n    \"memoryLimit\": \"1Gi\",\n    \"cpuRequest\": \"100m\",\n    \"cpuLimit\": \"1\",\n    \"storageSpecSecretName\": \"storage-config\"\n}"])
   },
