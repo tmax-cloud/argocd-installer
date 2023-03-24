@@ -96,9 +96,9 @@ data:
       selector:
         matchLabels:
           statusLabel:
-          - app.kubernetes.io/name=traefik
+          - app.kubernetes.io/name=gateway
           versionLabel:
-          - app.kubernetes.io/name=traefik
+          - app.kubernetes.io/name=gateway
       readinessProbe:
       versionProbe:
         container: traefik
