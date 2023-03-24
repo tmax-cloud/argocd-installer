@@ -101,7 +101,7 @@ data:
           - app.kubernetes.io/name=traefik
       readinessProbe:
       versionProbe:
-        container: traefik
+        container: gateway
     - name: Prometheus
       namespace: monitoring
       selector:
