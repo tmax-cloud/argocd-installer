@@ -96,12 +96,12 @@ data:
       selector:
         matchLabels:
           statusLabel:
-          - app.kubernetes.io/name=gateway
+          - app.kubernetes.io/name=traefik
           versionLabel:
-          - app.kubernetes.io/name=gateway
+          - app.kubernetes.io/name=traefik
       readinessProbe:
       versionProbe:
-        container: traefik
+        container: gateway
     - name: Prometheus
       namespace: monitoring
       selector:
