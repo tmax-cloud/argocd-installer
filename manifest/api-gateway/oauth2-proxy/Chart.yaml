@@ -1,6 +1,6 @@
 apiVersion: v2
-version: "1.0.6"
-appVersion: "7.3.1"
+version: "1.0.8"
+appVersion: "7.3.2"
 dependencies:
 - alias: redis
   condition: redis.enabled
@@ -14,5 +14,5 @@ name: oauth2-proxy
 sources:
 - https://github.com/oauth2-proxy/oauth2-proxy
 maintainers:
-  - name: jinsoo_youn
-    email: jinsoo_youn@tmax.co.kr
+  - name: seungwon_lee
+    email: seungwon_lee@tmax.co.kr
