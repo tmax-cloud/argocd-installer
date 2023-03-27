@@ -6,1016 +6,1450 @@ metadata:
     hypercloud: system
 
 ---
-apiVersion: "apiextensions.k8s.io/v1beta1"
+apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
-  annotations:
-    controller-gen.kubebuilder.io/version: "v0.2.4"
-  creationTimestamp: null
   name: "clusterservicebrokers.servicecatalog.k8s.io"
   labels:
     svcat: "true"
+  annotations:
+    api-approved.kubernetes.io: "unapproved"
 spec:
   group: "servicecatalog.k8s.io"
+  scope: "Cluster"
   names:
-    kind: "ClusterServiceBroker"
-    listKind: "ClusterServiceBrokerList"
     plural: "clusterservicebrokers"
     singular: "clusterservicebroker"
+    kind: "ClusterServiceBroker"
     categories:
     - "all"
     - "svcat"
-  additionalPrinterColumns:
-  - name: "URL"
-    type: "string"
-    JSONPath: ".spec.url"
-  - name: "Status"
-    type: "string"
-    JSONPath: ".status.lastConditionState"
-  - name: "Age"
-    type: "date"
-    JSONPath: ".metadata.creationTimestamp"
-  scope: "Cluster"
-  validation:
-    openAPIV3Schema:
-      description: "%clusterservicebroker.yaml.spec.validation.openAPIV3Schema"
-      properties:
-        apiVersion:
-          description: "%clusterservicebroker.yaml.spec.validation.openAPIV3Schema.properties.apiVersion"
-          type: "string"
-        kind:
-          description: "%clusterservicebroker.yaml.spec.validation.openAPIV3Schema.properties.kind"
-          type: "string"
-        metadata:
-          description: "%clusterservicebroker.yaml.spec.validation.openAPIV3Schema.properties.metadata"
-          type: "object"
-        spec:
-          description: "%clusterservicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec"
-          properties:
-            authInfo:
-              description: "%clusterservicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.authInfo"
-              properties:
-                basic:
-                  description: "%clusterservicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.authInfo.properties.basic"
-                  properties:
-                    secretRef:
-                      description: "%clusterservicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.authInfo.properties.basic.properties.secretRef"
-                      properties:
-                        name:
-                          description: "%clusterservicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.authInfo.properties.basic.properties.secretRef.properties.name"
-                          type: "string"
-                        namespace:
-                          description: "%clusterservicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.authInfo.properties.basic.properties.secretRef.properties.namespace"
-                          type: "string"
-                      type: "object"
-                  type: "object"
-                bearer:
-                  description: "%clusterservicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.authInfo.properties.bearer"
-                  properties:
-                    secretRef:
-                      description: "%clusterservicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.authInfo.properties.bearer.properties.secretRef"
-                      properties:
-                        name:
-                          description: "%clusterservicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.authInfo.properties.bearer.properties.secretRef.properties.name"
-                          type: "string"
-                        namespace:
-                          description: "%clusterservicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.authInfo.properties.bearer.properties.secretRef.properties.namespace"
-                          type: "string"
-                      type: "object"
-                  type: "object"
-              type: "object"
-            caBundle:
-              description: "%clusterservicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.caBundle"
-              format: "byte"
-              type: "string"
-            catalogRestrictions:
-              description: "%clusterservicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.catalogRestrictions"
-              properties:
-                serviceClass:
-                  description: "%clusterservicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.catalogRestrictions.properties.serviceClass"
-                  items:
-                    type: "string"
-                  type: "array"
-                servicePlan:
-                  description: "%clusterservicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.catalogRestrictions.properties.servicePlan"
-                  items:
-                    type: "string"
-                  type: "array"
-              type: "object"
-            insecureSkipTLSVerify:
-              description: "%clusterservicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.insecureSkipTLSVerify"
-              type: "boolean"
-            relistBehavior:
-              description: "%clusterservicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.relistBehavior"
-              enum:
-              - "Duration"
-              - "Manual"
-              type: "string"
-            relistDuration:
-              description: "%clusterservicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.relistDuration"
-              type: "string"
-            relistRequests:
-              description: "%clusterservicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.relistRequests"
-              format: "int64"
-              type: "integer"
-            url:
-              description: "%clusterservicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.url"
-              type: "string"
-          required:
-          - "url"
-          type: "object"
-      type: "object"
-  version: "v1beta1"
   versions:
   - name: "v1beta1"
-    served: true
-    storage: true
-  subresources:
-    status: {}
-
----
-apiVersion: apiextensions.k8s.io/v1beta1
-kind: CustomResourceDefinition
-metadata:
-  annotations:
-    controller-gen.kubebuilder.io/version: v0.2.4
-  creationTimestamp: null
-  name: clusterserviceclasses.servicecatalog.k8s.io
-  labels:
-    svcat: "true"
-spec:
-  group: servicecatalog.k8s.io
-  names:
-    kind: ClusterServiceClass
-    listKind: ClusterServiceClassList
-    plural: clusterserviceclasses
-    singular: clusterserviceclass
-    categories:
-      - all
-      - svcat
-  scope: Cluster
-  validation:
-    openAPIV3Schema:
-      description: ClusterServiceClass represents an offering in the service catalog.
-      properties:
-        apiVersion:
-          description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
-          type: string
-        kind:
-          description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
-          type: string
-        metadata:
-          description: 'Non-namespaced.  The name of this resource in etcd is in ObjectMeta.Name. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata'
-          type: object
-        spec:
-          description: Spec defines the behavior of the cluster service class.
-          properties:
-            bindable:
-              description: Bindable indicates whether a user can create bindings to an ServiceInstance provisioned from this service. ServicePlan has an optional field called Bindable which overrides the value of this field.
-              type: boolean
-            bindingRetrievable:
-              description: "Currently, this field is ALPHA: it may change or disappear at any time and its data will not be migrated. \n BindingRetrievable indicates whether fetching a binding via a GET on its endpoint is supported for all plans."
-              type: boolean
-            clusterServiceBrokerName:
-              description: "ClusterServiceBrokerName is the reference to the Broker that provides this ClusterServiceClass. \n Immutable."
-              type: string
-            defaultProvisionParameters:
-              description: DefaultProvisionParameters are default parameters passed to the broker when an instance of this class is provisioned. Any parameters defined on the plan and instance are merged with these defaults, with plan and then instance-defined parameters taking precedence over the class defaults.
-              type: object
-            description:
-              description: Description is a short description of this ServiceClass.
-              type: string
-            externalID:
-              description: "ExternalID is the identity of this object for use with the OSB API. \n Immutable."
-              type: string
-            externalMetadata:
-              description: ExternalMetadata is a blob of information about the ServiceClass, meant to be user-facing content and display instructions. This field may contain platform-specific conventional values.
-              type: object
-            externalName:
-              description: ExternalName is the name of this object that the Service Broker exposed this Service Class as. Mutable.
-              type: string
-            planUpdatable:
-              description: PlanUpdatable indicates whether instances provisioned from this ServiceClass may change ServicePlans after being provisioned.
-              type: boolean
-            requires:
-              description: "Currently, this field is ALPHA: it may change or disappear at any time and its data will not be migrated. \n Requires exposes a list of Cloud Foundry-specific 'permissions' that must be granted to an instance of this service within Cloud Foundry.  These 'permissions' have no meaning within Kubernetes and an ServiceInstance provisioned from this ServiceClass will not work correctly."
-              items:
-                type: string
-              type: array
-            tags:
-              description: "Currently, this field is ALPHA: it may change or disappear at any time and its data will not be migrated. \n Tags is a list of strings that represent different classification attributes of the ServiceClass.  These are used in Cloud Foundry in a way similar to Kubernetes labels, but they currently have no special meaning in Kubernetes."
-              items:
-                type: string
-              type: array
-          required:
-          - bindable
-          - bindingRetrievable
-          - clusterServiceBrokerName
-          - description
-          - externalID
-          - externalName
-          - planUpdatable
-          type: object
-      type: object
-  version: v1beta1
-  versions:
-  - name: v1beta1
-    served: true
-    storage: true
-  additionalPrinterColumns:
-    - name: External-Name
-      type: string
-      JSONPath: .spec.externalName
-    - name: Broker
-      type: string
-      JSONPath: .spec.clusterServiceBrokerName
-    - name: Age
-      type: date
-      JSONPath: .metadata.creationTimestamp
-  subresources:
-    status: {}
-
----
-apiVersion: apiextensions.k8s.io/v1beta1
-kind: CustomResourceDefinition
-metadata:
-  annotations:
-    controller-gen.kubebuilder.io/version: v0.2.4
-  creationTimestamp: null
-  name: clusterserviceplans.servicecatalog.k8s.io
-  labels:
-    svcat: "true"
-spec:
-  group: servicecatalog.k8s.io
-  names:
-    kind: ClusterServicePlan
-    listKind: ClusterServicePlanList
-    plural: clusterserviceplans
-    singular: clusterserviceplan
-    categories:
-      - all
-      - svcat
-  scope: Cluster
-  validation:
-    openAPIV3Schema:
-      description: ClusterServicePlan represents a tier of a ServiceClass.
-      properties:
-        apiVersion:
-          description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
-          type: string
-        kind:
-          description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
-          type: string
-        metadata:
-          description: 'Non-namespaced.  The name of this resource in etcd is in ObjectMeta.Name. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata'
-          type: object
-        spec:
-          description: Spec defines the behavior of the service plan.
-          properties:
-            bindable:
-              description: Bindable indicates whether a user can create bindings to an ServiceInstance using this ServicePlan.  If set, overrides the value of the corresponding ServiceClassSpec Bindable field.
-              type: boolean
-            clusterServiceBrokerName:
-              description: ClusterServiceBrokerName is the name of the ClusterServiceBroker that offers this ClusterServicePlan.
-              type: string
-            clusterServiceClassRef:
-              description: ClusterServiceClassRef is a reference to the service class that owns this plan.
-              properties:
-                name:
-                  description: Name of the referent.
-                  type: string
-              type: object
-            defaultProvisionParameters:
-              description: DefaultProvisionParameters are default parameters passed to the broker when an instance of this plan is provisioned. Any parameters defined on the instance are merged with these defaults, with instance-defined parameters taking precedence over defaults.
-              type: object
-            description:
-              description: Description is a short description of this ServicePlan.
-              type: string
-            externalID:
-              description: "ExternalID is the identity of this object for use with the OSB API. \n Immutable."
-              type: string
-            externalMetadata:
-              description: ExternalMetadata is a blob of information about the plan, meant to be user-facing content and display instructions.  This field may contain platform-specific conventional values.
-              type: object
-            externalName:
-              description: ExternalName is the name of this object that the Service Broker exposed this Service Plan as. Mutable.
-              type: string
-            free:
-              description: Free indicates whether this plan is available at no cost.
-              type: boolean
-            instanceCreateParameterSchema:
-              description: "Currently, this field is ALPHA: it may change or disappear at any time and its data will not be migrated. \n InstanceCreateParameterSchema is the schema for the parameters that may be supplied when provisioning a new ServiceInstance on this plan."
-              type: object
-            instanceUpdateParameterSchema:
-              description: "Currently, this field is ALPHA: it may change or disappear at any time and its data will not be migrated. \n InstanceUpdateParameterSchema is the schema for the parameters that may be updated once an ServiceInstance has been provisioned on this plan. This field only has meaning if the corresponding ServiceClassSpec is PlanUpdatable."
-              type: object
-            serviceBindingCreateParameterSchema:
-              description: "Currently, this field is ALPHA: it may change or disappear at any time and its data will not be migrated. \n ServiceBindingCreateParameterSchema is the schema for the parameters that may be supplied binding to a ServiceInstance on this plan."
-              type: object
-          required:
-          - clusterServiceBrokerName
-          - clusterServiceClassRef
-          - description
-          - externalID
-          - externalName
-          - free
-          type: object
-      type: object
-  version: v1beta1
-  versions:
-  - name: v1beta1
-    served: true
-    storage: true
-  additionalPrinterColumns:
-    - name: External-Name
-      type: string
-      JSONPath: .spec.externalName
-    - name: Broker
-      type: string
-      JSONPath: .spec.clusterServiceBrokerName
-    - name: Class
-      type: string
-      JSONPath: .spec.clusterServiceClassRef.name
-    - name: Age
-      type: date
-      JSONPath: .metadata.creationTimestamp
-  subresources:
-    status: {}
-
----
-apiVersion: "apiextensions.k8s.io/v1beta1"
-kind: "CustomResourceDefinition"
-metadata:
-  annotations:
-    controller-gen.kubebuilder.io/version: "v0.2.4"
-  creationTimestamp: null
-  name: "servicebindings.servicecatalog.k8s.io"
-  labels:
-    svcat: "true"
-spec:
-  group: "servicecatalog.k8s.io"
-  names:
-    kind: "ServiceBinding"
-    listKind: "ServiceBindingList"
-    plural: "servicebindings"
-    singular: "servicebinding"
-    categories:
-    - "all"
-    - "svcat"
-  scope: "Namespaced"
-  validation:
-    openAPIV3Schema:
-      description: "%servicebinding.yaml.spec.validation.openAPIV3Schema"
-      properties:
-        apiVersion:
-          description: "%servicebinding.yaml.spec.validation.openAPIV3Schema.properties.apiVersion"
-          type: "string"
-        kind:
-          description: "%servicebinding.yaml.spec.validation.openAPIV3Schema.properties.kind"
-          type: "string"
-        metadata:
-          type: "object"
-        spec:
-          description: "%servicebinding.yaml.spec.validation.openAPIV3Schema.properties.spec"
-          properties:
-            instanceRef:
-              description: "%servicebinding.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.instanceRef"
-              properties:
-                name:
-                  description: "%servicebinding.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.instanceRef.properties.name"
-                  type: "string"
-              type: "object"
-            parameters:
-              description: "%servicebinding.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.parameters"
-              additionalProperties:
-                anyOf:
-                - type: "integer"
-                - type: "string"
-                x-kubernetes-int-or-string: true
-              type: "object"
-            parametersFrom:
-              description: "%servicebinding.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.parametersFrom"
-              items:
-                description: "%servicebinding.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.parametersFrom.items"
+    additionalPrinterColumns:
+    - name: "URL"
+      type: "string"
+      jsonPath: ".spec.url"
+    - name: "Status"
+      type: "string"
+      jsonPath: ".status.lastConditionState"
+    - name: "Age"
+      type: "date"
+      jsonPath: ".metadata.creationTimestamp"
+    schema:
+      openAPIV3Schema:
+        description: "%clusterservicebroker.yaml.spec.versions.schema.openAPIV3Schema"
+        properties:
+          apiVersion:
+            description: "%clusterservicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.apiVersion"
+            type: "string"
+          kind:
+            description: "%clusterservicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.kind"
+            type: "string"
+          metadata:
+            type: "object"
+          spec:
+            description: "%clusterservicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec"
+            properties:
+              authInfo:
+                description: "%clusterservicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.authInfo"
                 properties:
-                  secretKeyRef:
-                    description: "%servicebinding.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.parametersFrom.items.properties.secretKeyRef"
-                    properties:
-                      key:
-                        description: "%servicebinding.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.parametersFrom.items.properties.secretKeyRef.properties.key"
-                        type: "string"
-                      name:
-                        description: "%servicebinding.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.parametersFrom.items.properties.secretKeyRef.properties.name"
-                        type: "string"
-                    required:
-                    - "key"
-                    - "name"
-                    type: "object"
-                type: "object"
-              type: "array"
-            secretName:
-              description: "%servicebinding.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.secretName"
-              type: "string"
-            secretTransforms:
-              description: "%servicebinding.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.secretTransforms"
-              items:
-                description: "%servicebinding.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.secretTransforms.items"
-                properties:
-                  addKey:
-                    description: "%servicebinding.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.secretTransforms.items.properties.addKey"
-                    properties:
-                      jsonPathExpression:
-                        description: "%servicebinding.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.secretTransforms.items.properties.addKey.properties.jsonPathExpression"
-                        type: "string"
-                      key:
-                        description: "%servicebinding.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.secretTransforms.items.properties.addKey.properties.key"
-                        type: "string"
-                      stringValue:
-                        description: "%servicebinding.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.secretTransforms.items.properties.addKey.properties.stringValue"
-                        type: "string"
-                      value:
-                        description: "%servicebinding.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.secretTransforms.items.properties.addKey.properties.value"
-                        format: "byte"
-                        type: "string"
-                    required:
-                    - "jsonPathExpression"
-                    - "key"
-                    - "stringValue"
-                    - "value"
-                    type: "object"
-                  addKeysFrom:
-                    description: "%servicebinding.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.secretTransforms.items.properties.addKeysFrom"
+                  basic:
+                    description: "%clusterservicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.authInfo.properties.basic"
                     properties:
                       secretRef:
-                        description: "%servicebinding.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.secretTransforms.items.properties.addKeysFrom.properties.secretRef"
+                        description: "%clusterservicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.authInfo.properties.basic.properties.secretRef"
                         properties:
                           name:
-                            description: "%servicebinding.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.secretTransforms.items.properties.addKeysFrom.properties.secretRef.properties.name"
+                            description: "%clusterservicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.authInfo.properties.basic.properties.secretRef.properties.name"
                             type: "string"
                           namespace:
-                            description: "%servicebinding.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.secretTransforms.items.properties.addKeysFrom.properties.secretRef.properties.namespace"
+                            description: "%clusterservicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.authInfo.properties.basic.properties.secretRef.properties.namespace"
                             type: "string"
                         type: "object"
                     type: "object"
-                  removeKey:
-                    description: "%servicebinding.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.secretTransforms.items.properties.removeKey"
+                  bearer:
+                    description: "%clusterservicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.authInfo.properties.bearer"
                     properties:
-                      key:
-                        description: "%servicebinding.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.secretTransforms.items.properties.removeKey.properties.key"
-                        type: "string"
-                    required:
-                    - "key"
-                    type: "object"
-                  renameKey:
-                    description: "%servicebinding.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.secretTransforms.items.properties.renameKey"
-                    properties:
-                      from:
-                        description: "%servicebinding.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.secretTransforms.items.properties.renameKey.properties.from"
-                        type: "string"
-                      to:
-                        description: "%servicebinding.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.secretTransforms.items.properties.renameKey.properties.to"
-                        type: "string"
-                    required:
-                    - "from"
-                    - "to"
+                      secretRef:
+                        description: "%clusterservicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.authInfo.properties.bearer.properties.secretRef"
+                        properties:
+                          name:
+                            description: "%clusterservicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.authInfo.properties.bearer.properties.secretRef.properties.name"
+                            type: "string"
+                          namespace:
+                            description: "%clusterservicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.authInfo.properties.bearer.properties.secretRef.properties.namespace"
+                            type: "string"
+                        type: "object"
                     type: "object"
                 type: "object"
-              type: "array"
-          required:
-          - "instanceRef"
-          type: "object"
-      type: "object"
-  version: "v1beta1"
-  versions:
-  - name: "v1beta1"
-    served: true
-    storage: true
-  additionalPrinterColumns:
-  - name: "Service-Instance"
-    type: "string"
-    JSONPath: ".spec.instanceRef.name"
-  - name: "Secret-Name"
-    type: "string"
-    JSONPath: ".spec.secretName"
-  - name: "Status"
-    type: "string"
-    JSONPath: ".status.lastConditionState"
-  - name: "Age"
-    type: "date"
-    JSONPath: ".metadata.creationTimestamp"
-  subresources:
-    status: {}
-
----
-apiVersion: "apiextensions.k8s.io/v1beta1"
-kind: "CustomResourceDefinition"
-metadata:
-  annotations:
-    controller-gen.kubebuilder.io/version: "v0.2.4"
-  creationTimestamp: null
-  name: "servicebrokers.servicecatalog.k8s.io"
-  labels:
-    svcat: "true"
-spec:
-  group: "servicecatalog.k8s.io"
-  names:
-    kind: "ServiceBroker"
-    listKind: "ServiceBrokerList"
-    plural: "servicebrokers"
-    singular: "servicebroker"
-    categories:
-    - "all"
-    - "svcat"
-  scope: "Namespaced"
-  validation:
-    openAPIV3Schema:
-      description: "%servicebroker.yaml.spec.validation.openAPIV3Schema"
-      properties:
-        apiVersion:
-          description: "%servicebroker.yaml.spec.validation.openAPIV3Schema.properties.apiVersion"
-          type: "string"
-        kind:
-          description: "%servicebroker.yaml.spec.validation.openAPIV3Schema.properties.kind"
-          type: "string"
-        metadata:
-          description: "%servicebroker.yaml.spec.validation.openAPIV3Schema.properties.metadata"
-          type: "object"
-        spec:
-          description: "%servicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec"
-          properties:
-            authInfo:
-              description: "%servicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.authInfo"
-              properties:
-                basic:
-                  description: "%servicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.authInfo.properties.basic"
-                  properties:
-                    secretRef:
-                      description: "%servicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.authInfo.properties.basic.properties.secretRef"
-                      properties:
-                        name:
-                          description: "%servicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.authInfo.properties.basic.properties.secretRef.properties.name"
-                          type: "string"
-                      type: "object"
-                  type: "object"
-                bearer:
-                  description: "%servicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.authInfo.properties.bearer"
-                  properties:
-                    secretRef:
-                      description: "%servicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.authInfo.properties.bearer.properties.secretRef"
-                      properties:
-                        name:
-                          description: "%servicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.authInfo.properties.bearer.properties.secretRef.properties.name"
-                          type: "string"
-                      type: "object"
-                  type: "object"
-              type: "object"
-            caBundle:
-              description: "%servicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.caBundle"
-              format: "byte"
-              type: "string"
-            catalogRestrictions:
-              description: "%servicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.catalogRestrictions"
-              properties:
-                serviceClass:
-                  description: "%servicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.catalogRestrictions.properties.serviceClass"
-                  items:
-                    type: "string"
-                  type: "array"
-                servicePlan:
-                  description: "%servicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.catalogRestrictions.properties.servicePlan"
-                  items:
-                    type: "string"
-                  type: "array"
-              type: "object"
-            insecureSkipTLSVerify:
-              description: "%servicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.insecureSkipTLSVerify"
-              type: "boolean"
-            relistBehavior:
-              description: "%servicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.relistBehavior"
-              enum:
-              - "Duration"
-              - "Manual"
-              type: "string"
-            relistDuration:
-              description: "%servicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.relistDuration"
-              type: "string"
-            relistRequests:
-              description: "%servicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.relistRequests"
-              format: "int64"
-              type: "integer"
-            url:
-              description: "%servicebroker.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.url"
-              type: "string"
-          required:
-          - "url"
-          type: "object"
-      type: "object"
-  version: "v1beta1"
-  versions:
-  - name: "v1beta1"
-    served: true
-    storage: true
-  additionalPrinterColumns:
-  - name: "URL"
-    type: "string"
-    JSONPath: ".spec.url"
-  - name: "Status"
-    type: "string"
-    JSONPath: ".status.lastConditionState"
-  - name: "Age"
-    type: "date"
-    JSONPath: ".metadata.creationTimestamp"
-  subresources:
-    status: {}
-
----
-apiVersion: apiextensions.k8s.io/v1beta1
-kind: CustomResourceDefinition
-metadata:
-  annotations:
-    controller-gen.kubebuilder.io/version: v0.2.4
-  creationTimestamp: null
-  name: serviceclasses.servicecatalog.k8s.io
-  labels:
-    svcat: "true"
-spec:
-  group: servicecatalog.k8s.io
-  names:
-    kind: ServiceClass
-    listKind: ServiceClassList
-    plural: serviceclasses
-    singular: serviceclass
-    categories:
-      - all
-      - svcat
-  scope: Namespaced
-  validation:
-    openAPIV3Schema:
-      description: ServiceClass represents a namespaced offering in the service catalog.
-      properties:
-        apiVersion:
-          description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
-          type: string
-        kind:
-          description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
-          type: string
-        metadata:
-          description: 'The name of this resource in etcd is in ObjectMeta.Name. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata'
-          type: object
-        spec:
-          description: Spec defines the behavior of the service class.
-          properties:
-            bindable:
-              description: Bindable indicates whether a user can create bindings to an ServiceInstance provisioned from this service. ServicePlan has an optional field called Bindable which overrides the value of this field.
-              type: boolean
-            bindingRetrievable:
-              description: "Currently, this field is ALPHA: it may change or disappear at any time and its data will not be migrated. \n BindingRetrievable indicates whether fetching a binding via a GET on its endpoint is supported for all plans."
-              type: boolean
-            defaultProvisionParameters:
-              description: DefaultProvisionParameters are default parameters passed to the broker when an instance of this class is provisioned. Any parameters defined on the plan and instance are merged with these defaults, with plan and then instance-defined parameters taking precedence over the class defaults.
-              type: object
-            description:
-              description: Description is a short description of this ServiceClass.
-              type: string
-            externalID:
-              description: "ExternalID is the identity of this object for use with the OSB API. \n Immutable."
-              type: string
-            externalMetadata:
-              description: ExternalMetadata is a blob of information about the ServiceClass, meant to be user-facing content and display instructions. This field may contain platform-specific conventional values.
-              type: object
-            externalName:
-              description: ExternalName is the name of this object that the Service Broker exposed this Service Class as. Mutable.
-              type: string
-            planUpdatable:
-              description: PlanUpdatable indicates whether instances provisioned from this ServiceClass may change ServicePlans after being provisioned.
-              type: boolean
-            requires:
-              description: "Currently, this field is ALPHA: it may change or disappear at any time and its data will not be migrated. \n Requires exposes a list of Cloud Foundry-specific 'permissions' that must be granted to an instance of this service within Cloud Foundry.  These 'permissions' have no meaning within Kubernetes and an ServiceInstance provisioned from this ServiceClass will not work correctly."
-              items:
-                type: string
-              type: array
-            serviceBrokerName:
-              description: "ServiceBrokerName is the reference to the Broker that provides this ServiceClass. \n Immutable."
-              type: string
-            tags:
-              description: "Currently, this field is ALPHA: it may change or disappear at any time and its data will not be migrated. \n Tags is a list of strings that represent different classification attributes of the ServiceClass.  These are used in Cloud Foundry in a way similar to Kubernetes labels, but they currently have no special meaning in Kubernetes."
-              items:
-                type: string
-              type: array
-          required:
-          - bindable
-          - bindingRetrievable
-          - description
-          - externalID
-          - externalName
-          - planUpdatable
-          - serviceBrokerName
-          type: object
-      type: object
-  version: v1beta1
-  versions:
-  - name: v1beta1
-    served: true
-    storage: true
-  additionalPrinterColumns:
-    - name: External-Name
-      type: string
-      JSONPath: .spec.externalName
-    - name: Broker
-      type: string
-      JSONPath: .spec.serviceBrokerName
-    - name: Age
-      type: date
-      JSONPath: .metadata.creationTimestamp
-  subresources:
-    status: {}
-
----
-apiVersion: "apiextensions.k8s.io/v1beta1"
-kind: "CustomResourceDefinition"
-metadata:
-  annotations:
-    controller-gen.kubebuilder.io/version: "v0.2.4"
-  creationTimestamp: null
-  name: "serviceinstances.servicecatalog.k8s.io"
-  labels:
-    svcat: "true"
-spec:
-  group: "servicecatalog.k8s.io"
-  names:
-    kind: "ServiceInstance"
-    listKind: "ServiceInstanceList"
-    plural: "serviceinstances"
-    singular: "serviceinstance"
-    categories:
-    - "all"
-    - "svcat"
-  scope: "Namespaced"
-  validation:
-    openAPIV3Schema:
-      description: "%serviceinstance.yaml.spec.validation.openAPIV3Schema"
-      properties:
-        apiVersion:
-          description: "%serviceinstance.yaml.spec.validation.openAPIV3Schema.properties.apiVersion"
-          type: "string"
-        kind:
-          description: "%serviceinstance.yaml.spec.validation.openAPIV3Schema.properties.kind"
-          type: "string"
-        metadata:
-          type: "object"
-        spec:
-          description: "%serviceinstance.yaml.spec.validation.openAPIV3Schema.properties.spec"
-          properties:
-            clusterServiceClassExternalID:
-              description: "%serviceinstance.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.clusterServiceClassExternalID"
-              type: "string"
-            clusterServiceClassExternalName:
-              description: "%serviceinstance.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.clusterServiceClassExternalName"
-              type: "string"
-            clusterServiceClassName:
-              description: "%serviceinstance.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.clusterServiceClassName"
-              type: "string"
-            clusterServiceClassRef:
-              description: "%serviceinstance.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.clusterServiceClassRef"
-              properties:
-                name:
-                  description: "%serviceinstance.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.clusterServiceClassRef.properties.name"
-                  type: "string"
-              type: "object"
-            clusterServicePlanExternalID:
-              description: "%serviceinstance.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.clusterServicePlanExternalID"
-              type: "string"
-            clusterServicePlanExternalName:
-              description: "%serviceinstance.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.clusterServicePlanExternalName"
-              type: "string"
-            clusterServicePlanName:
-              description: "%serviceinstance.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.clusterServicePlanName"
-              type: "string"
-            clusterServicePlanRef:
-              description: "%serviceinstance.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.clusterServicePlanRef"
-              properties:
-                name:
-                  description: "%serviceinstance.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.clusterServicePlanRef.properties.name"
-                  type: "string"
-              type: "object"
-            externalID:
-              description: "%serviceinstance.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.externalID"
-              type: "string"
-            parameters:
-              description: "%serviceinstance.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.parameters"
-              additionalProperties:
-                anyOf:
-                - type: "integer"
-                - type: "string"
-                x-kubernetes-int-or-string: true
-              type: "object"
-            parametersFrom:
-              description: "%serviceinstance.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.parametersFrom"
-              items:
-                description: "%serviceinstance.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.parametersFrom.items"
+              caBundle:
+                description: "%clusterservicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.caBundle"
+                format: "byte"
+                type: "string"
+              catalogRestrictions:
+                description: "%clusterservicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.catalogRestrictions"
                 properties:
-                  secretKeyRef:
-                    description: "%serviceinstance.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.parametersFrom.items.properties.secretKeyRef"
-                    properties:
-                      key:
-                        description: "%serviceinstance.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.parametersFrom.items.properties.secretKeyRef.properties.key"
-                        type: "string"
-                      name:
-                        description: "%serviceinstance.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.parametersFrom.items.properties.secretKeyRef.properties.name"
-                        type: "string"
-                    required:
-                    - "key"
-                    - "name"
-                    type: "object"
-                type: "object"
-              type: "array"
-            serviceClassExternalID:
-              description: "%serviceinstance.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.serviceClassExternalID"
-              type: "string"
-            serviceClassExternalName:
-              description: "%serviceinstance.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.serviceClassExternalName"
-              type: "string"
-            serviceClassName:
-              description: "%serviceinstance.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.serviceClassName"
-              type: "string"
-            serviceClassRef:
-              description: "%serviceinstance.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.serviceClassRef"
-              properties:
-                name:
-                  description: "%serviceinstance.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.serviceClassRef.properties.name"
-                  type: "string"
-              type: "object"
-            servicePlanExternalID:
-              description: "%serviceinstance.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.servicePlanExternalID"
-              type: "string"
-            servicePlanExternalName:
-              description: "%serviceinstance.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.servicePlanExternalName"
-              type: "string"
-            servicePlanName:
-              description: "%serviceinstance.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.servicePlanName"
-              type: "string"
-            servicePlanRef:
-              description: "%serviceinstance.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.servicePlanRef"
-              properties:
-                name:
-                  description: "%serviceinstance.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.servicePlanRef.properties.name"
-                  type: "string"
-              type: "object"
-            updateRequests:
-              description: "%serviceinstance.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.updateRequests"
-              format: "int64"
-              type: "integer"
-            userInfo:
-              description: "%serviceinstance.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.userInfo"
-              properties:
-                extra:
-                  additionalProperties:
-                    description: "%serviceinstance.yaml.spec.validation.openAPIV3Schema.properties.spec.properties.userInfo.properties.extra.additionalProperties"
+                  serviceClass:
+                    description: "%clusterservicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.catalogRestrictions.properties.serviceClass"
                     items:
                       type: "string"
                     type: "array"
+                    x-kubernetes-list-type: "set"
+                  servicePlan:
+                    description: "%clusterservicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.catalogRestrictions.properties.servicePlan"
+                    items:
+                      type: "string"
+                    type: "array"
+                    x-kubernetes-list-type: "set"
+                type: "object"
+              insecureSkipTLSVerify:
+                description: "%clusterservicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.insecureSkipTLSVerify"
+                type: "boolean"
+              relistBehavior:
+                description: "%clusterservicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.relistBehavior"
+                type: "string"
+              relistDuration:
+                description: "%clusterservicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.relistDuration"
+                type: "string"
+              relistRequests:
+                description: "%clusterservicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.relistRequests"
+                format: "int64"
+                type: "integer"
+              url:
+                description: "%clusterservicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.url"
+                type: "string"
+            required:
+            - "url"
+            type: "object"
+          status:
+            description: "%clusterservicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.status"
+            properties:
+              conditions:
+                items:
+                  description: "%clusterservicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.conditions.items"
+                  properties:
+                    lastTransitionTime:
+                      description: "%clusterservicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.conditions.items.properties.lastTransitionTime"
+                      format: "date-time"
+                      type: "string"
+                    message:
+                      description: "%clusterservicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.conditions.items.properties.message"
+                      type: "string"
+                    reason:
+                      description: "%clusterservicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.conditions.items.properties.reason"
+                      type: "string"
+                    status:
+                      description: "%clusterservicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.conditions.items.properties.status"
+                      type: "string"
+                    type:
+                      description: "%clusterservicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.conditions.items.properties.type"
+                      type: "string"
+                  required:
+                  - "lastTransitionTime"
+                  - "message"
+                  - "reason"
+                  - "status"
+                  - "type"
                   type: "object"
-                groups:
-                  items:
-                    type: "string"
-                  type: "array"
-                uid:
-                  type: "string"
-                username:
-                  type: "string"
-              required:
-              - "uid"
-              - "username"
-              type: "object"
-          type: "object"
-      type: "object"
-  version: "v1beta1"
-  versions:
-  - name: "v1beta1"
+                type: "array"
+              lastCatalogRetrievalTime:
+                description: "%clusterservicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.lastCatalogRetrievalTime"
+                format: "date-time"
+                type: "string"
+              lastConditionState:
+                description: "%clusterservicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.lastConditionState"
+                type: "string"
+              operationStartTime:
+                description: "%clusterservicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.operationStartTime"
+                format: "date-time"
+                type: "string"
+              reconciledGeneration:
+                description: "%clusterservicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.reconciledGeneration"
+                format: "int64"
+                type: "integer"
+            required:
+            - "conditions"
+            - "lastConditionState"
+            - "reconciledGeneration"
+            type: "object"
+        type: "object"
     served: true
     storage: true
-  additionalPrinterColumns:
-  - name: "Class"
-    type: "string"
-    JSONPath: ".status.userSpecifiedClassName"
-  - name: "Plan"
-    type: "string"
-    JSONPath: ".status.userSpecifiedPlanName"
-  - name: "Status"
-    type: "string"
-    JSONPath: ".status.lastConditionState"
-  - name: "Age"
-    type: "date"
-    JSONPath: ".metadata.creationTimestamp"
-  subresources:
-    status: {}
+    subresources:
+      status: {}
 
 ---
-apiVersion: apiextensions.k8s.io/v1beta1
-kind: CustomResourceDefinition
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
 metadata:
-  annotations:
-    controller-gen.kubebuilder.io/version: v0.2.4
-  creationTimestamp: null
-  name: serviceplans.servicecatalog.k8s.io
+  name: "clusterserviceclasses.servicecatalog.k8s.io"
   labels:
     svcat: "true"
+  annotations:
+    api-approved.kubernetes.io: "unapproved"
 spec:
-  group: servicecatalog.k8s.io
+  group: "servicecatalog.k8s.io"
+  scope: "Cluster"
   names:
-    kind: ServicePlan
-    listKind: ServicePlanList
-    plural: serviceplans
-    singular: serviceplan
+    plural: "clusterserviceclasses"
+    singular: "clusterserviceclass"
+    kind: "ClusterServiceClass"
     categories:
-      - all
-      - svcat
-  scope: Namespaced
-  validation:
-    openAPIV3Schema:
-      description: ServicePlan represents a tier of a ServiceClass.
-      properties:
-        apiVersion:
-          description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
-          type: string
-        kind:
-          description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
-          type: string
-        metadata:
-          description: 'Non-namespaced.  The name of this resource in etcd is in ObjectMeta.Name. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata'
-          type: object
-        spec:
-          description: Spec defines the behavior of the service plan.
-          properties:
-            bindable:
-              description: Bindable indicates whether a user can create bindings to an ServiceInstance using this ServicePlan.  If set, overrides the value of the corresponding ServiceClassSpec Bindable field.
-              type: boolean
-            defaultProvisionParameters:
-              description: DefaultProvisionParameters are default parameters passed to the broker when an instance of this plan is provisioned. Any parameters defined on the instance are merged with these defaults, with instance-defined parameters taking precedence over defaults.
-              type: object
-            description:
-              description: Description is a short description of this ServicePlan.
-              type: string
-            externalID:
-              description: "ExternalID is the identity of this object for use with the OSB API. \n Immutable."
-              type: string
-            externalMetadata:
-              description: ExternalMetadata is a blob of information about the plan, meant to be user-facing content and display instructions.  This field may contain platform-specific conventional values.
-              type: object
-            externalName:
-              description: ExternalName is the name of this object that the Service Broker exposed this Service Plan as. Mutable.
-              type: string
-            free:
-              description: Free indicates whether this plan is available at no cost.
-              type: boolean
-            instanceCreateParameterSchema:
-              description: "Currently, this field is ALPHA: it may change or disappear at any time and its data will not be migrated. \n InstanceCreateParameterSchema is the schema for the parameters that may be supplied when provisioning a new ServiceInstance on this plan."
-              type: object
-            instanceUpdateParameterSchema:
-              description: "Currently, this field is ALPHA: it may change or disappear at any time and its data will not be migrated. \n InstanceUpdateParameterSchema is the schema for the parameters that may be updated once an ServiceInstance has been provisioned on this plan. This field only has meaning if the corresponding ServiceClassSpec is PlanUpdatable."
-              type: object
-            serviceBindingCreateParameterSchema:
-              description: "Currently, this field is ALPHA: it may change or disappear at any time and its data will not be migrated. \n ServiceBindingCreateParameterSchema is the schema for the parameters that may be supplied binding to a ServiceInstance on this plan."
-              type: object
-            serviceBrokerName:
-              description: ServiceBrokerName is the name of the ServiceBroker that offers this ServicePlan.
-              type: string
-            serviceClassRef:
-              description: ServiceClassRef is a reference to the service class that owns this plan.
-              properties:
-                name:
-                  description: Name of the referent.
-                  type: string
-              type: object
-          required:
-          - description
-          - externalID
-          - externalName
-          - free
-          - serviceBrokerName
-          - serviceClassRef
-          type: object
-      type: object
-  version: v1beta1
+    - "all"
+    - "svcat"
   versions:
-  - name: v1beta1
+  - name: "v1beta1"
+    additionalPrinterColumns:
+    - name: "External-Name"
+      type: "string"
+      jsonPath: ".spec.externalName"
+    - name: "Broker"
+      type: "string"
+      jsonPath: ".spec.clusterServiceBrokerName"
+    - name: "Age"
+      type: "date"
+      jsonPath: ".metadata.creationTimestamp"
+    schema:
+      openAPIV3Schema:
+        description: "%clusterserviceclass.yaml.spec.versions.schema.openAPIV3Schema"
+        properties:
+          apiVersion:
+            description: "%clusterserviceclass.yaml.spec.versions.schema.openAPIV3Schema.properties.apiVersion"
+            type: "string"
+          kind:
+            description: "%clusterserviceclass.yaml.spec.versions.schema.openAPIV3Schema.properties.kind"
+            type: "string"
+          metadata:
+            type: "object"
+          spec:
+            description: "%clusterserviceclass.yaml.spec.versions.schema.openAPIV3Schema.properties.spec"
+            properties:
+              bindable:
+                description: "%clusterserviceclass.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.bindable"
+                type: "boolean"
+              bindingRetrievable:
+                description: "%clusterserviceclass.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.bindingRetrievable"
+                type: "boolean"
+              clusterServiceBrokerName:
+                description: "%clusterserviceclass.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.clusterServiceBrokerName"
+                type: "string"
+              defaultProvisionParameters:
+                description: "%clusterserviceclass.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.defaultProvisionParameters"
+                type: "object"
+              description:
+                description: "%clusterserviceclass.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.description"
+                type: "string"
+              externalID:
+                description: "%clusterserviceclass.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.externalID"
+                type: "string"
+              externalMetadata:
+                description: "%clusterserviceclass.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.externalMetadata"
+                type: "object"
+              externalName:
+                description: "%clusterserviceclass.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.externalName"
+                type: "string"
+              planUpdatable:
+                description: "%clusterserviceclass.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.planUpdatable"
+                type: "boolean"
+              requires:
+                description: "%clusterserviceclass.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.requires"
+                items:
+                  type: "string"
+                type: "array"
+              tags:
+                description: "%clusterserviceclass.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.tags"
+                items:
+                  type: "string"
+                type: "array"
+            required:
+            - "bindable"
+            - "bindingRetrievable"
+            - "clusterServiceBrokerName"
+            - "description"
+            - "externalID"
+            - "externalName"
+            - "planUpdatable"
+            type: "object"
+          status:
+            description: "%clusterserviceclass.yaml.spec.versions.schema.openAPIV3Schema.properties.status"
+            properties:
+              removedFromBrokerCatalog:
+                description: "%clusterserviceclass.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.removedFromBrokerCatalog"
+                type: "boolean"
+            required:
+            - "removedFromBrokerCatalog"
+            type: "object"
+        type: "object"
     served: true
     storage: true
-  additionalPrinterColumns:
-    - name: External-Name
-      type: string
-      JSONPath: .spec.externalName
-    - name: Broker
-      type: string
-      JSONPath: .spec.serviceBrokerName
-    - name: Class
-      type: string
-      JSONPath: .spec.serviceClassRef.name
-    - name: Age
-      type: date
-      JSONPath: .metadata.creationTimestamp
-  subresources:
-    status: {}
+    subresources:
+      status: {}
+
+---
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  name: "clusterserviceplans.servicecatalog.k8s.io"
+  labels:
+    svcat: "true"
+  annotations:
+    api-approved.kubernetes.io: "unapproved"
+spec:
+  group: "servicecatalog.k8s.io"
+  scope: "Cluster"
+  names:
+    plural: "clusterserviceplans"
+    singular: "clusterserviceplan"
+    kind: "ClusterServicePlan"
+    categories:
+    - "all"
+    - "svcat"
+  versions:
+  - name: "v1beta1"
+    additionalPrinterColumns:
+    - name: "External-Name"
+      type: "string"
+      jsonPath: ".spec.externalName"
+    - name: "Broker"
+      type: "string"
+      jsonPath: ".spec.clusterServiceBrokerName"
+    - name: "Class"
+      type: "string"
+      jsonPath: ".spec.clusterServiceClassRef.name"
+    - name: "Age"
+      type: "date"
+      jsonPath: ".metadata.creationTimestamp"
+    schema:
+      openAPIV3Schema:
+        description: "%clusterserviceplan.yaml.spec.versions.schema.openAPIV3Schema"
+        properties:
+          apiVersion:
+            description: "%clusterserviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.apiVersion"
+            type: "string"
+          kind:
+            description: "%clusterserviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.kind"
+            type: "string"
+          metadata:
+            type: "object"
+          spec:
+            description: "%clusterserviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.spec"
+            properties:
+              bindable:
+                description: "%clusterserviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.bindable"
+                type: "boolean"
+              clusterServiceBrokerName:
+                description: "%clusterserviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.clusterServiceBrokerName"
+                type: "string"
+              clusterServiceClassRef:
+                description: "%clusterserviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.clusterServiceClassRef"
+                properties:
+                  name:
+                    description: "%clusterserviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.clusterServiceClassRef.properties.name"
+                    type: "string"
+                type: "object"
+              defaultProvisionParameters:
+                description: "%clusterserviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.defaultProvisionParameters"
+                type: "object"
+              description:
+                description: "%clusterserviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.description"
+                type: "string"
+              externalID:
+                description: "%clusterserviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.externalID"
+                type: "string"
+              externalMetadata:
+                description: "%clusterserviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.externalMetadata"
+                type: "object"
+              externalName:
+                description: "%clusterserviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.externalName"
+                type: "string"
+              free:
+                description: "%clusterserviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.free"
+                type: "boolean"
+              instanceCreateParameterSchema:
+                description: "%clusterserviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.instanceCreateParameterSchema"
+                type: "object"
+              instanceUpdateParameterSchema:
+                description: "%clusterserviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.instanceUpdateParameterSchema"
+                type: "object"
+              serviceBindingCreateParameterSchema:
+                description: "%clusterserviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.serviceBindingCreateParameterSchema"
+                type: "object"
+            required:
+            - "clusterServiceBrokerName"
+            - "clusterServiceClassRef"
+            - "description"
+            - "externalID"
+            - "externalName"
+            - "free"
+            type: "object"
+          status:
+            description: "%clusterserviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.status"
+            properties:
+              removedFromBrokerCatalog:
+                description: "%clusterserviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.removedFromBrokerCatalog"
+                type: "boolean"
+            required:
+            - "removedFromBrokerCatalog"
+            type: "object"
+        type: "object"
+    served: true
+    storage: true
+    subresources:
+      status: {}
+
+
+---
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  name: "servicebindings.servicecatalog.k8s.io"
+  labels:
+    svcat: "true"
+  annotations:
+    api-approved.kubernetes.io: "unapproved"
+spec:
+  group: "servicecatalog.k8s.io"
+  scope: "Namespaced"
+  names:
+    plural: "servicebindings"
+    singular: "servicebinding"
+    kind: "ServiceBinding"
+    categories:
+    - "all"
+    - "svcat"
+  versions:
+  - name: "v1beta1"
+    additionalPrinterColumns:
+    - name: "Service-Instance"
+      type: "string"
+      jsonPath: ".spec.instanceRef.name"
+    - name: "Secret-Name"
+      type: "string"
+      jsonPath: ".spec.secretName"
+    - name: "Status"
+      type: "string"
+      jsonPath: ".status.lastConditionState"
+    - name: "Age"
+      type: "date"
+      jsonPath: ".metadata.creationTimestamp"
+    schema:
+      openAPIV3Schema:
+        description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema"
+        properties:
+          apiVersion:
+            description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.apiVersion"
+            type: "string"
+          kind:
+            description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.kind"
+            type: "string"
+          metadata:
+            type: "object"
+          spec:
+            description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.spec"
+            properties:
+              externalID:
+                description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.externalID"
+                type: "string"
+              instanceRef:
+                description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.instanceRef"
+                properties:
+                  name:
+                    description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.instanceRef.properties.name"
+                    type: "string"
+                type: "object"
+              parameters:
+                description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.parameters"
+                type: "object"
+              parametersFrom:
+                description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.parametersFrom"
+                items:
+                  description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.parametersFrom.items"
+                  properties:
+                    secretKeyRef:
+                      description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.parametersFrom.items.properties.secretKeyRef"
+                      properties:
+                        key:
+                          description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.parametersFrom.items.properties.secretKeyRef.properties.key"
+                          type: "string"
+                        name:
+                          description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.parametersFrom.items.properties.secretKeyRef.properties.name"
+                          type: "string"
+                      required:
+                      - "key"
+                      - "name"
+                      type: "object"
+                  type: "object"
+                type: "array"
+              secretName:
+                description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.secretName"
+                type: "string"
+              secretTransforms:
+                description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.secretTransforms"
+                items:
+                  description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.secretTransforms.items"
+                  properties:
+                    addKey:
+                      description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.secretTransforms.items.properties.addKey"
+                      properties:
+                        jsonPathExpression:
+                          description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.secretTransforms.items.properties.addKey.properties.jsonPathExpression"
+                          type: "string"
+                        key:
+                          description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.secretTransforms.items.properties.addKey.properties.key"
+                          type: "string"
+                        stringValue:
+                          description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.secretTransforms.items.properties.addKey.properties.stringValue"
+                          type: "string"
+                        value:
+                          description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.secretTransforms.items.properties.addKey.properties.value"
+                          format: "byte"
+                          type: "string"
+                      required:
+                      - "jsonPathExpression"
+                      - "key"
+                      - "stringValue"
+                      - "value"
+                      type: "object"
+                    addKeysFrom:
+                      description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.secretTransforms.items.properties.addKeysFrom"
+                      properties:
+                        secretRef:
+                          description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.secretTransforms.items.properties.addKeysFrom.properties.secretRef"
+                          properties:
+                            name:
+                              description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.secretTransforms.items.properties.addKeysFrom.properties.secretRef.properties.name"
+                              type: "string"
+                            namespace:
+                              description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.secretTransforms.items.properties.addKeysFrom.properties.secretRef.properties.namespace"
+                              type: "string"
+                          type: "object"
+                      type: "object"
+                    removeKey:
+                      description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.secretTransforms.items.properties.removeKey"
+                      properties:
+                        key:
+                          description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.secretTransforms.items.properties.removeKey.properties.key"
+                          type: "string"
+                      required:
+                      - "key"
+                      type: "object"
+                    renameKey:
+                      description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.secretTransforms.items.properties.renameKey"
+                      properties:
+                        from:
+                          description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.secretTransforms.items.properties.renameKey.properties.from"
+                          type: "string"
+                        to:
+                          description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.secretTransforms.items.properties.renameKey.properties.to"
+                          type: "string"
+                      required:
+                      - "from"
+                      - "to"
+                      type: "object"
+                  type: "object"
+                type: "array"
+              userInfo:
+                description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.userInfo"
+                properties:
+                  extra:
+                    additionalProperties:
+                      description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.userInfo.properties.extra.additionalProperties"
+                      items:
+                        type: "string"
+                      type: "array"
+                    type: "object"
+                  groups:
+                    items:
+                      type: "string"
+                    type: "array"
+                  uid:
+                    type: "string"
+                  username:
+                    type: "string"
+                required:
+                - "uid"
+                - "username"
+                type: "object"
+            required:
+            - "instanceRef"
+            type: "object"
+          status:
+            description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.status"
+            properties:
+              asyncOpInProgress:
+                description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.asyncOpInProgress"
+                type: "boolean"
+              conditions:
+                items:
+                  description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.conditions.items"
+                  properties:
+                    lastTransitionTime:
+                      description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.conditions.items.properties.lastTransitionTime"
+                      format: "date-time"
+                      type: "string"
+                    message:
+                      description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.conditions.items.properties.message"
+                      type: "string"
+                    reason:
+                      description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.conditions.items.properties.reason"
+                      type: "string"
+                    status:
+                      description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.conditions.items.properties.status"
+                      type: "string"
+                    type:
+                      description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.conditions.items.properties.type"
+                      type: "string"
+                  required:
+                  - "lastTransitionTime"
+                  - "message"
+                  - "reason"
+                  - "status"
+                  - "type"
+                  type: "object"
+                type: "array"
+              currentOperation:
+                description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.currentOperation"
+                type: "string"
+              externalProperties:
+                description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.externalProperties"
+                properties:
+                  parameterChecksum:
+                    description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.externalProperties.properties.parameterChecksum"
+                    type: "string"
+                  parameters:
+                    description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.externalProperties.properties.parameters"
+                    type: "object"
+                  userInfo:
+                    description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.externalProperties.properties.userInfo"
+                    properties:
+                      extra:
+                        additionalProperties:
+                          description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.externalProperties.properties.userInfo.properties.extra.additionalProperties"
+                          items:
+                            type: "string"
+                          type: "array"
+                        type: "object"
+                      groups:
+                        items:
+                          type: "string"
+                        type: "array"
+                      uid:
+                        type: "string"
+                      username:
+                        type: "string"
+                    required:
+                    - "uid"
+                    - "username"
+                    type: "object"
+                type: "object"
+              inProgressProperties:
+                description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.inProgressProperties"
+                properties:
+                  parameterChecksum:
+                    description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.inProgressProperties.properties.parameterChecksum"
+                    type: "string"
+                  parameters:
+                    description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.inProgressProperties.properties.parameters"
+                    type: "object"
+                  userInfo:
+                    description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.inProgressProperties.properties.userInfo"
+                    properties:
+                      extra:
+                        additionalProperties:
+                          description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.inProgressProperties.properties.userInfo.properties.extra.additionalProperties"
+                          items:
+                            type: "string"
+                          type: "array"
+                        type: "object"
+                      groups:
+                        items:
+                          type: "string"
+                        type: "array"
+                      uid:
+                        type: "string"
+                      username:
+                        type: "string"
+                    required:
+                    - "uid"
+                    - "username"
+                    type: "object"
+                type: "object"
+              lastConditionState:
+                description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.lastConditionState"
+                type: "string"
+              lastOperation:
+                description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.lastOperation"
+                type: "string"
+              operationStartTime:
+                description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.operationStartTime"
+                format: "date-time"
+                type: "string"
+              orphanMitigationInProgress:
+                description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.orphanMitigationInProgress"
+                type: "boolean"
+              reconciledGeneration:
+                description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.reconciledGeneration"
+                format: "int64"
+                type: "integer"
+              unbindStatus:
+                description: "%servicebinding.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.unbindStatus"
+                type: "string"
+            required:
+            - "asyncOpInProgress"
+            - "conditions"
+            - "lastConditionState"
+            - "orphanMitigationInProgress"
+            - "reconciledGeneration"
+            - "unbindStatus"
+            type: "object"
+        type: "object"
+    served: true
+    storage: true
+    subresources:
+      status: {}
+
+---
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  name: "servicebrokers.servicecatalog.k8s.io"
+  labels:
+    svcat: "true"
+  annotations:
+    api-approved.kubernetes.io: "unapproved"
+spec:
+  group: "servicecatalog.k8s.io"
+  scope: "Namespaced"
+  names:
+    plural: "servicebrokers"
+    singular: "servicebroker"
+    kind: "ServiceBroker"
+    categories:
+    - "all"
+    - "svcat"
+  versions:
+  - name: "v1beta1"
+    additionalPrinterColumns:
+    - name: "URL"
+      type: "string"
+      jsonPath: ".spec.url"
+    - name: "Status"
+      type: "string"
+      jsonPath: ".status.lastConditionState"
+    - name: "Age"
+      type: "date"
+      jsonPath: ".metadata.creationTimestamp"
+    schema:
+      openAPIV3Schema:
+        description: "%servicebroker.yaml.spec.versions.schema.openAPIV3Schema"
+        properties:
+          apiVersion:
+            description: "%servicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.apiVersion"
+            type: "string"
+          kind:
+            description: "%servicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.kind"
+            type: "string"
+          metadata:
+            type: "object"
+          spec:
+            description: "%servicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec"
+            properties:
+              authInfo:
+                description: "%servicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.authInfo"
+                properties:
+                  basic:
+                    description: "%servicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.authInfo.properties.basic"
+                    properties:
+                      secretRef:
+                        description: "%servicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.authInfo.properties.basic.properties.secretRef"
+                        properties:
+                          name:
+                            description: "%servicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.authInfo.properties.basic.properties.secretRef.properties.name"
+                            type: "string"
+                        type: "object"
+                    type: "object"
+                  bearer:
+                    description: "%servicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.authInfo.properties.bearer"
+                    properties:
+                      secretRef:
+                        description: "%servicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.authInfo.properties.bearer.properties.secretRef"
+                        properties:
+                          name:
+                            description: "%servicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.authInfo.properties.bearer.properties.secretRef.properties.name"
+                            type: "string"
+                        type: "object"
+                    type: "object"
+                type: "object"
+              caBundle:
+                description: "%servicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.caBundle"
+                format: "byte"
+                type: "string"
+              catalogRestrictions:
+                description: "%servicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.catalogRestrictions"
+                properties:
+                  serviceClass:
+                    description: "%servicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.catalogRestrictions.properties.serviceClass"
+                    items:
+                      type: "string"
+                    type: "array"
+                    x-kubernetes-list-type: "set"
+                  servicePlan:
+                    description: "%servicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.catalogRestrictions.properties.servicePlan"
+                    items:
+                      type: "string"
+                    type: "array"
+                    x-kubernetes-list-type: "set"
+                type: "object"
+              insecureSkipTLSVerify:
+                description: "%servicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.insecureSkipTLSVerify"
+                type: "boolean"
+              relistBehavior:
+                description: "%servicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.relistBehavior"
+                type: "string"
+              relistDuration:
+                description: "%servicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.relistDuration"
+                type: "string"
+              relistRequests:
+                description: "%servicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.relistRequests"
+                format: "int64"
+                type: "integer"
+              url:
+                description: "%servicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.url"
+                type: "string"
+            required:
+            - "url"
+            type: "object"
+          status:
+            description: "%servicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.status"
+            properties:
+              conditions:
+                items:
+                  description: "%servicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.conditions.items"
+                  properties:
+                    lastTransitionTime:
+                      description: "%servicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.conditions.items.properties.lastTransitionTime"
+                      format: "date-time"
+                      type: "string"
+                    message:
+                      description: "%servicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.conditions.items.properties.message"
+                      type: "string"
+                    reason:
+                      description: "%servicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.conditions.items.properties.reason"
+                      type: "string"
+                    status:
+                      description: "%servicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.conditions.items.properties.status"
+                      type: "string"
+                    type:
+                      description: "%servicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.conditions.items.properties.type"
+                      type: "string"
+                  required:
+                  - "lastTransitionTime"
+                  - "message"
+                  - "reason"
+                  - "status"
+                  - "type"
+                  type: "object"
+                type: "array"
+              lastCatalogRetrievalTime:
+                description: "%servicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.lastCatalogRetrievalTime"
+                format: "date-time"
+                type: "string"
+              lastConditionState:
+                description: "%servicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.lastConditionState"
+                type: "string"
+              operationStartTime:
+                description: "%servicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.operationStartTime"
+                format: "date-time"
+                type: "string"
+              reconciledGeneration:
+                description: "%servicebroker.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.reconciledGeneration"
+                format: "int64"
+                type: "integer"
+            required:
+            - "conditions"
+            - "lastConditionState"
+            - "reconciledGeneration"
+            type: "object"
+        type: "object"
+    served: true
+    storage: true
+    subresources:
+      status: {}
+
+---
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  name: "serviceclasses.servicecatalog.k8s.io"
+  labels:
+    svcat: "true"
+  annotations:
+    api-approved.kubernetes.io: "unapproved"
+spec:
+  group: "servicecatalog.k8s.io"
+  scope: "Namespaced"
+  names:
+    plural: "serviceclasses"
+    singular: "serviceclass"
+    kind: "ServiceClass"
+    categories:
+    - "all"
+    - "svcat"
+  versions:
+  - name: "v1beta1"
+    additionalPrinterColumns:
+    - name: "External-Name"
+      type: "string"
+      jsonPath: ".spec.externalName"
+    - name: "Broker"
+      type: "string"
+      jsonPath: ".spec.serviceBrokerName"
+    - name: "Age"
+      type: "date"
+      jsonPath: ".metadata.creationTimestamp"
+    schema:
+      openAPIV3Schema:
+        description: "%serviceclass.yaml.spec.versions.schema.openAPIV3Schema"
+        properties:
+          apiVersion:
+            description: "%serviceclass.yaml.spec.versions.schema.openAPIV3Schema.properties.apiVersion"
+            type: "string"
+          kind:
+            description: "%serviceclass.yaml.spec.versions.schema.openAPIV3Schema.properties.kind"
+            type: "string"
+          metadata:
+            type: "object"
+          spec:
+            description: "%serviceclass.yaml.spec.versions.schema.openAPIV3Schema.properties.spec"
+            properties:
+              bindable:
+                description: "%serviceclass.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.bindable"
+                type: "boolean"
+              bindingRetrievable:
+                description: "%serviceclass.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.bindingRetrievable"
+                type: "boolean"
+              defaultProvisionParameters:
+                description: "%serviceclass.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.defaultProvisionParameters"
+                type: "object"
+              description:
+                description: "%serviceclass.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.description"
+                type: "string"
+              externalID:
+                description: "%serviceclass.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.externalID"
+                type: "string"
+              externalMetadata:
+                description: "%serviceclass.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.externalMetadata"
+                type: "object"
+              externalName:
+                description: "%serviceclass.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.externalName"
+                type: "string"
+              planUpdatable:
+                description: "%serviceclass.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.planUpdatable"
+                type: "boolean"
+              requires:
+                description: "%serviceclass.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.requires"
+                items:
+                  type: "string"
+                type: "array"
+              serviceBrokerName:
+                description: "%serviceclass.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.serviceBrokerName"
+                type: "string"
+              tags:
+                description: "%serviceclass.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.tags"
+                items:
+                  type: "string"
+                type: "array"
+            required:
+            - "bindable"
+            - "bindingRetrievable"
+            - "description"
+            - "externalID"
+            - "externalName"
+            - "planUpdatable"
+            - "serviceBrokerName"
+            type: "object"
+          status:
+            description: "%serviceclass.yaml.spec.versions.schema.openAPIV3Schema.properties.status"
+            properties:
+              removedFromBrokerCatalog:
+                description: "%serviceclass.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.removedFromBrokerCatalog"
+                type: "boolean"
+            required:
+            - "removedFromBrokerCatalog"
+            type: "object"
+        type: "object"
+    served: true
+    storage: true
+    subresources:
+      status: {}
+
+---
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  name: "serviceinstances.servicecatalog.k8s.io"
+  labels:
+    svcat: "true"
+  annotations:
+    api-approved.kubernetes.io: "unapproved"
+spec:
+  group: "servicecatalog.k8s.io"
+  scope: "Namespaced"
+  names:
+    plural: "serviceinstances"
+    singular: "serviceinstance"
+    kind: "ServiceInstance"
+    categories:
+    - "all"
+    - "svcat"
+  versions:
+  - name: "v1beta1"
+    additionalPrinterColumns:
+    - name: "Class"
+      type: "string"
+      jsonPath: ".status.userSpecifiedClassName"
+    - name: "Plan"
+      type: "string"
+      jsonPath: ".status.userSpecifiedPlanName"
+    - name: "Status"
+      type: "string"
+      jsonPath: ".status.lastConditionState"
+    - name: "Age"
+      type: "date"
+      jsonPath: ".metadata.creationTimestamp"
+    schema:
+      openAPIV3Schema:
+        description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema"
+        properties:
+          apiVersion:
+            description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.apiVersion"
+            type: "string"
+          kind:
+            description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.kind"
+            type: "string"
+          metadata:
+            type: "object"
+          spec:
+            description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.spec"
+            properties:
+              clusterServiceClassExternalID:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.clusterServiceClassExternalID"
+                type: "string"
+              clusterServiceClassExternalName:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.clusterServiceClassExternalName"
+                type: "string"
+              clusterServiceClassName:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.clusterServiceClassName"
+                type: "string"
+              clusterServiceClassRef:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.clusterServiceClassRef"
+                properties:
+                  name:
+                    description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.clusterServiceClassRef.properties.name"
+                    type: "string"
+                type: "object"
+              clusterServicePlanExternalID:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.clusterServicePlanExternalID"
+                type: "string"
+              clusterServicePlanExternalName:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.clusterServicePlanExternalName"
+                type: "string"
+              clusterServicePlanName:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.clusterServicePlanName"
+                type: "string"
+              clusterServicePlanRef:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.clusterServicePlanRef"
+                properties:
+                  name:
+                    description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.clusterServicePlanRef.properties.name"
+                    type: "string"
+                type: "object"
+              externalID:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.externalID"
+                type: "string"
+              parameters:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.parameters"
+                type: "object"
+              parametersFrom:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.parametersFrom"
+                items:
+                  description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.parametersFrom.items"
+                  properties:
+                    secretKeyRef:
+                      description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.parametersFrom.items.properties.secretKeyRef"
+                      properties:
+                        key:
+                          description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.parametersFrom.items.properties.secretKeyRef.properties.key"
+                          type: "string"
+                        name:
+                          description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.parametersFrom.items.properties.secretKeyRef.properties.name"
+                          type: "string"
+                      required:
+                      - "key"
+                      - "name"
+                      type: "object"
+                  type: "object"
+                type: "array"
+              serviceClassExternalID:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.serviceClassExternalID"
+                type: "string"
+              serviceClassExternalName:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.serviceClassExternalName"
+                type: "string"
+              serviceClassName:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.serviceClassName"
+                type: "string"
+              serviceClassRef:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.serviceClassRef"
+                properties:
+                  name:
+                    description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.serviceClassRef.properties.name"
+                    type: "string"
+                type: "object"
+              servicePlanExternalID:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.servicePlanExternalID"
+                type: "string"
+              servicePlanExternalName:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.servicePlanExternalName"
+                type: "string"
+              servicePlanName:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.servicePlanName"
+                type: "string"
+              servicePlanRef:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.servicePlanRef"
+                properties:
+                  name:
+                    description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.servicePlanRef.properties.name"
+                    type: "string"
+                type: "object"
+              updateRequests:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.updateRequests"
+                format: "int64"
+                type: "integer"
+              userInfo:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.userInfo"
+                properties:
+                  extra:
+                    additionalProperties:
+                      description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.userInfo.properties.extra.additionalProperties"
+                      items:
+                        type: "string"
+                      type: "array"
+                    type: "object"
+                  groups:
+                    items:
+                      type: "string"
+                    type: "array"
+                  uid:
+                    type: "string"
+                  username:
+                    type: "string"
+                required:
+                - "uid"
+                - "username"
+                type: "object"
+            type: "object"
+          status:
+            description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status"
+            properties:
+              asyncOpInProgress:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.asyncOpInProgress"
+                type: "boolean"
+              conditions:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.conditions"
+                items:
+                  description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.conditions.items"
+                  properties:
+                    lastTransitionTime:
+                      description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.conditions.items.properties.lastTransitionTime"
+                      format: "date-time"
+                      type: "string"
+                    message:
+                      description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.conditions.items.properties.message"
+                      type: "string"
+                    reason:
+                      description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.conditions.items.properties.reason"
+                      type: "string"
+                    status:
+                      description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.conditions.items.properties.status"
+                      type: "string"
+                    type:
+                      description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.conditions.items.properties.type"
+                      type: "string"
+                  required:
+                  - "lastTransitionTime"
+                  - "message"
+                  - "reason"
+                  - "status"
+                  - "type"
+                  type: "object"
+                type: "array"
+              currentOperation:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.currentOperation"
+                type: "string"
+              dashboardURL:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.dashboardURL"
+                type: "string"
+              defaultProvisionParameters:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.defaultProvisionParameters"
+                type: "object"
+              deprovisionStatus:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.deprovisionStatus"
+                type: "string"
+              externalProperties:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.externalProperties"
+                properties:
+                  clusterServicePlanExternalID:
+                    description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.externalProperties.properties.clusterServicePlanExternalID"
+                    type: "string"
+                  clusterServicePlanExternalName:
+                    description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.externalProperties.properties.clusterServicePlanExternalName"
+                    type: "string"
+                  parameterChecksum:
+                    description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.externalProperties.properties.parameterChecksum"
+                    type: "string"
+                  parameters:
+                    description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.externalProperties.properties.parameters"
+                    type: "object"
+                  servicePlanExternalID:
+                    description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.externalProperties.properties.servicePlanExternalID"
+                    type: "string"
+                  servicePlanExternalName:
+                    description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.externalProperties.properties.servicePlanExternalName"
+                    type: "string"
+                  userInfo:
+                    description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.externalProperties.properties.userInfo"
+                    properties:
+                      extra:
+                        additionalProperties:
+                          description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.externalProperties.properties.userInfo.properties.extra.additionalProperties"
+                          items:
+                            type: "string"
+                          type: "array"
+                        type: "object"
+                      groups:
+                        items:
+                          type: "string"
+                        type: "array"
+                      uid:
+                        type: "string"
+                      username:
+                        type: "string"
+                    required:
+                    - "uid"
+                    - "username"
+                    type: "object"
+                required:
+                - "clusterServicePlanExternalID"
+                - "clusterServicePlanExternalName"
+                type: "object"
+              inProgressProperties:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.inProgressProperties"
+                properties:
+                  clusterServicePlanExternalID:
+                    description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.inProgressProperties.properties.clusterServicePlanExternalID"
+                    type: "string"
+                  clusterServicePlanExternalName:
+                    description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.inProgressProperties.properties.clusterServicePlanExternalName"
+                    type: "string"
+                  parameterChecksum:
+                    description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.inProgressProperties.properties.parameterChecksum"
+                    type: "string"
+                  parameters:
+                    description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.inProgressProperties.properties.parameters"
+                    type: "object"
+                  servicePlanExternalID:
+                    description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.inProgressProperties.properties.servicePlanExternalID"
+                    type: "string"
+                  servicePlanExternalName:
+                    description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.inProgressProperties.properties.servicePlanExternalName"
+                    type: "string"
+                  userInfo:
+                    description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.inProgressProperties.properties.userInfo"
+                    properties:
+                      extra:
+                        additionalProperties:
+                          description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.inProgressProperties.properties.userInfo.properties.extra.additionalProperties"
+                          items:
+                            type: "string"
+                          type: "array"
+                        type: "object"
+                      groups:
+                        items:
+                          type: "string"
+                        type: "array"
+                      uid:
+                        type: "string"
+                      username:
+                        type: "string"
+                    required:
+                    - "uid"
+                    - "username"
+                    type: "object"
+                required:
+                - "clusterServicePlanExternalID"
+                - "clusterServicePlanExternalName"
+                type: "object"
+              lastConditionState:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.lastConditionState"
+                type: "string"
+              lastOperation:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.lastOperation"
+                type: "string"
+              observedGeneration:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.observedGeneration"
+                format: "int64"
+                type: "integer"
+              operationStartTime:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.operationStartTime"
+                format: "date-time"
+                type: "string"
+              orphanMitigationInProgress:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.orphanMitigationInProgress"
+                type: "boolean"
+              provisionStatus:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.provisionStatus"
+                type: "string"
+              reconciledGeneration:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.reconciledGeneration"
+                format: "int64"
+                type: "integer"
+              userSpecifiedClassName:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.userSpecifiedClassName"
+                type: "string"
+              userSpecifiedPlanName:
+                description: "%serviceinstance.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.userSpecifiedPlanName"
+                type: "string"
+            required:
+            - "asyncOpInProgress"
+            - "conditions"
+            - "deprovisionStatus"
+            - "lastConditionState"
+            - "observedGeneration"
+            - "orphanMitigationInProgress"
+            - "provisionStatus"
+            - "reconciledGeneration"
+            - "userSpecifiedClassName"
+            - "userSpecifiedPlanName"
+            type: "object"
+        type: "object"
+    served: true
+    storage: true
+    subresources:
+      status: {}
+
+---
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  name: "serviceplans.servicecatalog.k8s.io"
+  labels:
+    svcat: "true"
+  annotations:
+    api-approved.kubernetes.io: "unapproved"
+spec:
+  group: "servicecatalog.k8s.io"
+  scope: "Namespaced"
+  names:
+    plural: "serviceplans"
+    singular: "serviceplan"
+    kind: "ServicePlan"
+    categories:
+    - "all"
+    - "svcat"
+  versions:
+  - name: "v1beta1"
+    additionalPrinterColumns:
+    - name: "External-Name"
+      type: "string"
+      jsonPath: ".spec.externalName"
+    - name: "Broker"
+      type: "string"
+      jsonPath: ".spec.serviceBrokerName"
+    - name: "Class"
+      type: "string"
+      jsonPath: ".spec.serviceClassRef.name"
+    - name: "Age"
+      type: "date"
+      jsonPath: ".metadata.creationTimestamp"
+    schema:
+      openAPIV3Schema:
+        description: "%serviceplan.yaml.spec.versions.schema.openAPIV3Schema"
+        properties:
+          apiVersion:
+            description: "%serviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.apiVersion"
+            type: "string"
+          kind:
+            description: "%serviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.kind"
+            type: "string"
+          metadata:
+            type: "object"
+          spec:
+            description: "%serviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.spec"
+            properties:
+              bindable:
+                description: "%serviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.bindable"
+                type: "boolean"
+              defaultProvisionParameters:
+                description: "%serviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.defaultProvisionParameters"
+                type: "object"
+              description:
+                description: "%serviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.description"
+                type: "string"
+              externalID:
+                description: "%serviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.externalID"
+                type: "string"
+              externalMetadata:
+                description: "%serviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.externalMetadata"
+                type: "object"
+              externalName:
+                description: "%serviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.externalName"
+                type: "string"
+              free:
+                description: "%serviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.free"
+                type: "boolean"
+              instanceCreateParameterSchema:
+                description: "%serviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.instanceCreateParameterSchema"
+                type: "object"
+              instanceUpdateParameterSchema:
+                description: "%serviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.instanceUpdateParameterSchema"
+                type: "object"
+              serviceBindingCreateParameterSchema:
+                description: "%serviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.serviceBindingCreateParameterSchema"
+                type: "object"
+              serviceBrokerName:
+                description: "%serviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.serviceBrokerName"
+                type: "string"
+              serviceClassRef:
+                description: "%serviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.serviceClassRef"
+                properties:
+                  name:
+                    description: "%serviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.serviceClassRef.properties.name"
+                    type: "string"
+                type: "object"
+            required:
+            - "description"
+            - "externalID"
+            - "externalName"
+            - "free"
+            - "serviceBrokerName"
+            - "serviceClassRef"
+            type: "object"
+          status:
+            description: "%serviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.status"
+            properties:
+              removedFromBrokerCatalog:
+                description: "%serviceplan.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.removedFromBrokerCatalog"
+                type: "boolean"
+            required:
+            - "removedFromBrokerCatalog"
+            type: "object"
+        type: "object"
+    served: true
+    storage: true
+    subresources:
+      status: {}
 
 ---
 apiVersion: cert-manager.io/v1
