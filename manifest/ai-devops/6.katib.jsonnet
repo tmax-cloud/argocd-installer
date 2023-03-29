@@ -248,7 +248,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             {
               "name": "timezone-config",
               "hostPath": {
-                "path": std.join("", ["/usr/share/zoneinfo/", timezone])
+                "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
               },
             },
           ],
