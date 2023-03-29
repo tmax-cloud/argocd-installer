@@ -67,7 +67,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         }
                     }
                     ],
-                    "image": std.join("", [target_registry, "docker.io/tmaxcloudck/training-operator:v1.5-lls]),
+                    "image": std.join("", [target_registry, "docker.io/tmaxcloudck/training-operator:v1.5-lls"]),
                     "livenessProbe": {
                     "httpGet": {
                         "path": "/healthz",
@@ -111,7 +111,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "name": "training-operator-token",
                         "readOnly": true
                     }
-                    ] 
+                    ] + (
+                    if time_zone != "UTC" then [
+                    {
+                        "name": "timezone-config",
+                        "mountPath": "/etc/localtime"
+                    },
+                    ] else []
+                )
                 }
                 ],
                 "terminationGracePeriodSeconds": 10,
@@ -123,7 +130,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "secretName": "training-operator-token"
                     }
                 }
-                ] 
+                ] + (
+                if time_zone != "UTC" then [
+                {
+                    "name": "timezone-config",
+                    "hostPath": {
+                    "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                    }
+                }
+                ] else []
+            )
               }
             }
         }
