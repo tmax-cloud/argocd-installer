@@ -234,7 +234,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "name": "api"
                 }
                 ]
-            } + if timezone != "UTC" then {
+            } + if time_zone != "UTC" then {
               "volumeMounts": [
                 {
                   "name": "timezone-config",
@@ -243,7 +243,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
               ],
             } else {},
             ]
-        } + if timezone != "UTC" then {
+        } + if time_zone != "UTC" then {
           "volumes":[
             {
               "name": "timezone-config",
