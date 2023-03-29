@@ -7,7 +7,9 @@ function (
     hyperauth_realm="tmax",
     console_subdomain="console",    
     gatekeeper_log_level="info",    
-    gatekeeper_version="v1.0.2"
+    gatekeeper_version="v1.0.2",
+    log_level="info",
+    time_zone="UTC"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -44,6 +46,9 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "command": [
                     "/manager"
                     ],
+                    "args": [
+                      std.join("", ["--zap-log-level=", log_level])
+                    ],
                     "env": [
                     {
                         "name": "MY_POD_NAMESPACE",
@@ -62,7 +67,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         }
                     }
                     ],
-                    "image": std.join("", [target_registry, "docker.io/kubeflow/training-operator:v1-e1434f6"]),
+                    "image": std.join("", [target_registry, "docker.io/tmaxcloudck/training-operator:v1.5-lls]),
                     "livenessProbe": {
                     "httpGet": {
                         "path": "/healthz",
@@ -106,7 +111,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "name": "training-operator-token",
                         "readOnly": true
                     }
-                    ]
+                    ] + (
+                        if time_zone != "UTC" then [
+                        {
+                            "name": "timezone-config",
+                            "mountPath": "/etc/localtime"
+                        },
+                        ] else []
+                    )
                 }
                 ],
                 "terminationGracePeriodSeconds": 10,
@@ -118,7 +130,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "secretName": "training-operator-token"
                     }
                 }
-                ]
+                ] + (
+                    if time_zone != "UTC" then [
+                    {
+                        "name": "timezone-config",
+                        "hostPath": {
+                        "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                        }
+                    }
+                    ] else []
+                )
             }
             }
         }

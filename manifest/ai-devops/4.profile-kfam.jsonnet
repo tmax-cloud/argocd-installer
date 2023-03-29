@@ -7,10 +7,13 @@ function (
     hyperauth_realm="tmax",
     console_subdomain="console",    
     gatekeeper_log_level="info",    
-    gatekeeper_version="v1.0.2"
+    gatekeeper_version="v1.0.2",
+    log_level="info",
+    time_zone="UTC"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
+local kfam_log_level = if log_level == "error" then "ERROR" else if log_level == "debug" then "DEBUG" else if log_level == "fatal" then "FATAL" else "INFO";
 [
     {
         "apiVersion": "apps/v1",
@@ -43,6 +46,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 {
                     "command": [
                     "/access-management",
+                    std.join("", ["-log-level=", kfam_log_level]),
                     "-cluster-admin",
                     "$(ADMIN)",
                     "-userid-header",
@@ -57,7 +61,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         }
                     }
                     ],
-                    "image": std.join("", [target_registry, "docker.io/kubeflownotebookswg/kfam:v1.6.1"]),
+                    "image": std.join("", [target_registry, "docker.io/tmaxcloudck/kfam:v1.6.1-lls"]),
                     "imagePullPolicy": "Always",
                     "livenessProbe": {
                     "httpGet": {
@@ -87,6 +91,9 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     ]
                 },
                 {
+                    "args": [
+                      std.join("", ["--zap-log-level=", log_level])
+                    ],
                     "command": [
                     "/manager",
                     "-userid-header",
@@ -103,7 +110,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         }
                     }
                     ],
-                    "image": std.join("", [target_registry, "docker.io/kubeflownotebookswg/profile-controller:v1.6.1"]),
+                    "image": std.join("", [target_registry, "docker.io/tmaxcloudck/profiles-controller:v1.6.1-lls"]),
                     "imagePullPolicy": "Always",
                     "livenessProbe": {
                     "httpGet": {
@@ -143,7 +150,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "name": "namespace-labels",
                         "readOnly": true
                     },                    
-                    ]
+                    ] + (
+                        if time_zone != "UTC" then [
+                        {
+                            "name": "timezone-config",
+                            "mountPath": "/etc/localtime"
+                        },
+                        ] else []
+                    )
                 }
                 ],
                 "serviceAccountName": "profiles-controller-service-account",
@@ -154,7 +168,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     },
                     "name": "namespace-labels"
                 }
-                ]
+                ] + (
+                    if time_zone != "UTC" then [
+                    {
+                        "name": "timezone-config",
+                        "hostPath": {
+                        "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                        }
+                    }
+                    ] else []
+                )
             }
             }
         }
