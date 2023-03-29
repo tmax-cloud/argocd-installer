@@ -111,14 +111,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "name": "training-operator-token",
                         "readOnly": true
                     }
-                    ] + (
-                        if time_zone != "UTC" then [
-                        {
-                        "name": "timezone-config",
-                        "mountPath": "/etc/localtime"
-                        }
-                    ] else []                            
-                    ) 
+                    ] 
                 }
                 ],
                 "terminationGracePeriodSeconds": 10,
