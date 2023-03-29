@@ -74,7 +74,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "value": "kserve-webhook-server-cert"
               }
             ],
-            "image": std.join("", [target_registry, "docker.io/tmaxcloudck/kserve-controller-manager:b0.10.0-tw2-lls"]),
+            "image": std.join("", [target_registry, "docker.io/tmaxcloudck/kserve-controller-manager:b0.10.0-tw2-lls2"]),
             "imagePullPolicy": "Always",
             "name": "manager",
             "ports": [
