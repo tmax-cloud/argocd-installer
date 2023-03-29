@@ -154,8 +154,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "--domain",
                     "$(POD_NAMESPACE).svc.cluster.local",
                     "--proxyLogLevel=warning",
-                    "--proxyComponentLogLevel=misc:error",
-                    "--log_output_level=default:info"
+                    "--proxyComponentLogLevel=misc:error",                    
                     std.join("", ["--log_output_level=default:", log_level])
                     ],
                     "env": [
