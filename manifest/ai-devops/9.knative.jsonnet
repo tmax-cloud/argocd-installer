@@ -1366,7 +1366,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
     {
   "apiVersion": "v1",
   "data": {
-    "zap-logger-config": std.join("", ["{\n  \"level\": \"", log_level\"",\n  \"development\": false,\n  \"outputPaths\": [\"stdout\"],\n  \"errorOutputPaths\": [\"stderr\"],\n  \"encoding\": \"json\",\n  \"encoderConfig\": {\n    \"timeKey\": \"timestamp\",\n    \"levelKey\": \"severity\",\n    \"nameKey\": \"logger\",\n    \"callerKey\": \"caller\",\n    \"messageKey\": \"message\",\n    \"stacktraceKey\": \"stacktrace\",\n    \"lineEnding\": \"\",\n    \"levelEncoder\": \"\",\n    \"timeEncoder\": \"iso8601\",\n    \"durationEncoder\": \"\",\n    \"callerEncoder\": \"\"\n  }\n}    \n"]),
+    "zap-logger-config": "{\n  \"level\": \"info\",\n  \"development\": false,\n  \"outputPaths\": [\"stdout\"],\n  \"errorOutputPaths\": [\"stderr\"],\n  \"encoding\": \"json\",\n  \"encoderConfig\": {\n    \"timeKey\": \"timestamp\",\n    \"levelKey\": \"severity\",\n    \"nameKey\": \"logger\",\n    \"callerKey\": \"caller\",\n    \"messageKey\": \"message\",\n    \"stacktraceKey\": \"stacktrace\",\n    \"lineEnding\": \"\",\n    \"levelEncoder\": \"\",\n    \"timeEncoder\": \"iso8601\",\n    \"durationEncoder\": \"\",\n    \"callerEncoder\": \"\"\n  }\n}    \n",
     "loglevel.controller": log_level,
     "loglevel.autoscaler": log_level,
     "loglevel.queueproxy": log_level,
