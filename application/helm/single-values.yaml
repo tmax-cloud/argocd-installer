@@ -137,6 +137,7 @@ modules:
     hyperauthRealm: tmax
     gatekeeperLogLevel: info
     gatekeeperVersion: v1.0.2
+    logLevel: info
 
   ### efk
   efk:
