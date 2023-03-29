@@ -130,16 +130,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "secretName": "training-operator-token"
                     }
                 }
-                ] + (
-                    if time_zone != "UTC" then [
-                    {
-                    "name": "timezone-config",
-                    "hostPath": {
-                        "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
-                    }
-                    }
-                ] else []  
-                )
+                ] 
               }
             }
         }
