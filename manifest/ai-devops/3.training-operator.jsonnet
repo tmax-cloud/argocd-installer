@@ -111,14 +111,12 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "name": "training-operator-token",
                         "readOnly": true
                     }
-                    ] + (
-                        if time_zone != "UTC" then [
+                    ] + if timezone != "UTC" then [
                         {
-                            "name": "timezone-config",
-                            "mountPath": "/etc/localtime"
-                        },
-                        ] else []
-                    )
+                        "name": "timezone-config",
+                        "mountPath": "/etc/localtime"
+                        }
+                    ] else []
                 }
                 ],
                 "terminationGracePeriodSeconds": 10,
@@ -137,7 +135,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "path": std.join("", ["/usr/share/zoneinfo/", timezone])
                     }
                     }
-                ] else []
+                ] else []  
               }
             }
         }
