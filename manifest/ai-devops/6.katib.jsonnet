@@ -7,7 +7,9 @@ function (
     hyperauth_realm="tmax",
     console_subdomain="console",    
     gatekeeper_log_level="info",    
-    gatekeeper_version="v1.0.2"    
+    gatekeeper_version="v1.0.2",
+    log_level="info",
+    time_zone="UTC"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -57,6 +59,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "containers": [
             {
                 "args": [
+                std.join("", ["--zap-log-level=", log_level]),    
                 "--webhook-port=8443",
                 "--trial-resources=Job.v1.batch",
                 "--trial-resources=TFJob.v1.kubeflow.org",
@@ -78,7 +81,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     }
                 }
                 ],
-                "image": std.join("", [target_registry, "docker.io/kubeflowkatib/katib-controller:v0.14.0"]),
+                "image": std.join("", [target_registry, "docker.io/tmaxcloudck/katib-controller:v0.14-lls"]),
                 "name": "katib-controller",
                 "ports": [
                 {
@@ -113,7 +116,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "name": "katib-controller-token",
                     "readOnly": true
                 }
-                ]
+                ] + (
+                    if time_zone != "UTC" then [
+                    {
+                        "name": "timezone-config",
+                        "mountPath": "/etc/localtime"
+                    },
+                    ] else []
+                )
             }
             ],
             "volumes": [
@@ -131,7 +141,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "secretName": "katib-controller-token"
                 }
             }
-            ]
+            ] + (
+                if time_zone != "UTC" then [
+                {
+                    "name": "timezone-config",
+                    "hostPath": {
+                    "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                    }
+                }
+                ] else []
+            )
         }
         }
     }
@@ -168,6 +187,9 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "command": [
                 "./katib-db-manager"
                 ],
+                "args": [
+                  std.join("", ["--log-level=", log_level])
+                ],
                 "env": [
                 {
                     "name": "DB_NAME",
@@ -183,7 +205,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     }
                 }
                 ],
-                "image": std.join("", [target_registry, "docker.io/kubeflowkatib/katib-db-manager:v0.14.0"]),
+                "image": std.join("", [target_registry, "docker.io/tmaxcloudck/katib-db-manager:v0.14-lls"]),
                 "livenessProbe": {
                 "exec": {
                     "command": [
@@ -212,9 +234,25 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "name": "api"
                 }
                 ]
-            }
+            } + if time_zone != "UTC" then {
+              "volumeMounts": [
+                {
+                  "name": "timezone-config",
+                  "mountPath": "/etc/localtime"
+                }
+              ],
+            } else {},
             ]
-        }
+        } + if time_zone != "UTC" then {
+          "volumes":[
+            {
+              "name": "timezone-config",
+              "hostPath": {
+                "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+              },
+            },
+          ],
+        } else {},
         }
     }
   },
@@ -331,7 +369,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "mountPath": "/var/lib/mysql",
                     "name": "katib-mysql"
                 }
-                ]
+                ] + (
+                if time_zone != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  },
+                ] else []
+              )
             }
             ],
             "volumes": [
@@ -341,7 +386,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "claimName": "katib-mysql"
                 }
             }
-            ]
+            ] + (
+            if time_zone != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                }
+              }
+            ] else []
+          )
         }
         }
     }

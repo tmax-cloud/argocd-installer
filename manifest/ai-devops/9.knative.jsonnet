@@ -7,7 +7,9 @@ function (
     hyperauth_realm="tmax",
     console_subdomain="console",    
     gatekeeper_log_level="info",    
-    gatekeeper_version="v1.0.2"    
+    gatekeeper_version="v1.0.2",
+    log_level="info",
+    time_zone="UTC"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -186,7 +188,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "name": "controller-token",
                         "readOnly": true
                     }
-                    ]
+                    ] + (
+                    if time_zone != "UTC" then [
+                    {
+                        "name": "timezone-config",
+                        "mountPath": "/etc/localtime"
+                    },
+                    ] else []
+                )
                 }
                 ],
                 "terminationGracePeriodSeconds": 600,
@@ -198,7 +207,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "secretName": "controller-token"
                     }
                 }
-                ]
+                ] + (
+                if time_zone != "UTC" then [
+                {
+                    "name": "timezone-config",
+                    "hostPath": {
+                    "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                    }
+                }
+                ] else []
+            )
             }
             }
         }
@@ -366,7 +384,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "name": "controller-token",
                         "readOnly": true
                     }
-                    ]
+                    ] + (
+                    if time_zone != "UTC" then [
+                    {
+                        "name": "timezone-config",
+                        "mountPath": "/etc/localtime"
+                    },
+                    ] else []
+                )
                 }
                 ],
                 "volumes": [
@@ -377,7 +402,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "secretName": "controller-token"
                     }
                 }
-                ]
+                ] + (
+                if time_zone != "UTC" then [
+                {
+                    "name": "timezone-config",
+                    "hostPath": {
+                    "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                    }
+                }
+                ] else []
+            )
             }
             }
         }
@@ -503,7 +537,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "name": "controller-token",
                         "readOnly": true
                     }
-                    ]
+                    ] + (
+                    if time_zone != "UTC" then [
+                    {
+                        "name": "timezone-config",
+                        "mountPath": "/etc/localtime"
+                    },
+                    ] else []
+                )
                 }
                 ],
                 "volumes": [
@@ -514,7 +555,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "secretName": "controller-token"
                     }
                 }
-                ]
+                ] + (
+                if time_zone != "UTC" then [
+                {
+                    "name": "timezone-config",
+                    "hostPath": {
+                    "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                    }
+                }
+                ] else []
+            )
             }
             }
         }
@@ -632,7 +682,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "name": "controller-token",
                         "readOnly": true
                     }
-                    ]
+                    ] + (
+                    if time_zone != "UTC" then [
+                    {
+                        "name": "timezone-config",
+                        "mountPath": "/etc/localtime"
+                    },
+                    ] else []
+                )
                 }
                 ],
                 "volumes": [
@@ -643,7 +700,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "secretName": "controller-token"
                     }
                 }
-                ]
+                ] + (
+                if time_zone != "UTC" then [
+                {
+                    "name": "timezone-config",
+                    "hostPath": {
+                    "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                    }
+                }
+                ] else []
+            )
             }
             }
         }
@@ -807,7 +873,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "name": "controller-token",
                         "readOnly": true
                     }
-                    ]
+                    ] + (
+                    if time_zone != "UTC" then [
+                    {
+                        "name": "timezone-config",
+                        "mountPath": "/etc/localtime"
+                    },
+                    ] else []
+                )
                 }
                 ],
                 "terminationGracePeriodSeconds": 300,
@@ -819,7 +892,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "secretName": "controller-token"
                     }
                 }
-                ]
+                ] + (
+                if time_zone != "UTC" then [
+                {
+                    "name": "timezone-config",
+                    "hostPath": {
+                    "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                    }
+                }
+                ] else []
+            )
             }
             }
         }
@@ -921,7 +1003,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "name": "controller-token",
                         "readOnly": true
                     }
-                    ]
+                    ] + (
+                    if time_zone != "UTC" then [
+                    {
+                        "name": "timezone-config",
+                        "mountPath": "/etc/localtime"
+                    },
+                    ] else []
+                )
                 }
                 ],
                 "volumes": [
@@ -932,7 +1021,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "secretName": "controller-token"
                     }
                 }
-                ]
+                ] + (
+                if time_zone != "UTC" then [
+                {
+                    "name": "timezone-config",
+                    "hostPath": {
+                    "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                    }
+                }
+                ] else []
+            )
             }
             }
         }
@@ -1037,7 +1135,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "name": "controller-token",
                         "readOnly": true
                     }
-                    ]
+                    ] + (
+                    if time_zone != "UTC" then [
+                    {
+                        "name": "timezone-config",
+                        "mountPath": "/etc/localtime"
+                    },
+                    ] else []
+                )
                 }
                 ],
                 "volumes": [
@@ -1048,7 +1153,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "secretName": "controller-token"
                     }
                 }
-                ]
+                ] + (
+                if time_zone != "UTC" then [
+                {
+                    "name": "timezone-config",
+                    "hostPath": {
+                    "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                    }
+                }
+                ] else []
+            )
             }
             }
         }
@@ -1216,7 +1330,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "name": "controller-token",
                         "readOnly": true
                     }
-                    ]
+                    ] + (
+                    if time_zone != "UTC" then [
+                    {
+                        "name": "timezone-config",
+                        "mountPath": "/etc/localtime"
+                    },
+                    ] else []
+                )                    
                 }
                 ],
                 "terminationGracePeriodSeconds": 300,
@@ -1228,9 +1349,45 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "secretName": "controller-token"
                     }
                 }
-                ]
+                ] + (
+                if time_zone != "UTC" then [
+                {
+                    "name": "timezone-config",
+                    "hostPath": {
+                    "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                    }
+                }
+                ] else []
+            )
             }
             }
         }
-    }
+    },
+    {
+  "apiVersion": "v1",
+  "data": {
+    "zap-logger-config": "{\n  \"level\": \"info\",\n  \"development\": false,\n  \"outputPaths\": [\"stdout\"],\n  \"errorOutputPaths\": [\"stderr\"],\n  \"encoding\": \"json\",\n  \"encoderConfig\": {\n    \"timeKey\": \"timestamp\",\n    \"levelKey\": \"severity\",\n    \"nameKey\": \"logger\",\n    \"callerKey\": \"caller\",\n    \"messageKey\": \"message\",\n    \"stacktraceKey\": \"stacktrace\",\n    \"lineEnding\": \"\",\n    \"levelEncoder\": \"\",\n    \"timeEncoder\": \"iso8601\",\n    \"durationEncoder\": \"\",\n    \"callerEncoder\": \"\"\n  }\n}    \n",
+    "loglevel.controller": log_level,
+    "loglevel.autoscaler": log_level,
+    "loglevel.queueproxy": log_level,
+    "loglevel.webhook": log_level,
+    "loglevel.activator": log_level,
+    "loglevel.hpaautoscaler": log_level,
+    "loglevel.net-certmanager-controller": log_level,
+    "loglevel.net-istio-controller": log_level
+  },
+  "kind": "ConfigMap",
+  "metadata": {
+    "annotations": {
+      "knative.dev/example-checksum": "be93ff10"
+    },
+    "labels": {
+      "app.kubernetes.io/name": "knative-serving",
+      "app.kubernetes.io/version": "1.2.5",
+      "serving.knative.dev/release": "v1.2.5"
+    },
+    "name": "config-logging",
+    "namespace": "knative-serving"
+  }
+}
 ]

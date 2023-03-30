@@ -7,7 +7,9 @@ function (
     hyperauth_realm="tmax",
     console_subdomain="console",    
     gatekeeper_log_level="info",    
-    gatekeeper_version="v1.0.2"    
+    gatekeeper_version="v1.0.2",
+    log_level="info",
+    time_zone="UTC"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -80,6 +82,9 @@ local serverstransport = "insecure@file";
             "spec": {
                 "containers": [
                 {
+                    "args": [
+                        std.join("", ["--zap-log-level=", log_level])
+                    ],
                     "env": [
                     {
                         "name": "CLIENT_SECRET",
@@ -173,7 +178,14 @@ local serverstransport = "insecure@file";
                         "name": "notebook-controller-service-account-token",
                         "readOnly": true
                     }
-                    ]
+                    ] + (
+                    if time_zone != "UTC" then [
+                    {
+                        "name": "timezone-config",
+                        "mountPath": "/etc/localtime"
+                    },
+                    ] else []
+                )
                 }
                 ],
                 "volumes": [
@@ -184,7 +196,16 @@ local serverstransport = "insecure@file";
                     "secretName": "notebook-controller-service-account-token"
                     }
                 }
-                ]
+                ] + (
+                if time_zone != "UTC" then [
+                {
+                    "name": "timezone-config",
+                    "hostPath": {
+                    "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                    }
+                }
+                ] else []
+            )
             }
             }
         }

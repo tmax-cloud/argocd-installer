@@ -7,10 +7,13 @@ function (
     hyperauth_realm="tmax",
     console_subdomain="console",    
     gatekeeper_log_level="info",    
-    gatekeeper_version="v1.0.2"
+    gatekeeper_version="v1.0.2",
+    log_level="info",
+    time_zone="UTC"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
+
 [    
     {
         "apiVersion": "apps/v1",
@@ -151,8 +154,8 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "--domain",
                     "$(POD_NAMESPACE).svc.cluster.local",
                     "--proxyLogLevel=warning",
-                    "--proxyComponentLogLevel=misc:error",
-                    "--log_output_level=default:info"
+                    "--proxyComponentLogLevel=misc:error",                    
+                    std.join("", ["--log_output_level=default:", log_level])
                     ],
                     "env": [
                     {
@@ -343,7 +346,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "name": "ingressgateway-ca-certs",
                         "readOnly": true
                     }
-                    ]
+                    ] + (
+                        if time_zone != "UTC" then [
+                        {
+                            "name": "timezone-config",
+                            "mountPath": "/etc/localtime"
+                        },
+                        ] else []
+                    )
                 }
                 ],
                 "securityContext": {
@@ -430,7 +440,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "secretName": "istio-ingressgateway-ca-certs"
                     }
                 }
-                ]
+                ] + (
+                    if time_zone != "UTC" then [
+                    {
+                        "name": "timezone-config",
+                        "hostPath": {
+                        "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                        }
+                    }
+                    ] else []
+                )
             }
             }
         }

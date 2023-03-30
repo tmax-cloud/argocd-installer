@@ -137,6 +137,8 @@ modules:
     hyperauthRealm: tmax
     gatekeeperLogLevel: info
     gatekeeperVersion: v1.0.2
+    # 사용 가능 한 값 : debug, info, error
+    logLevel: info
 
   ### efk
   efk:

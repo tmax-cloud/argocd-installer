@@ -7,7 +7,9 @@ function (
     hyperauth_realm="tmax",
     console_subdomain="console",    
     gatekeeper_log_level="info",    
-    gatekeeper_version="v1.0.2"    
+    gatekeeper_version="v1.0.2",
+    log_level="info",
+    time_zone="UTC"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -52,7 +54,8 @@ local target_registry = if is_offline == "false" then "" else private_registry +
           {
             "args": [
               "--metrics-addr=127.0.0.1:8080",
-              "--leader-elect"
+              "--leader-elect",
+              std.join("", ["--zap-log-level=", log_level])
             ],
             "command": [
               "/manager"
@@ -71,7 +74,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "value": "kserve-webhook-server-cert"
               }
             ],
-            "image": std.join("", [target_registry, "docker.io/kserve/kserve-controller:v0.10.0"]),
+            "image": std.join("", [target_registry, "docker.io/tmaxcloudck/kserve-controller-manager:b0.10.0-tw2-lls2"]),
             "imagePullPolicy": "Always",
             "name": "manager",
             "ports": [
@@ -100,7 +103,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "name": "cert",
                 "readOnly": true
               }
-            ]
+            ] + (
+                if time_zone != "UTC" then [
+                  {
+                    "name": "timezone-config",
+                    "mountPath": "/etc/localtime"
+                  },
+                ] else []
+              )
           },
           {
             "args": [
@@ -133,7 +143,16 @@ local target_registry = if is_offline == "false" then "" else private_registry +
               "secretName": "kserve-webhook-server-cert"
             }
           }
-        ]
+        ] + (
+            if time_zone != "UTC" then [
+              {
+                "name": "timezone-config",
+                "hostPath": {
+                  "path": std.join("", ["/usr/share/zoneinfo/", time_zone])
+                }
+              }
+            ] else []
+          )
       }
     }
   }
