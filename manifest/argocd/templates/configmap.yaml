@@ -1,5 +1,8 @@
 apiVersion: v1
 kind: ConfigMap
+data:
+  resource.compareoptions: |
+    ignoreAggregatedRoles: true
 metadata:
   labels:
     app.kubernetes.io/name: argocd-cm
