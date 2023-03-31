@@ -36,7 +36,7 @@ spec:
             value: {{ .Values.modules.aiDevops.gatekeeperLogLevel }}  
           - name: gatekeeper_version
             value: {{ .Values.modules.aiDevops.gatekeeperVersion }}   
-          - name: timezone
+          - name: time_zone
             value: {{ .Values.global.timeZone }}
           - name: log_level
             value: {{ .Values.modules.aiDevops.logLevel }}         
