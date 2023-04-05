@@ -162,11 +162,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
   "metadata": {
     "name": "kserve-lgbserver"
   },
-  "spec": {
-    "annotations": {
-      "prometheus.kserve.io/path": "/metrics",
-      "prometheus.kserve.io/port": "8080"
-    },
+  "spec": {    
     "containers": [
       {
         "args": [
@@ -204,11 +200,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
   "metadata": {
     "name": "kserve-mlserver"
   },
-  "spec": {
-    "annotations": {
-      "prometheus.kserve.io/path": "/metrics",
-      "prometheus.kserve.io/port": "8080"
-    },
+  "spec": {    
     "containers": [
       {
         "env": [
@@ -273,11 +265,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
   "metadata": {
     "name": "kserve-paddleserver"
   },
-  "spec": {
-    "annotations": {
-      "prometheus.kserve.io/path": "/metrics",
-      "prometheus.kserve.io/port": "8080"
-    },
+  "spec": {    
     "containers": [
       {
         "args": [
@@ -314,11 +302,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
   "metadata": {
     "name": "kserve-pmmlserver"
   },
-  "spec": {
-    "annotations": {
-      "prometheus.kserve.io/path": "/metrics",
-      "prometheus.kserve.io/port": "8080"
-    },
+  "spec": {    
     "containers": [
       {
         "args": [
@@ -360,11 +344,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
   "metadata": {
     "name": "kserve-sklearnserver"
   },
-  "spec": {
-    "annotations": {
-      "prometheus.kserve.io/path": "/metrics",
-      "prometheus.kserve.io/port": "8080"
-    },
+  "spec": {    
     "containers": [
       {
         "args": [
@@ -402,11 +382,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
   "metadata": {
     "name": "kserve-tensorflow-serving"
   },
-  "spec": {
-    "annotations": {
-      "prometheus.kserve.io/path": "/metrics",
-      "prometheus.kserve.io/port": "8080"
-    },
+  "spec": {    
     "containers": [
       {
         "args": [
@@ -453,11 +429,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
   "metadata": {
     "name": "kserve-torchserve"
   },
-  "spec": {
-    "annotations": {
-      "prometheus.kserve.io/path": "/metrics",
-      "prometheus.kserve.io/port": "8082"
-    },
+  "spec": {    
     "containers": [
       {
         "args": [
@@ -501,11 +473,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
   "metadata": {
     "name": "kserve-tritonserver"
   },
-  "spec": {
-    "annotations": {
-      "prometheus.kserve.io/path": "/metrics",
-      "prometheus.kserve.io/port": "8002"
-    },
+  "spec": {    
     "containers": [
       {
         "args": [
@@ -570,11 +538,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
   "metadata": {
     "name": "kserve-xgbserver"
   },
-  "spec": {
-    "annotations": {
-      "prometheus.kserve.io/path": "/metrics",
-      "prometheus.kserve.io/port": "8080"
-    },
+  "spec": {    
     "containers": [
       {
         "args": [
