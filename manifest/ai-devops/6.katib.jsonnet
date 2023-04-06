@@ -13,6 +13,7 @@ function (
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
+local mysql_log_level = if log_level == "error" then "1" else if log_level == "debug" then "2"  else "3";
 [
   {
     "apiVersion": "v1",
@@ -336,7 +337,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     "command": [
                     "/bin/bash",
                     "-c",
-                    "mysql -D ${MYSQL_DATABASE} -u root -p${MYSQL_ROOT_PASSWORD} -e 'SELECT 1'"
+                    std.join("", ["mysql -D ${MYSQL_DATABASE} -u root -p${MYSQL_ROOT_PASSWORD} -e 'SET GLOBAL log_error_verbosity = ", mysql_log_level, ";'"])
                     ]
                 },
                 "failureThreshold": 10,
