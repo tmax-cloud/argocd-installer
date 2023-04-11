@@ -1,4 +1,4 @@
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: hyperauth-kafka-jks-certificate
@@ -6,11 +6,12 @@ metadata:
 spec:
   secretName: hyperauth-kafka-jks
   commonName: hyperauth
-  keySize: 2048
   duration: 8760h0m0s # 360d=1y
   renewBefore: 720h0m0s # 30d
-  keyAlgorithm: rsa
-  keyEncoding: pkcs1
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 2048
   keystores:
     jks:
       create: true
@@ -28,7 +29,7 @@ spec:
     
 ---
 
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: kafka-broker-jks-certificate
@@ -41,11 +42,12 @@ spec:
     - "*.kafka-kafka-brokers.hyperauth.svc"
     - "*.hyperauth"
     - tmax-cloud
-  keySize: 2048
   duration: 8760h0m0s # 360d=1y
   renewBefore: 720h0m0s # 30d
-  keyAlgorithm: rsa
-  keyEncoding: pkcs1
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 2048
   keystores:
     jks:
       create: true
