@@ -1757,6 +1757,8 @@ webhooks:
     apiGroups: ["servicecatalog.k8s.io"]
     apiVersions: ["v1beta1"]
     resources: ["clusterservicebrokers"]
+  admissionReviewVersions: ["v1", "v1beta1"]
+  sideEffects: None
 - name: mutating.clusterserviceclasses.servicecatalog.k8s.io
   clientConfig:
     service:
@@ -1769,6 +1771,8 @@ webhooks:
     apiGroups: ["servicecatalog.k8s.io"]
     apiVersions: ["v1beta1"]
     resources: ["clusterserviceclasses"]
+  admissionReviewVersions: ["v1", "v1beta1"]
+  sideEffects: None
 - name: mutating.serviceclasses.servicecatalog.k8s.io
   clientConfig:
     service:
@@ -1781,6 +1785,8 @@ webhooks:
     apiGroups: ["servicecatalog.k8s.io"]
     apiVersions: ["v1beta1"]
     resources: ["serviceclasses"]
+  admissionReviewVersions: ["v1", "v1beta1"]
+  sideEffects: None
 - name: mutating.clusterserviceplans.servicecatalog.k8s.io
   clientConfig:
     service:
@@ -1793,6 +1799,8 @@ webhooks:
     apiGroups: ["servicecatalog.k8s.io"]
     apiVersions: ["v1beta1"]
     resources: ["clusterserviceplans"]
+  admissionReviewVersions: ["v1", "v1beta1"]
+  sideEffects: None
 - name: mutating.serviceplans.servicecatalog.k8s.io
   clientConfig:
     service:
@@ -1805,6 +1813,8 @@ webhooks:
     apiGroups: ["servicecatalog.k8s.io"]
     apiVersions: ["v1beta1"]
     resources: ["serviceplans"]
+  admissionReviewVersions: ["v1", "v1beta1"]
+  sideEffects: None
 - name: mutating.servicebindings.servicecatalog.k8s.io
   clientConfig:
     service:
@@ -1817,6 +1827,8 @@ webhooks:
     apiGroups: ["servicecatalog.k8s.io"]
     apiVersions: ["v1beta1"]
     resources: ["servicebindings"]
+  admissionReviewVersions: ["v1", "v1beta1"]
+  sideEffects: None
 - name: mutating.servicebrokers.servicecatalog.k8s.io
   clientConfig:
     service:
@@ -1829,6 +1841,8 @@ webhooks:
     apiGroups: ["servicecatalog.k8s.io"]
     apiVersions: ["v1beta1"]
     resources: ["servicebrokers"]
+  admissionReviewVersions: ["v1", "v1beta1"]
+  sideEffects: None
 - name: mutating.serviceinstances.servicecatalog.k8s.io
   clientConfig:
     service:
@@ -1841,6 +1855,8 @@ webhooks:
     apiGroups: ["servicecatalog.k8s.io"]
     apiVersions: ["v1beta1"]
     resources: ["serviceinstances"]
+  admissionReviewVersions: ["v1", "v1beta1"]
+  sideEffects: None
 ---
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
@@ -1862,6 +1878,8 @@ webhooks:
     apiGroups: ["servicecatalog.k8s.io"]
     apiVersions: ["v1beta1"]
     resources: ["servicebindings/status"]
+  admissionReviewVersions: ["v1", "v1beta1"]
+  sideEffects: None
 - name: validating.status.servicbrokers.servicecatalog.k8s.io
   clientConfig:
     service:
@@ -1874,6 +1892,8 @@ webhooks:
     apiGroups: ["servicecatalog.k8s.io"]
     apiVersions: ["v1beta1"]
     resources: ["servicebrokers/status"]
+  admissionReviewVersions: ["v1", "v1beta1"]
+  sideEffects: None
 - name: validating.status.clusterservicbrokers.servicecatalog.k8s.io
   clientConfig:
     service:
@@ -1886,6 +1906,8 @@ webhooks:
     apiGroups: ["servicecatalog.k8s.io"]
     apiVersions: ["v1beta1"]
     resources: ["clusterservicebrokers/status"]
+  admissionReviewVersions: ["v1", "v1beta1"]
+  sideEffects: None
 - name: validating.serviceinstances.servicecatalog.k8s.io
   clientConfig:
     service:
@@ -1898,6 +1920,8 @@ webhooks:
     apiGroups: ["servicecatalog.k8s.io"]
     apiVersions: ["v1beta1"]
     resources: ["serviceinstances"]
+  admissionReviewVersions: ["v1", "v1beta1"]
+  sideEffects: None
 - name: validating.clusterservicebrokers.servicecatalog.k8s.io
   clientConfig:
     service:
@@ -1906,10 +1930,12 @@ webhooks:
       path: "/validating-clusterservicebrokers"
   failurePolicy: Fail
   rules:
-    - operations: [ "CREATE", "UPDATE" ]
-      apiGroups: ["servicecatalog.k8s.io"]
-      apiVersions: ["v1beta1"]
-      resources: ["clusterservicebrokers"]
+  - operations: [ "CREATE", "UPDATE" ]
+    apiGroups: ["servicecatalog.k8s.io"]
+    apiVersions: ["v1beta1"]
+    resources: ["clusterservicebrokers"]
+  admissionReviewVersions: ["v1", "v1beta1"]
+  sideEffects: None
 - name: validating.servicebindings.servicecatalog.k8s.io
   clientConfig:
     service:
@@ -1922,6 +1948,8 @@ webhooks:
     apiGroups: ["servicecatalog.k8s.io"]
     apiVersions: ["v1beta1"]
     resources: ["servicebindings"]
+  admissionReviewVersions: ["v1", "v1beta1"]
+  sideEffects: None
 - name: validating.servicebrokers.servicecatalog.k8s.io
   clientConfig:
     service:
@@ -1930,10 +1958,12 @@ webhooks:
       path: "/validating-servicebrokers"
   failurePolicy: Fail
   rules:
-    - operations: [ "CREATE", "UPDATE" ]
-      apiGroups: ["servicecatalog.k8s.io"]
-      apiVersions: ["v1beta1"]
-      resources: ["servicebrokers"]
+  - operations: [ "CREATE", "UPDATE" ]
+    apiGroups: ["servicecatalog.k8s.io"]
+    apiVersions: ["v1beta1"]
+    resources: ["servicebrokers"]
+  admissionReviewVersions: ["v1", "v1beta1"]
+  sideEffects: None
 - name: validating.serviceclasses.servicecatalog.k8s.io
   clientConfig:
     service:
@@ -1942,10 +1972,12 @@ webhooks:
       path: "/validating-serviceclasses"
   failurePolicy: Fail
   rules:
-    - operations: [ "CREATE", "UPDATE" ]
-      apiGroups: ["servicecatalog.k8s.io"]
-      apiVersions: ["v1beta1"]
-      resources: ["serviceclasses"]
+  - operations: [ "CREATE", "UPDATE" ]
+    apiGroups: ["servicecatalog.k8s.io"]
+    apiVersions: ["v1beta1"]
+    resources: ["serviceclasses"]
+  admissionReviewVersions: ["v1", "v1beta1"]
+  sideEffects: None
 - name: validating.clusterserviceclasses.servicecatalog.k8s.io
   clientConfig:
     service:
@@ -1954,10 +1986,12 @@ webhooks:
       path: "/validating-clusterserviceclasses"
   failurePolicy: Fail
   rules:
-    - operations: [ "CREATE", "UPDATE" ]
-      apiGroups: ["servicecatalog.k8s.io"]
-      apiVersions: ["v1beta1"]
-      resources: ["clusterserviceclasses"]
+  - operations: [ "CREATE", "UPDATE" ]
+    apiGroups: ["servicecatalog.k8s.io"]
+    apiVersions: ["v1beta1"]
+    resources: ["clusterserviceclasses"]
+  admissionReviewVersions: ["v1", "v1beta1"]
+  sideEffects: None
 - name: validating.serviceplans.servicecatalog.k8s.io
   clientConfig:
     service:
@@ -1966,10 +2000,12 @@ webhooks:
       path: "/validating-serviceplans"
   failurePolicy: Fail
   rules:
-    - operations: [ "CREATE", "UPDATE" ]
-      apiGroups: ["servicecatalog.k8s.io"]
-      apiVersions: ["v1beta1"]
-      resources: ["serviceplans"]
+  - operations: [ "CREATE", "UPDATE" ]
+    apiGroups: ["servicecatalog.k8s.io"]
+    apiVersions: ["v1beta1"]
+    resources: ["serviceplans"]
+  admissionReviewVersions: ["v1", "v1beta1"]
+  sideEffects: None
 - name: validating.clusterserviceplans.servicecatalog.k8s.io
   clientConfig:
     service:
@@ -1978,10 +2014,12 @@ webhooks:
       path: "/validating-clusterserviceplans"
   failurePolicy: Fail
   rules:
-    - operations: [ "CREATE", "UPDATE" ]
-      apiGroups: ["servicecatalog.k8s.io"]
-      apiVersions: ["v1beta1"]
-      resources: ["clusterserviceplans"]
+  - operations: [ "CREATE", "UPDATE" ]
+    apiGroups: ["servicecatalog.k8s.io"]
+    apiVersions: ["v1beta1"]
+    resources: ["clusterserviceplans"]
+  admissionReviewVersions: ["v1", "v1beta1"]
+  sideEffects: None
 
 ---
 kind: Service
