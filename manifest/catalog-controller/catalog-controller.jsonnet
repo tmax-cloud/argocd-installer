@@ -64,7 +64,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
           "containers": [
             {
               "name": "controller-manager",
-              "image": std.join("", [target_registry, "quay.io/kubernetes-service-catalog/service-catalog:v0.3.0"]),
+              "image": std.join("", [target_registry, "quay.io/kubernetes-service-catalog/service-catalog:v0.3.1"]),
               "imagePullPolicy": "Always",
               "resources": {
                 "requests": {
@@ -196,7 +196,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
           "containers": [
             {
               "name": "svr",
-              "image": std.join("", [target_registry, "quay.io/kubernetes-service-catalog/service-catalog:v0.3.0"]),
+              "image": std.join("", [target_registry, "quay.io/kubernetes-service-catalog/service-catalog:v0.3.1"]),
               "imagePullPolicy": "Always",
               "resources": {
                 "requests": {
