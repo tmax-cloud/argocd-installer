@@ -321,7 +321,7 @@ local fluentd_log_level = if log_level == "error" then "-qq " else if log_level 
         ]
       )
     }
-  }
+  },
   {
     "apiVersion": "apps/v1",
     "kind": "Deployment",
