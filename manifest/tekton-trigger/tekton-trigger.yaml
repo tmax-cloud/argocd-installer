@@ -12,53 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: policy/v1beta1
-kind: PodSecurityPolicy
-metadata:
-  name: tekton-triggers
-  labels:
-    app.kubernetes.io/instance: default
-    app.kubernetes.io/part-of: tekton-triggers
-spec:
-  privileged: false
-  allowPrivilegeEscalation: false
-  volumes:
-    - 'emptyDir'
-    - 'configMap'
-    - 'secret'
-  hostNetwork: false
-  hostIPC: false
-  hostPID: false
-  runAsUser:
-    rule: 'MustRunAsNonRoot'
-  seLinux:
-    rule: 'RunAsAny'
-  supplementalGroups:
-    rule: 'MustRunAs'
-    ranges:
-      - min: 1
-        max: 65535
-  fsGroup:
-    rule: 'MustRunAs'
-    ranges:
-      - min: 1
-        max: 65535
-
----
-# Copyright 2019 The Tekton Authors
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -103,6 +56,61 @@ rules:
     verbs: ["get", "list", "watch"]
 
 ---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: tekton-triggers-core-interceptors-secrets
+  labels:
+    app.kubernetes.io/instance: default
+    app.kubernetes.io/part-of: tekton-triggers
+rules:
+  - apiGroups: ["triggers.tekton.dev"]
+    resources: ["clusterinterceptors"]
+    verbs: ["get", "list", "watch", "update"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list", "watch", "update"]
+    resourceNames: ["tekton-triggers-core-interceptors-certs"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: tekton-triggers-eventlistener-roles
+  labels:
+    app.kubernetes.io/instance: default
+    app.kubernetes.io/part-of: tekton-triggers
+rules:
+  - apiGroups: ["triggers.tekton.dev"]
+    resources: ["eventlisteners", "triggerbindings", "interceptors", "triggertemplates", "triggers"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["tekton.dev"]
+    resources: ["pipelineruns", "pipelineresources", "taskruns"]
+    verbs: ["create"]
+  - apiGroups: [""]
+    resources: ["serviceaccounts"]
+    verbs: ["impersonate"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create", "patch"]
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: tekton-triggers-eventlistener-clusterroles
+  labels:
+    app.kubernetes.io/instance: default
+    app.kubernetes.io/part-of: tekton-triggers
+rules:
+  - apiGroups: ["triggers.tekton.dev"]
+    resources: ["clustertriggerbindings", "clusterinterceptors"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list", "watch"]
+---
 # Copyright 2020 The Tekton Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -126,33 +134,16 @@ rules:
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: tekton-triggers-admin
-  namespace: tekton-pipelines
-  labels:
-    app.kubernetes.io/instance: default
-    app.kubernetes.io/part-of: tekton-triggers
-rules:
-  - apiGroups: ["policy"]
-    resources: ["podsecuritypolicies"]
-    resourceNames: ["tekton-triggers"]
-    verbs: ["use"]
----
-kind: Role
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
   name: tekton-triggers-admin-webhook
   namespace: tekton-pipelines
   labels:
     app.kubernetes.io/instance: default
     app.kubernetes.io/part-of: tekton-triggers
 rules:
-  - apiGroups: ["policy"]
-    resources: ["podsecuritypolicies"]
-    resourceNames: ["tekton-triggers"]
-    verbs: ["use"]
   - apiGroups: [""]
     resources: ["secrets"]
     verbs: ["get", "list", "create", "update", "delete", "patch", "watch"]
+
 ---
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
@@ -163,13 +154,10 @@ metadata:
     app.kubernetes.io/instance: default
     app.kubernetes.io/part-of: tekton-triggers
 rules:
-  - apiGroups: ["policy"]
-    resources: ["podsecuritypolicies"]
-    resourceNames: ["tekton-triggers"]
-    verbs: ["use"]
   - apiGroups: [""]
     resources: ["configmaps"]
     verbs: ["get", "list", "watch"]
+
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -188,7 +176,6 @@ rules:
     resources: ["configmaps"]
     resourceNames: ["triggers-info"]
     verbs: ["get"]
-
 ---
 # Copyright 2019 The Tekton Authors
 #
@@ -293,7 +280,22 @@ roleRef:
   kind: ClusterRole
   name: tekton-triggers-core-interceptors
   apiGroup: rbac.authorization.k8s.io
-
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: tekton-triggers-core-interceptors-secrets
+  labels:
+    app.kubernetes.io/instance: default
+    app.kubernetes.io/part-of: tekton-triggers
+subjects:
+  - kind: ServiceAccount
+    name: tekton-triggers-core-interceptors
+    namespace: tekton-pipelines
+roleRef:
+  kind: ClusterRole
+  name: tekton-triggers-core-interceptors-secrets
+  apiGroup: rbac.authorization.k8s.io
 ---
 # Copyright 2020 The Tekton Authors
 #
@@ -312,23 +314,6 @@ roleRef:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: tekton-triggers-controller-admin
-  namespace: tekton-pipelines
-  labels:
-    app.kubernetes.io/instance: default
-    app.kubernetes.io/part-of: tekton-triggers
-subjects:
-  - kind: ServiceAccount
-    name: tekton-triggers-controller
-    namespace: tekton-pipelines
-roleRef:
-  kind: Role
-  name: tekton-triggers-admin
-  apiGroup: rbac.authorization.k8s.io
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
   name: tekton-triggers-webhook-admin
   namespace: tekton-pipelines
   labels:
@@ -342,6 +327,7 @@ roleRef:
   kind: Role
   name: tekton-triggers-admin-webhook
   apiGroup: rbac.authorization.k8s.io
+
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -359,6 +345,7 @@ roleRef:
   kind: Role
   name: tekton-triggers-core-interceptors
   apiGroup: rbac.authorization.k8s.io
+
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -401,8 +388,8 @@ metadata:
   labels:
     app.kubernetes.io/instance: default
     app.kubernetes.io/part-of: tekton-triggers
-    triggers.tekton.dev/release: "v0.15.0"
-    version: "v0.15.0"
+    triggers.tekton.dev/release: "v0.22.0"
+    version: "v0.22.0"
 spec:
   group: triggers.tekton.dev
   scope: Cluster
@@ -457,8 +444,8 @@ metadata:
   labels:
     app.kubernetes.io/instance: default
     app.kubernetes.io/part-of: tekton-triggers
-    triggers.tekton.dev/release: "v0.15.0"
-    version: "v0.15.0"
+    triggers.tekton.dev/release: "v0.22.0"
+    version: "v0.22.0"
 spec:
   group: triggers.tekton.dev
   scope: Cluster
@@ -527,8 +514,8 @@ metadata:
   labels:
     app.kubernetes.io/instance: default
     app.kubernetes.io/part-of: tekton-triggers
-    triggers.tekton.dev/release: "v0.15.0"
-    version: "v0.15.0"
+    triggers.tekton.dev/release: "v0.22.0"
+    version: "v0.22.0"
 spec:
   group: triggers.tekton.dev
   scope: Namespaced
@@ -612,6 +599,62 @@ spec:
           jsonPath: ".status.conditions[?(@.type=='Ready')].reason"
 
 ---
+# Copyright 2022 The Tekton Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: interceptors.triggers.tekton.dev
+  labels:
+    app.kubernetes.io/instance: default
+    app.kubernetes.io/part-of: tekton-triggers
+    triggers.tekton.dev/release: "v0.22.0"
+    version: "v0.22.0"
+spec:
+  group: triggers.tekton.dev
+  scope: Namespaced
+  names:
+    kind: Interceptor
+    plural: interceptors
+    singular: interceptor
+    shortNames:
+      - ni
+    categories:
+      - tekton
+      - tekton-triggers
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          # One can use x-kubernetes-preserve-unknown-fields: true
+          # at the root of the schema (and inside any properties, additionalProperties)
+          # to get the traditional CRD behaviour that nothing is pruned, despite
+          # setting spec.preserveUnknownProperties: false.
+          #
+          # See https://kubernetes.io/blog/2019/06/20/crd-structural-schema/
+          # See issue: https://github.com/knative/serving/issues/912
+          x-kubernetes-preserve-unknown-fields: true
+      # Opt into the status subresource so metadata.generation
+      # starts to increment
+      subresources:
+        status: {}
+
+---
 # Copyright 2019 The Tekton Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -633,8 +676,8 @@ metadata:
   labels:
     app.kubernetes.io/instance: default
     app.kubernetes.io/part-of: tekton-triggers
-    triggers.tekton.dev/release: "v0.15.0"
-    version: "v0.15.0"
+    triggers.tekton.dev/release: "v0.22.0"
+    version: "v0.22.0"
 spec:
   group: triggers.tekton.dev
   scope: Namespaced
@@ -705,8 +748,8 @@ metadata:
   labels:
     app.kubernetes.io/instance: default
     app.kubernetes.io/part-of: tekton-triggers
-    triggers.tekton.dev/release: "v0.15.0"
-    version: "v0.15.0"
+    triggers.tekton.dev/release: "v0.22.0"
+    version: "v0.22.0"
 spec:
   group: triggers.tekton.dev
   scope: Namespaced
@@ -779,8 +822,8 @@ metadata:
   labels:
     app.kubernetes.io/instance: default
     app.kubernetes.io/part-of: tekton-triggers
-    triggers.tekton.dev/release: "v0.15.0"
-    version: "v0.15.0"
+    triggers.tekton.dev/release: "v0.22.0"
+    version: "v0.22.0"
 spec:
   group: triggers.tekton.dev
   scope: Namespaced
@@ -855,7 +898,7 @@ metadata:
     app.kubernetes.io/component: webhook
     app.kubernetes.io/instance: default
     app.kubernetes.io/part-of: tekton-triggers
-    triggers.tekton.dev/release: "v0.15.0"
+    triggers.tekton.dev/release: "v0.22.0"
 # The data is populated at install time.
 ---
 apiVersion: admissionregistration.k8s.io/v1
@@ -866,10 +909,9 @@ metadata:
     app.kubernetes.io/component: webhook
     app.kubernetes.io/instance: default
     app.kubernetes.io/part-of: tekton-triggers
-    triggers.tekton.dev/release: "v0.15.0"
+    triggers.tekton.dev/release: "v0.22.0"
 webhooks:
   - admissionReviewVersions:
-      - v1beta1
       - v1
     clientConfig:
       service:
@@ -887,10 +929,9 @@ metadata:
     app.kubernetes.io/component: webhook
     app.kubernetes.io/instance: default
     app.kubernetes.io/part-of: tekton-triggers
-    triggers.tekton.dev/release: "v0.15.0"
+    triggers.tekton.dev/release: "v0.22.0"
 webhooks:
   - admissionReviewVersions:
-      - v1beta1
       - v1
     clientConfig:
       service:
@@ -908,10 +949,9 @@ metadata:
     app.kubernetes.io/component: webhook
     app.kubernetes.io/instance: default
     app.kubernetes.io/part-of: tekton-triggers
-    triggers.tekton.dev/release: "v0.15.0"
+    triggers.tekton.dev/release: "v0.22.0"
 webhooks:
   - admissionReviewVersions:
-      - v1beta1
       - v1
     clientConfig:
       service:
@@ -956,6 +996,7 @@ rules:
       - clustertriggerbindings
       - clusterinterceptors
       - eventlisteners
+      - interceptors
       - triggers
       - triggerbindings
       - triggertemplates
@@ -999,6 +1040,7 @@ rules:
       - clustertriggerbindings
       - clusterinterceptors
       - eventlisteners
+      - interceptors
       - triggers
       - triggerbindings
       - triggertemplates
@@ -1006,6 +1048,81 @@ rules:
       - get
       - list
       - watch
+
+---
+# Copyright 2021 The Tekton Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-defaults-triggers
+  namespace: tekton-pipelines
+  labels:
+    app.kubernetes.io/instance: default
+    app.kubernetes.io/part-of: tekton-triggers
+data:
+  _example: |
+    ################################
+    #                              #
+    #    EXAMPLE CONFIGURATION     #
+    #                              #
+    ################################
+
+    # This block is not actually functional configuration,
+    # but serves to illustrate the available configuration
+    # options and document them in a way that is accessible
+    # to users that `kubectl edit` this config map.
+    #
+    # These sample configuration options may be copied out of
+    # this example block and unindented to be in the data block
+    # to actually change the configuration.
+
+    # default-service-account contains the default service account name
+    # to use for TaskRun and PipelineRun, if none is specified.
+    default-service-account: "default"
+
+---
+# Copyright 2021 The Tekton Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: feature-flags-triggers
+  namespace: tekton-pipelines
+  labels:
+    app.kubernetes.io/instance: default
+    app.kubernetes.io/part-of: tekton-pipelines
+data:
+  # Setting this flag will determine which gated features are enabled.
+  # Acceptable values are "stable" or "alpha".
+  enable-api-fields: "stable"
+  # Setting this field with valid regex pattern matching the pattern will exclude labels from
+  # getting added to resources created by the EventListener such as the deployment
+  labels-exclusion-pattern: ""
 
 ---
 # Copyright 2021 The Tekton Authors
@@ -1036,7 +1153,7 @@ data:
   # this ConfigMap such that even if we don't have access to
   # other resources in the namespace we still can have access to
   # this ConfigMap.
-  version: "v0.15.0"
+  version: "v0.22.0"
 
 ---
 # Copyright 2019 Tekton Authors LLC
@@ -1067,6 +1184,7 @@ data:
 #     {
 #       "level": "info",
 #       "development": false,
+#       "disableStacktrace": true,
 #       "sampling": {
 #         "initial": 100,
 #         "thereafter": 100
@@ -1172,11 +1290,11 @@ metadata:
     app.kubernetes.io/name: controller
     app.kubernetes.io/component: controller
     app.kubernetes.io/instance: default
-    app.kubernetes.io/version: "v0.15.0"
+    app.kubernetes.io/version: "v0.22.0"
     app.kubernetes.io/part-of: tekton-triggers
-    triggers.tekton.dev/release: "v0.15.0"
+    triggers.tekton.dev/release: "v0.22.0"
     app: tekton-triggers-controller
-    version: "v0.15.0"
+    version: "v0.22.0"
   name: tekton-triggers-controller
   namespace: tekton-pipelines
 spec:
@@ -1215,11 +1333,11 @@ metadata:
     app.kubernetes.io/name: webhook
     app.kubernetes.io/component: webhook
     app.kubernetes.io/instance: default
-    app.kubernetes.io/version: "v0.15.0"
+    app.kubernetes.io/version: "v0.22.0"
     app.kubernetes.io/part-of: tekton-triggers
     app: tekton-triggers-webhook
-    version: "v0.15.0"
-    triggers.tekton.dev/release: "v0.15.0"
+    version: "v0.22.0"
+    triggers.tekton.dev/release: "v0.22.0"
 spec:
   ports:
     - name: https-webhook

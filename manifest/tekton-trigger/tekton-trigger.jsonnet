@@ -18,9 +18,9 @@ local gcr_registry = if is_offline == "false" then "" else private_registry + "/
         "app.kubernetes.io/name": "controller",
         "app.kubernetes.io/component": "controller",
         "app.kubernetes.io/instance": "default",
-        "app.kubernetes.io/version": "v0.15.0",
+        "app.kubernetes.io/version": "v0.22.0",
         "app.kubernetes.io/part-of": "tekton-triggers",
-        "triggers.tekton.dev/release": "v0.15.0"
+        "triggers.tekton.dev/release": "v0.22.0"
       }
     },
     "spec": {
@@ -35,18 +35,15 @@ local gcr_registry = if is_offline == "false" then "" else private_registry + "/
       },
       "template": {
         "metadata": {
-          "annotations": {
-            "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
-          },
           "labels": {
             "app.kubernetes.io/name": "controller",
             "app.kubernetes.io/component": "controller",
             "app.kubernetes.io/instance": "default",
-            "app.kubernetes.io/version": "v0.15.0",
+            "app.kubernetes.io/version": "v0.22.0",
             "app.kubernetes.io/part-of": "tekton-triggers",
             "app": "tekton-triggers-controller",
-            "triggers.tekton.dev/release": "v0.15.0",
-            "version": "v0.15.0"
+            "triggers.tekton.dev/release": "v0.22.0",
+            "version": "v0.22.0"
           }
         },
         "spec": {
@@ -54,7 +51,7 @@ local gcr_registry = if is_offline == "false" then "" else private_registry + "/
           "containers": [
             {
               "name": "tekton-triggers-controller",
-              "image": std.join("", [gcr_registry,"gcr.io/tekton-releases/github.com/tektoncd/triggers/cmd/controller:v0.15.0"]),
+              "image": std.join("", [gcr_registry,"gcr.io/tekton-releases/github.com/tektoncd/triggers/cmd/controller:v0.22.0"]),
               "resources": {
                 "requests": {
                   "cpu": "100m",
@@ -70,9 +67,13 @@ local gcr_registry = if is_offline == "false" then "" else private_registry + "/
                 "-stderrthreshold",
                 "INFO",
                 "-el-image",
-                std.join("", [gcr_registry,"gcr.io/tekton-releases/github.com/tektoncd/triggers/cmd/eventlistenersink:v0.15.0"]),
+                std.join("", [gcr_registry,"gcr.io/tekton-releases/github.com/tektoncd/triggers/cmd/eventlistenersink:v0.22.0"]),
                 "-el-port",
                 "8080",
+                "-el-security-context",
+                "true",
+                "-el-events",
+                "disable",
                 "-el-readtimeout",
                 "5",
                 "-el-writetimeout",
@@ -81,6 +82,16 @@ local gcr_registry = if is_offline == "false" then "" else private_registry + "/
                 "120",
                 "-el-timeouthandler",
                 "30",
+                "-el-httpclient-readtimeout",
+                "30",
+                "-el-httpclient-keep-alive",
+                "30",
+                "-el-httpclient-tlshandshaketimeout",
+                "10",
+                "-el-httpclient-responseheadertimeout",
+                "10",
+                "-el-httpclient-expectcontinuetimeout",
+                "1",
                 "-period-seconds",
                 "10",
                 "-failure-threshold",
@@ -104,6 +115,10 @@ local gcr_registry = if is_offline == "false" then "" else private_registry + "/
                   "value": "config-observability-triggers"
                 },
                 {
+                  "name": "CONFIG_DEFAULTS_NAME",
+                  "value": "config-defaults-triggers"
+                },
+                {
                   "name": "METRICS_DOMAIN",
                   "value": "tekton.dev/triggers"
                 },
@@ -114,7 +129,17 @@ local gcr_registry = if is_offline == "false" then "" else private_registry + "/
               ],
               "securityContext": {
                 "allowPrivilegeEscalation": false,
-                "runAsUser": 65532
+                "capabilities": {
+                  "drop": [
+                    "ALL"
+                  ]
+                },
+                "runAsUser": 65532,
+                "runAsGroup": 65532,
+                "runAsNonRoot": true,
+                "seccompProfile": {
+                  "type": "RuntimeDefault"
+                }
               }
             } + (
             if timezone != "UTC" then {
@@ -152,9 +177,9 @@ local gcr_registry = if is_offline == "false" then "" else private_registry + "/
         "app.kubernetes.io/name": "webhook",
         "app.kubernetes.io/component": "webhook",
         "app.kubernetes.io/instance": "default",
-        "app.kubernetes.io/version": "v0.15.0",
+        "app.kubernetes.io/version": "v0.22.0",
         "app.kubernetes.io/part-of": "tekton-triggers",
-        "triggers.tekton.dev/release": "v0.15.0"
+        "triggers.tekton.dev/release": "v0.22.0"
       }
     },
     "spec": {
@@ -169,18 +194,15 @@ local gcr_registry = if is_offline == "false" then "" else private_registry + "/
       },
       "template": {
         "metadata": {
-          "annotations": {
-            "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
-          },
           "labels": {
             "app.kubernetes.io/name": "webhook",
             "app.kubernetes.io/component": "webhook",
             "app.kubernetes.io/instance": "default",
-            "app.kubernetes.io/version": "v0.15.0",
+            "app.kubernetes.io/version": "v0.22.0",
             "app.kubernetes.io/part-of": "tekton-triggers",
             "app": "tekton-triggers-webhook",
-            "triggers.tekton.dev/release": "v0.15.0",
-            "version": "v0.15.0"
+            "triggers.tekton.dev/release": "v0.22.0",
+            "version": "v0.22.0"
           }
         },
         "spec": {
@@ -188,7 +210,7 @@ local gcr_registry = if is_offline == "false" then "" else private_registry + "/
           "containers": [
             {
               "name": "webhook",
-              "image": std.join("", [gcr_registry,"gcr.io/tekton-releases/github.com/tektoncd/triggers/cmd/webhook:v0.15.0"]),
+              "image": std.join("", [gcr_registry,"gcr.io/tekton-releases/github.com/tektoncd/triggers/cmd/webhook:v0.22.0"]),
               "resources": {
                 "requests": {
                   "cpu": "100m",
@@ -241,7 +263,17 @@ local gcr_registry = if is_offline == "false" then "" else private_registry + "/
               ],
               "securityContext": {
                 "allowPrivilegeEscalation": false,
-                "runAsUser": 65532
+                "capabilities": {
+                  "drop": [
+                    "ALL"
+                  ]
+                },
+                "runAsUser": 65532,
+                "runAsGroup": 65532,
+                "runAsNonRoot": true,
+                "seccompProfile": {
+                  "type": "RuntimeDefault"
+                }
               }
             } + (
             if timezone != "UTC" then {
@@ -279,9 +311,9 @@ local gcr_registry = if is_offline == "false" then "" else private_registry + "/
         "app.kubernetes.io/name": "core-interceptors",
         "app.kubernetes.io/component": "interceptors",
         "app.kubernetes.io/instance": "default",
-        "app.kubernetes.io/version": "v0.15.0",
+        "app.kubernetes.io/version": "v0.22.0",
         "app.kubernetes.io/part-of": "tekton-triggers",
-        "triggers.tekton.dev/release": "v0.15.0"
+        "triggers.tekton.dev/release": "v0.22.0"
       }
     },
     "spec": {
@@ -300,11 +332,11 @@ local gcr_registry = if is_offline == "false" then "" else private_registry + "/
             "app.kubernetes.io/name": "core-interceptors",
             "app.kubernetes.io/component": "interceptors",
             "app.kubernetes.io/instance": "default",
-            "app.kubernetes.io/version": "v0.15.0",
+            "app.kubernetes.io/version": "v0.22.0",
             "app.kubernetes.io/part-of": "tekton-triggers",
             "app": "tekton-triggers-core-interceptors",
-            "triggers.tekton.dev/release": "v0.15.0",
-            "version": "v0.15.0"
+            "triggers.tekton.dev/release": "v0.22.0",
+            "version": "v0.22.0"
           }
         },
         "spec": {
@@ -312,7 +344,12 @@ local gcr_registry = if is_offline == "false" then "" else private_registry + "/
           "containers": [
             {
               "name": "tekton-triggers-core-interceptors",
-              "image": std.join("",[gcr_registry,"gcr.io/tekton-releases/github.com/tektoncd/triggers/cmd/interceptors:v0.15.0"]),
+              "image": std.join("",[gcr_registry,"gcr.io/tekton-releases/github.com/tektoncd/triggers/cmd/interceptors:v0.22.0"]),
+              "ports": [
+                {
+                  "containerPort": 8443
+                }
+              ],
               "resources": {
                 "requests": {
                   "cpu": "100m",
@@ -348,13 +385,21 @@ local gcr_registry = if is_offline == "false" then "" else private_registry + "/
                 {
                   "name": "METRICS_DOMAIN",
                   "value": "tekton.dev/triggers"
+                },
+                {
+                  "name": "INTERCEPTOR_TLS_SVC_NAME",
+                  "value": "tekton-triggers-core-interceptors"
+                },
+                {
+                  "name": "INTERCEPTOR_TLS_SECRET_NAME",
+                  "value": "tekton-triggers-core-interceptors-certs"
                 }
               ],
               "readinessProbe": {
                 "httpGet": {
                   "path": "/ready",
-                  "port": 8082,
-                  "scheme": "HTTP"
+                  "port": 8443,
+                  "scheme": "HTTPS"
                 },
                 "initialDelaySeconds": 5,
                 "periodSeconds": 10,
@@ -364,10 +409,14 @@ local gcr_registry = if is_offline == "false" then "" else private_registry + "/
                 "allowPrivilegeEscalation": false,
                 "runAsUser": 65532,
                 "runAsGroup": 65532,
+                "runAsNonRoot": true,
                 "capabilities": {
                   "drop": [
-                    "all"
+                    "ALL"
                   ]
+                },
+                "seccompProfile": {
+                  "type": "RuntimeDefault"
                 }
               }
             } + (

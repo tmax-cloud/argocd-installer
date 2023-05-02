@@ -20,53 +20,7 @@ metadata:
     hypercloud: system
     app.kubernetes.io/instance: default
     app.kubernetes.io/part-of: tekton-pipelines
-
----
-# Copyright 2019 The Tekton Authors
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-apiVersion: policy/v1beta1
-kind: PodSecurityPolicy
-metadata:
-  name: tekton-pipelines
-  labels:
-    app.kubernetes.io/instance: default
-    app.kubernetes.io/part-of: tekton-pipelines
-spec:
-  privileged: false
-  allowPrivilegeEscalation: false
-  volumes:
-    - 'emptyDir'
-    - 'configMap'
-    - 'secret'
-  hostNetwork: false
-  hostIPC: false
-  hostPID: false
-  runAsUser:
-    rule: 'MustRunAsNonRoot'
-  seLinux:
-    rule: 'RunAsAny'
-  supplementalGroups:
-    rule: 'MustRunAs'
-    ranges:
-      - min: 1
-        max: 65535
-  fsGroup:
-    rule: 'MustRunAs'
-    ranges:
-      - min: 1
-        max: 65535
+    pod-security.kubernetes.io/enforce: restricted
 
 ---
 # Copyright 2020 The Tekton Authors
@@ -99,13 +53,20 @@ rules:
     # Controller needs cluster access to all of the CRDs that it is responsible for
     # managing.
   - apiGroups: ["tekton.dev"]
-    resources: ["tasks", "clustertasks", "taskruns", "pipelines", "pipelineruns", "pipelineresources", "conditions", "runs"]
+    resources: ["tasks", "clustertasks", "taskruns", "pipelines", "pipelineruns", "pipelineresources", "runs", "customruns"]
     verbs: ["get", "list", "create", "update", "delete", "patch", "watch"]
   - apiGroups: ["tekton.dev"]
-    resources: ["taskruns/finalizers", "pipelineruns/finalizers", "runs/finalizers"]
+    resources: ["verificationpolicies"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["tekton.dev"]
+    resources: ["taskruns/finalizers", "pipelineruns/finalizers", "runs/finalizers", "customruns/finalizers"]
     verbs: ["get", "list", "create", "update", "delete", "patch", "watch"]
   - apiGroups: ["tekton.dev"]
-    resources: ["tasks/status", "clustertasks/status", "taskruns/status", "pipelines/status", "pipelineruns/status", "pipelineresources/status", "runs/status"]
+    resources: ["tasks/status", "clustertasks/status", "taskruns/status", "pipelines/status", "pipelineruns/status", "pipelineresources/status", "runs/status", "customruns/status", "verificationpolicies/status"]
+    verbs: ["get", "list", "create", "update", "delete", "patch", "watch"]
+  # resolution.tekton.dev
+  - apiGroups: ["resolution.tekton.dev"]
+    resources: ["resolutionrequests", "resolutionrequests/status"]
     verbs: ["get", "list", "create", "update", "delete", "patch", "watch"]
 ---
 kind: ClusterRole
@@ -140,11 +101,26 @@ metadata:
     app.kubernetes.io/instance: default
     app.kubernetes.io/part-of: tekton-pipelines
 rules:
-  # The webhook needs to be able to list and update customresourcedefinitions,
+  # The webhook needs to be able to get and update customresourcedefinitions,
   # mainly to update the webhook certificates.
   - apiGroups: ["apiextensions.k8s.io"]
     resources: ["customresourcedefinitions", "customresourcedefinitions/status"]
-    verbs: ["get", "list", "update", "patch", "watch"]
+    verbs: ["get", "update", "patch"]
+    resourceNames:
+      - pipelines.tekton.dev
+      - pipelineruns.tekton.dev
+      - runs.tekton.dev
+      - tasks.tekton.dev
+      - clustertasks.tekton.dev
+      - taskruns.tekton.dev
+      - pipelineresources.tekton.dev
+      - resolutionrequests.resolution.tekton.dev
+      - customruns.tekton.dev
+      - verificationpolicies.tekton.dev
+  # knative.dev/pkg needs list/watch permissions to set up informers for the webhook.
+  - apiGroups: ["apiextensions.k8s.io"]
+    resources: ["customresourcedefinitions"]
+    verbs: ["list", "watch"]
   - apiGroups: ["admissionregistration.k8s.io"]
     # The webhook performs a reconciliation on these two resources and continuously
     # updates configuration.
@@ -158,7 +134,7 @@ rules:
     resourceNames: ["webhook.pipeline.tekton.dev"]
     # When there are changes to the configs or secrets, knative updates the mutatingwebhook config
     # with the updated certificates or the refreshed set of rules.
-    verbs: ["get", "update"]
+    verbs: ["get", "update", "delete"]
   - apiGroups: ["admissionregistration.k8s.io"]
     resources: ["validatingwebhookconfigurations"]
     # validation.webhook.pipeline.tekton.dev performs schema validation when you, for example, create TaskRuns.
@@ -166,11 +142,19 @@ rules:
     resourceNames: ["validation.webhook.pipeline.tekton.dev", "config.webhook.pipeline.tekton.dev"]
     # When there are changes to the configs or secrets, knative updates the validatingwebhook config
     # with the updated certificates or the refreshed set of rules.
-    verbs: ["get", "update"]
-  - apiGroups: ["policy"]
-    resources: ["podsecuritypolicies"]
+    verbs: ["get", "update", "delete"]
+  - apiGroups: [""]
+    resources: ["namespaces"]
+    verbs: ["get"]
+    # The webhook configured the namespace as the OwnerRef on various cluster-scoped resources,
+    # which requires we can Get the system namespace.
     resourceNames: ["tekton-pipelines"]
-    verbs: ["use"]
+  - apiGroups: [""]
+    resources: ["namespaces/finalizers"]
+    verbs: ["update"]
+    # The webhook configured the namespace as the OwnerRef on various cluster-scoped resources,
+    # which requires we can update the system namespace finalizers.
+    resourceNames: ["tekton-pipelines"]
 
 ---
 # Copyright 2020 The Tekton Authors
@@ -205,10 +189,6 @@ rules:
     resources: ["configmaps"]
     verbs: ["get"]
     resourceNames: ["config-logging", "config-observability", "config-artifact-bucket", "config-artifact-pvc", "feature-flags", "config-leader-election", "config-registry-cert"]
-  - apiGroups: ["policy"]
-    resources: ["podsecuritypolicies"]
-    resourceNames: ["tekton-pipelines"]
-    verbs: ["use"]
 ---
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
@@ -238,10 +218,6 @@ rules:
     resources: ["secrets"]
     verbs: ["get", "update"]
     resourceNames: ["webhook-certs"]
-  - apiGroups: ["policy"]
-    resources: ["podsecuritypolicies"]
-    resourceNames: ["tekton-pipelines"]
-    verbs: ["use"]
 ---
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
@@ -507,54 +483,37 @@ metadata:
   labels:
     app.kubernetes.io/instance: default
     app.kubernetes.io/part-of: tekton-pipelines
-    pipeline.tekton.dev/release: "v0.26.0"
-    version: "v0.26.0"
+    pipeline.tekton.dev/release: "v0.43.0"
+    version: "v0.43.0"
 spec:
   group: tekton.dev
   preserveUnknownFields: false
   versions:
-    - name: v1alpha1
-      served: true
-      storage: false
-      schema:
-        openAPIV3Schema:
-          type: object
-          # One can use x-kubernetes-preserve-unknown-fields: true
-          # at the root of the schema (and inside any properties, additionalProperties)
-          # to get the traditional CRD behaviour that nothing is pruned, despite
-          # setting spec.preserveUnknownProperties: false.
-          #
-          # See https://kubernetes.io/blog/2019/06/20/crd-structural-schema/
-          # See issue: https://github.com/knative/serving/issues/912
-          x-kubernetes-preserve-unknown-fields: true
-      # Opt into the status subresource so metadata.generation
-      # starts to increment
-      subresources:
-        status: {}
-    - name: v1beta1
-      served: true
-      storage: true
-      schema:
-        openAPIV3Schema:
-          type: object
-          # One can use x-kubernetes-preserve-unknown-fields: true
-          # at the root of the schema (and inside any properties, additionalProperties)
-          # to get the traditional CRD behaviour that nothing is pruned, despite
-          # setting spec.preserveUnknownProperties: false.
-          #
-          # See https://kubernetes.io/blog/2019/06/20/crd-structural-schema/
-          # See issue: https://github.com/knative/serving/issues/912
-          x-kubernetes-preserve-unknown-fields: true
-      # Opt into the status subresource so metadata.generation
-      # starts to increment
-      subresources:
-        status: {}
+  - name: v1beta1
+    served: true
+    storage: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        # One can use x-kubernetes-preserve-unknown-fields: true
+        # at the root of the schema (and inside any properties, additionalProperties)
+        # to get the traditional CRD behaviour that nothing is pruned, despite
+        # setting spec.preserveUnknownProperties: false.
+        #
+        # See https://kubernetes.io/blog/2019/06/20/crd-structural-schema/
+        # See issue: https://github.com/knative/serving/issues/912
+        x-kubernetes-preserve-unknown-fields: true
+    # Opt into the status subresource so metadata.generation
+    # starts to increment
+    subresources:
+      status: {}
   names:
     kind: ClusterTask
     plural: clustertasks
+    singular: clustertask
     categories:
-      - tekton
-      - tekton-pipelines
+    - tekton
+    - tekton-pipelines
   scope: Cluster
   conversion:
     strategy: Webhook
@@ -566,7 +525,8 @@ spec:
           namespace: tekton-pipelines
 
 ---
-# Copyright 2019 The Tekton Authors
+
+# Copyright 2020 The Tekton Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -583,39 +543,54 @@ spec:
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  name: conditions.tekton.dev
+  name: customruns.tekton.dev
   labels:
     app.kubernetes.io/instance: default
     app.kubernetes.io/part-of: tekton-pipelines
-    pipeline.tekton.dev/release: "v0.26.0"
-    version: "v0.26.0"
+    pipeline.tekton.dev/release: "v0.43.0"
+    version: "v0.43.0"
 spec:
   group: tekton.dev
+  preserveUnknownFields: false
   versions:
-    - name: v1alpha1
-      served: true
-      storage: true
-      schema:
-        openAPIV3Schema:
-          type: object
-          # One can use x-kubernetes-preserve-unknown-fields: true
-          # at the root of the schema (and inside any properties, additionalProperties)
-          # to get the traditional CRD behaviour that nothing is pruned, despite
-          # setting spec.preserveUnknownProperties: false.
-          #
-          # See https://kubernetes.io/blog/2019/06/20/crd-structural-schema/
-          # See issue: https://github.com/knative/serving/issues/912
-          x-kubernetes-preserve-unknown-fields: true
-      # Opt into the status subresource so metadata.generation
-      # starts to increment
-      subresources:
-        status: {}
+  - name: v1beta1
+    served: true
+    storage: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        # One can use x-kubernetes-preserve-unknown-fields: true
+        # at the root of the schema (and inside any properties, additionalProperties)
+        # to get the traditional CRD behaviour that nothing is pruned, despite
+        # setting spec.preserveUnknownProperties: false.
+        #
+        # See https://kubernetes.io/blog/2019/06/20/crd-structural-schema/
+        # See issue: https://github.com/knative/serving/issues/912
+        x-kubernetes-preserve-unknown-fields: true
+    additionalPrinterColumns:
+    - name: Succeeded
+      type: string
+      jsonPath: ".status.conditions[?(@.type==\"Succeeded\")].status"
+    - name: Reason
+      type: string
+      jsonPath: ".status.conditions[?(@.type==\"Succeeded\")].reason"
+    - name: StartTime
+      type: date
+      jsonPath: .status.startTime
+    - name: CompletionTime
+      type: date
+      jsonPath: .status.completionTime
+    # Opt into the status subresource so metadata.generation
+    # starts to increment
+    subresources:
+      status: {}
   names:
-    kind: Condition
-    plural: conditions
+    kind: CustomRun
+    plural: customruns
+    singular: customrun
     categories:
-      - tekton
-      - tekton-pipelines
+    - tekton
+    - tekton-pipelines
   scope: Namespaced
 
 ---
@@ -640,59 +615,58 @@ metadata:
   labels:
     app.kubernetes.io/instance: default
     app.kubernetes.io/part-of: tekton-pipelines
-    pipeline.tekton.dev/release: "v0.26.0"
-    version: "v0.26.0"
+    pipeline.tekton.dev/release: "v0.43.0"
+    version: "v0.43.0"
 spec:
   group: tekton.dev
   preserveUnknownFields: false
   versions:
-    - name: v1alpha1
-      served: true
-      storage: false
-      # Opt into the status subresource so metadata.generation
-      # starts to increment
-      subresources:
-        status: {}
-      schema:
-        openAPIV3Schema:
-          type: object
-          # One can use x-kubernetes-preserve-unknown-fields: true
-          # at the root of the schema (and inside any properties, additionalProperties)
-          # to get the traditional CRD behaviour that nothing is pruned, despite
-          # setting spec.preserveUnknownProperties: false.
-          #
-          # See https://kubernetes.io/blog/2019/06/20/crd-structural-schema/
-          # See issue: https://github.com/knative/serving/issues/912
-          x-kubernetes-preserve-unknown-fields: true
-    - name: v1beta1
-      served: true
-      storage: true
-      # Opt into the status subresource so metadata.generation
-      # starts to increment
-      subresources:
-        status: {}
-      schema:
-        openAPIV3Schema:
-          type: object
-          # One can use x-kubernetes-preserve-unknown-fields: true
-          # at the root of the schema (and inside any properties, additionalProperties)
-          # to get the traditional CRD behaviour that nothing is pruned, despite
-          # setting spec.preserveUnknownProperties: false.
-          #
-          # See https://kubernetes.io/blog/2019/06/20/crd-structural-schema/
-          # See issue: https://github.com/knative/serving/issues/912
-          x-kubernetes-preserve-unknown-fields: true
+  - name: v1beta1
+    served: true
+    storage: true
+    subresources:
+      status: {}
+    schema:
+      openAPIV3Schema:
+        type: object
+        # One can use x-kubernetes-preserve-unknown-fields: true
+        # at the root of the schema (and inside any properties, additionalProperties)
+        # to get the traditional CRD behaviour that nothing is pruned, despite
+        # setting spec.preserveUnknownProperties: false.
+        #
+        # See https://kubernetes.io/blog/2019/06/20/crd-structural-schema/
+        # See issue: https://github.com/knative/serving/issues/912
+        x-kubernetes-preserve-unknown-fields: true
+  - name: v1
+    served: true
+    storage: false
+    schema:
+      openAPIV3Schema:
+        type: object
+        # OpenAPIV3 schema allows Kubernetes to perform validation on the schema fields
+        # and use the schema in tooling such as `kubectl explain`.
+        # Using "x-kubernetes-preserve-unknown-fields: true"
+        # at the root of the schema (or within it) allows arbitrary fields.
+        # We currently perform our own validation separately.
+        # See https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definitions/#specifying-a-structural-schema
+        # for more info.
+        x-kubernetes-preserve-unknown-fields: true
+    # Opt into the status subresource so metadata.generation
+    # starts to increment
+    subresources:
+      status: {}
   names:
     kind: Pipeline
     plural: pipelines
+    singular: pipeline
     categories:
-      - tekton
-      - tekton-pipelines
+    - tekton
+    - tekton-pipelines
   scope: Namespaced
   conversion:
     strategy: Webhook
     webhook:
-      conversionReviewVersions: ["v1beta1"]
+      conversionReviewVersions: ["v1beta1", "v1"]
       clientConfig:
         service:
           name: tekton-pipelines-webhook
@@ -720,88 +694,192 @@ metadata:
   labels:
     app.kubernetes.io/instance: default
     app.kubernetes.io/part-of: tekton-pipelines
-    pipeline.tekton.dev/release: "v0.26.0"
-    version: "v0.26.0"
+    pipeline.tekton.dev/release: "v0.43.0"
+    version: "v0.43.0"
 spec:
   group: tekton.dev
   preserveUnknownFields: false
   versions:
-    - name: v1alpha1
-      served: true
-      storage: false
-      schema:
-        openAPIV3Schema:
-          type: object
-          # One can use x-kubernetes-preserve-unknown-fields: true
-          # at the root of the schema (and inside any properties, additionalProperties)
-          # to get the traditional CRD behaviour that nothing is pruned, despite
-          # setting spec.preserveUnknownProperties: false.
-          #
-          # See https://kubernetes.io/blog/2019/06/20/crd-structural-schema/
-          # See issue: https://github.com/knative/serving/issues/912
-          x-kubernetes-preserve-unknown-fields: true
-      additionalPrinterColumns:
-        - name: Succeeded
-          type: string
-          jsonPath: ".status.conditions[?(@.type==\"Succeeded\")].status"
-        - name: Reason
-          type: string
-          jsonPath: ".status.conditions[?(@.type==\"Succeeded\")].reason"
-        - name: StartTime
-          type: date
-          jsonPath: .status.startTime
-        - name: CompletionTime
-          type: date
-          jsonPath: .status.completionTime
-      # Opt into the status subresource so metadata.generation
-      # starts to increment
-      subresources:
-        status: {}
-    - name: v1beta1
-      served: true
-      storage: true
-      schema:
-        openAPIV3Schema:
-          type: object
-          # One can use x-kubernetes-preserve-unknown-fields: true
-          # at the root of the schema (and inside any properties, additionalProperties)
-          # to get the traditional CRD behaviour that nothing is pruned, despite
-          # setting spec.preserveUnknownProperties: false.
-          #
-          # See https://kubernetes.io/blog/2019/06/20/crd-structural-schema/
-          # See issue: https://github.com/knative/serving/issues/912
-          x-kubernetes-preserve-unknown-fields: true
-      additionalPrinterColumns:
-        - name: Succeeded
-          type: string
-          jsonPath: ".status.conditions[?(@.type==\"Succeeded\")].status"
-        - name: Reason
-          type: string
-          jsonPath: ".status.conditions[?(@.type==\"Succeeded\")].reason"
-        - name: StartTime
-          type: date
-          jsonPath: .status.startTime
-        - name: CompletionTime
-          type: date
-          jsonPath: .status.completionTime
-      # Opt into the status subresource so metadata.generation
-      # starts to increment
-      subresources:
-        status: {}
+  - name: v1beta1
+    served: true
+    storage: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        # One can use x-kubernetes-preserve-unknown-fields: true
+        # at the root of the schema (and inside any properties, additionalProperties)
+        # to get the traditional CRD behaviour that nothing is pruned, despite
+        # setting spec.preserveUnknownProperties: false.
+        #
+        # See https://kubernetes.io/blog/2019/06/20/crd-structural-schema/
+        # See issue: https://github.com/knative/serving/issues/912
+        x-kubernetes-preserve-unknown-fields: true
+    additionalPrinterColumns:
+    - name: Succeeded
+      type: string
+      jsonPath: ".status.conditions[?(@.type==\"Succeeded\")].status"
+    - name: Reason
+      type: string
+      jsonPath: ".status.conditions[?(@.type==\"Succeeded\")].reason"
+    - name: StartTime
+      type: date
+      jsonPath: .status.startTime
+    - name: CompletionTime
+      type: date
+      jsonPath: .status.completionTime
+    # Opt into the status subresource so metadata.generation
+    # starts to increment
+    subresources:
+      status: {}
+  - name: v1
+    served: true
+    storage: false
+    schema:
+      openAPIV3Schema:
+        type: object
+        # One can use x-kubernetes-preserve-unknown-fields: true
+        # at the root of the schema (and inside any properties, additionalProperties)
+        # to get the traditional CRD behaviour that nothing is pruned, despite
+        # setting spec.preserveUnknownProperties: false.
+        #
+        # See https://kubernetes.io/blog/2019/06/20/crd-structural-schema/
+        # See issue: https://github.com/knative/serving/issues/912
+        x-kubernetes-preserve-unknown-fields: true
+    additionalPrinterColumns:
+    - name: Succeeded
+      type: string
+      jsonPath: ".status.conditions[?(@.type==\"Succeeded\")].status"
+    - name: Reason
+      type: string
+      jsonPath: ".status.conditions[?(@.type==\"Succeeded\")].reason"
+    - name: StartTime
+      type: date
+      jsonPath: .status.startTime
+    - name: CompletionTime
+      type: date
+      jsonPath: .status.completionTime
+    # Opt into the status subresource so metadata.generation
+    # starts to increment
+    subresources:
+      status: {}
   names:
     kind: PipelineRun
     plural: pipelineruns
+    singular: pipelinerun
     categories:
-      - tekton
-      - tekton-pipelines
+    - tekton
+    - tekton-pipelines
     shortNames:
-      - pr
-      - prs
+    - pr
+    - prs
   scope: Namespaced
   conversion:
     strategy: Webhook
     webhook:
-      conversionReviewVersions: ["v1beta1"]
+      conversionReviewVersions: ["v1beta1", "v1"]
+      clientConfig:
+        service:
+          name: tekton-pipelines-webhook
+          namespace: tekton-pipelines
+
+---
+# Copyright 2022 The Tekton Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: resolutionrequests.resolution.tekton.dev
+  labels:
+    resolution.tekton.dev/release: v0.43.0
+spec:
+  group: resolution.tekton.dev
+  scope: Namespaced
+  names:
+    kind: ResolutionRequest
+    plural: resolutionrequests
+    singular: resolutionrequest
+    categories:
+      - tekton
+      - tekton-pipelines
+    shortNames:
+      - resolutionrequest
+      - resolutionrequests
+  versions:
+    - name: v1alpha1
+      served: true
+      deprecated: true
+      storage: false
+      subresources:
+        status: {}
+      schema:
+        openAPIV3Schema:
+          type: object
+          # One can use x-kubernetes-preserve-unknown-fields: true
+          # at the root of the schema (and inside any properties, additionalProperties)
+          # to get the traditional CRD behaviour that nothing is pruned, despite
+          # setting spec.preserveUnknownProperties: false.
+          #
+          # See https://kubernetes.io/blog/2019/06/20/crd-structural-schema/
+          # See issue: https://github.com/knative/serving/issues/912
+          x-kubernetes-preserve-unknown-fields: true
+      additionalPrinterColumns:
+        - name: Succeeded
+          type: string
+          jsonPath: ".status.conditions[?(@.type=='Succeeded')].status"
+        - name: Reason
+          type: string
+          jsonPath: ".status.conditions[?(@.type=='Succeeded')].reason"
+    - name: v1beta1
+      served: true
+      storage: true
+      subresources:
+        status: {}
+      schema:
+        openAPIV3Schema:
+          type: object
+          # One can use x-kubernetes-preserve-unknown-fields: true
+          # at the root of the schema (and inside any properties, additionalProperties)
+          # to get the traditional CRD behaviour that nothing is pruned, despite
+          # setting spec.preserveUnknownProperties: false.
+          #
+          # See https://kubernetes.io/blog/2019/06/20/crd-structural-schema/
+          # See issue: https://github.com/knative/serving/issues/912
+          x-kubernetes-preserve-unknown-fields: true
+      additionalPrinterColumns:
+        - name: OwnerKind
+          type: string
+          jsonPath: ".metadata.ownerReferences[0].kind"
+        - name: Owner
+          type: string
+          jsonPath: ".metadata.ownerReferences[0].name"
+        - name: Succeeded
+          type: string
+          jsonPath: ".status.conditions[?(@.type=='Succeeded')].status"
+        - name: Reason
+          type: string
+          jsonPath: ".status.conditions[?(@.type=='Succeeded')].reason"
+        - name: StartTime
+          type: string
+          jsonPath: .metadata.creationTimestamp
+        - name: EndTime
+          type: string
+          jsonPath: .status.conditions[?(@.type=='Succeeded')].lastTransitionTime
+  conversion:
+    strategy: Webhook
+    webhook:
+      conversionReviewVersions: ["v1alpha1", "v1beta1"]
       clientConfig:
         service:
           name: tekton-pipelines-webhook
@@ -829,8 +907,8 @@ metadata:
   labels:
     app.kubernetes.io/instance: default
     app.kubernetes.io/part-of: tekton-pipelines
-    pipeline.tekton.dev/release: "v0.26.0"
-    version: "v0.26.0"
+    pipeline.tekton.dev/release: "v0.43.0"
+    version: "v0.43.0"
 spec:
   group: tekton.dev
   versions:
@@ -882,8 +960,8 @@ metadata:
   labels:
     app.kubernetes.io/instance: default
     app.kubernetes.io/part-of: tekton-pipelines
-    pipeline.tekton.dev/release: "v0.26.0"
-    version: "v0.26.0"
+    pipeline.tekton.dev/release: "v0.43.0"
+    version: "v0.43.0"
 spec:
   group: tekton.dev
   preserveUnknownFields: false
@@ -949,15 +1027,15 @@ metadata:
   labels:
     app.kubernetes.io/instance: default
     app.kubernetes.io/part-of: tekton-pipelines
-    pipeline.tekton.dev/release: "v0.26.0"
-    version: "v0.26.0"
+    pipeline.tekton.dev/release: "v0.43.0"
+    version: "v0.43.0"
 spec:
   group: tekton.dev
   preserveUnknownFields: false
   versions:
-    - name: v1alpha1
+    - name: v1beta1
       served: true
-      storage: false
+      storage: true
       schema:
         openAPIV3Schema:
           type: object
@@ -973,9 +1051,9 @@ spec:
       # starts to increment
       subresources:
         status: {}
-    - name: v1beta1
+    - name: v1
       served: true
-      storage: true
+      storage: false
       schema:
         openAPIV3Schema:
           type: object
@@ -1001,7 +1079,7 @@ spec:
   conversion:
     strategy: Webhook
     webhook:
-      conversionReviewVersions: ["v1beta1"]
+      conversionReviewVersions: ["v1beta1", "v1"]
       clientConfig:
         service:
           name: tekton-pipelines-webhook
@@ -1029,15 +1107,15 @@ metadata:
   labels:
     app.kubernetes.io/instance: default
     app.kubernetes.io/part-of: tekton-pipelines
-    pipeline.tekton.dev/release: "v0.26.0"
-    version: "v0.26.0"
+    pipeline.tekton.dev/release: "v0.43.0"
+    version: "v0.43.0"
 spec:
   group: tekton.dev
   preserveUnknownFields: false
   versions:
-    - name: v1alpha1
+    - name: v1beta1
       served: true
-      storage: false
+      storage: true
       schema:
         openAPIV3Schema:
           type: object
@@ -1066,9 +1144,9 @@ spec:
       # starts to increment
       subresources:
         status: {}
-    - name: v1beta1
+    - name: v1
       served: true
-      storage: true
+      storage: false
       schema:
         openAPIV3Schema:
           type: object
@@ -1110,11 +1188,61 @@ spec:
   conversion:
     strategy: Webhook
     webhook:
-      conversionReviewVersions: ["v1beta1"]
+      conversionReviewVersions: ["v1beta1", "v1"]
       clientConfig:
         service:
           name: tekton-pipelines-webhook
           namespace: tekton-pipelines
+
+---
+# Copyright 2022 The Tekton Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: verificationpolicies.tekton.dev
+  labels:
+    app.kubernetes.io/instance: default
+    app.kubernetes.io/part-of: tekton-pipelines
+    pipeline.tekton.dev/release: "v0.43.0"
+    version: "v0.43.0"
+spec:
+  group: tekton.dev
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        # One can use x-kubernetes-preserve-unknown-fields: true
+        # at the root of the schema (and inside any properties, additionalProperties)
+        # to get the traditional CRD behaviour that nothing is pruned, despite
+        # setting spec.preserveUnknownProperties: false.
+        #
+        # See https://kubernetes.io/blog/2019/06/20/crd-structural-schema/
+        # See issue: https://github.com/knative/serving/issues/912
+        x-kubernetes-preserve-unknown-fields: true
+  names:
+    kind: VerificationPolicy
+    plural: verificationpolicies
+    singular: verificationpolicy
+    categories:
+    - tekton
+    - tekton-pipelines
+  scope: Namespaced
 
 ---
 # Copyright 2020 The Tekton Authors
@@ -1140,7 +1268,7 @@ metadata:
     app.kubernetes.io/component: webhook
     app.kubernetes.io/instance: default
     app.kubernetes.io/part-of: tekton-pipelines
-    pipeline.tekton.dev/release: "v0.26.0"
+    pipeline.tekton.dev/release: "v0.43.0"
 # The data is populated at install time.
 ---
 apiVersion: admissionregistration.k8s.io/v1
@@ -1151,7 +1279,7 @@ metadata:
     app.kubernetes.io/component: webhook
     app.kubernetes.io/instance: default
     app.kubernetes.io/part-of: tekton-pipelines
-    pipeline.tekton.dev/release: "v0.26.0"
+    pipeline.tekton.dev/release: "v0.43.0"
 webhooks:
   - admissionReviewVersions: ["v1"]
     clientConfig:
@@ -1170,7 +1298,7 @@ metadata:
     app.kubernetes.io/component: webhook
     app.kubernetes.io/instance: default
     app.kubernetes.io/part-of: tekton-pipelines
-    pipeline.tekton.dev/release: "v0.26.0"
+    pipeline.tekton.dev/release: "v0.43.0"
 webhooks:
   - admissionReviewVersions: ["v1"]
     clientConfig:
@@ -1189,7 +1317,7 @@ metadata:
     app.kubernetes.io/component: webhook
     app.kubernetes.io/instance: default
     app.kubernetes.io/part-of: tekton-pipelines
-    pipeline.tekton.dev/release: "v0.26.0"
+    pipeline.tekton.dev/release: "v0.43.0"
 webhooks:
   - admissionReviewVersions: ["v1"]
     clientConfig:
@@ -1404,10 +1532,16 @@ data:
     # label, the user's request supercedes.
     default-managed-by-label-value: "tekton-pipelines"
 
-    # default-pod-template contains the default pod template to use
-    # TaskRun and PipelineRun, if none is specified. If a pod template
-    # is specified, the default pod template is ignored.
+    # default-pod-template contains the default pod template to use for
+    # TaskRun and PipelineRun. If a pod template is specified on the
+    # PipelineRun, the default-pod-template is merged with that one.
     # default-pod-template:
+
+    # default-affinity-assistant-pod-template contains the default pod template
+    # to use for affinity assistant pods. If a pod template is specified on the
+    # PipelineRun, the default-affinity-assistant-pod-template is merged with
+    # that one.
+    # default-affinity-assistant-pod-template:
 
     # default-cloud-events-sink contains the default CloudEvents sink to be
     # used for TaskRun and PipelineRun, when no sink is specified.
@@ -1421,6 +1555,14 @@ data:
     # but that a TaskRun does not explicitly provide.
     # default-task-run-workspace-binding: |
     #   emptyDir: {}
+
+    # default-max-matrix-combinations-count contains the default maximum number
+    # of combinations from a Matrix, if none is specified.
+    default-max-matrix-combinations-count: "256"
+
+    # default-forbidden-env contains comma seperated environment variables that cannot be
+    # overridden by podTemplate.
+    default-forbidden-env:
 
 ---
 # Copyright 2019 The Tekton Authors
@@ -1537,7 +1679,7 @@ data:
   # this ConfigMap such that even if we don't have access to
   # other resources in the namespace we still can have access to
   # this ConfigMap.
-  version: "v0.26.0"
+  version: "v0.43.0"
 
 ---
 # Copyright 2020 Tekton Authors LLC
@@ -1679,6 +1821,10 @@ data:
     # charge.  If metrics.backend-destination is not Stackdriver, this is
     # ignored.
     metrics.allow-stackdriver-custom-metrics: "false"
+    metrics.taskrun.level: "task"
+    metrics.taskrun.duration-type: "histogram"
+    metrics.pipelinerun.level: "pipeline"
+    metrics.pipelinerun.duration-type: "histogram"
 
 ---
 # Copyright 2020 Tekton Authors LLC
@@ -1708,6 +1854,49 @@ metadata:
 #  cert: |
 
 ---
+# Copyright 2022 The Tekton Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-trusted-resources
+  namespace: tekton-pipelines
+  labels:
+    app.kubernetes.io/instance: default
+    app.kubernetes.io/part-of: tekton-pipelines
+data:
+  _example: |
+    ################################
+    #                              #
+    #    EXAMPLE CONFIGURATION     #
+    #                              #
+    ################################
+    # This block is not actually functional configuration,
+    # but serves to illustrate the available configuration
+    # options and document them in a way that is accessible
+    # to users that `kubectl edit` this config map.
+    #
+    # These sample configuration options may be copied out of
+    # this example block and unindented to be in the data block
+    # to actually change the configuration.
+
+    # publickeys specifies the list of public keys, the paths are separated by comma
+    # publickeys: "/etc/verification-secrets/cosign.pub,
+    # gcpkms://projects/tekton/locations/us/keyRings/trusted-resources/cryptoKeys/trusted-resources"
+
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -1715,13 +1904,13 @@ metadata:
     app.kubernetes.io/name: controller
     app.kubernetes.io/component: controller
     app.kubernetes.io/instance: default
-    app.kubernetes.io/version: "v0.26.0"
+    app.kubernetes.io/version: "v0.43.0"
     app.kubernetes.io/part-of: tekton-pipelines
     # tekton.dev/release value replaced with inputs.params.versionTag in pipeline/tekton/publish.yaml
-    pipeline.tekton.dev/release: "v0.26.0"
+    pipeline.tekton.dev/release: "v0.43.0"
     # labels below are related to istio and should not be used for resource lookup
     app: tekton-pipelines-controller
-    version: "v0.26.0"
+    version: "v0.43.0"
   name: tekton-pipelines-controller
   namespace: tekton-pipelines
 spec:
@@ -1730,6 +1919,9 @@ spec:
       port: 9090
       protocol: TCP
       targetPort: 9090
+    - name: http-profiling
+      port: 8008
+      targetPort: 8008
     - name: probes
       port: 8080
   selector:
@@ -1753,7 +1945,7 @@ spec:
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: autoscaling/v2beta1
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: tekton-pipelines-webhook
@@ -1762,12 +1954,12 @@ metadata:
     app.kubernetes.io/name: webhook
     app.kubernetes.io/component: webhook
     app.kubernetes.io/instance: default
-    app.kubernetes.io/version: "v0.26.0"
+    app.kubernetes.io/version: "v0.43.0"
     app.kubernetes.io/part-of: tekton-pipelines
     # tekton.dev/release value replaced with inputs.params.versionTag in pipeline/tekton/publish.yaml
-    pipeline.tekton.dev/release: "v0.26.0"
+    pipeline.tekton.dev/release: "v0.43.0"
     # labels below are related to istio and should not be used for resource lookup
-    version: "v0.26.0"
+    version: "v0.43.0"
 spec:
   minReplicas: 1
   maxReplicas: 5
@@ -1779,7 +1971,9 @@ spec:
     - type: Resource
       resource:
         name: cpu
-        targetAverageUtilization: 100
+        target:
+          type: Utilization
+          averageUtilization: 100
 
 ---
 apiVersion: v1
@@ -1789,13 +1983,13 @@ metadata:
     app.kubernetes.io/name: webhook
     app.kubernetes.io/component: webhook
     app.kubernetes.io/instance: default
-    app.kubernetes.io/version: "v0.26.0"
+    app.kubernetes.io/version: "v0.43.0"
     app.kubernetes.io/part-of: tekton-pipelines
     # tekton.dev/release value replaced with inputs.params.versionTag in pipeline/tekton/publish.yaml
-    pipeline.tekton.dev/release: "v0.26.0"
+    pipeline.tekton.dev/release: "v0.43.0"
     # labels below are related to istio and should not be used for resource lookup
     app: tekton-pipelines-webhook
-    version: "v0.26.0"
+    version: "v0.43.0"
   name: tekton-pipelines-webhook
   namespace: tekton-pipelines
 spec:
@@ -1809,7 +2003,7 @@ spec:
       targetPort: 8008
     - name: https-webhook
       port: 443
-      targetPort: 8443
+      targetPort: https-webhook
     - name: probes
       port: 8080
   selector:
