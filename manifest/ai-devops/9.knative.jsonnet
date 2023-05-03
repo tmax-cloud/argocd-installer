@@ -177,10 +177,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         ]
                     },
                     "readOnlyRootFilesystem": true,
-                    "runAsNonRoot": true,
-                    "seccompProfile": {
-                        "type": "RuntimeDefault"
-                    }
+                    "runAsNonRoot": true                    
                     },
                     "volumeMounts": [
                     {
@@ -374,10 +371,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         ]
                     },
                     "readOnlyRootFilesystem": true,
-                    "runAsNonRoot": true,
-                    "seccompProfile": {
-                        "type": "RuntimeDefault"
-                    }
+                    "runAsNonRoot": true                    
                     },
                     "volumeMounts": [
                     {
@@ -528,10 +522,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         ]
                     },
                     "readOnlyRootFilesystem": true,
-                    "runAsNonRoot": true,
-                    "seccompProfile": {
-                        "type": "RuntimeDefault"
-                    }
+                    "runAsNonRoot": true                    
                     },
                     "volumeMounts": [
                     {
@@ -674,10 +665,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         ]
                     },
                     "readOnlyRootFilesystem": true,
-                    "runAsNonRoot": true,
-                    "seccompProfile": {
-                        "type": "RuntimeDefault"
-                    }
+                    "runAsNonRoot": true                    
                     },
                     "volumeMounts": [
                     {
@@ -866,10 +854,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         ]
                     },
                     "readOnlyRootFilesystem": true,
-                    "runAsNonRoot": true,
-                    "seccompProfile": {
-                        "type": "RuntimeDefault"
-                    }
+                    "runAsNonRoot": true                    
                     },
                     "volumeMounts": [
                     {
@@ -1001,10 +986,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         ]
                     },
                     "readOnlyRootFilesystem": true,
-                    "runAsNonRoot": true,
-                    "seccompProfile": {
-                        "type": "RuntimeDefault"
-                    }
+                    "runAsNonRoot": true                    
                     },
                     "volumeMounts": [
                     {
@@ -1141,10 +1123,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         ]
                     },
                     "readOnlyRootFilesystem": true,
-                    "runAsNonRoot": true,
-                    "seccompProfile": {
-                        "type": "RuntimeDefault"
-                    }
+                    "runAsNonRoot": true                    
                     },
                     "volumeMounts": [
                     {
@@ -1337,10 +1316,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         ]
                     },
                     "readOnlyRootFilesystem": true,
-                    "runAsNonRoot": true,
-                    "seccompProfile": {
-                        "type": "RuntimeDefault"
-                    }
+                    "runAsNonRoot": true                    
                     },
                     "volumeMounts": [
                     {
