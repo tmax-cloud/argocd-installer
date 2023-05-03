@@ -7,7 +7,7 @@ metadata:
     istio-injection: enabled
     katib-metricscollector-injection: enabled
   name: kubeflow
----  
+---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -86,25 +86,6 @@ spec:
     app: cluster-local-gateway
     istio: cluster-local-gateway
   type: ClusterIP
----
-apiVersion: policy/v1
-kind: PodDisruptionBudget
-metadata:
-  labels:
-    app: cluster-local-gateway
-    install.operator.istio.io/owning-resource: unknown
-    istio: cluster-local-gateway
-    istio.io/rev: default
-    operator.istio.io/component: IngressGateways
-    release: istio
-  name: cluster-local-gateway
-  namespace: istio-system
-spec:
-  minAvailable: 1
-  selector:
-    matchLabels:
-      app: cluster-local-gateway
-      istio: cluster-local-gateway
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway

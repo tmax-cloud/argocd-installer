@@ -18,7 +18,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "apiVersion": "v1",
         "data": {
             "progressDeadline": "600s",
-            "queueSidecarImage": std.join("", [target_registry,"gcr.io/knative-releases/knative.dev/serving/cmd/queue:v1.8.0"])
+            "queueSidecarImage": std.join("", [target_registry,"gcr.io/knative-releases/knative.dev/serving/cmd/queue:v1.2.5"])
         },
         "kind": "ConfigMap",
         "metadata": {
@@ -28,7 +28,8 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "labels": {
             "app.kubernetes.io/component": "controller",
             "app.kubernetes.io/name": "knative-serving",
-            "app.kubernetes.io/version": "1.8.0"            
+            "app.kubernetes.io/version": "1.2.5",
+            "serving.knative.dev/release": "v1.2.5"
             },
             "name": "config-deployment",
             "namespace": "knative-serving"
@@ -41,7 +42,8 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "labels": {
             "app.kubernetes.io/component": "activator",
             "app.kubernetes.io/name": "knative-serving",
-            "app.kubernetes.io/version": "1.8.0"            
+            "app.kubernetes.io/version": "1.2.5",
+            "serving.knative.dev/release": "v1.2.5"
             },
             "name": "activator",
             "namespace": "knative-serving"
@@ -63,8 +65,9 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "app": "activator",
                 "app.kubernetes.io/component": "activator",
                 "app.kubernetes.io/name": "knative-serving",
-                "app.kubernetes.io/version": "1.8.0",
-                "role": "activator"                
+                "app.kubernetes.io/version": "1.2.5",
+                "role": "activator",
+                "serving.knative.dev/release": "v1.2.5"
                 }
             },
             "spec": {
@@ -112,7 +115,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "value": "knative.dev/internal/serving"
                     }
                     ],
-                    "image": std.join("", [target_registry, "gcr.io/knative-releases/knative.dev/serving/cmd/activator:v1.8.0"]),
+                    "image": std.join("", [target_registry, "gcr.io/knative-releases/knative.dev/serving/cmd/activator:v1.2.5"]),
                     "livenessProbe": {
                     "failureThreshold": 12,
                     "httpGet": {
@@ -177,7 +180,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         ]
                     },
                     "readOnlyRootFilesystem": true,
-                    "runAsNonRoot": true                    
+                    "runAsNonRoot": true
                     },
                     "volumeMounts": [
                     {
@@ -225,7 +228,8 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "labels": {
             "app.kubernetes.io/component": "autoscaler",
             "app.kubernetes.io/name": "knative-serving",
-            "app.kubernetes.io/version": "1.8.0"            
+            "app.kubernetes.io/version": "1.2.5",
+            "serving.knative.dev/release": "v1.2.5"
             },
             "name": "autoscaler",
             "namespace": "knative-serving"
@@ -253,7 +257,8 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "app": "autoscaler",
                 "app.kubernetes.io/component": "autoscaler",
                 "app.kubernetes.io/name": "knative-serving",
-                "app.kubernetes.io/version": "1.8.0"               
+                "app.kubernetes.io/version": "1.2.5",
+                "serving.knative.dev/release": "v1.2.5"
                 }
             },
             "spec": {
@@ -314,7 +319,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "value": "knative.dev/serving"
                     }
                     ],
-                    "image": std.join("", [target_registry, "gcr.io/knative-releases/knative.dev/serving/cmd/autoscaler:v1.8.0"]),
+                    "image": std.join("", [target_registry, "gcr.io/knative-releases/knative.dev/serving/cmd/autoscaler:v1.2.5"]),
                     "livenessProbe": {
                     "failureThreshold": 6,
                     "httpGet": {
@@ -371,7 +376,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         ]
                     },
                     "readOnlyRootFilesystem": true,
-                    "runAsNonRoot": true                    
+                    "runAsNonRoot": true
                     },
                     "volumeMounts": [
                     {
@@ -418,7 +423,8 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "labels": {
             "app.kubernetes.io/component": "controller",
             "app.kubernetes.io/name": "knative-serving",
-            "app.kubernetes.io/version": "1.8.0"            
+            "app.kubernetes.io/version": "1.2.5",
+            "serving.knative.dev/release": "v1.2.5"
             },
             "name": "controller",
             "namespace": "knative-serving"
@@ -439,7 +445,8 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "app": "controller",
                 "app.kubernetes.io/component": "controller",
                 "app.kubernetes.io/name": "knative-serving",
-                "app.kubernetes.io/version": "1.8.0"                
+                "app.kubernetes.io/version": "1.2.5",
+                "serving.knative.dev/release": "v1.2.5"
                 }
             },
             "spec": {
@@ -492,7 +499,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "value": "knative.dev/internal/serving"
                     }
                     ],
-                    "image": std.join("", [target_registry, "gcr.io/knative-releases/knative.dev/serving/cmd/controller:v1.8.0"]),
+                    "image": std.join("", [target_registry, "gcr.io/knative-releases/knative.dev/serving/cmd/controller:v1.2.5"]),
                     "name": "controller",
                     "ports": [
                     {
@@ -522,7 +529,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         ]
                     },
                     "readOnlyRootFilesystem": true,
-                    "runAsNonRoot": true                    
+                    "runAsNonRoot": true
                     },
                     "volumeMounts": [
                     {
@@ -569,7 +576,8 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "labels": {
             "app.kubernetes.io/component": "domain-mapping",
             "app.kubernetes.io/name": "knative-serving",
-            "app.kubernetes.io/version": "1.8.0"            
+            "app.kubernetes.io/version": "1.2.5",
+            "serving.knative.dev/release": "v1.2.5"
             },
             "name": "domain-mapping",
             "namespace": "knative-serving"
@@ -590,7 +598,8 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "app": "domain-mapping",
                 "app.kubernetes.io/component": "domain-mapping",
                 "app.kubernetes.io/name": "knative-serving",
-                "app.kubernetes.io/version": "1.8.0"                
+                "app.kubernetes.io/version": "1.2.5",
+                "serving.knative.dev/release": "v1.2.5"
                 }
             },
             "spec": {
@@ -635,7 +644,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "value": "knative.dev/serving"
                     }
                     ],
-                    "image": std.join("", [target_registry, "gcr.io/knative-releases/knative.dev/serving/cmd/domain-mapping:v1.8.0"]),
+                    "image": std.join("", [target_registry, "gcr.io/knative-releases/knative.dev/serving/cmd/domain-mapping:v1.2.5"]),
                     "name": "domain-mapping",
                     "ports": [
                     {
@@ -665,7 +674,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         ]
                     },
                     "readOnlyRootFilesystem": true,
-                    "runAsNonRoot": true                    
+                    "runAsNonRoot": true
                     },
                     "volumeMounts": [
                     {
@@ -712,7 +721,8 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "labels": {
             "app.kubernetes.io/component": "domain-mapping",
             "app.kubernetes.io/name": "knative-serving",
-            "app.kubernetes.io/version": "1.8.0"            
+            "app.kubernetes.io/version": "1.2.5",
+            "serving.knative.dev/release": "v1.2.5"
             },
             "name": "domainmapping-webhook",
             "namespace": "knative-serving"
@@ -734,8 +744,9 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "app": "domainmapping-webhook",
                 "app.kubernetes.io/component": "domain-mapping",
                 "app.kubernetes.io/name": "knative-serving",
-                "app.kubernetes.io/version": "1.8.0",
-                "role": "domainmapping-webhook"                
+                "app.kubernetes.io/version": "1.2.5",
+                "role": "domainmapping-webhook",
+                "serving.knative.dev/release": "v1.2.5"
                 }
             },
             "spec": {
@@ -792,7 +803,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "value": "knative.dev/serving"
                     }
                     ],
-                    "image": std.join("", [target_registry, "gcr.io/knative-releases/knative.dev/serving/cmd/domain-mapping-webhook:v1.8.0"]),
+                    "image": std.join("", [target_registry, "gcr.io/knative-releases/knative.dev/serving/cmd/domain-mapping-webhook:v1.2.5"]),
                     "livenessProbe": {
                     "failureThreshold": 6,
                     "httpGet": {
@@ -854,7 +865,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         ]
                     },
                     "readOnlyRootFilesystem": true,
-                    "runAsNonRoot": true                    
+                    "runAsNonRoot": true
                     },
                     "volumeMounts": [
                     {
@@ -902,8 +913,9 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "labels": {
             "app.kubernetes.io/component": "net-istio",
             "app.kubernetes.io/name": "knative-serving",
-            "app.kubernetes.io/version": "1.8.0",
-            "networking.knative.dev/ingress-provider": "istio"            
+            "app.kubernetes.io/version": "1.2.0",
+            "networking.knative.dev/ingress-provider": "istio",
+            "serving.knative.dev/release": "v1.2.0"
             },
             "name": "net-istio-controller",
             "namespace": "knative-serving"
@@ -924,7 +936,8 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "app": "net-istio-controller",
                 "app.kubernetes.io/component": "net-istio",
                 "app.kubernetes.io/name": "knative-serving",
-                "app.kubernetes.io/version": "1.8.0"                
+                "app.kubernetes.io/version": "1.2.0",
+                "serving.knative.dev/release": "v1.2.0"
                 }
             },
             "spec": {
@@ -948,15 +961,11 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "value": "config-observability"
                     },
                     {
-                        "name": "ENABLE_SECRET_INFORMER_FILTERING_BY_CERT_UID",
-                        "value": "false"
-                    },
-                    {
                         "name": "METRICS_DOMAIN",
                         "value": "knative.dev/net-istio"
                     }
                     ],
-                    "image": std.join("", [target_registry, "gcr.io/knative-releases/knative.dev/net-istio/cmd/controller:v1.8.0"]),
+                    "image": std.join("", [target_registry, "gcr.io/knative-releases/knative.dev/net-istio/cmd/controller:v1.2.0"]),
                     "name": "controller",
                     "ports": [
                     {
@@ -986,7 +995,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         ]
                     },
                     "readOnlyRootFilesystem": true,
-                    "runAsNonRoot": true                    
+                    "runAsNonRoot": true
                     },
                     "volumeMounts": [
                     {
@@ -1033,8 +1042,9 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "labels": {
             "app.kubernetes.io/component": "net-istio",
             "app.kubernetes.io/name": "knative-serving",
-            "app.kubernetes.io/version": "1.8.0",
-            "networking.knative.dev/ingress-provider": "istio"            
+            "app.kubernetes.io/version": "1.2.0",
+            "networking.knative.dev/ingress-provider": "istio",
+            "serving.knative.dev/release": "v1.2.0"
             },
             "name": "net-istio-webhook",
             "namespace": "knative-serving"
@@ -1056,8 +1066,9 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "app": "net-istio-webhook",
                 "app.kubernetes.io/component": "net-istio",
                 "app.kubernetes.io/name": "knative-serving",
-                "app.kubernetes.io/version": "1.8.0",
-                "role": "net-istio-webhook"                
+                "app.kubernetes.io/version": "1.2.0",
+                "role": "net-istio-webhook",
+                "serving.knative.dev/release": "v1.2.0"
                 }
             },
             "spec": {
@@ -1089,7 +1100,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "value": "net-istio-webhook"
                     }
                     ],
-                    "image": std.join("", [target_registry, "gcr.io/knative-releases/knative.dev/net-istio/cmd/webhook:v1.8.0"]),
+                    "image": std.join("", [target_registry, "gcr.io/knative-releases/knative.dev/net-istio/cmd/webhook:v1.2.0"]),
                     "name": "webhook",
                     "ports": [
                     {
@@ -1116,14 +1127,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                     }
                     },
                     "securityContext": {
-                    "allowPrivilegeEscalation": false,
-                    "capabilities": {
-                        "drop": [
-                        "all"
-                        ]
-                    },
-                    "readOnlyRootFilesystem": true,
-                    "runAsNonRoot": true                    
+                    "allowPrivilegeEscalation": false
                     },
                     "volumeMounts": [
                     {
@@ -1170,7 +1174,8 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "labels": {
             "app.kubernetes.io/component": "webhook",
             "app.kubernetes.io/name": "knative-serving",
-            "app.kubernetes.io/version": "1.8.0"            
+            "app.kubernetes.io/version": "1.2.5",
+            "serving.knative.dev/release": "v1.2.5"
             },
             "name": "webhook",
             "namespace": "knative-serving"
@@ -1192,8 +1197,9 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 "app": "webhook",
                 "app.kubernetes.io/component": "webhook",
                 "app.kubernetes.io/name": "knative-serving",
-                "app.kubernetes.io/version": "1.8.0",
-                "role": "webhook"                
+                "app.kubernetes.io/version": "1.2.5",
+                "role": "webhook",
+                "serving.knative.dev/release": "v1.2.5"
                 }
             },
             "spec": {
@@ -1254,7 +1260,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         "value": "knative.dev/internal/serving"
                     }
                     ],
-                    "image": std.join("", [target_registry, "gcr.io/knative-releases/knative.dev/serving/cmd/webhook:v1.8.0"]),
+                    "image": std.join("", [target_registry, "gcr.io/knative-releases/knative.dev/serving/cmd/webhook:v1.2.5"]),
                     "livenessProbe": {
                     "failureThreshold": 6,
                     "httpGet": {
@@ -1316,7 +1322,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                         ]
                     },
                     "readOnlyRootFilesystem": true,
-                    "runAsNonRoot": true                    
+                    "runAsNonRoot": true
                     },
                     "volumeMounts": [
                     {
@@ -1368,18 +1374,17 @@ local target_registry = if is_offline == "false" then "" else private_registry +
     "loglevel.activator": log_level,
     "loglevel.hpaautoscaler": log_level,
     "loglevel.net-certmanager-controller": log_level,
-    "loglevel.net-istio-controller": log_level,
-    "loglevel.net-contour-controller": log_level
+    "loglevel.net-istio-controller": log_level
   },
   "kind": "ConfigMap",
   "metadata": {
     "annotations": {
-      "knative.dev/example-checksum": "b0f3c6f2"
+      "knative.dev/example-checksum": "be93ff10"
     },
     "labels": {
-      "app.kubernetes.io/component": "logging",  
       "app.kubernetes.io/name": "knative-serving",
-      "app.kubernetes.io/version": "1.8.0"      
+      "app.kubernetes.io/version": "1.2.5",
+      "serving.knative.dev/release": "v1.2.5"
     },
     "name": "config-logging",
     "namespace": "knative-serving"
