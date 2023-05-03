@@ -61,7 +61,7 @@ local kfam_log_level = if log_level == "error" then "ERROR" else if log_level ==
                         }
                     }
                     ],
-                    "image": std.join("", [target_registry, "docker.io/tmaxcloudck/kfam:v1.6.1-lls"]),
+                    "image": std.join("", [target_registry, "docker.io/tmaxcloudck/kfam:v1.7.0-lls"]),
                     "imagePullPolicy": "Always",
                     "livenessProbe": {
                     "httpGet": {
@@ -110,7 +110,7 @@ local kfam_log_level = if log_level == "error" then "ERROR" else if log_level ==
                         }
                     }
                     ],
-                    "image": std.join("", [target_registry, "docker.io/tmaxcloudck/profiles-controller:v1.6.1-lls"]),
+                    "image": std.join("", [target_registry, "docker.io/tmaxcloudck/profiles-controller:v1.7.0-lls"]),
                     "imagePullPolicy": "Always",
                     "livenessProbe": {
                     "httpGet": {
