@@ -117,7 +117,7 @@ modules:
 
     jwtDecodeAuth:
       enabled: true
-      version: 5.0.0.4
+      version: 5.0.0.5
       logInfo:
         # trace | debug | info | warn | crit // 주로 "debug"를 사용
         logLevel: "info"
