@@ -257,7 +257,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "resources": {
               "limits": {
                 "cpu": "1000m",
-                "memory": "384Mi"
+                "memory": "800Mi"
               },
               "requests": {
                 "cpu": "200m",
