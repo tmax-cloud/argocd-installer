@@ -27,7 +27,7 @@ modules:
 
   ### gitlab
   gitlab:
-    enabled: true
+    enabled: false
     subdomain: gitlab
     pvc:
       storage: 30Gi
@@ -40,7 +40,7 @@ modules:
 
   ### gitea
   gitea:
-    enabled: false
+    enabled: true
     subdomain: gitea
     logLevel: Info
 
@@ -188,7 +188,7 @@ modules:
 
   ### opensearch
   opensearch:
-    enabled: true
+    enabled: false
     # opensearch-dashboards에서 지원하는 loglevel에 대한 config 설정을 기준으로 함.
     # 사용 가능한 값 : error, info, debug
     logLevel: info
@@ -212,10 +212,10 @@ modules:
   
   ### Loki
   loki:
-    enabled: true    
+    enabled: true
     # 사용 가능한 값 : error, warn, info, debug
     logLevel: info
-    loki: 
+    loki:
       version: 2.6.0
       volumeSize: 50Gi
       storageClass: default
