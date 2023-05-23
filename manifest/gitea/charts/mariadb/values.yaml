@@ -11,6 +11,11 @@
 ## Bitnami MariaDB image
 ## ref: https://hub.docker.com/r/bitnami/mariadb/tags/
 ##
+global:
+  registry:
+    is_offline: false
+    private_registry: test-registry.com
+    
 image:
   registry: docker.io
   repository: bitnami/mariadb
