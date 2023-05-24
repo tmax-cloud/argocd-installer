@@ -123,9 +123,9 @@ spec:
             name: timescaledb-pgbackrest
             optional: true
         {{- if .Values.global.offline.enabled }}
-        image: {{ .Values.global.offline.registry }}/tmaxcloudck/timescaledb-cron:{{ .Values.timescaleDB.version }}
+        image: {{ .Values.global.offline.registry }}/docker.io/tmaxcloudck/timescaledb-cron:{{ .Values.timescaleDB.version }}
         {{- else }}
-        image: tmaxcloudck/timescaledb-cron:{{ .Values.timescaleDB.version }}
+        image: docker.io/tmaxcloudck/timescaledb-cron:{{ .Values.timescaleDB.version }}
         {{- end }}
         imagePullPolicy: Always
         lifecycle:
