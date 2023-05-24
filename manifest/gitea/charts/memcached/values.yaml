@@ -11,6 +11,11 @@
 ## Bitnami Memcached image version
 ## ref: https://hub.docker.com/r/bitnami/memcached/tags/
 ##
+global:
+  registry:
+    is_offline: false
+    private_registry: test-registry.com
+    
 image:
   registry: docker.io
   repository: bitnami/memcached
