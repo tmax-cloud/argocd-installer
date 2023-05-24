@@ -37,9 +37,9 @@ spec:
         - name: DEV_MODE
           value: "true"
         {{- if .Values.global.offline.enabled }}
-        image: {{ .Values.global.offline.registry }}/tmaxcloudck/hypercloud-multi-operator:{{ .Values.multiOperator.version }}
+        image: {{ .Values.global.offline.registry }}/docker.io/tmaxcloudck/hypercloud-multi-operator:{{ .Values.multiOperator.version }}
         {{- else }}
-        image: tmaxcloudck/hypercloud-multi-operator:{{ .Values.multiOperator.version }}
+        image: docker.io/tmaxcloudck/hypercloud-multi-operator:{{ .Values.multiOperator.version }}
         {{- end }}
         name: manager
         ports:
