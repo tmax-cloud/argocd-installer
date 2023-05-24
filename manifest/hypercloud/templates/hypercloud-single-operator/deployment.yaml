@@ -23,9 +23,9 @@ spec:
         command:
         - /manager
         {{- if .Values.global.offline.enabled }}
-        image: {{ .Values.global.offline.registry }}/tmaxcloudck/hypercloud-single-operator:{{ .Values.singleOperator.version }}
+        image: {{ .Values.global.offline.registry }}/docker.io/tmaxcloudck/hypercloud-single-operator:{{ .Values.singleOperator.version }}
         {{- else }}
-        image: tmaxcloudck/hypercloud-single-operator:{{ .Values.singleOperator.version }}
+        image: docker.io/tmaxcloudck/hypercloud-single-operator:{{ .Values.singleOperator.version }}
         {{- end }}
         name: manager
         ports:

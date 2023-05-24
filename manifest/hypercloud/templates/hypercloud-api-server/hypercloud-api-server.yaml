@@ -56,9 +56,9 @@ spec:
       containers:
       - name: hypercloud5-api-server
         {{- if .Values.global.offline.enabled }}
-        image: {{ .Values.global.offline.registry }}/tmaxcloudck/hypercloud-api-server:{{ .Values.apiServer.version }}
+        image: {{ .Values.global.offline.registry }}/docker.io/tmaxcloudck/hypercloud-api-server:{{ .Values.apiServer.version }}
         {{- else }}
-        image: tmaxcloudck/hypercloud-api-server:{{ .Values.apiServer.version }}
+        image: docker.io/tmaxcloudck/hypercloud-api-server:{{ .Values.apiServer.version }}
         {{- end }}
         imagePullPolicy: IfNotPresent
         args:
