@@ -13,7 +13,11 @@ Return the proper image name
     {{- end -}}
 {{- end -}}
 {{- if $registryName }}
-{{- printf "%s/docker.io/%s:%s" $registryName $repositoryName $tag -}}
+  {{- if .global.registry.is_offline }}
+    {{- printf "%s/docker.io/%s:%s" $registryName $repositoryName $tag -}}
+  {{- else -}}
+    {{- printf "%s/%s:%s" $registryName $repositoryName $tag -}}
+  {{- end -}}
 {{- else -}}
 {{- printf "%s:%s" $repositoryName $tag -}}
 {{- end -}}
