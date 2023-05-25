@@ -1,0 +1,1525 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  name: "experiments.kubeflow.org"
+spec:
+  group: "kubeflow.org"
+  scope: "Namespaced"
+  versions:
+  - name: "v1beta1"
+    served: true
+    storage: true
+    additionalPrinterColumns:
+    - name: "Type"
+      type: "string"
+      jsonPath: ".status.conditions[-1:].type"
+    - name: "Status"
+      type: "string"
+      jsonPath: ".status.conditions[-1:].status"
+    - name: "Age"
+      type: "date"
+      jsonPath: ".metadata.creationTimestamp"
+    subresources:
+      status: {}
+    schema:
+      openAPIV3Schema:
+        type: "object"
+        x-kubernetes-preserve-unknown-fields: true
+        properties:
+          apiVersion:
+            description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.apiVersion"
+            type: "string"
+          kind:
+            type: "string"
+          metadata:
+            type: "object"
+          spec:
+            default: {}
+            description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec"
+            type: "object"
+            properties:
+              algorithm:
+                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.algorithm"
+                type: "object"
+                properties:
+                  algorithmName:
+                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.algorithm.properties.algorithmName"
+                    type: "string"
+                  algorithmSettings:
+                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.algorithm.properties.algorithmSettings"
+                    type: "array"
+                    items:
+                      default: {}
+                      description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.algorithm.properties.algorithmSettings.items"
+                      type: "object"
+                      properties:
+                        name:
+                          description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.algorithm.properties.algorithmSettings.items.properties.name"
+                          type: "string"
+                        value:
+                          description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.algorithm.properties.algorithmSettings.items.properties.value"
+                          type: "string"
+              earlyStopping:
+                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.earlyStopping"
+                type: "object"
+                properties:
+                  algorithmName:
+                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.earlyStopping.properties.algorithmName"
+                    type: "string"
+                  algorithmSettings:
+                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.earlyStopping.properties.algorithmSettings"
+                    type: "array"
+                    items:
+                      default: {}
+                      description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.earlyStopping.properties.algorithmSettings.items"
+                      type: "object"
+                      properties:
+                        name:
+                          description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.earlyStopping.properties.algorithmSettings.items.properties.name"
+                          type: "string"
+                        value:
+                          description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.earlyStopping.properties.algorithmSettings.items.properties.value"
+                          type: "string"
+              maxFailedTrialCount:
+                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.maxFailedTrialCount"
+                type: "integer"
+                format: "int32"
+              maxTrialCount:
+                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.maxTrialCount"
+                type: "integer"
+                format: "int32"
+              metricsCollectorSpec:
+                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec"
+                type: "object"
+                properties:
+                  collector:
+                    type: "object"
+                    properties:
+                      customCollector:
+                        description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector"
+                        properties:
+                          args:
+                            description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.args"
+                            items:
+                              type: "string"
+                            type: "array"
+                          command:
+                            description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.command"
+                            items:
+                              type: "string"
+                            type: "array"
+                          env:
+                            description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.env"
+                            items:
+                              description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.env.items"
+                              properties:
+                                name:
+                                  description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.env.items.properties.name"
+                                  type: "string"
+                                value:
+                                  description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.env.items.properties.value"
+                                  type: "string"
+                                valueFrom:
+                                  description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.env.items.properties.valueFrom"
+                                  properties:
+                                    configMapKeyRef:
+                                      description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.env.items.properties.valueFrom.properties.configMapKeyRef"
+                                      properties:
+                                        key:
+                                          description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.env.items.properties.valueFrom.properties.configMapKeyRef.properties.key"
+                                          type: "string"
+                                        name:
+                                          description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.env.items.properties.valueFrom.properties.configMapKeyRef.properties.name"
+                                          type: "string"
+                                        optional:
+                                          description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.env.items.properties.valueFrom.properties.configMapKeyRef.properties.optional"
+                                          type: "boolean"
+                                      required:
+                                      - "key"
+                                      type: "object"
+                                      x-kubernetes-map-type: "atomic"
+                                    fieldRef:
+                                      properties:
+                                        apiVersion:
+                                          description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.env.items.properties.valueFrom.properties.fieldRef.properties.apiVersion"
+                                          type: "string"
+                                        fieldPath:
+                                          description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.env.items.properties.valueFrom.properties.fieldRef.properties.fieldPath"
+                                          type: "string"
+                                      required:
+                                      - "fieldPath"
+                                      type: "object"
+                                      x-kubernetes-map-type: "atomic"
+                                      description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.env.items.properties.valueFrom.properties.fieldRef"
+                                    resourceFieldRef:
+                                      properties:
+                                        containerName:
+                                          description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.env.items.properties.valueFrom.properties.resourceFieldRef.properties.containerName"
+                                          type: "string"
+                                        divisor:
+                                          description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.env.items.properties.valueFrom.properties.resourceFieldRef.properties.divisor"
+                                          type: "string"
+                                        resource:
+                                          description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.env.items.properties.valueFrom.properties.resourceFieldRef.properties.resource"
+                                          type: "string"
+                                      required:
+                                      - "resource"
+                                      type: "object"
+                                      x-kubernetes-map-type: "atomic"
+                                      description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.env.items.properties.valueFrom.properties.resourceFieldRef"
+                                    secretKeyRef:
+                                      properties:
+                                        key:
+                                          description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.env.items.properties.valueFrom.properties.secretKeyRef.properties.key"
+                                          type: "string"
+                                        name:
+                                          description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.env.items.properties.valueFrom.properties.secretKeyRef.properties.name"
+                                          type: "string"
+                                        optional:
+                                          description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.env.items.properties.valueFrom.properties.secretKeyRef.properties.optional"
+                                          type: "boolean"
+                                      required:
+                                      - "key"
+                                      type: "object"
+                                      x-kubernetes-map-type: "atomic"
+                                      description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.env.items.properties.valueFrom.properties.secretKeyRef"
+                                  type: "object"
+                              required:
+                              - "name"
+                              type: "object"
+                            type: "array"
+                          envFrom:
+                            description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.envFrom"
+                            items:
+                              description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.envFrom.items"
+                              properties:
+                                configMapRef:
+                                  description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.envFrom.items.properties.configMapRef"
+                                  properties:
+                                    name:
+                                      description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.envFrom.items.properties.configMapRef.properties.name"
+                                      type: "string"
+                                    optional:
+                                      description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.envFrom.items.properties.configMapRef.properties.optional"
+                                      type: "boolean"
+                                  type: "object"
+                                prefix:
+                                  description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.envFrom.items.properties.prefix"
+                                  type: "string"
+                                secretRef:
+                                  description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.envFrom.items.properties.secretRef"
+                                  properties:
+                                    name:
+                                      description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.envFrom.items.properties.secretRef.properties.name"
+                                      type: "string"
+                                    optional:
+                                      description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.envFrom.items.properties.secretRef.properties.optional"
+                                      type: "boolean"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          image:
+                            description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.image"
+                            type: "string"
+                          imagePullPolicy:
+                            description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.imagePullPolicy"
+                            type: "string"
+                          lifecycle:
+                            properties:
+                              postStart:
+                                properties:
+                                  exec:
+                                    properties:
+                                      command:
+                                        description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.lifecycle.properties.postStart.properties.exec.properties.command"
+                                        items:
+                                          type: "string"
+                                        type: "array"
+                                    type: "object"
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.lifecycle.properties.postStart.properties.exec"
+                                  httpGet:
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.lifecycle.properties.postStart.properties.httpGet"
+                                    properties:
+                                      host:
+                                        description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.lifecycle.properties.postStart.properties.httpGet.properties.host"
+                                        type: "string"
+                                      httpHeaders:
+                                        description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.lifecycle.properties.postStart.properties.httpGet.properties.httpHeaders"
+                                        items:
+                                          description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.lifecycle.properties.postStart.properties.httpGet.properties.httpHeaders.items"
+                                          properties:
+                                            name:
+                                              description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.lifecycle.properties.postStart.properties.httpGet.properties.httpHeaders.items.properties.name"
+                                              type: "string"
+                                            value:
+                                              description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.lifecycle.properties.postStart.properties.httpGet.properties.httpHeaders.items.properties.value"
+                                              type: "string"
+                                          required:
+                                          - "name"
+                                          - "value"
+                                          type: "object"
+                                        type: "array"
+                                      path:
+                                        description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.lifecycle.properties.postStart.properties.httpGet.properties.path"
+                                        type: "string"
+                                      port:
+                                        format: "int-or-string"
+                                        type: "string"
+                                        description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.lifecycle.properties.postStart.properties.httpGet.properties.port"
+                                      scheme:
+                                        description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.lifecycle.properties.postStart.properties.httpGet.properties.scheme"
+                                        type: "string"
+                                    required:
+                                    - "port"
+                                    type: "object"
+                                  tcpSocket:
+                                    properties:
+                                      host:
+                                        description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.lifecycle.properties.postStart.properties.tcpSocket.properties.host"
+                                        type: "string"
+                                      port:
+                                        format: "int-or-string"
+                                        type: "string"
+                                        description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.lifecycle.properties.postStart.properties.tcpSocket.properties.port"
+                                    required:
+                                    - "port"
+                                    type: "object"
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.lifecycle.properties.postStart.properties.tcpSocket"
+                                type: "object"
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.lifecycle.properties.postStart"
+                              preStop:
+                                properties:
+                                  exec:
+                                    properties:
+                                      command:
+                                        description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.lifecycle.properties.preStop.properties.exec.properties.command"
+                                        items:
+                                          type: "string"
+                                        type: "array"
+                                    type: "object"
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.lifecycle.properties.preStop.properties.exec"
+                                  httpGet:
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.lifecycle.properties.preStop.properties.httpGet"
+                                    properties:
+                                      host:
+                                        description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.lifecycle.properties.preStop.properties.httpGet.properties.host"
+                                        type: "string"
+                                      httpHeaders:
+                                        description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.lifecycle.properties.preStop.properties.httpGet.properties.httpHeaders"
+                                        items:
+                                          description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.lifecycle.properties.preStop.properties.httpGet.properties.httpHeaders.items"
+                                          properties:
+                                            name:
+                                              description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.lifecycle.properties.preStop.properties.httpGet.properties.httpHeaders.items.properties.name"
+                                              type: "string"
+                                            value:
+                                              description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.lifecycle.properties.preStop.properties.httpGet.properties.httpHeaders.items.properties.value"
+                                              type: "string"
+                                          required:
+                                          - "name"
+                                          - "value"
+                                          type: "object"
+                                        type: "array"
+                                      path:
+                                        description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.lifecycle.properties.preStop.properties.httpGet.properties.path"
+                                        type: "string"
+                                      port:
+                                        format: "int-or-string"
+                                        type: "string"
+                                        description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.lifecycle.properties.preStop.properties.httpGet.properties.port"
+                                      scheme:
+                                        description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.lifecycle.properties.preStop.properties.httpGet.properties.scheme"
+                                        type: "string"
+                                    required:
+                                    - "port"
+                                    type: "object"
+                                  tcpSocket:
+                                    properties:
+                                      host:
+                                        description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.lifecycle.properties.preStop.properties.tcpSocket.properties.host"
+                                        type: "string"
+                                      port:
+                                        format: "int-or-string"
+                                        type: "string"
+                                        description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.lifecycle.properties.preStop.properties.tcpSocket.properties.port"
+                                    required:
+                                    - "port"
+                                    type: "object"
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.lifecycle.properties.preStop.properties.tcpSocket"
+                                type: "object"
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.lifecycle.properties.preStop"
+                            type: "object"
+                            description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.lifecycle"
+                          livenessProbe:
+                            properties:
+                              exec:
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.livenessProbe.properties.exec"
+                                properties:
+                                  command:
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.livenessProbe.properties.exec.properties.command"
+                                    items:
+                                      type: "string"
+                                    type: "array"
+                                type: "object"
+                              failureThreshold:
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.livenessProbe.properties.failureThreshold"
+                                format: "int32"
+                                type: "integer"
+                              httpGet:
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.livenessProbe.properties.httpGet"
+                                properties:
+                                  host:
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.livenessProbe.properties.httpGet.properties.host"
+                                    type: "string"
+                                  httpHeaders:
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.livenessProbe.properties.httpGet.properties.httpHeaders"
+                                    items:
+                                      description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.livenessProbe.properties.httpGet.properties.httpHeaders.items"
+                                      properties:
+                                        name:
+                                          description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.livenessProbe.properties.httpGet.properties.httpHeaders.items.properties.name"
+                                          type: "string"
+                                        value:
+                                          description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.livenessProbe.properties.httpGet.properties.httpHeaders.items.properties.value"
+                                          type: "string"
+                                      required:
+                                      - "name"
+                                      - "value"
+                                      type: "object"
+                                    type: "array"
+                                  path:
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.livenessProbe.properties.httpGet.properties.path"
+                                    type: "string"
+                                  port:
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.livenessProbe.properties.httpGet.properties.port"
+                                    format: "int-or-string"
+                                    type: "string"
+                                  scheme:
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.livenessProbe.properties.httpGet.properties.scheme"
+                                    type: "string"
+                                required:
+                                - "port"
+                                type: "object"
+                              initialDelaySeconds:
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.livenessProbe.properties.initialDelaySeconds"
+                                format: "int32"
+                                type: "integer"
+                              periodSeconds:
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.livenessProbe.properties.periodSeconds"
+                                format: "int32"
+                                type: "integer"
+                              successThreshold:
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.livenessProbe.properties.successThreshold"
+                                format: "int32"
+                                type: "integer"
+                              tcpSocket:
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.livenessProbe.properties.tcpSocket"
+                                properties:
+                                  host:
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.livenessProbe.properties.tcpSocket.properties.host"
+                                    type: "string"
+                                  port:
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.livenessProbe.properties.tcpSocket.properties.port"
+                                    format: "int-or-string"
+                                    type: "string"
+                                required:
+                                - "port"
+                                type: "object"
+                              terminationGracePeriodSeconds:
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.livenessProbe.properties.terminationGracePeriodSeconds"
+                                format: "int64"
+                                type: "integer"
+                              timeoutSeconds:
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.livenessProbe.properties.timeoutSeconds"
+                                format: "int32"
+                                type: "integer"
+                            type: "object"
+                            description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.livenessProbe"
+                          name:
+                            description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.name"
+                            type: "string"
+                          ports:
+                            description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.ports"
+                            items:
+                              description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.ports.items"
+                              properties:
+                                containerPort:
+                                  description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.ports.items.properties.containerPort"
+                                  format: "int32"
+                                  type: "integer"
+                                hostIP:
+                                  description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.ports.items.properties.hostIP"
+                                  type: "string"
+                                hostPort:
+                                  description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.ports.items.properties.hostPort"
+                                  format: "int32"
+                                  type: "integer"
+                                name:
+                                  description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.ports.items.properties.name"
+                                  type: "string"
+                                protocol:
+                                  description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.ports.items.properties.protocol"
+                                  type: "string"
+                                  default: ""
+                              required:
+                              - "containerPort"
+                              type: "object"
+                            type: "array"
+                            x-kubernetes-list-map-keys:
+                            - "containerPort"
+                            - "protocol"
+                            x-kubernetes-list-type: "map"
+                          readinessProbe:
+                            properties:
+                              exec:
+                                properties:
+                                  command:
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.readinessProbe.properties.exec.properties.command"
+                                    items:
+                                      type: "string"
+                                    type: "array"
+                                type: "object"
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.readinessProbe.properties.exec"
+                              failureThreshold:
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.readinessProbe.properties.failureThreshold"
+                                format: "int32"
+                                type: "integer"
+                              httpGet:
+                                properties:
+                                  host:
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.readinessProbe.properties.httpGet.properties.host"
+                                    type: "string"
+                                  httpHeaders:
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.readinessProbe.properties.httpGet.properties.httpHeaders"
+                                    items:
+                                      description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.readinessProbe.properties.httpGet.properties.httpHeaders.items"
+                                      properties:
+                                        name:
+                                          description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.readinessProbe.properties.httpGet.properties.httpHeaders.items.properties.name"
+                                          type: "string"
+                                        value:
+                                          description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.readinessProbe.properties.httpGet.properties.httpHeaders.items.properties.value"
+                                          type: "string"
+                                      required:
+                                      - "name"
+                                      - "value"
+                                      type: "object"
+                                    type: "array"
+                                  path:
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.readinessProbe.properties.httpGet.properties.path"
+                                    type: "string"
+                                  port:
+                                    format: "int-or-string"
+                                    type: "string"
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.readinessProbe.properties.httpGet.properties.port"
+                                  scheme:
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.readinessProbe.properties.httpGet.properties.scheme"
+                                    type: "string"
+                                required:
+                                - "port"
+                                type: "object"
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.readinessProbe.properties.httpGet"
+                              initialDelaySeconds:
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.readinessProbe.properties.initialDelaySeconds"
+                                format: "int32"
+                                type: "integer"
+                              periodSeconds:
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.readinessProbe.properties.periodSeconds"
+                                format: "int32"
+                                type: "integer"
+                              successThreshold:
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.readinessProbe.properties.successThreshold"
+                                format: "int32"
+                                type: "integer"
+                              tcpSocket:
+                                properties:
+                                  host:
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.readinessProbe.properties.tcpSocket.properties.host"
+                                    type: "string"
+                                  port:
+                                    format: "int-or-string"
+                                    type: "string"
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.readinessProbe.properties.tcpSocket.properties.port"
+                                required:
+                                - "port"
+                                type: "object"
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.readinessProbe.properties.tcpSocket"
+                              terminationGracePeriodSeconds:
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.readinessProbe.properties.terminationGracePeriodSeconds"
+                                format: "int64"
+                                type: "integer"
+                              timeoutSeconds:
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.readinessProbe.properties.timeoutSeconds"
+                                format: "int32"
+                                type: "integer"
+                            type: "object"
+                            description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.readinessProbe"
+                          resources:
+                            properties:
+                              limits:
+                                additionalProperties:
+                                  description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.resources.properties.limits.additionalProperties"
+                                  type: "string"
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.resources.properties.limits"
+                                type: "object"
+                              requests:
+                                additionalProperties:
+                                  description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.resources.properties.requests.additionalProperties"
+                                  type: "string"
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.resources.properties.requests"
+                                type: "object"
+                            type: "object"
+                            description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.resources"
+                          securityContext:
+                            properties:
+                              allowPrivilegeEscalation:
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.securityContext.properties.allowPrivilegeEscalation"
+                                type: "boolean"
+                              capabilities:
+                                properties:
+                                  add:
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.securityContext.properties.capabilities.properties.add"
+                                    items:
+                                      type: "string"
+                                    type: "array"
+                                  drop:
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.securityContext.properties.capabilities.properties.drop"
+                                    items:
+                                      type: "string"
+                                    type: "array"
+                                type: "object"
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.securityContext.properties.capabilities"
+                              privileged:
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.securityContext.properties.privileged"
+                                type: "boolean"
+                              procMount:
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.securityContext.properties.procMount"
+                                type: "string"
+                              readOnlyRootFilesystem:
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.securityContext.properties.readOnlyRootFilesystem"
+                                type: "boolean"
+                              runAsGroup:
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.securityContext.properties.runAsGroup"
+                                format: "int64"
+                                type: "integer"
+                              runAsNonRoot:
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.securityContext.properties.runAsNonRoot"
+                                type: "boolean"
+                              runAsUser:
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.securityContext.properties.runAsUser"
+                                format: "int64"
+                                type: "integer"
+                              seLinuxOptions:
+                                properties:
+                                  level:
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.securityContext.properties.seLinuxOptions.properties.level"
+                                    type: "string"
+                                  role:
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.securityContext.properties.seLinuxOptions.properties.role"
+                                    type: "string"
+                                  type:
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.securityContext.properties.seLinuxOptions.properties.type"
+                                    type: "string"
+                                  user:
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.securityContext.properties.seLinuxOptions.properties.user"
+                                    type: "string"
+                                type: "object"
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.securityContext.properties.seLinuxOptions"
+                              seccompProfile:
+                                properties:
+                                  localhostProfile:
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.securityContext.properties.seccompProfile.properties.localhostProfile"
+                                    type: "string"
+                                  type:
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.securityContext.properties.seccompProfile.properties.type"
+                                    type: "string"
+                                required:
+                                - "type"
+                                type: "object"
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.securityContext.properties.seccompProfile"
+                              windowsOptions:
+                                properties:
+                                  gmsaCredentialSpec:
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.securityContext.properties.windowsOptions.properties.gmsaCredentialSpec"
+                                    type: "string"
+                                  gmsaCredentialSpecName:
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.securityContext.properties.windowsOptions.properties.gmsaCredentialSpecName"
+                                    type: "string"
+                                  hostProcess:
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.securityContext.properties.windowsOptions.properties.hostProcess"
+                                    type: "boolean"
+                                  runAsUserName:
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.securityContext.properties.windowsOptions.properties.runAsUserName"
+                                    type: "string"
+                                type: "object"
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.securityContext.properties.windowsOptions"
+                            type: "object"
+                            description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.securityContext"
+                          startupProbe:
+                            properties:
+                              exec:
+                                properties:
+                                  command:
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.startupProbe.properties.exec.properties.command"
+                                    items:
+                                      type: "string"
+                                    type: "array"
+                                type: "object"
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.startupProbe.properties.exec"
+                              failureThreshold:
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.startupProbe.properties.failureThreshold"
+                                format: "int32"
+                                type: "integer"
+                              httpGet:
+                                properties:
+                                  host:
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.startupProbe.properties.httpGet.properties.host"
+                                    type: "string"
+                                  httpHeaders:
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.startupProbe.properties.httpGet.properties.httpHeaders"
+                                    items:
+                                      description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.startupProbe.properties.httpGet.properties.httpHeaders.items"
+                                      properties:
+                                        name:
+                                          description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.startupProbe.properties.httpGet.properties.httpHeaders.items.properties.name"
+                                          type: "string"
+                                        value:
+                                          description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.startupProbe.properties.httpGet.properties.httpHeaders.items.properties.value"
+                                          type: "string"
+                                      required:
+                                      - "name"
+                                      - "value"
+                                      type: "object"
+                                    type: "array"
+                                  path:
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.startupProbe.properties.httpGet.properties.path"
+                                    type: "string"
+                                  port:
+                                    format: "int-or-string"
+                                    type: "string"
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.startupProbe.properties.httpGet.properties.port"
+                                  scheme:
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.startupProbe.properties.httpGet.properties.scheme"
+                                    type: "string"
+                                required:
+                                - "port"
+                                type: "object"
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.startupProbe.properties.httpGet"
+                              initialDelaySeconds:
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.startupProbe.properties.initialDelaySeconds"
+                                format: "int32"
+                                type: "integer"
+                              periodSeconds:
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.startupProbe.properties.periodSeconds"
+                                format: "int32"
+                                type: "integer"
+                              successThreshold:
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.startupProbe.properties.successThreshold"
+                                format: "int32"
+                                type: "integer"
+                              tcpSocket:
+                                properties:
+                                  host:
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.startupProbe.properties.tcpSocket.properties.host"
+                                    type: "string"
+                                  port:
+                                    format: "int-or-string"
+                                    type: "string"
+                                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.startupProbe.properties.tcpSocket.properties.port"
+                                required:
+                                - "port"
+                                type: "object"
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.startupProbe.properties.tcpSocket"
+                              terminationGracePeriodSeconds:
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.startupProbe.properties.terminationGracePeriodSeconds"
+                                format: "int64"
+                                type: "integer"
+                              timeoutSeconds:
+                                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.startupProbe.properties.timeoutSeconds"
+                                format: "int32"
+                                type: "integer"
+                            type: "object"
+                            description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.startupProbe"
+                          stdin:
+                            description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.stdin"
+                            type: "boolean"
+                          stdinOnce:
+                            description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.stdinOnce"
+                            type: "boolean"
+                          terminationMessagePath:
+                            description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.terminationMessagePath"
+                            type: "string"
+                          terminationMessagePolicy:
+                            description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.terminationMessagePolicy"
+                            type: "string"
+                          tty:
+                            description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.tty"
+                            type: "boolean"
+                          volumeDevices:
+                            description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.volumeDevices"
+                            items:
+                              description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.volumeDevices.items"
+                              properties:
+                                devicePath:
+                                  description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.volumeDevices.items.properties.devicePath"
+                                  type: "string"
+                                name:
+                                  description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.volumeDevices.items.properties.name"
+                                  type: "string"
+                              required:
+                              - "name"
+                              - "devicePath"
+                              type: "object"
+                            type: "array"
+                          volumeMounts:
+                            description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.volumeMounts"
+                            items:
+                              description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.volumeMounts.items"
+                              properties:
+                                mountPath:
+                                  description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.volumeMounts.items.properties.mountPath"
+                                  type: "string"
+                                mountPropagation:
+                                  description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.volumeMounts.items.properties.mountPropagation"
+                                  type: "string"
+                                name:
+                                  description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.volumeMounts.items.properties.name"
+                                  type: "string"
+                                readOnly:
+                                  description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.volumeMounts.items.properties.readOnly"
+                                  type: "boolean"
+                                subPath:
+                                  description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.volumeMounts.items.properties.subPath"
+                                  type: "string"
+                                subPathExpr:
+                                  description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.volumeMounts.items.properties.subPathExpr"
+                                  type: "string"
+                              required:
+                              - "name"
+                              - "mountPath"
+                              type: "object"
+                            type: "array"
+                          workingDir:
+                            description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.collector.properties.customCollector.properties.workingDir"
+                            type: "string"
+                        required:
+                        - "name"
+                        type: "object"
+                      kind:
+                        type: "string"
+                  source:
+                    type: "object"
+                    properties:
+                      fileSystemPath:
+                        description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.source.properties.fileSystemPath"
+                        type: "object"
+                        properties:
+                          kind:
+                            type: "string"
+                          path:
+                            type: "string"
+                      filter:
+                        description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.source.properties.filter"
+                        type: "object"
+                        properties:
+                          metricsFormat:
+                            description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.source.properties.filter.properties.metricsFormat"
+                            type: "array"
+                            items:
+                              type: "string"
+                              default: ""
+                      httpGet:
+                        description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.source.properties.httpGet"
+                        properties:
+                          host:
+                            description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.source.properties.httpGet.properties.host"
+                            type: "string"
+                          httpHeaders:
+                            description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.source.properties.httpGet.properties.httpHeaders"
+                            items:
+                              description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.source.properties.httpGet.properties.httpHeaders.items"
+                              properties:
+                                name:
+                                  description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.source.properties.httpGet.properties.httpHeaders.items.properties.name"
+                                  type: "string"
+                                value:
+                                  description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.source.properties.httpGet.properties.httpHeaders.items.properties.value"
+                                  type: "string"
+                              required:
+                              - "name"
+                              - "value"
+                              type: "object"
+                            type: "array"
+                          path:
+                            description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.source.properties.httpGet.properties.path"
+                            type: "string"
+                          port:
+                            format: "int-or-string"
+                            type: "string"
+                            description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.source.properties.httpGet.properties.port"
+                          scheme:
+                            description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.metricsCollectorSpec.properties.source.properties.httpGet.properties.scheme"
+                            type: "string"
+                        required:
+                        - "port"
+                        type: "object"
+              nasConfig:
+                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.nasConfig"
+                type: "object"
+                properties:
+                  graphConfig:
+                    default: {}
+                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.nasConfig.properties.graphConfig"
+                    type: "object"
+                    properties:
+                      inputSizes:
+                        type: "array"
+                        items:
+                          type: "integer"
+                          format: "int32"
+                          default: 0
+                      numLayers:
+                        type: "integer"
+                        format: "int32"
+                      outputSizes:
+                        type: "array"
+                        items:
+                          type: "integer"
+                          format: "int32"
+                          default: 0
+                  operations:
+                    type: "array"
+                    items:
+                      default: {}
+                      description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.nasConfig.properties.operations.items"
+                      type: "object"
+                      properties:
+                        operationType:
+                          type: "string"
+                        parameters:
+                          type: "array"
+                          items:
+                            default: {}
+                            type: "object"
+                            properties:
+                              feasibleSpace:
+                                default: {}
+                                type: "object"
+                                properties:
+                                  list:
+                                    type: "array"
+                                    items:
+                                      type: "string"
+                                      default: ""
+                                  max:
+                                    type: "string"
+                                  min:
+                                    type: "string"
+                                  step:
+                                    type: "string"
+                              name:
+                                type: "string"
+                              parameterType:
+                                type: "string"
+              objective:
+                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.objective"
+                type: "object"
+                properties:
+                  additionalMetricNames:
+                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.objective.properties.additionalMetricNames"
+                    type: "array"
+                    items:
+                      type: "string"
+                      default: ""
+                  goal:
+                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.objective.properties.goal"
+                    type: "number"
+                    format: "double"
+                  metricStrategies:
+                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.objective.properties.metricStrategies"
+                    type: "array"
+                    items:
+                      default: {}
+                      type: "object"
+                      properties:
+                        name:
+                          type: "string"
+                        value:
+                          type: "string"
+                  objectiveMetricName:
+                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.objective.properties.objectiveMetricName"
+                    type: "string"
+                  type:
+                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.objective.properties.type"
+                    type: "string"
+              parallelTrialCount:
+                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.parallelTrialCount"
+                type: "integer"
+                format: "int32"
+              parameters:
+                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.parameters"
+                type: "array"
+                items:
+                  default: {}
+                  type: "object"
+                  properties:
+                    feasibleSpace:
+                      default: {}
+                      type: "object"
+                      properties:
+                        list:
+                          type: "array"
+                          items:
+                            type: "string"
+                            default: ""
+                        max:
+                          type: "string"
+                        min:
+                          type: "string"
+                        step:
+                          type: "string"
+                    name:
+                      type: "string"
+                    parameterType:
+                      type: "string"
+              resumePolicy:
+                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.resumePolicy"
+                type: "string"
+              trialTemplate:
+                description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.trialTemplate"
+                type: "object"
+                properties:
+                  configMap:
+                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.trialTemplate.properties.configMap"
+                    type: "object"
+                    properties:
+                      configMapName:
+                        description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.trialTemplate.properties.configMap.properties.configMapName"
+                        type: "string"
+                      configMapNamespace:
+                        description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.trialTemplate.properties.configMap.properties.configMapNamespace"
+                        type: "string"
+                      templatePath:
+                        description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.trialTemplate.properties.configMap.properties.templatePath"
+                        type: "string"
+                  failureCondition:
+                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.trialTemplate.properties.failureCondition"
+                    type: "string"
+                  primaryContainerName:
+                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.trialTemplate.properties.primaryContainerName"
+                    type: "string"
+                  primaryPodLabels:
+                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.trialTemplate.properties.primaryPodLabels"
+                    type: "object"
+                    additionalProperties:
+                      type: "string"
+                      default: ""
+                  retain:
+                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.trialTemplate.properties.retain"
+                    type: "boolean"
+                  successCondition:
+                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.trialTemplate.properties.successCondition"
+                    type: "string"
+                  trialParameters:
+                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.trialTemplate.properties.trialParameters"
+                    type: "array"
+                    items:
+                      default: {}
+                      description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.trialTemplate.properties.trialParameters.items"
+                      type: "object"
+                      properties:
+                        description:
+                          description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.trialTemplate.properties.trialParameters.items.properties.description"
+                          type: "string"
+                        name:
+                          description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.trialTemplate.properties.trialParameters.items.properties.name"
+                          type: "string"
+                        reference:
+                          description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.trialTemplate.properties.trialParameters.items.properties.reference"
+                          type: "string"
+                  trialSpec:
+                    description: "%experiment.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.trialTemplate.properties.trialSpec"
+                    type: "object"
+                    x-kubernetes-preserve-unknown-fields: true
+  names:
+    kind: "Experiment"
+    singular: "experiment"
+    plural: "experiments"
+    categories:
+    - "all"
+    - "kubeflow"
+    - "katib"
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: suggestions.kubeflow.org
+spec:
+  group: kubeflow.org
+  names:
+    categories:
+    - all
+    - kubeflow
+    - katib
+    kind: Suggestion
+    plural: suggestions
+    singular: suggestion
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .status.conditions[-1:].type
+      name: Type
+      type: string
+    - jsonPath: .status.conditions[-1:].status
+      name: Status
+      type: string
+    - jsonPath: .spec.requests
+      name: Requested
+      type: string
+    - jsonPath: .status.suggestionCount
+      name: Assigned
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1beta1
+    schema:
+      openAPIV3Schema:
+        type: object
+        x-kubernetes-preserve-unknown-fields: true
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: trials.kubeflow.org
+spec:
+  group: kubeflow.org
+  names:
+    categories:
+    - all
+    - kubeflow
+    - katib
+    kind: Trial
+    plural: trials
+    singular: trial
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .status.conditions[-1:].type
+      name: Type
+      type: string
+    - jsonPath: .status.conditions[-1:].status
+      name: Status
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1beta1
+    schema:
+      openAPIV3Schema:
+        type: object
+        x-kubernetes-preserve-unknown-fields: true
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: katib-controller
+  namespace: kubeflow
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: katib-controller
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  - serviceaccounts
+  - services
+  - events
+  - namespaces
+  - persistentvolumes
+  - persistentvolumeclaims
+  - pods
+  - pods/log
+  - pods/status
+  - secrets
+  verbs:
+  - '*'
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  verbs:
+  - '*'
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - roles
+  - rolebindings
+  verbs:
+  - '*'
+- apiGroups:
+  - batch
+  resources:
+  - jobs
+  - cronjobs
+  verbs:
+  - '*'
+- apiGroups:
+  - kubeflow.org
+  resources:
+  - experiments
+  - experiments/status
+  - experiments/finalizers
+  - trials
+  - trials/status
+  - trials/finalizers
+  - suggestions
+  - suggestions/status
+  - suggestions/finalizers
+  - tfjobs
+  - pytorchjobs
+  - mpijobs
+  - xgboostjobs
+  - mxjobs
+  verbs:
+  - '*'
+---
+aggregationRule:
+  clusterRoleSelectors:
+  - matchLabels:
+      rbac.authorization.kubeflow.org/aggregate-to-kubeflow-katib-admin: "true"
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    rbac.authorization.kubeflow.org/aggregate-to-kubeflow-admin: "true"
+  name: kubeflow-katib-admin
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    rbac.authorization.kubeflow.org/aggregate-to-kubeflow-edit: "true"
+    rbac.authorization.kubeflow.org/aggregate-to-kubeflow-katib-admin: "true"
+  name: kubeflow-katib-edit
+rules:
+- apiGroups:
+  - kubeflow.org
+  resources:
+  - experiments
+  - trials
+  - suggestions
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - delete
+  - deletecollection
+  - patch
+  - update
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    rbac.authorization.kubeflow.org/aggregate-to-kubeflow-view: "true"
+  name: kubeflow-katib-view
+rules:
+- apiGroups:
+  - kubeflow.org
+  resources:
+  - experiments
+  - trials
+  - suggestions
+  verbs:
+  - get
+  - list
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: katib-controller
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: katib-controller
+subjects:
+- kind: ServiceAccount
+  name: katib-controller
+  namespace: kubeflow
+---  
+apiVersion: v1
+data:
+  defaultTrialTemplate.yaml: |-
+    apiVersion: batch/v1
+    kind: Job
+    spec:
+      template:
+        spec:
+          containers:
+            - name: training-container
+              image: docker.io/kubeflowkatib/mxnet-mnist:v0.14.0
+              command:
+                - "python3"
+                - "/opt/mxnet-mnist/mnist.py"
+                - "--batch-size=64"
+                - "--lr=${trialParameters.learningRate}"
+                - "--num-layers=${trialParameters.numberLayers}"
+                - "--optimizer=${trialParameters.optimizer}"
+          restartPolicy: Never
+  enasCPUTemplate: |-
+    apiVersion: batch/v1
+    kind: Job
+    spec:
+      template:
+        spec:
+          containers:
+            - name: training-container
+              image: docker.io/kubeflowkatib/enas-cnn-cifar10-cpu:v0.14.0
+              command:
+                - python3
+                - -u
+                - RunTrial.py
+                - --num_epochs=1
+                - "--architecture=\"${trialParameters.neuralNetworkArchitecture}\""
+                - "--nn_config=\"${trialParameters.neuralNetworkConfig}\""
+          restartPolicy: Never
+  pytorchJobTemplate: |-
+    apiVersion: kubeflow.org/v1
+    kind: PyTorchJob
+    spec:
+      pytorchReplicaSpecs:
+        Master:
+          replicas: 1
+          restartPolicy: OnFailure
+          template:
+            spec:
+              containers:
+                - name: pytorch
+                  image: docker.io/kubeflowkatib/pytorch-mnist-cpu:v0.14.0
+                  command:
+                    - "python3"
+                    - "/opt/pytorch-mnist/mnist.py"
+                    - "--epochs=1"
+                    - "--lr=${trialParameters.learningRate}"
+                    - "--momentum=${trialParameters.momentum}"
+        Worker:
+          replicas: 2
+          restartPolicy: OnFailure
+          template:
+            spec:
+              containers:
+                - name: pytorch
+                  image: docker.io/kubeflowkatib/pytorch-mnist-cpu:v0.14.0
+                  command:
+                    - "python3"
+                    - "/opt/pytorch-mnist/mnist.py"
+                    - "--epochs=1"
+                    - "--lr=${trialParameters.learningRate}"
+                    - "--momentum=${trialParameters.momentum}"
+kind: ConfigMap
+metadata:
+  labels:
+    katib.kubeflow.org/component: trial-templates
+  name: trial-templates
+  namespace: kubeflow
+---
+apiVersion: v1
+data:
+  MYSQL_ROOT_PASSWORD: dGVzdA==
+kind: Secret
+metadata:
+  name: katib-mysql-secrets
+  namespace: kubeflow
+type: Opaque
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/port: "8080"
+    prometheus.io/scheme: http
+    prometheus.io/scrape: "true"
+  labels:
+    katib.kubeflow.org/component: controller
+  name: katib-controller
+  namespace: kubeflow
+spec:
+  ports:
+  - name: webhook
+    port: 443
+    protocol: TCP
+    targetPort: 8443
+  - name: metrics
+    port: 8080
+    targetPort: 8080
+  selector:
+    katib.kubeflow.org/component: controller
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    katib.kubeflow.org/component: db-manager
+  name: katib-db-manager
+  namespace: kubeflow
+spec:
+  ports:
+  - name: api
+    port: 6789
+    protocol: TCP
+  selector:
+    katib.kubeflow.org/component: db-manager
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    katib.kubeflow.org/component: mysql
+  name: katib-mysql
+  namespace: kubeflow
+spec:
+  ports:
+  - name: dbapi
+    port: 3306
+    protocol: TCP
+  selector:
+    katib.kubeflow.org/component: mysql
+  type: ClusterIP
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: katib-mysql
+  namespace: kubeflow
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi  
+---          
+apiVersion: v1
+kind: Secret
+metadata:
+  annotations:
+    kubernetes.io/service-account.name: katib-controller
+  name: katib-controller-token
+  namespace: kubeflow
+type: kubernetes.io/service-account-token      
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: katib-webhook-cert
+  namespace: kubeflow
+spec:
+  commonName: katib-controller.kubeflow.svc
+  dnsNames:
+  - katib-controller.kubeflow.svc
+  - katib-controller.kubeflow.svc.cluster.local
+  isCA: true
+  issuerRef:
+    kind: Issuer
+    name: katib-selfsigned-issuer
+  secretName: katib-webhook-cert
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: katib-selfsigned-issuer
+  namespace: kubeflow
+spec:
+  selfSigned: {}
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  annotations:
+    cert-manager.io/inject-ca-from: kubeflow/katib-webhook-cert
+  name: katib.kubeflow.org
+webhooks:
+- admissionReviewVersions:
+  - v1
+  clientConfig:    
+    service:
+      name: katib-controller
+      namespace: kubeflow
+      path: /mutate-experiment
+  failurePolicy: Ignore
+  name: defaulter.experiment.katib.kubeflow.org
+  rules:
+  - apiGroups:
+    - kubeflow.org
+    apiVersions:
+    - v1beta1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - experiments
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  clientConfig:    
+    service:
+      name: katib-controller
+      namespace: kubeflow
+      path: /mutate-pod
+  failurePolicy: Ignore
+  name: mutator.pod.katib.kubeflow.org
+  namespaceSelector:
+    matchLabels:
+      katib.kubeflow.org/metrics-collector-injection: enabled
+  rules:
+  - apiGroups:
+    - ""
+    apiVersions:
+    - v1
+    operations:
+    - CREATE
+    resources:
+    - pods
+  sideEffects: None
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  annotations:
+    cert-manager.io/inject-ca-from: kubeflow/katib-webhook-cert
+  name: katib.kubeflow.org
+webhooks:
+- admissionReviewVersions:
+  - v1
+  clientConfig:    
+    service:
+      name: katib-controller
+      namespace: kubeflow
+      path: /validate-experiment
+  failurePolicy: Ignore
+  name: validator.experiment.katib.kubeflow.org
+  rules:
+  - apiGroups:
+    - kubeflow.org
+    apiVersions:
+    - v1beta1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - experiments
+  sideEffects: None
