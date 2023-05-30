@@ -260,9 +260,9 @@ spec:
               divisor: 1Mi
               resource: limits.memory
         {{- if .Values.global.offline.enabled }}
-        image: {{ .Values.global.offline.registry }}/tmaxcloudck/timescaledb-cron:{{ .Values.timescaleDB.version }}
+        image: {{ .Values.global.offline.registry }}/docker.io/tmaxcloudck/timescaledb-cron:{{ .Values.timescaleDB.version }}
         {{- else }}
-        image: tmaxcloudck/timescaledb-cron:{{ .Values.timescaleDB.version }}
+        image: docker.io/tmaxcloudck/timescaledb-cron:{{ .Values.timescaleDB.version }}
         {{- end }}
         imagePullPolicy: IfNotPresent
         name: tstune
