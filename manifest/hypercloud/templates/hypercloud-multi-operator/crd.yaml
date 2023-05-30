@@ -243,6 +243,9 @@ spec:
               vcenterThumbprint:
                 description: "%clustermanagers.yaml.spec.versions.schema.openAPIV3Schema.properties.vsphereSpec.properties.vcenterThumbprint"
                 type: "string"
+              vmPassword:
+                description: "%clustermanagers.yaml.spec.versions.schema.openAPIV3Schema.properties.vsphereSpec.properties.vmPassword"
+                type: "string"
             type: "object"
         required:
         - "spec"
@@ -379,9 +382,6 @@ spec:
                   vcenterFolder:
                     description: "%clusterclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.providerVsphereSpec.properties.vcenterFolder"
                     type: "string"
-                  vcenterId:
-                    description: "%clusterclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.providerVsphereSpec.properties.vcenterId"
-                    type: "string"
                   vcenterIp:
                     description: "%clusterclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.providerVsphereSpec.properties.vcenterIp"
                     type: "string"
@@ -395,9 +395,6 @@ spec:
                   vcenterNetwork:
                     description: "%clusterclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.providerVsphereSpec.properties.vcenterNetwork"
                     type: "string"
-                  vcenterPassword:
-                    description: "%clusterclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.providerVsphereSpec.properties.vcenterPassword"
-                    type: "string"
                   vcenterResourcePool:
                     description: "%clusterclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.providerVsphereSpec.properties.vcenterResourcePool"
                     type: "string"
@@ -406,6 +403,9 @@ spec:
                     type: "string"
                   vcenterThumbprint:
                     description: "%clusterclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.providerVsphereSpec.properties.vcenterThumbprint"
+                    type: "string"
+                  vmPassword:
+                    description: "%clusterclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.providerVsphereSpec.properties.vmPassword"
                     type: "string"
                 type: "object"
               version:
@@ -621,6 +621,12 @@ spec:
     - jsonPath: ".spec.clusterName"
       name: "Cluster"
       type: "string"
+    - jsonPath: ".spec.updatedMasterNum"
+      name: "masternum"
+      type: "integer"
+    - jsonPath: ".spec.updatedWorkerNum"
+      name: "workernum"
+      type: "integer"
     - jsonPath: ".status.phase"
       name: "Status"
       type: "string"
@@ -649,28 +655,26 @@ spec:
               clusterName:
                 description: "%clusterupdateclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.clusterName"
                 type: "string"
-              expectedMasterNum:
-                description: "%clusterupdateclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.expectedMasterNum"
+              updatedMasterNum:
+                description: "%clusterupdateclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.updatedMasterNum"
                 minimum: 1
                 type: "integer"
-              expectedWorkerNum:
-                description: "%clusterupdateclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.expectedWorkerNum"
+              updatedWorkerNum:
+                description: "%clusterupdateclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.updatedWorkerNum"
                 minimum: 1
                 type: "integer"
-              updateType:
-                description: "%clusterupdateclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.updateType"
-                enum:
-                - "NodeScale"
-                type: "string"
             required:
             - "clusterName"
-            - "updateType"
             type: "object"
           status:
             description: "%clusterupdateclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.status"
             properties:
-              message:
-                type: "string"
+              currentMasterNum:
+                description: "%clusterupdateclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.currentMasterNum"
+                type: "integer"
+              currentWorkerNum:
+                description: "%clusterupdateclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.currentWorkerNum"
+                type: "integer"
               phase:
                 enum:
                 - "Awaiting"
@@ -680,6 +684,7 @@ spec:
                 - "Cluster Deleted"
                 type: "string"
               reason:
+                description: "%clusterupdateclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.status.properties.reason"
                 type: "string"
             type: "object"
         type: "object"

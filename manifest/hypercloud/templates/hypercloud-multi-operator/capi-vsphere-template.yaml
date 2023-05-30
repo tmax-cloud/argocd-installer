@@ -45,7 +45,7 @@ objects:
     controlPlaneRef:
       apiVersion: controlplane.cluster.x-k8s.io/v1beta1
       kind: KubeadmControlPlane
-      name: '${CLUSTER_NAME}'
+      name: '${CLUSTER_NAME}-control-plane'
     infrastructureRef:
       apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
       kind: VSphereCluster
@@ -117,7 +117,7 @@ objects:
 - apiVersion: controlplane.cluster.x-k8s.io/v1beta1
   kind: KubeadmControlPlane
   metadata:
-    name: '${CLUSTER_NAME}'
+    name: '${CLUSTER_NAME}-control-plane'
     namespace: '${NAMESPACE}'
   spec:
     kubeadmConfigSpec:
@@ -202,9 +202,13 @@ objects:
       - echo "127.0.0.1   localhost" >>/etc/hosts
       - echo "127.0.0.1   {{`{{ ds.meta_data.hostname }}`}}" >>/etc/hosts
       - echo "{{`{{ ds.meta_data.hostname }}`}}" >/etc/hostname
-      - echo 'root:dG1heEAyMw==' | chpasswd
+      - echo 'root:${VM_PASSWORD}' | chpasswd
       - sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
       - systemctl restart sshd
+      # - echo '[plugins."io.containerd.grpc.v1.cri".registry.configs."registry-1.docker.io".auth]' >> /etc/containerd/config.toml
+      # - echo '  username = "dockerhub ID"' >> /etc/containerd/config.toml
+      # - echo '  password = "dockerhub PW"' >> /etc/containerd/config.toml
+      # - systemctl restart containerd
       postKubeadmCommands:
       - mkdir -p $HOME/.kube
       - cp /etc/kubernetes/admin.conf $HOME/.kube/config
@@ -245,9 +249,13 @@ objects:
         - echo "127.0.0.1   localhost" >>/etc/hosts
         - echo "127.0.0.1   {{`{{ ds.meta_data.hostname }}`}}" >>/etc/hosts
         - echo "{{`{{ ds.meta_data.hostname }}`}}" >/etc/hostname
-        - echo 'root:dG1heEAyMw==' | chpasswd
+        - echo 'root:${VM_PASSWORD}' | chpasswd
         - sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
         - systemctl restart sshd
+        # - echo '[plugins."io.containerd.grpc.v1.cri".registry.configs."registry-1.docker.io".auth]' >> /etc/containerd/config.toml
+        # - echo '  username = "dockerhub ID"' >> /etc/containerd/config.toml
+        # - echo '  password = "dockerhub PW"' >> /etc/containerd/config.toml
+        # - systemctl restart containerd
         users:
         - name: root
           sshAuthorizedKeys:
@@ -480,12 +488,16 @@ objects:
         csi-vsphere.conf: |+
           [Global]
           cluster-id = "${NAMESPACE}/${CLUSTER_NAME}"
+          insecure-flag = "1"
+          
           [VirtualCenter "${VSPHERE_SERVER}"]
           user = "${VSPHERE_USERNAME}"
           password = "${VSPHERE_PASSWORD}"
           datacenters = "${VSPHERE_DATACENTER}"
+
           [Network]
           public-network = "${VSPHERE_NETWORK}"
+
       type: Opaque
   type: addons.cluster.x-k8s.io/resource-set
 - apiVersion: v1
@@ -1136,6 +1148,12 @@ parameters:
   required: false
   value: 2
   valueType: number
+- description: Password of VM
+  displayName: Password of VM
+  name: VM_PASSWORD
+  required: false
+  value: dG1heEAyMw==
+  valueType: string
 # - description: HyperAuth url for open id connect
 #   displayName: HyperAuth URL
 #   name: HYPERAUTH_URL

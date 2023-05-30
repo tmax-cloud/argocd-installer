@@ -349,22 +349,12 @@ rules:
   - update
   - watch
 - apiGroups:
-  - servicecatalog.k8s.io
+  - tmax.io
   resources:
-  - serviceinstances
+  - templateinstances
   verbs:
   - create
   - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - servicecatalog.k8s.io
-  resources:
-  - serviceinstances/status
-  verbs:
   - get
   - list
   - patch
@@ -565,6 +555,29 @@ webhooks:
     resources:
     - clusterclaims
     - clusterclaims/status
+  sideEffects: NoneOnDryRun
+- admissionReviewVersions:
+  - v1beta1
+  - v1
+  clientConfig:
+    service:
+      name: hypercloud-multi-operator-webhook-service
+      namespace: hypercloud5-system
+      path: /validate-claim-tmax-io-v1alpha1-clusterupdateclaim
+  failurePolicy: Fail
+  name: validation.webhook.clusterupdateclaim
+  rules:
+  - apiGroups:
+    - claim.tmax.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    - DELETE
+    resources:
+    - clusterupdateclaims
+    - clusterupdateclaims/status
   sideEffects: NoneOnDryRun
 - admissionReviewVersions:
   - v1beta1
