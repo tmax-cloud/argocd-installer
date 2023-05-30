@@ -1,4 +1,4 @@
-apiVersion: tekton.dev/v1beta1
+apiVersion: tekton.dev/v1
 kind: Task
 metadata:
   name: gradle-build-task
@@ -47,7 +47,7 @@ spec:
   steps:
   - image: alpine/git
     name: git-clone
-    resources: {}
+    computeResources: {}
     script: |
       set -e
       git config --global user.email bot@cicd.tmax.io
@@ -58,13 +58,13 @@ spec:
     workingDir: $(workspaces.build-dir.path)
   - image: $(params.BUILDER_IMG)
     name: gradle-package
-    resources: {}
+    computeResources: {}
     script: |
       gradle build
     workingDir: $(workspaces.build-dir.path)
   - image: quay.io/buildah/stable
     name: docker-package
-    resources: {}
+    computeResources: {}
     script: |
       buildah bud --tls-verify=false --storage-driver=vfs --format docker -f ./Dockerfile -t $(params.REGISTRY_URL)/$(params.IMG_PATH):$(params.IMG_TAG)
       buildah login --tls-verify=false -u $(params.REG_USER) -p $(params.REG_PASS) $(params.REGISTRY_URL)

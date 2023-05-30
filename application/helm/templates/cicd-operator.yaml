@@ -10,6 +10,9 @@ metadata:
   name: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
   namespace: argocd
 spec:
+  syncPolicy:
+    syncOptions:
+    - ServerSideApply=true
   destination:
     name: {{ .Values.global.clusterName }}
     namespace: cicd-system
