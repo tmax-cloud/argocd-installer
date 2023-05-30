@@ -24,10 +24,6 @@ spec:
             value: {{ .Values.global.privateRegistry }}
           - name: template_operator_version
             value: {{ .Values.modules.tsb.templateOperator.version }}
-          # - name: cluster_tsb_version
-          #   value: {{ .Values.modules.tsb.clusterTsb.version }}
-          # - name: tsb_version
-          #   value: {{ .Values.modules.tsb.version }}
           - name: time_zone
             value: {{ .Values.global.timeZone }}
           - name: log_level
