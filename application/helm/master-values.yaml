@@ -363,17 +363,17 @@ modules:
   ### template service broker
   tsb:
     enabled: true
-    version: 0.1.6
-    clusterTsb:
-      version: 0.1.6
+    # version: 0.1.6 (deprecated since k8s 1.25v)
+    # clusterTsb:
+    #   version: 0.1.6
     templateOperator:
       version: 0.2.8
     logLevel: info
 
-  ### catalog controller
-  catalogController:
-    enabled: true
-    vLevel: 0
+  ### catalog controller (deprecated since k8s 1.25v)
+  # catalogController:
+  #   enabled: true
+  #   vLevel: 0
     # (klog) verbose - 0 ~ 5 
     # klog.V(0).InfoS = klog.InfoS - Generally useful for this to always be visible to a cluster operator
     #  - Programmer errors
