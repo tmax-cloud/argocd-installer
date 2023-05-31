@@ -12,6 +12,8 @@ data:
         hs = {}
         hs.status = "Healthy"
         return hs
+  resource.compareoptions: |
+    ignoreAggregatedRoles: true
 ---
 apiVersion: v1
 kind: ConfigMap
