@@ -100,7 +100,7 @@ modules:
   ### istio version: 1.15.4 for kubeflow
   istio:
     enabled: true
-    autoSync: true
+    autoSync: false
     # none | error | warn | info | debug
     logLevel: info
 
