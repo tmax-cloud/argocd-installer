@@ -1,0 +1,42 @@
+{{ if .Values.modules.istio_istiod.enabled }}
+{{ $isMaster := eq .Values.global.cluster "master" }}
+{{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
+{{ $module := "istio" }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  labels:
+    cluster: {{ ternary "master" $prefix $isMaster }}
+  name: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}-istiod
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  destination:
+    name: {{ .Values.global.clusterName }}
+    namespace: istio-system
+  project: {{ .Values.spec.project }}
+  source:
+    path: manifest/istio/istio-istiod
+    repoURL: {{ .Values.spec.source.repoURL }}
+    targetRevision: {{ .Values.spec.source.targetRevision }}
+    helm:
+      releaseName: {{ $module }}d
+      valueFiles:
+        - {{ .Values.global.helm.valueFiles }}
+      parameters:
+          - name: global.logging.level
+            value: "default:{{ .Values.modules.istio_istiod.logLevel }}"
+      {{- if .Values.global.network.disabled }}
+      - name: global.hub
+        value: {{ .Values.global.privateRegistry }}/docker.io/istio
+      {{- end }}
+  syncPolicy:
+    {{- if .Values.modules.istio_istiod.autoSync }}
+    automated:
+      selfHeal: true
+      prune: true
+    {{- end }}
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+{{ end }}
