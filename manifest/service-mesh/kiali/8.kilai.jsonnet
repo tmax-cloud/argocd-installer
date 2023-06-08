@@ -8,7 +8,7 @@ function(
   kiali_subdomain="kiali",
   kiali_loglevel="3",
   kiali_client_id="kiali",
-  time_zone="UTC"
+  time_zone="UTC",
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -32,10 +32,21 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "resources": [
           "configmaps",
           "endpoints",
+          "pods/log"
+        ],
+        "verbs": [
+          "get",
+          "list",
+          "watch"
+        ]
+      },
+      {
+        "apiGroups": [
+          ""
+        ],
+        "resources": [
           "namespaces",
-          "nodes",
           "pods",
-          "pods/log",
           "replicationcontrollers",
           "services"
         ],
@@ -78,19 +89,6 @@ local target_registry = if is_offline == "false" then "" else private_registry +
       },
       {
         "apiGroups": [
-          "autoscaling"
-        ],
-        "resources": [
-          "horizontalpodautoscalers"
-        ],
-        "verbs": [
-          "get",
-          "list",
-          "watch"
-        ]
-      },
-      {
-        "apiGroups": [
           "batch"
         ],
         "resources": [
@@ -106,11 +104,11 @@ local target_registry = if is_offline == "false" then "" else private_registry +
       },
       {
         "apiGroups": [
-          "config.istio.io",
           "networking.istio.io",
-          "authentication.istio.io",
-          "rbac.istio.io",
-          "security.istio.io"
+          "security.istio.io",
+          "extensions.istio.io",
+          "telemetry.istio.io",
+          "gateway.networking.k8s.io"
         ],
         "resources": [
           "*"
@@ -126,40 +124,49 @@ local target_registry = if is_offline == "false" then "" else private_registry +
       },
       {
         "apiGroups": [
-          "monitoring.kiali.io"
+          "app.openshift.io"
         ],
         "resources": [
-          "monitoringdashboards"
-        ],
-        "verbs": [
-          "get",
-          "list"
-        ]
-      },
-      {
-        "apiGroups": [
-          "telemetry.istio.io"
-        ],
-        "resources": [
-          "telemetries"
+          "deploymentconfigs"
         ],
         "verbs": [
           "get",
           "list",
-          "watch"
+          "watch",
+          "patch"
         ]
       },
       {
         "apiGroups": [
-          "extensions.istio.io"
+          "project.openshift.io"
         ],
         "resources": [
-          "wasmplugins"
+          "projects"
         ],
         "verbs": [
-          "get",
-          "list",
-          "watch"
+          "get"
+        ]
+      },
+      {
+        "apiGroups": [
+          "route.openshift.io"
+        ],
+        "resources": [
+          "routes"
+        ],
+        "verbs": [
+          "get"
+        ]
+      },
+      {
+        "apiGroups": [
+          "authentication.k8s.io"
+        ],
+        "resources": [
+          "tokenreviews"
+        ],
+        "verbs": [
+          "create"
         ]
       }
     ]
@@ -182,10 +189,21 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "resources": [
           "configmaps",
           "endpoints",
+          "pods/log"
+        ],
+        "verbs": [
+          "get",
+          "list",
+          "watch"
+        ]
+      },
+      {
+        "apiGroups": [
+          ""
+        ],
+        "resources": [
           "namespaces",
-          "nodes",
           "pods",
-          "pods/log",
           "replicationcontrollers",
           "services"
         ],
@@ -226,19 +244,6 @@ local target_registry = if is_offline == "false" then "" else private_registry +
       },
       {
         "apiGroups": [
-          "autoscaling"
-        ],
-        "resources": [
-          "horizontalpodautoscalers"
-        ],
-        "verbs": [
-          "get",
-          "list",
-          "watch"
-        ]
-      },
-      {
-        "apiGroups": [
           "batch"
         ],
         "resources": [
@@ -248,16 +253,17 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "verbs": [
           "get",
           "list",
-          "watch"
+          "watch",
+          "patch"
         ]
       },
       {
         "apiGroups": [
-          "config.istio.io",
           "networking.istio.io",
-          "authentication.istio.io",
-          "rbac.istio.io",
-          "security.istio.io"
+          "security.istio.io",
+          "extensions.istio.io",
+          "telemetry.istio.io",
+          "gateway.networking.k8s.io"
         ],
         "resources": [
           "*"
@@ -270,14 +276,48 @@ local target_registry = if is_offline == "false" then "" else private_registry +
       },
       {
         "apiGroups": [
-          "monitoring.kiali.io"
+          "app.openshift.io"
         ],
         "resources": [
-          "monitoringdashboards"
+          "deploymentconfigs"
         ],
         "verbs": [
           "get",
-          "list"
+          "list",
+          "watch"
+        ]
+      },
+      {
+        "apiGroups": [
+          "project.openshift.io"
+        ],
+        "resources": [
+          "projects"
+        ],
+        "verbs": [
+          "get"
+        ]
+      },
+      {
+        "apiGroups": [
+          "route.openshift.io"
+        ],
+        "resources": [
+          "routes"
+        ],
+        "verbs": [
+          "get"
+        ]
+      },
+      {
+        "apiGroups": [
+          "authentication.k8s.io"
+        ],
+        "resources": [
+          "tokenreviews"
+        ],
+        "verbs": [
+          "create"
         ]
       }
     ]
@@ -331,10 +371,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
     "type": "Opaque",
     "data": {
       "username": "YWRtaW4=",
-      "passphrase": "YWRtaW4=",
-    },
-    "stringData": {
-      "oidc-secret": "01314ea9-5738-4ec1-84e3-81c03a96c908"
+      "passphrase": "YWRtaW4="
     }
   },
   {
@@ -358,18 +395,15 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "  prometheus: monitoring",
         "istio_namespace: istio-system",
         "auth:",
-        "  strategy: anonymous",
+        "  strategy: openid",
         "  openid:",
-        "    scopes: ['openid', 'profile', 'preferred_username']",
         std.join("", ["    client_id: ", kiali_client_id]),
         std.join("", ["    issuer_uri: https://", HYPERAUTH_DOMAIN, "/auth/realms/tmax"]),
         std.join("", ["    authorization_endpoint: https://", HYPERAUTH_DOMAIN, "/auth/realms/tmax/protocol/openid-connect/auth"]),
-        "    username_claim: preferred_username",
-        "    api_token: access_token",
         "deployment:",
         "  accessible_namespaces: ['**']",
         "login_token:",
-        "  signing_key: eP4K7bX9sT2mL1jN8QaWcVw6D5xYFhZ",
+        "  signing_key: 0123456789012345",
         "server:",
         "  port: 20001",
         "  web_root: /api/kiali",
@@ -391,15 +425,8 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "    url:",
         "    in_cluster_url: http://jaeger-query.istio-system.svc:16685",
         "  grafana:",
-        "    auth:",
-        "      type: basic",
-        "      username: admin",
-        "      password: admin",
-        "      use_kiali_token: false",
-        "      token:",
-        "      insecure_skip_verify: true",
         "    url:",
-        "    in_cluster_url: http://grafana-service.monitoring.svc:3000",
+        "    in_cluster_url: http://grafana.monitoring.svc:3000",
         "  prometheus:",
         "    url: http://prometheus-k8s.monitoring:9090",
         std.join("", ["    log-level: ", kiali_loglevel])
@@ -571,7 +598,8 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 },
                 {
                   "mountPath": "/kiali-cert",
-                  "name": "kiali-cert"
+                  "name": "kiali-cert",
+                  "readOnly": true
                 },
                 {
                   "mountPath": "/kiali-secret",
@@ -603,8 +631,8 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             {
               "name": "kiali-cert",
               "secret": {
-                "optional": true,
-                "secretName": "istio.kiali-service-account"
+                "secretName": "kiali-service-account",
+                "optional": true
               }
             },
             {

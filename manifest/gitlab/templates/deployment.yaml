@@ -194,7 +194,7 @@ spec:
           gitlab_rails['gitlab_shell_ssh_port'] = $PORT_SSH
           prometheus['enable'] = false
           prometheus['monitor_kubernetes'] = false
-          unicorn['worker_processes'] = 4
+          puma['worker_processes'] = 2
           grafana['enable'] = false
           nginx['client_max_body_size'] = '2500m'
           gitlab_rails['initial_root_password'] = "password"
