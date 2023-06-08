@@ -528,6 +528,10 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
                 {
                   "containerPort": 16686,
                   "protocol": "TCP"
+                },
+                {
+                  "containerPort": 16685,
+                  "protocol": "TCP"
                 }
               ],
               "readinessProbe": {
@@ -658,6 +662,12 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
           "port": 443,
           "protocol": "TCP",
           "targetPort": 3000
+        },
+        {
+          "name": "grpc-query",
+          "port": 16685,
+          "protocol": "TCP",
+          "targetPort": 16685
         }
       ],
       "selector": {
