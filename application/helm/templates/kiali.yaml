@@ -28,8 +28,10 @@ spec:
             value: {{ .Values.global.domain }}
           - name: kiali_subdomain
             value: {{ .Values.modules.serviceMesh.kiali.subdomain }}
-          - name: client_id
+          - name: kiali_client_id
             value: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
+          - name: kiali_loglevel
+            value: "{{ .Values.modules.serviceMesh.kiali.kialiLoglevel }}"
           - name: time_zone
             value: {{ .Values.global.timeZone }}
     path: manifest/service-mesh/kiali
