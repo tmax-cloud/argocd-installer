@@ -124,6 +124,10 @@ modules:
         # json | pretty
         logType: "pretty"
 
+    oauth2Proxy:
+      enabled: false
+      version: v7.3.1
+
   ### istio version: 1.15.4 for kubeflow
   istio:
     enabled: true
