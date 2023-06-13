@@ -320,6 +320,7 @@ gitea:
       SSH_DOMAIN: gitea.testdomain.com
     webhook:
       ALLOWED_HOST_LIST: '*'
+      SKIP_TLS_VERIFY: true
     log:
       LEVEL: Info # "Trace", "Debug", "Info", "Warn", "Error", "Critical" or "None"
   #  APP_NAME: "Gitea: Git with a cup of tea"
