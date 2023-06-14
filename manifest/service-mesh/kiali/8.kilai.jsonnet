@@ -574,7 +574,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 },
                 {
                   "name": "LOG_LEVEL",
-                  "value": {kiali_loglevel}
+                  std.join("", ["value: ", kiali_loglevel]),
                 }
               ],
               "ports": [
