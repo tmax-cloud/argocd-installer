@@ -1,0 +1,47 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "gateway.name" . }}-rollout-restart
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "gateway.labels" . | nindent 4}}
+  annotations:
+    {{- .Values.annotations | toYaml | nindent 4 }}
+spec:
+  template:
+    spec:
+      containers:
+        - name: rollout-restart
+          {{- if .Values.job.privateRegistry }}
+          image: {{.Values.job.privateRegistry}}/docker.io/bitnami/kubectl:1.25.5
+          {{- else }}
+          image: docker.io/bitnami/kubectl:1.25.5
+          {{- end }}
+          command:
+          - /bin/bash
+          - -c
+          - |
+            echo "Sleeping for 30 seconds"
+            sleep 30
+            retires=0
+            while true; do
+              status=$(kubectl get pod $(kubectl get pods -l app={{ include "gateway.name" . | trimPrefix "istio-" }} -o jsonpath='{.items[0].metadata.name}') -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}')
+            if [ "$status" = "True" ]; then
+              echo "Pod is ready"
+              break
+            fi
+            if (( retries < 3 )); then
+              echo "Pod is not ready, restarting deployment..."
+              kubectl rollout restart deployment $(kubectl get deployments -l app={{ include "gateway.name" . | trimPrefix "istio-" }} -o jsonpath='{.items[0].metadata.name}')
+              echo "Sleeping for 60 seconds"
+              sleep 60
+              retries=$((retries + 1))
+            else
+              echo "Retried 3 times, exiting"
+              exit 1
+            fi
+            done
+      restartPolicy: Never
+      serviceAccountName: {{ include "gateway.serviceAccountName" . }}
+
+

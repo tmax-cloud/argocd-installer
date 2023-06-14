@@ -128,6 +128,13 @@ modules:
       enabled: false
       version: v7.3.1
 
+  ### istio version: 1.15.4 for kubeflow
+  istio:
+    enabled: true
+    autoSync: false
+    # none | error | warn | info | debug
+    logLevel: info
+
   ### strimzi-kafka-operator
   strimziKafka:
     enabled: true
@@ -303,7 +310,7 @@ modules:
   serviceMesh:
     ### istio
     istio:
-      enabled: true
+      enabled: false
       # :(scope) 를 기준으로 앞, default, all, authn, cache, citadelclient, configmapcontroller, googleca, model, rbac, sds, secretfetcher, stsclient, stsserver, token, validation, vault
       # :(scope) 를 기준으로 뒤, debug, info, warn, error, fatal, none 
       istiodPilotDiscoveryLoglevel: default:info
@@ -330,8 +337,8 @@ modules:
     kiali:
       enabled: true
       subdomain: kiali
-      # "3" : info, "4": debug, "5": trace
-      kialiLoglevel: "3"
+      # trace, debug, info, warn, error, fatal
+      kialiLoglevel: info
 
   ### cluster-api
   capi:

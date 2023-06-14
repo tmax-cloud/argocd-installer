@@ -1,0 +1,6 @@
+apiVersion: v2
+name: istio-bootstrap
+version: 1.0.0
+description: A Helm Chart for Install Istio System
+type: application
+appVersion: 1.0.0

@@ -1,0 +1,40 @@
+{{ if .Values.modules.istio_gateway.enabled }}
+{{ $isMaster := eq .Values.global.cluster "master" }}
+{{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
+{{ $module := "istio" }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  labels:
+    cluster: {{ ternary "master" $prefix $isMaster }}
+  name: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}-gateway
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  destination:
+    name: {{ .Values.global.clusterName }}
+    namespace: istio-system
+  project: {{ .Values.spec.project }}
+  source:
+    path: manifest/istio/istio-gateway
+    repoURL: {{ .Values.spec.source.repoURL }}
+    targetRevision: {{ .Values.spec.source.targetRevision }}
+    helm:
+      releaseName: ingressgateway
+      valueFiles:
+        - {{ .Values.global.helm.valueFiles }}
+      parameters:
+      {{- if .Values.global.network.disabled }}
+      - name: job.privateRegistry
+        value: {{ .Values.global.privateRegistry }}
+      {{- end }}
+  syncPolicy:
+    {{- if .Values.modules.istio_gateway.autoSync }}
+    automated:
+      selfHeal: true
+      prune: true
+    {{- end }}
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+{{ end }}

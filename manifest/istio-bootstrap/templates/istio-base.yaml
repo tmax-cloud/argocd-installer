@@ -1,0 +1,35 @@
+{{ if .Values.modules.istio_base.enabled }}
+{{ $isMaster := eq .Values.global.cluster "master" }}
+{{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
+{{ $module := "istio" }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  labels:
+    cluster: {{ ternary "master" $prefix $isMaster }}
+  name: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}-base
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+spec:
+  destination:
+    name: {{ .Values.global.clusterName }}
+    namespace: istio-system
+  project: {{ .Values.spec.project }}
+  source:
+    path: manifest/istio/istio-base
+    repoURL: {{ .Values.spec.source.repoURL }}
+    targetRevision: {{ .Values.spec.source.targetRevision }}
+    helm:
+      releaseName: {{ $module }}-base
+      valueFiles:
+        - {{ .Values.global.helm.valueFiles }}
+  syncPolicy:
+    {{- if .Values.modules.istio_base.autoSync }}
+    automated:
+      selfHeal: false
+      prune: true
+    {{- end }}
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+{{ end }}
