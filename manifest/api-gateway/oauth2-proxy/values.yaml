@@ -115,9 +115,23 @@ redis:
     replicaCount: 1
     persistence:
       size: 100Mi
+    resources:
+      limits:
+        cpu: 250m
+        memory: 256Mi
+      requests:
+        cpu: 250m
+        memory: 256Mi        
   master:
     persistence:
       size: 100Mi
+    resources:
+      limits:
+        cpu: 250m
+        memory: 256Mi
+      requests:
+        cpu: 250m
+        memory: 256Mi       
   # Redis specific helm chart settings, please see:
   # https://github.com/bitnami/charts/tree/master/bitnami/redis#parameters
   # redisPort: 6379
