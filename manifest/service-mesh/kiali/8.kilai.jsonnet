@@ -6,7 +6,7 @@ function(
   CUSTOM_DOMAIN_NAME="custom-domain",
   CUSTOM_CLUSTER_ISSUER="tmaxcloud-issuer",
   kiali_subdomain="kiali",
-  kiali_loglevel="3",
+  kiali_loglevel="info",
   kiali_client_id="kiali",
   time_zone="UTC",
 )
@@ -452,8 +452,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "    url:",
         "    in_cluster_url: http://grafana.monitoring.svc:3000",
         "  prometheus:",
-        "    url: http://prometheus-k8s.monitoring:9090",
-        std.join("", ["    log-level: ", kiali_loglevel])
+        "    url: http://prometheus-k8s.monitoring:9090"
         ]
       )
     }
@@ -572,6 +571,10 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                       "fieldPath": "metadata.namespace"
                     }
                   }
+                },
+                {
+                  "name": "LOG_LEVEL",
+                  "value": kiali_loglevel
                 }
               ],
               "ports": [
