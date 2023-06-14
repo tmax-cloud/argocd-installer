@@ -452,8 +452,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "    url:",
         "    in_cluster_url: http://grafana.monitoring.svc:3000",
         "  prometheus:",
-        "    url: http://prometheus-k8s.monitoring:9090",
-        std.join("", ["    log-level: ", kiali_loglevel])
+        "    url: http://prometheus-k8s.monitoring:9090"
         ]
       )
     }
@@ -572,6 +571,10 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                       "fieldPath": "metadata.namespace"
                     }
                   }
+                },
+                {
+                  "name": "LOG_LEVEL",
+                  "value": {kiali_loglevel}
                 }
               ],
               "ports": [
