@@ -16,8 +16,6 @@ spec:
   project: {{ .Values.spec.project }}
   source:
     helm:
-      valueFiles:
-        - values.yaml
       parameters:
         - name: modules.istio_namespace.enabled
           value: "{{ .Values.modules.istio.enabled }}"
@@ -48,9 +46,9 @@ spec:
         - name: global.network.disabled
           value: "{{ .Values.global.network.disabled }}"
         - name: spec.source.repoURL
-          value: { { .Values.spec.source.repoURL } }
+          value: {{ .Values.spec.source.repoURL }}
         - name: spec.source.targetRevision
-          value: { { .Values.spec.source.targetRevision } }
+          value: {{ .Values.spec.source.targetRevision }}
     path: manifest/istio-bootstrap
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
