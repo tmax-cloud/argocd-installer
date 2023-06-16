@@ -16,6 +16,8 @@ spec:
   project: {{ .Values.spec.project }}
   source:
     helm:
+      valueFiles:
+        - values.yaml
       parameters:
         - name: modules.istio_namespace.enabled
           value: "{{ .Values.modules.istio.enabled }}"
