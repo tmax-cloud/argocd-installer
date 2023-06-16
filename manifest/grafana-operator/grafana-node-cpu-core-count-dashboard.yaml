@@ -7,155 +7,276 @@ metadata:
     app: grafana
 spec:
   json: >
-      {
-          "annotations": {
-            "list": [
-              {
-                "builtIn": 1,
-                "datasource": {
-                  "type": "grafana",
-                  "uid": "-- Grafana --"
-                },
-                "enable": true,
-                "hide": true,
-                "iconColor": "rgba(0, 211, 255, 1)",
-                "name": "Annotations & Alerts",
-                "target": {
-                  "limit": 100,
-                  "matchAny": false,
-                  "tags": [],
-                  "type": "dashboard"
-                },
-                "type": "dashboard"
-              }
-            ]
-          },
-          "editable": true,
-          "fiscalYearStartMonth": 0,
-          "graphTooltip": 0,
-          "id": 56,
-          "links": [],
-          "liveNow": false,
-          "panels": [
             {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "3Wmid5E4z"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisCenteredZero": false,
-                    "axisColorMode": "text",
-                    "axisLabel": "",
-                    "axisPlacement": "auto",
-                    "barAlignment": 0,
-                    "drawStyle": "line",
-                    "fillOpacity": 0,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
+              "annotations": {
+                "list": [
+                  {
+                    "builtIn": 1,
+                    "datasource": "-- Grafana --",
+                    "enable": true,
+                    "hide": true,
+                    "iconColor": "rgba(0, 211, 255, 1)",
+                    "name": "Annotations & Alerts",
+                    "target": {
+                      "limit": 100,
+                      "matchAny": false,
+                      "tags": [],
+                      "type": "dashboard"
                     },
-                    "lineInterpolation": "linear",
-                    "lineWidth": 1,
-                    "pointSize": 5,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "auto",
-                    "spanNulls": false,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
-                    }
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
+                    "type": "dashboard"
                   }
-                },
-                "overrides": []
+                ]
               },
-              "gridPos": {
-                "h": 9,
-                "w": 12,
-                "x": 0,
-                "y": 0
-              },
-              "id": 2,
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
-              },
-              "targets": [
+              "description": "cpu core dashboard",
+              "editable": true,
+              "fiscalYearStartMonth": 0,
+              "gnetId": null,
+              "graphTooltip": 0,
+              "id": 133,
+              "iteration": 1686817101589,
+              "links": [],
+              "liveNow": false,
+              "panels": [
                 {
-                  "datasource": {
-                    "type": "prometheus"
-                    
+                  "collapsed": false,
+                  "datasource": "prometheus",
+                  "gridPos": {
+                    "h": 1,
+                    "w": 24,
+                    "x": 0,
+                    "y": 0
                   },
-                  "editorMode": "builder",
-                  "expr": "sum(count without(cpu, mode) (node_cpu_seconds_total{mode=\"idle\"})) by (instance)",
-                  "legendFormat": "__auto",
-                  "range": true,
-                  "refId": "A"
+                  "id": 17,
+                  "panels": [],
+                  "title": "CPU core",
+                  "type": "row"
                 },
                 {
-                  "datasource": {
-                    "type": "prometheus"
-                    
+                  "aliasColors": {},
+                  "bars": false,
+                  "dashLength": 10,
+                  "dashes": false,
+                  "datasource": "$datasource",
+                  "fieldConfig": {
+                    "defaults": {
+                      "links": []
+                    },
+                    "overrides": []
                   },
-                  "editorMode": "builder",
-                  "expr": "sum(count without(cpu, mode) (node_cpu_seconds_total{mode=\"idle\"}))",
-                  "hide": false,
-                  "legendFormat": "total",
-                  "range": true,
-                  "refId": "B"
+                  "fill": 0,
+                  "fillGradient": 0,
+                  "gridPos": {
+                    "h": 7,
+                    "w": 24,
+                    "x": 0,
+                    "y": 1
+                  },
+                  "hiddenSeries": false,
+                  "id": 5,
+                  "legend": {
+                    "avg": false,
+                    "current": false,
+                    "max": false,
+                    "min": false,
+                    "show": true,
+                    "total": false,
+                    "values": false
+                  },
+                  "lines": true,
+                  "linewidth": 2,
+                  "links": [],
+                  "nullPointMode": "null as zero",
+                  "options": {
+                    "alertThreshold": true
+                  },
+                  "percentage": false,
+                  "pluginVersion": "8.2.2",
+                  "pointradius": 5,
+                  "points": false,
+                  "renderer": "flot",
+                  "seriesOverrides": [
+                    {
+                      "alias": "quota - requests",
+                      "color": "#F2495C",
+                      "dashes": true,
+                      "fill": 0,
+                      "hideTooltip": true,
+                      "legend": false,
+                      "linewidth": 2,
+                      "stack": false
+                    },
+                    {
+                      "alias": "quota - limits",
+                      "color": "#FF9830",
+                      "dashes": true,
+                      "fill": 0,
+                      "hideTooltip": true,
+                      "legend": false,
+                      "linewidth": 2,
+                      "stack": false
+                    }
+                  ],
+                  "spaceLength": 10,
+                  "stack": true,
+                  "steppedLine": false,
+                  "targets": [
+                    {
+                      "exemplar": false,
+                      "expr": "sum(count without(cpu, mode) (node_cpu_seconds_total{mode=\"idle\"})) by (instance)",
+                      "format": "time_series",
+                      "interval": "",
+                      "intervalFactor": 2,
+                      "legendFormat": "{{instance}}",
+                      "legendLink": null,
+                      "refId": "A",
+                      "step": 10
+                    },
+                    {
+                      "exemplar": true,
+                      "expr": "sum(count without(cpu, mode) (node_cpu_seconds_total{mode=\"idle\"}))",
+                      "format": "time_series",
+                      "interval": "",
+                      "intervalFactor": 2,
+                      "legendFormat": "total",
+                      "legendLink": null,
+                      "refId": "B",
+                      "step": 10
+                    }
+                  ],
+                  "thresholds": [],
+                  "timeFrom": null,
+                  "timeRegions": [],
+                  "timeShift": null,
+                  "title": "CPU core",
+                  "tooltip": {
+                    "shared": false,
+                    "sort": 0,
+                    "value_type": "individual"
+                  },
+                  "type": "graph",
+                  "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": true,
+                    "values": []
+                  },
+                  "yaxes": [
+                    {
+                      "format": "short",
+                      "label": null,
+                      "logBase": 1,
+                      "max": null,
+                      "min": 0,
+                      "show": true
+                    },
+                    {
+                      "format": "short",
+                      "label": null,
+                      "logBase": 1,
+                      "max": null,
+                      "min": null,
+                      "show": false
+                    }
+                  ],
+                  "yaxis": {
+                    "align": false,
+                    "alignLevel": null
+                  }
                 }
               ],
-              "title": "CPU count",
-              "type": "timeseries"
+              "refresh": "",
+              "schemaVersion": 31,
+              "style": "dark",
+              "tags": [
+                "kubernetes-mixin"
+              ],
+              "templating": {
+                "list": [
+                  {
+                    "current": {
+                      "selected": false,
+                      "text": "prometheus",
+                      "value": "prometheus"
+                    },
+                    "description": null,
+                    "error": null,
+                    "hide": 0,
+                    "includeAll": false,
+                    "label": null,
+                    "multi": false,
+                    "name": "datasource",
+                    "options": [],
+                    "query": "prometheus",
+                    "refresh": 1,
+                    "regex": "",
+                    "skipUrlSync": false,
+                    "type": "datasource"
+                  },
+                  {
+                    "allValue": null,
+                    "current": {
+                      "isNone": true,
+                      "selected": false,
+                      "text": "None",
+                      "value": ""
+                    },
+                    "datasource": "$datasource",
+                    "definition": "",
+                    "description": null,
+                    "error": null,
+                    "hide": 2,
+                    "includeAll": false,
+                    "label": null,
+                    "multi": false,
+                    "name": "cluster",
+                    "options": [],
+                    "query": {
+                      "query": "label_values(kube_pod_info, cluster)",
+                      "refId": "prometheus-cluster-Variable-Query"
+                    },
+                    "refresh": 1,
+                    "regex": "",
+                    "skipUrlSync": false,
+                    "sort": 1,
+                    "tagValuesQuery": "",
+                    "tagsQuery": "",
+                    "type": "query",
+                    "useTags": false
+                  }
+                ]
+              },
+              "time": {
+                "from": "now-1h",
+                "to": "now"
+              },
+              "timepicker": {
+                "refresh_intervals": [
+                  "5s",
+                  "10s",
+                  "30s",
+                  "1m",
+                  "5m",
+                  "15m",
+                  "30m",
+                  "1h",
+                  "2h",
+                  "1d"
+                ],
+                "time_options": [
+                  "5m",
+                  "15m",
+                  "1h",
+                  "6h",
+                  "12h",
+                  "24h",
+                  "2d",
+                  "7d",
+                  "30d"
+                ]
+              },
+              "timezone": "",
+              "title": "CPU CORE COUNT",
+              "uid": "NODE-CPU-CORE",
+              "version": 3
             }
-          ],
-          "schemaVersion": 37,
-          "style": "dark",
-          "tags": [],
-          "templating": {
-            "list": []
-          },
-          "time": {
-            "from": "now-24h",
-            "to": "now"
-          },
-          "timepicker": {},
-          "timezone": "",
-          "title": "CPU count",
-          "uid": "Node-cpu-count",
-          "version": 5,
-          "weekStart": ""
-        }
