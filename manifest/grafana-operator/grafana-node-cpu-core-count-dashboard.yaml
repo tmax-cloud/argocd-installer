@@ -34,7 +34,7 @@ spec:
           "editable": true,
           "fiscalYearStartMonth": 0,
           "graphTooltip": 0,
-          "id": 69,
+          "id": 71,
           "links": [],
           "liveNow": false,
           "panels": [
@@ -99,7 +99,7 @@ spec:
                     "spanNulls": false,
                     "stacking": {
                       "group": "A",
-                      "mode": "normal"
+                      "mode": "none"
                     },
                     "thresholdsStyle": {
                       "mode": "off"
@@ -155,6 +155,7 @@ spec:
                   "exemplar": false,
                   "expr": "sum(count without(cpu, mode) (node_cpu_seconds_total{mode=\"idle\"})) by (instance)",
                   "format": "time_series",
+                  "hide": false,
                   "instant": false,
                   "intervalFactor": 2,
                   "legendFormat": "{{instance}}",
@@ -270,6 +271,6 @@ spec:
           "timezone": "",
           "title": "CPU CORE COUNT",
           "uid": "NODE-CPU-CORE",
-          "version": 5,
+          "version": 2,
           "weekStart": ""
         }
