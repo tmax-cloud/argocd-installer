@@ -22,8 +22,8 @@ spec:
     targetRevision: {{ .Values.spec.source.targetRevision }}
     helm:
       releaseName: ingressgateway
+      {{ - if .Values.global.network.disabled }}
       parameters:
-      {{- if .Values.global.network.disabled }}
       - name: job.privateRegistry
         value: {{ .Values.global.privateRegistry }}
       {{- end }}
