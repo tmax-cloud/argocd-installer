@@ -1,13 +1,14 @@
 function(
   is_offline="false",
   private_registry="registry.tmaxcloud.org",
-  KIALI_VERSION="v1.21",
+  KIALI_VERSION="v1.59.0",
   HYPERAUTH_DOMAIN="hyperauth.domain",
   CUSTOM_DOMAIN_NAME="custom-domain",
   CUSTOM_CLUSTER_ISSUER="tmaxcloud-issuer",
   kiali_subdomain="kiali",
-  client_id="kiali",
-  time_zone="UTC"
+  kiali_loglevel="info",
+  kiali_client_id="kiali",
+  time_zone="UTC",
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -31,17 +32,41 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "resources": [
           "configmaps",
           "endpoints",
+          "pods/log"
+        ],
+        "verbs": [
+          "get",
+          "list",
+          "watch"
+        ]
+      },
+      {
+        "apiGroups": [
+          ""
+        ],
+        "resources": [
           "namespaces",
-          "nodes",
           "pods",
-          "pods/log",
           "replicationcontrollers",
           "services"
         ],
         "verbs": [
           "get",
           "list",
-          "watch"
+          "watch",
+          "patch"
+        ]
+      },
+      {
+        "apiGroups": [
+          ""
+        ],
+        "resources": [
+          "pods/portforward"
+        ],
+        "verbs": [
+          "create",
+          "post"
         ]
       },
       {
@@ -52,25 +77,14 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "resources": [
           "deployments",
           "replicasets",
-          "statefulsets"
+          "statefulsets",
+          "daemonsets"
         ],
         "verbs": [
           "get",
           "list",
-          "watch"
-        ]
-      },
-      {
-        "apiGroups": [
-          "autoscaling"
-        ],
-        "resources": [
-          "horizontalpodautoscalers"
-        ],
-        "verbs": [
-          "get",
-          "list",
-          "watch"
+          "watch",
+          "patch"
         ]
       },
       {
@@ -84,16 +98,17 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "verbs": [
           "get",
           "list",
-          "watch"
+          "watch",
+          "patch"
         ]
       },
       {
         "apiGroups": [
-          "config.istio.io",
           "networking.istio.io",
-          "authentication.istio.io",
-          "rbac.istio.io",
-          "security.istio.io"
+          "security.istio.io",
+          "extensions.istio.io",
+          "telemetry.istio.io",
+          "gateway.networking.k8s.io"
         ],
         "resources": [
           "*"
@@ -105,6 +120,53 @@ local target_registry = if is_offline == "false" then "" else private_registry +
           "list",
           "patch",
           "watch"
+        ]
+      },
+      {
+        "apiGroups": [
+          "app.openshift.io"
+        ],
+        "resources": [
+          "deploymentconfigs"
+        ],
+        "verbs": [
+          "get",
+          "list",
+          "watch",
+          "patch"
+        ]
+      },
+      {
+        "apiGroups": [
+          "project.openshift.io"
+        ],
+        "resources": [
+          "projects"
+        ],
+        "verbs": [
+          "get"
+        ]
+      },
+      {
+        "apiGroups": [
+          "route.openshift.io"
+        ],
+        "resources": [
+          "routes"
+        ],
+        "verbs": [
+          "get"
+        ]
+      },
+      {
+        "apiGroups": [
+          "authentication.k8s.io"
+        ],
+        "resources": [
+          "tokenreviews"
+        ],
+        "verbs": [
+          "create"
         ]
       },
       {
@@ -139,10 +201,21 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "resources": [
           "configmaps",
           "endpoints",
+          "pods/log"
+        ],
+        "verbs": [
+          "get",
+          "list",
+          "watch"
+        ]
+      },
+      {
+        "apiGroups": [
+          ""
+        ],
+        "resources": [
           "namespaces",
-          "nodes",
           "pods",
-          "pods/log",
           "replicationcontrollers",
           "services"
         ],
@@ -154,26 +227,26 @@ local target_registry = if is_offline == "false" then "" else private_registry +
       },
       {
         "apiGroups": [
+          ""
+        ],
+        "resources": [
+          "pods/portforward"
+        ],
+        "verbs": [
+          "create",
+          "post"
+        ]
+      },
+      {
+        "apiGroups": [
           "extensions",
           "apps"
         ],
         "resources": [
           "deployments",
           "replicasets",
-          "statefulsets"
-        ],
-        "verbs": [
-          "get",
-          "list",
-          "watch"
-        ]
-      },
-      {
-        "apiGroups": [
-          "autoscaling"
-        ],
-        "resources": [
-          "horizontalpodautoscalers"
+          "statefulsets",
+          "daemonsets"
         ],
         "verbs": [
           "get",
@@ -192,16 +265,17 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "verbs": [
           "get",
           "list",
-          "watch"
+          "watch",
+          "patch"
         ]
       },
       {
         "apiGroups": [
-          "config.istio.io",
           "networking.istio.io",
-          "authentication.istio.io",
-          "rbac.istio.io",
-          "security.istio.io"
+          "security.istio.io",
+          "extensions.istio.io",
+          "telemetry.istio.io",
+          "gateway.networking.k8s.io"
         ],
         "resources": [
           "*"
@@ -210,6 +284,52 @@ local target_registry = if is_offline == "false" then "" else private_registry +
           "get",
           "list",
           "watch"
+        ]
+      },
+      {
+        "apiGroups": [
+          "app.openshift.io"
+        ],
+        "resources": [
+          "deploymentconfigs"
+        ],
+        "verbs": [
+          "get",
+          "list",
+          "watch"
+        ]
+      },
+      {
+        "apiGroups": [
+          "project.openshift.io"
+        ],
+        "resources": [
+          "projects"
+        ],
+        "verbs": [
+          "get"
+        ]
+      },
+      {
+        "apiGroups": [
+          "route.openshift.io"
+        ],
+        "resources": [
+          "routes"
+        ],
+        "verbs": [
+          "get"
+        ]
+      },
+      {
+        "apiGroups": [
+          "authentication.k8s.io"
+        ],
+        "resources": [
+          "tokenreviews"
+        ],
+        "verbs": [
+          "create"
         ]
       },
       {
@@ -295,31 +415,42 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "istio_component_namespaces:",
         "  grafana: monitoring",
         "  tracing: istio-system",
-        "  pilot: istio-system",
+        "  istiod: istio-system",
         "  prometheus: monitoring",
         "istio_namespace: istio-system",
         "auth:",
         "  strategy: openid",
         "  openid:",
-        std.join("", ["    client_id: ", client_id]),
-        std.join("", ["    issuer_url: https://", HYPERAUTH_DOMAIN, "/auth/realms/tmax"]),
+        std.join("", ["    client_id: ", kiali_client_id]),
+        std.join("", ["    issuer_uri: https://", HYPERAUTH_DOMAIN, "/auth/realms/tmax"]),
         std.join("", ["    authorization_endpoint: https://", HYPERAUTH_DOMAIN, "/auth/realms/tmax/protocol/openid-connect/auth"]),
         "deployment:",
         "  accessible_namespaces: ['**']",
         "login_token:",
-        "  signing_key: wl5oStULbP",
+        "  signing_key: 0123456789012345",
         "server:",
         "  port: 20001",
         "  web_root: /api/kiali",
+        "  metrics_enabled: true",
+        "  metrics_port: 9090",
         "external_services:",
         "  istio:",
-        "    url_service_version: http://istio-pilot.istio-system:8080/version",
+        "    root_namespace: istio-system",
+        "    component_status:",
+        "      enabled: true",
+        "      components:",
+        "        - app_label: istiod",
+        "          is_core: true",
+        "        - app_label: ingressgateway",
+        "          is_core: true",
+        "          is_proxy: true",
+        "    url_service_version: http://istiod.istio-system.svc:15014/version",
         "  tracing:",
         "    url:",
-        "    in_cluster_url: http://tracing/api/jaeger",
+        "    in_cluster_url: http://jaeger-query.istio-system.svc:16685",
         "  grafana:",
         "    url:",
-        "    in_cluster_url: http://grafana.monitoring:3000",
+        "    in_cluster_url: http://grafana.monitoring.svc:3000",
         "  prometheus:",
         "    url: http://prometheus-k8s.monitoring:9090"
         ]
@@ -430,9 +561,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
               "command": [
                 "/opt/kiali/kiali",
                 "-config",
-                "/kiali-configuration/config.yaml",
-                "-v",
-                "3"
+                "/kiali-configuration/config.yaml"
               ],
               "env": [
                 {
@@ -442,6 +571,20 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                       "fieldPath": "metadata.namespace"
                     }
                   }
+                },
+                {
+                  "name": "LOG_LEVEL",
+                  "value": kiali_loglevel
+                }
+              ],
+              "ports": [
+                {
+                  "name": "api-port",
+                  "containerPort": 20001
+                },
+                {
+                  "name": "http-metrics",
+                  "containerPort": 9090
                 }
               ],
               "image": std.join("", [target_registry, "quay.io/kiali/kiali:", KIALI_VERSION]),
@@ -468,11 +611,11 @@ local target_registry = if is_offline == "false" then "" else private_registry +
               "resources": {
                 "requests": {
                   "cpu": "10m",
-                  "memory": "50Mi"
+                  "memory": "64Mi"
                 },
                 "limits": {
                   "cpu": "50m",
-                  "memory": "100Mi"
+                  "memory": "512Mi"
                 }
               },
               "volumeMounts": [
@@ -482,7 +625,8 @@ local target_registry = if is_offline == "false" then "" else private_registry +
                 },
                 {
                   "mountPath": "/kiali-cert",
-                  "name": "kiali-cert"
+                  "name": "kiali-cert",
+                  "readOnly": true
                 },
                 {
                   "mountPath": "/kiali-secret",
@@ -501,15 +645,21 @@ local target_registry = if is_offline == "false" then "" else private_registry +
           "volumes": [
             {
               "configMap": {
-                "name": "kiali"
+                "name": "kiali",
+                "items": [
+                  {
+                    "key": "config.yaml",
+                    "path": "config.yaml"
+                  }
+                ]
               },
               "name": "kiali-configuration"
             },
             {
               "name": "kiali-cert",
               "secret": {
-                "optional": true,
-                "secretName": "istio.kiali-service-account"
+                "secretName": "kiali-service-account",
+                "optional": true
               }
             },
             {
@@ -550,6 +700,11 @@ local target_registry = if is_offline == "false" then "" else private_registry +
           "name": "http-kiali",
           "protocol": "TCP",
           "port": 20001
+        },
+        {
+          "name": "http-metrics",
+          "protocol": "TCP",
+          "port": 9090
         }
       ],
       "selector": {

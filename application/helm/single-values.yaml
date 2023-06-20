@@ -258,6 +258,8 @@ modules:
     kiali:
       enabled: true
       subdomain: kiali
+      # trace, debug, info, warn, error, fatal
+      kialiLoglevel: info
 
   ### cluster-api
   capi:
