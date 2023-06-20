@@ -32,8 +32,8 @@ spec:
               "fiscalYearStartMonth": 0,
               "gnetId": null,
               "graphTooltip": 0,
-              "id": 133,
-              "iteration": 1686817101589,
+              "id": 36,
+              "iteration": 1687229294252,
               "links": [],
               "liveNow": false,
               "panels": [
@@ -117,7 +117,7 @@ spec:
                     }
                   ],
                   "spaceLength": 10,
-                  "stack": true,
+                  "stack": false,
                   "steppedLine": false,
                   "targets": [
                     {
@@ -278,5 +278,5 @@ spec:
               "timezone": "",
               "title": "CPU CORE COUNT",
               "uid": "NODE-CPU-CORE",
-              "version": 3
+              "version": 2
             }
