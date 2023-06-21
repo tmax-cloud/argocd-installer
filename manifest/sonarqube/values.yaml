@@ -32,8 +32,8 @@ image:
     repo: docker.io/curlimages/curl
     tag: 7.76.1
   busybox:
-    repo: docker.io/library/busybox
-    tag: 1.32
+    repo: docker.io/busybox
+    tag: 1.32.0
   sonarqube:
     repo: docker.io/sonarqube
     tag: 9.8.0-community
