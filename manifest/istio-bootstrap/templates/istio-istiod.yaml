@@ -22,8 +22,6 @@ spec:
     targetRevision: {{ .Values.spec.source.targetRevision }}
     helm:
       releaseName: {{ $module }}d
-      valueFiles:
-        - {{ .Values.global.helm.valueFiles }}
       parameters:
           - name: global.logging.level
             value: "default:{{ .Values.modules.istio_istiod.logLevel }}"

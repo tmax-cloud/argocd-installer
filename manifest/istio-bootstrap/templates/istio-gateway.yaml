@@ -22,9 +22,9 @@ spec:
     targetRevision: {{ .Values.spec.source.targetRevision }}
     helm:
       releaseName: ingressgateway
-      valueFiles:
-        - {{ .Values.global.helm.valueFiles }}
       parameters:
+        - name: service.type
+          value: NodePort
       {{- if .Values.global.network.disabled }}
       - name: job.privateRegistry
         value: {{ .Values.global.privateRegistry }}
