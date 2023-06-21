@@ -23,12 +23,12 @@ spec:
     helm:
       releaseName: {{ $module }}d
       parameters:
-          - name: global.logging.level
-            value: "default:{{ .Values.modules.istio_istiod.logLevel }}"
-      {{- if .Values.global.network.disabled }}
-      - name: global.hub
-        value: {{ .Values.global.privateRegistry }}/docker.io/istio
-      {{- end }}
+        - name: global.logging.level
+          value: "default:{{ .Values.modules.istio_istiod.logLevel }}"
+        {{- if .Values.global.network.disabled }}
+        - name: global.hub
+          value: {{ .Values.global.privateRegistry }}/docker.io/istio
+        {{- end }}
   syncPolicy:
     {{- if .Values.modules.istio_istiod.autoSync }}
     automated:

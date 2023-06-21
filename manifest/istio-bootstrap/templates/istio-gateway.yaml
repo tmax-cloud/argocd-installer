@@ -23,12 +23,10 @@ spec:
     helm:
       releaseName: ingressgateway
       parameters:
-        - name: service.type
-          value: NodePort
-      {{- if .Values.global.network.disabled }}
-      - name: job.privateRegistry
-        value: {{ .Values.global.privateRegistry }}
-      {{- end }}
+        {{- if .Values.global.network.disabled }}
+        - name: job.privateRegistry
+          value: {{ .Values.global.privateRegistry }}
+        {{- end }}
   syncPolicy:
     {{- if .Values.modules.istio_gateway.autoSync }}
     automated:
