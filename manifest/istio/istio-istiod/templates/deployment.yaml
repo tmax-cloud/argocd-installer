@@ -200,12 +200,21 @@ spec:
           - name: extracacerts
             mountPath: /cacerts
           {{- end }}
+          {{- if ne .Values.global.timeZone "UTC" }}
+          - name: timezone-config
+            mountPath: /etc/localtime
+          {{- end }}
       volumes:
       # Technically not needed on this pod - but it helps debugging/testing SDS
       # Should be removed after everything works.
       - emptyDir:
           medium: Memory
         name: local-certs
+      {{- if ne .Values.global.timeZone "UTC" }}
+      - name: timezone-config
+        hostPath:
+          path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.global.timeZone }}
+      {{- end }}
       {{- if eq .Values.global.jwtPolicy "third-party-jwt" }}
       - name: istio-token
         projected:

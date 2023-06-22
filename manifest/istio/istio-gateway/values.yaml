@@ -3,6 +3,7 @@ name: ""
 # revision declares which revision this gateway is a part of
 revision: ""
 
+timeZone: UTC
 replicaCount: 1
 
 kind: Deployment

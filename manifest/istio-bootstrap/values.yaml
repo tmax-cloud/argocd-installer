@@ -11,8 +11,7 @@ global:
   privateRegistry: 172.22.6.2:5000
   network:
     disabled: false
-  helm:
-    valueFiles: values.yaml
+  timeZone: UTC
 
 modules:
   istio_namespace:

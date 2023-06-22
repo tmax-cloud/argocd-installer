@@ -29,6 +29,8 @@ spec:
         - name: global.hub
           value: {{ .Values.global.privateRegistry }}/docker.io/istio
         {{- end }}
+        - name: global.timeZone
+          value: {{ .Values.global.timeZone }}
   syncPolicy:
     {{- if .Values.modules.istio_istiod.autoSync }}
     automated:
