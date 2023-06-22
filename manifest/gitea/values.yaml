@@ -293,6 +293,7 @@ gitea:
 
   # Either specify inline `key` and `secret` or refer to them via `existingSecret`
   ## @param gitea.oauth OAuth configuration
+  oauth_enabled: false
   oauth:
     - name: 'giteaOAuth' # oauth name
       provider: 'openidConnect' # client protocol

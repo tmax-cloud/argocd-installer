@@ -39,6 +39,7 @@ modules:
   ###gitea
   gitea:
     enabled: false
+    oauth_enabled: false
     subdomain: gitea
     # "Trace", "Debug", "Info", "Warn", "Error", "Critical" or "None"
     logLevel: Info
