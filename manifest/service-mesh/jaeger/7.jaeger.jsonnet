@@ -5,13 +5,17 @@ function(
   cluster_name="master",
   tmax_client_secret="tmax_client_secret",
   HYPERAUTH_DOMAIN="hyperauth.domain",
-  GATEKEER_VERSION="v1.0.2",
+  GATEKEEPER_VERSION="v1.0.2",
   CUSTOM_DOMAIN_NAME="custom-domain",
   CUSTOM_CLUSTER_ISSUER="tmaxcloud-issuer",
   jaeger_client_id="jaeger",
   jaeger_subdomain="jaeger",
   storage_type="grpc-plugin",
   PLUGIN_VERSION="v2.0.2",
+  jaeger_collector_log_level="info",
+  jaeger_agent_log_level="info",
+  jaeger_query_log_level="info",
+  gatekeeper_log_level="info",
   time_zone="UTC"
 )
 
@@ -210,7 +214,8 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
                 "--grpc-storage-plugin.binary=/plugin/jaeger-objectstorage",
                 "--grpc-storage-plugin.configuration-file=/plugin/loki.yaml",
                 "--sampling.strategies-file=/etc/jaeger/sampling/sampling.json",
-                "--collector.zipkin.host-port=9411"
+                "--collector.zipkin.host-port=9411",
+                std.join("", ["--log-level=", jaeger_collector_log_level])
               ],
               "ports": [
                 {
@@ -430,7 +435,7 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
           "containers": [
             {
               "name": "gatekeeper",
-              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/gatekeeper:", GATEKEER_VERSION]),
+              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/gatekeeper:", GATEKEEPER_VERSION]),
               "imagePullPolicy": "Always",
               "args": [
                 std.join("", ["--client-id=", jaeger_client_id]),
@@ -453,7 +458,7 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
                 "--forbidden-page=/html/access-forbidden.html",
                 std.join("", ["--resources=uri=/*|roles=", jaeger_client_id, ":jaeger-manager"]),
                 "--enable-encrypted-token",
-                "--verbose"
+                std.join("", ["--log-level=", gatekeeper_log_level])
               ],
               "ports": [
                 {
@@ -493,7 +498,8 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
               "args": [
                 "--grpc-storage-plugin.binary=/plugin/jaeger-objectstorage",
                 "--grpc-storage-plugin.configuration-file=/plugin/loki.yaml",
-                "--query.ui-config=/etc/config/ui.json"
+                "--query.ui-config=/etc/config/ui.json",
+                std.join("", ["--log-level=", jaeger_query_log_level])
               ],
               "env": [
                 {
@@ -521,6 +527,10 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
               "ports": [
                 {
                   "containerPort": 16686,
+                  "protocol": "TCP"
+                },
+                {
+                  "containerPort": 16685,
                   "protocol": "TCP"
                 }
               ],
@@ -652,6 +662,12 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
           "port": 443,
           "protocol": "TCP",
           "targetPort": 3000
+        },
+        {
+          "name": "grpc-query",
+          "port": 16685,
+          "protocol": "TCP",
+          "targetPort": 16685
         }
       ],
       "selector": {
@@ -723,7 +739,8 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
               "image": std.join("", [target_registry, "docker.io/jaegertracing/jaeger-agent:", JAEGER_VERSION]),
               "name": "jaeger-agent",
               "args": [
-                "--reporter.grpc.host-port=dns:///jaeger-collector.istio-system.svc:14250"
+                "--reporter.grpc.host-port=dns:///jaeger-collector.istio-system.svc:14250",
+                std.join("", ["--log-level=", jaeger_agent_log_level])
               ],
               "resources": {
                 "limits": {
