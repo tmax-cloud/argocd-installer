@@ -179,6 +179,10 @@ spec:
     resources:
   {{ template "resources" . }}
     volumeMounts:
+    {{- if ne .Values.global.timeZone "UTC" }}
+    - name: timezone-config
+      mountPath: /etc/localtime
+    {{- end }}
     - name: workload-socket
       mountPath: /var/run/secrets/workload-spiffe-uds
     {{- if eq .Values.global.caName "GkeWorkloadCertificate" }}
@@ -242,6 +246,11 @@ spec:
 {{- end }}
 {{- end }}
   volumes:
+  {{- if ne .Values.global.timeZone "UTC" }}
+  - name: timezone-config
+    hostPath:
+      path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.global.timeZone }}
+  {{- end }}
   - emptyDir:
     name: workload-socket
   {{- if eq .Values.global.caName "GkeWorkloadCertificate" }}

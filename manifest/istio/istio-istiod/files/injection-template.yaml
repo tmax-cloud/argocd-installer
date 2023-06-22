@@ -129,6 +129,11 @@ spec:
   {{- end }}
     resources:
   {{ template "resources" . }}
+    {{- if ne .Values.global.timeZone "UTC" }}
+    volumeMounts:
+      - name: timezone-config
+        mountPath: /etc/localtime
+    {{- end }}
     securityContext:
       allowPrivilegeEscalation: {{ .Values.global.proxy.privileged }}
       privileged: {{ .Values.global.proxy.privileged }}
@@ -168,6 +173,11 @@ spec:
     {{with .Values.global.imagePullPolicy }}imagePullPolicy: "{{.}}"{{end}}
     resources:
   {{ template "resources" . }}
+    {{- if ne .Values.global.timeZone "UTC" }}
+    volumeMounts:
+      - name: timezone-config
+        mountPath: /etc/localtime
+    {{- end }}
     securityContext:
       allowPrivilegeEscalation: true
       capabilities:
@@ -369,6 +379,10 @@ spec:
     resources:
   {{ template "resources" . }}
     volumeMounts:
+    {{- if ne .Values.global.timeZone "UTC" }}
+    - name: timezone-config
+      mountPath: /etc/localtime
+    {{- end }}
     - name: workload-socket
       mountPath: /var/run/secrets/workload-spiffe-uds
     - name: credential-socket
@@ -418,6 +432,11 @@ spec:
       {{ end }}
       {{- end }}
   volumes:
+  {{- if ne .Values.global.timeZone "UTC" }}
+  - name: timezone-config
+    hostPath:
+      path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.global.timeZone }}
+  {{- end }}
   - emptyDir:
     name: workload-socket
   - emptyDir:
