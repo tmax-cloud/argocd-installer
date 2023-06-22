@@ -27,7 +27,7 @@ spec:
         - name: job.privateRegistry
           value: {{ .Values.global.privateRegistry }}
         {{- end }}
-        - name: timeZone
+        - name: global.timeZone
           value: {{ .Values.global.timeZone }}
   syncPolicy:
     {{- if .Values.modules.istio_gateway.autoSync }}
