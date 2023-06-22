@@ -26,7 +26,7 @@ statefulset:
 deploymentStrategy: Recreate
 image:
   # Sonatype Official Public Image
-  repository: sonatype/nexus3
+  repository: docker.io/sonatype/nexus3
   tag: 3.45.0
   pullPolicy: IfNotPresent
 imagePullSecrets:
