@@ -326,6 +326,26 @@ webhook:
   url: {}
     # host:
 
+  networkPolicy:
+    enabled: false
+    ingress:
+    - from:
+      - ipBlock:
+          cidr: 0.0.0.0/0
+    egress:
+    - ports:
+      - port: 80
+        protocol: TCP
+      - port: 443
+        protocol: TCP
+      - port: 53
+        protocol: TCP
+      - port: 53
+        protocol: UDP
+      to:
+      - ipBlock:
+          cidr: 0.0.0.0/0
+
 cainjector:
   enabled: true
   replicaCount: 1
