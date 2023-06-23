@@ -30,12 +30,12 @@ cert-manager:
 #    imagePullSecrets:
 #      - name: regcred
   resources:
-   limits:
-     cpu: 100m
-     memory: 128Mi
-   requests:
-     cpu: 100m
-     memory: 128Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
   cainjector:
     resources:
       limits:
