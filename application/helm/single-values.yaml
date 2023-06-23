@@ -38,6 +38,7 @@ modules:
   ###gitea
   gitea:
     enabled: false
+    oauth_enabled: false
     subdomain: gitea
     logLevel: Info
     
