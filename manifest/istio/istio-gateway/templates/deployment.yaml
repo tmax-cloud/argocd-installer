@@ -86,16 +86,16 @@ spec:
             name: http-envoy-prom
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          {{- if ne .Values.timeZone "UTC" }}
+          {{- if ne .Values.global.timeZone "UTC" }}
           volumeMounts:
             - name: timezone-config
               mountPath: /etc/localtime
           {{- end }}
-      {{- if ne .Values.timeZone "UTC" }}
+      {{- if ne .Values.global.timeZone "UTC" }}
       volumes:
         - name: timezone-config
           hostPath:
-            path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.timeZone }}
+            path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.global.timeZone }}
       {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
