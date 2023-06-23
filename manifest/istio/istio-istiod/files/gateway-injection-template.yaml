@@ -164,6 +164,10 @@ spec:
     {{- end }}
     - name: istio-podinfo
       mountPath: /etc/istio/pod
+    {{- if ne .Values.global.timeZone "UTC" }}
+    - name: timezone-config
+      mountPath: /etc/localtime
+    {{- end }}
   volumes:
   - emptyDir: {}
     name: workload-socket
@@ -216,6 +220,11 @@ spec:
       {{ else -}}
       secretName: {{  printf "istio.%s" .Spec.ServiceAccountName }}
       {{  end -}}
+  {{- end }}
+  {{- if ne .Values.global.timeZone "UTC" }}
+  - name: timezone-config
+    hostPath:
+      path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.global.timeZone }}
   {{- end }}
   {{- if .Values.global.imagePullSecrets }}
   imagePullSecrets:

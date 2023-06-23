@@ -210,6 +210,7 @@ meshConfig:
 
 global:
   # Used to locate istiod.
+  timeZone: UTC
   istioNamespace: istio-system
   # enable pod disruption budget for the control plane, which is used to
   # ensure Istio control plane components are gradually upgraded or recovered.

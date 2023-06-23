@@ -22,8 +22,6 @@ spec:
     targetRevision: {{ .Values.spec.source.targetRevision }}
     helm:
       releaseName: {{ $module }}-base
-      valueFiles:
-        - {{ .Values.global.helm.valueFiles }}
   syncPolicy:
     {{- if .Values.modules.istio_base.autoSync }}
     automated:

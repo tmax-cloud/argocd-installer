@@ -22,15 +22,15 @@ spec:
     targetRevision: {{ .Values.spec.source.targetRevision }}
     helm:
       releaseName: {{ $module }}d
-      valueFiles:
-        - {{ .Values.global.helm.valueFiles }}
       parameters:
-          - name: global.logging.level
-            value: "default:{{ .Values.modules.istio_istiod.logLevel }}"
-      {{- if .Values.global.network.disabled }}
-      - name: global.hub
-        value: {{ .Values.global.privateRegistry }}/docker.io/istio
-      {{- end }}
+        - name: global.logging.level
+          value: "default:{{ .Values.modules.istio_istiod.logLevel }}"
+        {{- if .Values.global.network.disabled }}
+        - name: global.hub
+          value: {{ .Values.global.privateRegistry }}/docker.io/istio
+        {{- end }}
+        - name: global.timeZone
+          value: {{ .Values.global.timeZone }}
   syncPolicy:
     {{- if .Values.modules.istio_istiod.autoSync }}
     automated:
