@@ -91,7 +91,7 @@ spec:
             - name: timezone-config
               mountPath: /etc/localtime
           {{- end }}
-      {{- if ne .Values.timeZone "UTC" }}
+      {{- if ne .Values.global.timeZone "UTC" }}
       volumes:
         - name: timezone-config
           hostPath:
