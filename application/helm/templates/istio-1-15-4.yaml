@@ -49,6 +49,8 @@ spec:
           value: {{ .Values.spec.source.repoURL }}
         - name: spec.source.targetRevision
           value: {{ .Values.spec.source.targetRevision }}
+        - name: global.timeZone
+          value: {{ .Values.global.timeZone }}
     path: manifest/istio-bootstrap
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}

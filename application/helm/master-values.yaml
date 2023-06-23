@@ -260,6 +260,14 @@ modules:
     jaeger:
       enabled: true
       subdomain: jaeger
+      # debug, info, warn, error
+      jaegerCollectorLoglevel: info
+      # debug, info, warn, error
+      jaegerAgentLoglevel: info
+      # debug, info, warn, error
+      jaegerQueryLoglevel: info
+      # debug, info, warning, error, fatal, panic
+      gatekeeperLoglevel: info
 
     ### kiali
     kiali:

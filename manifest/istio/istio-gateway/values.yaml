@@ -1,4 +1,7 @@
 # Name allows overriding the release name. Generally this should not be set
+global:
+  timeZone: UTC
+
 name: ""
 # revision declares which revision this gateway is a part of
 revision: ""

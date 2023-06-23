@@ -7,6 +7,10 @@ spec:
       volumeMounts:
         - mountPath: /var/lib/grpc/data/
           name: grpc-io-proxyless-bootstrap
+        {{- if ne .Values.global.timeZone "UTC" }}
+        - name: timezone-config
+          mountPath: /etc/localtime
+        {{- end }}
       env:
         - name: INSTANCE_IP
           valueFrom:
@@ -58,7 +62,16 @@ spec:
     volumeMounts:
       - mountPath: /var/lib/grpc/data/
         name: grpc-io-proxyless-bootstrap
+      {{- if ne .Values.global.timeZone "UTC" }}
+      - name: timezone-config
+        mountPath: /etc/localtime
+      {{- end }}
   {{- end }}
   volumes:
     - name: grpc-io-proxyless-bootstrap
       emptyDir: {}
+    {{- if ne .Values.global.timeZone "UTC" }}
+    - name: timezone-config
+      hostPath:
+        path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.global.timeZone }}
+    {{- end }}
