@@ -92,7 +92,7 @@ stringData:
     configure_ldap
 
     function configure_oauth() {
-      {{- if .Values.gitea.oauth }}
+      {{- if .Values.gitea.oauth_enabled }}
       {{- range $idx, $value := .Values.gitea.oauth }}
       local OAUTH_NAME=giteaOAuth
       local AUTH_ID=$(gitea admin auth list --vertical-bars | grep -E "\|${OAUTH_NAME}\s+\|" | grep -iE '\|OAuth2\s+\|' | awk -F " "  "{print \$1}")
