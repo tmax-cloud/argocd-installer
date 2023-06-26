@@ -35,7 +35,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
           "containers": [
             {
               "name": "webhook",
-              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/image-validation-webhook:v5.0.5"]),
+              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/image-validation-webhook:v5.0.6"]),
               "imagePullPolicy": "Always",
               "args": [
                 std.join("", ["--zap-log-level=", log_level])
