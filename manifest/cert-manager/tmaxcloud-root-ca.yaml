@@ -4,7 +4,7 @@ apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
   labels:
-    app.kubernetes.io/instance: traefik
+    app.kubernetes.io/instance: cert-manager
     app.kubernetes.io/managed-bu: tmax-cloud
     app.kubernetes.io/name: cert-manager
   name: tmaxcloud-selfsigned
@@ -17,7 +17,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   labels:
-    app.kubernetes.io/instance: traefik
+    app.kubernetes.io/instance: cert-manager
     app.kubernetes.io/managed-by: tmax-cloud
     app.kubernetes.io/name: cert-manager
   name: tmaxcloud-ca
@@ -44,7 +44,7 @@ apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
   labels:
-    app.kubernetes.io/instance: traefik
+    app.kubernetes.io/instance: cert-manager
     app.kubernetes.io/managed-by: tmax-cloud
     app.kubernetes.io/name: cert-manager
   name: tmaxcloud-issuer
