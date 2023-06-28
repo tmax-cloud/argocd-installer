@@ -16,7 +16,7 @@ kind: Certificate
 metadata:
   annotations:
     "helm.sh/hook": post-install,post-upgrade
-    "helm.sh/hook-weight": "11"
+    "helm.sh/hook-weight": "12"
     "helm.sh/hook-delete-policy": before-hook-creation
   name: tmaxcloud-ca
 spec:
@@ -40,7 +40,7 @@ kind: ClusterIssuer
 metadata:
   annotations:
     "helm.sh/hook": post-install,post-upgrade
-    "helm.sh/hook-weight": "12"
+    "helm.sh/hook-weight": "11"
     "helm.sh/hook-delete-policy": before-hook-creation
   name: tmaxcloud-issuer
 spec:
