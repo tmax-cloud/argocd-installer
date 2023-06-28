@@ -6,6 +6,7 @@ metadata:
     app.kubernetes.io/name: argo-rollouts-metrics
     app.kubernetes.io/part-of: argo-rollouts
   name: argo-rollouts-metrics
+  namespace: argo-rollouts
 spec:
   ports:
   - name: metrics
@@ -23,6 +24,7 @@ metadata:
     app.kubernetes.io/name: argo-rollouts-dashboard
     app.kubernetes.io/part-of: argo-rollouts
   name: argo-rollouts-dashboard
+  namespace: argo-rollouts
 spec:
   ports:
   - port: 3100
