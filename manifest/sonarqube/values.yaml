@@ -20,13 +20,6 @@ ingress:
     domain: testdomain.com
     subdomain: sonarqube
 
-sonarProperties:
-  sonar.core.serverBaseURL: 'serverBaseURL ex)https://sonarqube.testdomain.com'
-  sonar.auth.oidc.clientId.secured: 'client name ex)sonarqube'
-  sonar.auth.oidc.clientSecret.secured: 'client secret'
-  sonar.auth.oidc.enabled: true
-  sonar.auth.oidc.issuerUri: issuerUri 'ex)https://hyperauth.tmaxcloud.org/auth/realms/tmax'
-
 image:
   curlimages:
     repo: docker.io/curlimages/curl
@@ -43,9 +36,3 @@ persistence:
   storageClass:
   accessMode: ReadWriteOnce
   size: 5Gi
-
-plugins:
-  install:
-    - "https://github.com/vaulttec/sonar-auth-oidc/releases/download/v2.1.1/sonar-auth-oidc-plugin-2.1.1.jar"
-  noCheckCertificate: false
-  netrcCreds: ""
