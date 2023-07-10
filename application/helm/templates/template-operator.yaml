@@ -1,7 +1,7 @@
 {{ if .Values.modules.tsb.enabled }}
 {{ $isMaster := eq .Values.global.cluster "master" }}
 {{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
-{{ $module := "template-service-broker" }}
+{{ $module := "template-operator" }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -28,7 +28,7 @@ spec:
             value: {{ .Values.global.timeZone }}
           - name: log_level
             value: {{ .Values.modules.tsb.logLevel}}
-    path: manifest/template-service-broker
+    path: manifest/template-operator
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
 {{ end }}
