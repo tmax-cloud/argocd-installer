@@ -117,7 +117,7 @@ spec:
           value: {{ .Values.global.timeZone }}
       {{- end }}
       {{- if .Values.global.network.disabled }}
-        - name: image.name
+        - name: traefik.image.name
           value: {{ .Values.global.privateRegistry }}/docker.io/library/traefik
       {{- end }}
         - name: traefik.image.tag
