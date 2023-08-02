@@ -22,7 +22,7 @@ global:
 
 # hc-apiserver
 apiServer:
-  version: b5.1.1.0
+  version: b5.1.3.3
   logLevel: INFO
 
   kubectl:
@@ -61,7 +61,7 @@ timescaleDB:
 
 # hc-single-operator
 singleOperator:
-  version: b5.1.1.0
+  version: b5.1.3.0
   logLevel: info
 
   rbacProxy:  
