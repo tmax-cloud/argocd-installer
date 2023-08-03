@@ -84,6 +84,8 @@ spec:
             value: {{ .Values.global.console.subDomain }}
           - name: KUBECTL_TIMEOUT
             value: "{{ .Values.apiServer.kubectl.timeout }}"
+          - name: PRIVATE_REGISTRY
+            value: "{{ .Values.global.offline.registry }}"
         ports:
         - containerPort: 443
           name: https 
