@@ -106,7 +106,7 @@ local mcr_registry = if is_offline == "false" then "" else private_registry + "/
                 "-shell-image",
                 std.join("", [gcr_registry,"gcr.io/distroless/base:debug"]),
                 "-shell-image-win",
-                std.join("", [mcr_registry,"mcr.microsoft.com/powershell:nanoserver"])
+                "unset"
               ],
               "volumeMounts": [
                 {
