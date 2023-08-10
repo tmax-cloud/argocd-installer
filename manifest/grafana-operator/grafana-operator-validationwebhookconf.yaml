@@ -7,8 +7,8 @@ metadata:
     cert-manager.io/inject-ca-from: monitoring/grafana-operator-val-cert
 webhooks:
 - admissionReviewVersions:
-  - v1
   - v1beta1
+  - v1
   clientConfig:
     service:
       name: grafana-operator-service
