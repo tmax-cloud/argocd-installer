@@ -38,11 +38,11 @@ image:
 
 ## String to partially override common.names.fullname template (will maintain the release name)
 ##
-# nameOverride:
+# nameOverride: 
 
 ## String to fully override common.names.fullname template
 ##
-# fullnameOverride:
+fullnameOverride: gitea-memcached
 
 ## Add labels to all the deployed resources
 ##
