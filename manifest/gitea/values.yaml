@@ -11,6 +11,8 @@ global:
     is_offline: false
     private_registry: test-registry.com
 
+fullnameOverride: gitea
+
 ## @param replicaCount number of replicas for the statefulset
 replicaCount: 1
 
@@ -324,6 +326,10 @@ gitea:
       SKIP_TLS_VERIFY: true
     log:
       LEVEL: Info # "Trace", "Debug", "Info", "Warn", "Error", "Critical" or "None"
+    database:
+      HOST: gitea-mariadb.gitea-system.svc.cluster.local:3306
+    cache:
+      HOST: gitea-memcached.gitea-system.svc.cluster.local:11211
   #  APP_NAME: "Gitea: Git with a cup of tea"
   #  RUN_MODE: dev
   #

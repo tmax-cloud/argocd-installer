@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: gitea-ingress
+  name: {{ include "gitea.fullname" . }}-ingress
   namespace: gitea-system
   labels:
     ingress.tmaxcloud.org/name: gitea
@@ -24,6 +24,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: gitea-http
+            name: {{ include "gitea.fullname" . }}-http
             port:
               number: 3000
