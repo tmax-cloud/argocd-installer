@@ -43,7 +43,7 @@ image:
 
 ## String to fully override mariadb.fullname template
 ##
-# fullnameOverride:
+fullnameOverride: gitea-mariadb
 
 ## Cluster domain
 ##
