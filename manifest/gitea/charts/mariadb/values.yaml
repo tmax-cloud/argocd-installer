@@ -39,11 +39,11 @@ image:
 
 ## String to partially override mariadb.fullname template (will maintain the release name)
 ##
-# nameOverride:
+# nameOverride: 
 
 ## String to fully override mariadb.fullname template
 ##
-# fullnameOverride:
+fullnameOverride: gitea-mariadb
 
 ## Cluster domain
 ##
