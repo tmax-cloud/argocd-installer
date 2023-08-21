@@ -6,6 +6,13 @@ global:
     private_registry:
   time_zone: Asia/Seoul
 
+OIDC:
+  enabled: true 
+  config:
+    clientId: argocd
+    clientSecret: tmax_client_secret
+    hyperauthUrl: hyperauth_domain
+    adminGroupName: hypercloud5
 
 image: #repo, noti, contoller = argoserver
   redis:
@@ -47,4 +54,4 @@ argoIngress:
   tls:
     enabled: true
     secretName:
-  enableTraefik: false
+  enableTraefik: true
