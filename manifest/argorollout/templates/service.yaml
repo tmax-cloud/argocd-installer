@@ -27,11 +27,11 @@ metadata:
   namespace: argo-rollouts
 spec:
   ports:
-  - name: http-rollout
+  - name: http-rollouts
     port: 80
     protocol: TCP
     targetPort: 3100
-  - name: https-rollout
+  - name: https-rollouts
     port: 443
     protocol: TCP
     targetPort: 3100
