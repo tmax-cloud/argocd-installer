@@ -62,10 +62,8 @@ spec:
 {{ toYaml .Values.redis.internal.resources | indent 10 }}
 {{- end }}
         volumeMounts:
-        {{- if ne .Values.global.time_zone "UTC" }}
         - name: timezone-config
           mountPath: /etc/localtime
-        {{- end }}
         - name: data
           mountPath: /var/lib/redis
           subPath: {{ $redis.subPath }}
@@ -76,11 +74,13 @@ spec:
       - name: redis-config
         configMap:
           name: "{{ template "harbor.redis" . }}"
-      {{- if ne .Values.global.time_zone "UTC" }}
       - name: timezone-config
         hostPath: 
+          {{- if ne .Values.global.time_zone "UTC" }}
           path: {{ printf "%s%s" "/usr/share/zoneinfo/" .Values.global.time_zone }}
-      {{- end }}
+          {{- else }}
+          path: /usr/share/zoneinfo/UTC
+          {{- end }}
       {{- if not .Values.persistence.enabled }}
       - name: data
         emptyDir: {}
