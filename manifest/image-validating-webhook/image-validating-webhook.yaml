@@ -276,22 +276,34 @@ data:
     tmaxcloudck/notary_server:0.6.2-rc1
     tmaxcloudck/notary_signer:0.6.2-rc1
   whitelist-namespaces: |-
+    api-gateway-system
+    argo-rollouts
+    argocd
     capa-system
     capi-kubeadm-bootstrap-system
     capi-kubeadm-control-plane-system
     capi-system
     capi-webhook-system
-    catalog
     ceph-csi
+    capv-system
     cert-manager
-    cluster-tsb-ns
-    console-system
+    cicd-system
     default
+    demo
+    gitlab-system
+    gitea-system
     hypercloud5-system
-    ingress-nginx
-    ingress-nginx-shared
+    hypercloud-kubectl
+    hyperregistry
+    hyperauth
+    helm-ns
+    ingress-nginx-system
     istio-system
     istio-test
+    kafka
+    kale-demo
+    kale-distribute-demo
+    kubeflow
     kube-federation-system
     kube-logging
     kube-node-lease
@@ -299,18 +311,16 @@ data:
     kube-system
     metallb-system
     monitoring
+    nfs
+    nexus
     registry-system
-    template
-    tsb-ns
-    tsb-test
-    olm
-    operators
-    tekton-pipelines
+    redis-operator
     scheduled-scaler-operator-system
-    cicd-system
+    service-binding-operator
+    sonarqube
+    template
+    tekton-pipelines
     tfapplyclaim
-    hyperauth
-    gitlab-system
 ---
 apiVersion: v1
 kind: Service
