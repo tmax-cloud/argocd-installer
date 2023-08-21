@@ -27,9 +27,13 @@ metadata:
   namespace: argo-rollouts
 spec:
   ports:
-  - port: 3100
+  - name: http-rollout
+    port: 80
     protocol: TCP
     targetPort: 3100
-    name: https-rollouts
+  - name: https-rollout
+    port: 443
+    protocol: TCP
+    targetPort: 3100
   selector:
     app.kubernetes.io/name: argo-rollouts-dashboard
