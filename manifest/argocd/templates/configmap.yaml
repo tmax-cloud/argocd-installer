@@ -3,6 +3,15 @@ kind: ConfigMap
 data:
   resource.compareoptions: |
     ignoreAggregatedRoles: true
+  {{- if .Values.OIDC.enabled }}
+  url: https://{{ .Values.argoIngress.hosts.subdomain }}.{{ .Values.argoIngress.hosts.domain }}
+  oidc.config: |
+    name: Keycloak
+    issuer:  https://{{ .Values.OIDC.config.hyperauthUrl }}/auth/realms/tmax
+    clientID: {{ .Values.OIDC.config.clientId }}
+    clientSecret: $oidc.keycloak.clientSecret
+    requestedScopes: ["openid", "profile", "email", "groups"]
+  {{- end }}
 metadata:
   labels:
     app.kubernetes.io/name: argocd-cm
@@ -32,6 +41,11 @@ metadata:
 ---
 apiVersion: v1
 kind: ConfigMap
+{{- if .Values.OIDC.enabled }}
+data:
+  policy.csv: |
+    g, {{ .Values.OIDC.config.adminGroupName }}, role:admin
+{{- end }}
 metadata:
   labels:
     app.kubernetes.io/name: argocd-rbac-cm

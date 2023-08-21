@@ -55,6 +55,14 @@ spec:
           value: "{{ .Values.modules.argocd.controller.replicas }}"
         - name: controller.loglevel
           value: "{{ .Values.modules.argocd.controller.loglevel }}"
+        - name: OIDC.config.clientId
+          value: {{ ternary "argocd" (printf "%s-argocd" $prefix) $isMaster }}
+        - name: OIDC.config.clientSecret
+          value: {{ include "hyperAuth.tmaxClientSecret" . }}
+        - name: OIDC.config.hyperauthUrl
+          value: {{ include "hyperAuth.domain" . }}
+        - name: OIDC.config.adminGroupName
+          value: {{ ternary "hypercloud5" (printf "%s-argocd" $prefix) $isMaster }}
     path: manifest/argocd
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
