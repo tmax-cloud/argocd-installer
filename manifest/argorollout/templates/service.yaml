@@ -32,7 +32,7 @@ spec:
     protocol: TCP
     targetPort: 3100
   - name: https-rollouts
-    port: 443
+    port: 3100
     protocol: TCP
     targetPort: 3100
   selector:
