@@ -26,8 +26,7 @@ data:
           versionLabel:
           - hypercloud5=api-server
       readinessProbe:
-      versionProbe:          
-    
+      versionProbe:
     - name: HyperCloud Single Operator
       namespace: hypercloud5-system
       selector:
@@ -50,7 +49,6 @@ data:
       readinessProbe:
       versionProbe:
         container: manager
-      
     - name: HyperCloud Console
       namespace: api-gateway-system
       selector:
@@ -79,16 +77,6 @@ data:
           - k8s-app=calico-node
           versionLabel:
           - k8s-app=calico-node
-      readinessProbe:
-      versionProbe:
-    - name: MetalLB
-      namespace: metallb-system
-      selector:
-        matchLabels:
-          statusLabel:
-          - app=metallb
-          versionLabel:
-          - app=metallb
       readinessProbe:
       versionProbe:
     - name: API gateway
@@ -127,30 +115,6 @@ data:
           - app=tekton-pipelines-controller
       readinessProbe:
       versionProbe:
-    - name: Catalog-Controller
-      namespace: catalog
-      selector:
-        matchLabels:
-          statusLabel:
-          - app=catalog-catalog-controller-manager
-          versionLabel:
-          - app=catalog-catalog-controller-manager
-      readinessProbe:
-        httpGet:
-          path: /healthz/ready
-          port: 8444
-          scheme: HTTPS
-      versionProbe:
-    - name: ClusterTemplateServiceBroker
-      namespace: cluster-tsb-ns
-      selector:
-        matchLabels:
-          statusLabel:
-          - app=cluster-template-service-broker
-          versionLabel:
-          - app=cluster-template-service-broker
-      readinessProbe:
-      versionProbe:
     - name: CAPI
       namespace: capi-system
       selector:
@@ -175,13 +139,35 @@ data:
           path: /api/health
           port: 3000
       versionProbe:
-    - name: Kibana
-      namespace: kube-logging
+    - name: ArgoCD
+      namespace: argocd
       selector:
         matchLabels:
           statusLabel:
-          - app=kibana
+          - app.kubernetes.io/name=argocd-server
           versionLabel:
-          - app=kibana
-      readinessProbe:
-      versionProbe:
+          - app.kubernetes.io/name=argocd-server
+    - name: Gitea
+      namespace: gitea-system
+      selector:
+        matchLabels:
+          statusLabel:
+          - app=gitea
+          versionLabel:
+          - app=gitea
+    - name: Hyperregistry
+      namespace: hyperregistry
+      selector:
+        matchLabels:
+          statusLabel:
+          - app=harbor
+          versionLabel:
+          - app=harbor
+    - name: Loki
+      namespace: monitoring
+      selector:
+        matchLabels:
+          statusLabel:
+          - app=loki
+          versionLabel:
+          - app=loki
