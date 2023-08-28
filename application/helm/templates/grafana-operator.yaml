@@ -50,6 +50,10 @@ spec:
             value: {{ .Values.global.timeZone }}
           - name: console_url
             value: {{ printf "%s.%s" .Values.modules.gatewayBootstrap.console.subdomain .Values.global.domain }}
+          - name: grafana_operator_log_level
+            value: {{ .Values.modules.grafanaOperator.operator.logLevel }}
+          - name: grafana_log_level
+            value: {{ .Values.modules.grafanaOperator.grafana.logLevel }}
     path: manifest/grafana-operator
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}

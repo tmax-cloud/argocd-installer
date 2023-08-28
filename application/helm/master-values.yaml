@@ -43,6 +43,7 @@ modules:
   ### gitea
   gitea:
     enabled: true
+    oauth_enabled: false
     subdomain: gitea
     # "Trace", "Debug", "Info", "Warn", "Error", "Critical" or "None"
     logLevel: Info
@@ -131,6 +132,13 @@ modules:
     oauth2Proxy:
       enabled: true
       version: v7.3.1
+
+  ### istio version: 1.15.4 for kubeflow
+  istio:
+    enabled: true
+    autoSync: false
+    # none | error | warn | info | debug
+    logLevel: info
 
   ### strimzi-kafka-operator
   strimziKafka:
@@ -273,6 +281,19 @@ modules:
   ### prometheus
   prometheus:
     enabled: true
+    operatorLogLevel: info
+    # 사용 가능한 값 : error, warn, info, debug
+    alertmanagerLogLevel: info
+    # 사용 가능한 값 : error, warn, info, debug
+    nodeExporterLogLevel: info
+    # 사용 가능한 값 : error, warn, info, debug
+    kubeStateMetricLogLevel: 0
+    # 사용 가능한 값 : 0~10
+    adapterLogLevel: 0
+    # 사용 가능한 값 : 0~10
+    prometheusLogLevel: info
+    # 사용 가능한 값 : error, warn, info, debug
+
     versions:
       prometheus: v2.41.0
       cmReload: v0.0.1
@@ -291,9 +312,13 @@ modules:
     subdomain: grafana
     pvcSize: 10Gi
     operator: 
-      version: v0.0.10
+      logLevel: info
+      # 사용 가능한 값 : error, warn, info, debug
+      version: v0.0.11
       imageRepo: docker.io/tmaxcloudck/grafana-operator
     grafana:
+      logLevel: info
+      # 사용 가능한 값 : error, warn, info, debug
       version: "9.3.2"
       imageRepo: docker.io/grafana/grafana
 
@@ -309,7 +334,7 @@ modules:
   serviceMesh:
     ### istio
     istio:
-      enabled: true
+      enabled: false
       # :(scope) 를 기준으로 앞, default, ads, all, attributes, authn, configmapcontroller, grpcAdapter, mcp, model, pkica, rbac, rootcertrotator, secretcontroller, serverca, validation, validationController, validationServer
       # :(scope) 를 기준으로 뒤, debug, info, warn, error, fatal, none 
       istiodPilotDiscoveryLoglevel: default:info
@@ -336,8 +361,8 @@ modules:
     kiali:
       enabled: true
       subdomain: kiali
-      # "3" : info, "4": debug, "5": trace
-      kialiLoglevel: "3"
+      # trace, debug, info, warn, error, fatal
+      kialiLoglevel: info
 
   ### cluster-api
   capi:

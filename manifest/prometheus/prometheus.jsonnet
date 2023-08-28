@@ -17,7 +17,13 @@ function (
   node_exporter_version="v1.5.0",
   prometheus_adapter_version="v0.10.0",
   prometheus_pvc="10Gi",
-  prometheus_version="v2.41.0"
+  prometheus_version="v2.41.0",
+  prometheus_operator_log_level="info",
+  alertmanager_log_level="info",
+  node_exporter_log_level = "info",
+  kube_state_metrics_log_level = "0",
+  prometheus_adapter_log_level = "0",
+  prometheus_log_level = "info"
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -71,7 +77,8 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 						"/prometheus-config-reloader:",
 						configmap_reloader_version
 					  ]
-					)
+					),
+					std.join("", ["--log-level=", prometheus_operator_log_level])
 				],
 				"image": std.join("",
 					[
@@ -201,6 +208,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
           "app.kubernetes.io/version": "0.23.0"
         }
       },
+	  "logLevel": std.join("", [alertmanager_log_level]),
 	  "volumeMounts": [
 	    ] + (
                if timezone != "UTC" then [
@@ -283,7 +291,8 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 				  "--host=127.0.0.1",
 				  "--port=8081",
 				  "--telemetry-host=127.0.0.1",
-				  "--telemetry-port=8082"
+				  "--telemetry-port=8082",
+				  std.join("", ["--v=", kube_state_metrics_log_level])
 				],
 				"image": std.join("",
 					[
@@ -479,7 +488,8 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 				  "--no-collector.hwmon",
 				  "--collector.filesystem.mount-points-exclude=^/(dev|proc|sys|run/k3s/containerd/.+|var/lib/docker/.+|var/lib/kubelet/pods/.+)($|/)",
 				  "--collector.netclass.ignored-devices=^(veth.*|[a-f0-9]{15})$",
-				  "--collector.netdev.device-exclude=^(veth.*|[a-f0-9]{15})$"
+				  "--collector.netdev.device-exclude=^(veth.*|[a-f0-9]{15})$",
+				  std.join("", ["--log.level=", node_exporter_log_level])
 				],
 				"image": std.join("",
 					[
@@ -688,7 +698,8 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 				  "--metrics-relist-interval=1m",
 				  "--prometheus-url=http://prometheus-k8s.monitoring.svc:9090/",
 				  "--secure-port=6443",
-				  "--tls-cipher-suites=TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_GCM_SHA256,TLS_RSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA"
+				  "--tls-cipher-suites=TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_GCM_SHA256,TLS_RSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA",
+				  std.join("", ["--v=", prometheus_adapter_log_level])
 				],
 				"image": std.join("",
 					[
@@ -854,6 +865,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 			  }
 			}
 		  },
+		"logLevel": std.join("", [prometheus_log_level]),
 		"volumeMounts": [
 	    ] + (
                if timezone != "UTC" then [
