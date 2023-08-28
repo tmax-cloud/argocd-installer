@@ -62,6 +62,8 @@ spec:
           ## openssl rand -base64 32 | tr -- '+/' '-_'
           {{- $randomString := randAlphaNum 32 | b64enc | replace "+" "-" | replace "/" "_" }}
           value: {{ $randomString }}
+        - name: extraArgs.logging-level
+          value: {{ .Values.modules.oauth2Proxy.logLevel }}
         {{- if .Values.global.network.disabled }}
         - name: image.repository
           value: {{ .Values.global.privateRegistry }}/docker.io/tmaxcloudck/oauth2-proxy
