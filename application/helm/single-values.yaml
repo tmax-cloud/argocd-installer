@@ -265,8 +265,21 @@ modules:
       version: 2.7.1
 
   ### prometheus
-  prometheus:
+ prometheus:
     enabled: true
+    operatorLogLevel: info
+    # 사용 가능한 값 : error, warn, info, debug
+    alertmanagerLogLevel: info
+    # 사용 가능한 값 : error, warn, info, debug
+    nodeExporterLogLevel: info
+    # 사용 가능한 값 : error, warn, info, debug
+    kubeStateMetricLogLevel: 0
+    # 사용 가능한 값 : 0~10
+    adapterLogLevel: 0
+    # 사용 가능한 값 : 0~10
+    prometheusLogLevel: info
+    # 사용 가능한 값 : error, warn, info, debug
+
     versions:
       prometheus: v2.41.0
       cmReload: v0.0.1
@@ -285,9 +298,13 @@ modules:
     subdomain: grafana
     pvcSize: 10Gi
     operator: 
-      version: v0.0.10
+      logLevel: info
+      # 사용 가능한 값 : error, warn, info, debug
+      version: v0.0.11
       imageRepo: docker.io/tmaxcloudck/grafana-operator
     grafana:
+      logLevel: info
+      # 사용 가능한 값 : error, warn, info, debug
       version: "9.3.2"
       imageRepo: docker.io/grafana/grafana
 
