@@ -51,9 +51,9 @@ spec:
           - name: node_exporter_log_level
             value: {{ .Values.modules.prometheus.nodeExporterLogLevel}}
           - name: kube_state_metrics_log_level
-            value: {{ .Values.modules.prometheus.kubeStateMetricLogLevel }}
+            value: "{{ .Values.modules.prometheus.kubeStateMetricLogLevel }}"
           - name: prometheus_adapter_log_level
-            value: {{ .Values.modules.prometheus.adapterLogLevel }}
+            value: "{{ .Values.modules.prometheus.adapterLogLevel }}"
           - name: prometheus_log_level
             value: {{ .Values.modules.prometheus.prometheusLogLevel }} 
     path: manifest/prometheus
