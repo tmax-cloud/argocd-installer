@@ -131,9 +131,7 @@ modules:
 
     oauth2Proxy:
       enabled: true
-      version: v7.3.1
-      # debug | info | warn | error // 주로 "debug"를 사용
-      logLevel: "info"
+      version: v7.3.2
 
   ### istio version: 1.15.4 for kubeflow
   istio:
