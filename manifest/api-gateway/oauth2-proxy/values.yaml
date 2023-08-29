@@ -59,7 +59,6 @@ extraArgs:
   cookie-secure: true
   cookie-samesite: "none"
   cookie-httponly: true
-  logging-level: info
   #  provider: "keycloak-oidc"
   #  oidc-issuer-url: "https://hyperauth.tmaxcloud.org/auth/realms/tmax"
   #  set-xauthrequest: true
