@@ -265,7 +265,7 @@ modules:
       version: 2.7.1
 
   ### prometheus
- prometheus:
+  prometheus:
     enabled: true
     operatorLogLevel: info
     # 사용 가능한 값 : error, warn, info, debug
