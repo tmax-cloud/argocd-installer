@@ -316,7 +316,6 @@ spec:
                 description: "%clusterclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.provider"
                 enum:
                 - "AWS"
-                - "vSphere"
                 type: "string"
               providerAwsSpec:
                 description: "%clusterclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.providerAwsSpec"
@@ -356,56 +355,6 @@ spec:
                     type: "integer"
                   workerType:
                     description: "%clusterclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.providerAwsSpec.properties.workerType"
-                    type: "string"
-                type: "object"
-              providerVsphereSpec:
-                description: "%clusterclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.providerVsphereSpec"
-                properties:
-                  podCidr:
-                    description: "%clusterclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.providerVsphereSpec.properties.podCidr"
-                    pattern: "^[0-9]+.[0-9]+.[0-9]+.[0-9]+\\/[0-9]+"
-                    type: "string"
-                  vcenterCpuNum:
-                    description: "%clusterclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.providerVsphereSpec.properties.vcenterCpuNum"
-                    minimum: 2
-                    type: "integer"
-                  vcenterDataCenter:
-                    description: "%clusterclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.providerVsphereSpec.properties.vcenterDataCenter"
-                    type: "string"
-                  vcenterDataStore:
-                    description: "%clusterclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.providerVsphereSpec.properties.vcenterDataStore"
-                    type: "string"
-                  vcenterDiskSize:
-                    description: "%clusterclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.providerVsphereSpec.properties.vcenterDiskSize"
-                    minimum: 20
-                    type: "integer"
-                  vcenterFolder:
-                    description: "%clusterclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.providerVsphereSpec.properties.vcenterFolder"
-                    type: "string"
-                  vcenterIp:
-                    description: "%clusterclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.providerVsphereSpec.properties.vcenterIp"
-                    type: "string"
-                  vcenterKcpIp:
-                    description: "%clusterclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.providerVsphereSpec.properties.vcenterKcpIp"
-                    type: "string"
-                  vcenterMemSize:
-                    description: "%clusterclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.providerVsphereSpec.properties.vcenterMemSize"
-                    minimum: 2048
-                    type: "integer"
-                  vcenterNetwork:
-                    description: "%clusterclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.providerVsphereSpec.properties.vcenterNetwork"
-                    type: "string"
-                  vcenterResourcePool:
-                    description: "%clusterclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.providerVsphereSpec.properties.vcenterResourcePool"
-                    type: "string"
-                  vcenterTemplate:
-                    description: "%clusterclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.providerVsphereSpec.properties.vcenterTemplate"
-                    type: "string"
-                  vcenterThumbprint:
-                    description: "%clusterclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.providerVsphereSpec.properties.vcenterThumbprint"
-                    type: "string"
-                  vmPassword:
-                    description: "%clusterclaims.yaml.spec.versions.schema.openAPIV3Schema.properties.spec.properties.providerVsphereSpec.properties.vmPassword"
                     type: "string"
                 type: "object"
               version:
