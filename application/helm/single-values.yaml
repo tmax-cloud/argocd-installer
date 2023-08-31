@@ -16,7 +16,7 @@ global:
 modules:
   ###calico
   calico:
-    enabled: true
+    enabled: false
     # 사용 가능 한 값 : Debug, Info, Warning, Error, Fatal
     logLevel: info
     logSeverityFile: info
