@@ -6,7 +6,7 @@ metadata:
   namespace: argo-rollouts
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    cert-manager.io/cluster-issuer: custom_clusterissuer
+    cert-manager.io/cluster-issuer: tmaxcloud-issuer
   labels:
     ingress.tmaxcloud.org/name: argo-rollouts
 spec:
