@@ -64,14 +64,14 @@ modules:
   ### cert-manager
   certManager:
     enabled: true
-    autoSync: true
+    autoSync: false
     # ErrorLevel=0 WarnLevel=1 InfoLevel=2 ExtendedInfoLevel=3 DebugLevel=4 TraceLevel=5
     logLevel: 2
 
   ### gateway-bootstrap
   gatewayBootstrap:
     enabled: true
-    autoSync: true
+    autoSync: false
     # load balancer를 사용할 수 있는 경우(ex. aws lb, metallb)
     # LoadBalancer로 값을 변경
     service:
