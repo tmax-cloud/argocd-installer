@@ -8,7 +8,7 @@ metadata:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
     cert-manager.io/cluster-issuer: tmaxcloud-issuer
   labels:
-    ingress.tmaxcloud.org/name: argo-rollouts
+    ingress.tmaxcloud.org/name: rollout
 spec:
   ingressClassName: tmax-cloud
   {{- if .Values.argorolloutIngress.tls.enabled }}

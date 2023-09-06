@@ -38,11 +38,11 @@ spec:
         - {{ .Values.controller.loglevel }}
         resources:
           limits:
+            cpu: 2
+            memory: 2Gi
+          requests:
             cpu: 1
             memory: 1Gi
-          requests:
-            cpu: 500m
-            memory: 500Mi
         env:
         - name: ARGOCD_CONTROLLER_REPLICAS
           value: "1"
