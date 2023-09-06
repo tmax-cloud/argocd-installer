@@ -40559,6 +40559,7 @@ rules:
   - pytorchjobs
   - mxjobs
   - xgboostjobs
+  - paddlejobs
   verbs:
   - create
   - delete
@@ -40575,6 +40576,7 @@ rules:
   - pytorchjobs/status
   - mxjobs/status
   - xgboostjobs/status
+  - paddlejobs/status
   verbs:
   - get
 ---
@@ -40593,6 +40595,7 @@ rules:
   - pytorchjobs
   - mxjobs
   - xgboostjobs
+  - paddlejobs
   verbs:
   - get
   - list
@@ -40605,6 +40608,7 @@ rules:
   - pytorchjobs/status
   - mxjobs/status
   - xgboostjobs/status
+  - paddlejobs/status
   verbs:
   - get
 ---
@@ -40623,11 +40627,13 @@ rules:
   - mxjobs
   - pytorchjobs
   - xgboostjobs
+  - paddlejobs
   - mpijobs/status
   - tfjobs/status
   - pytorchjobs/status
   - mxjobs/status
   - xgboostjobs/status
+  - paddlejobs/stauts
   verbs:
   - create
   - delete
