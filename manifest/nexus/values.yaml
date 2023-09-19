@@ -4,6 +4,7 @@ global:
   registry:
     is_offline: false
     private_registry: 172.22.6.2:5000
+  logLevel: INFO
 
 tls:
   enabled: true
@@ -52,11 +53,12 @@ nexus:
         -XX:+UseCGroupMemoryLimitForHeap
         -Djava.util.prefs.userRoot=/nexus-data/javaprefs
     - name: NEXUS_SECURITY_RANDOMPASSWORD
-      value: "true"
+      value: "false"
   properties:
-    override: true
+    override: false
     data:
-      root.level: "INFO"
+      nexus.scripts.allowCreation: true
+      
       # See this article for ldap configuratioon options https://support.sonatype.com/hc/en-us/articles/216597138-Setting-Advanced-LDAP-Connection-Properties-in-Nexus-Repository-Manager
       # nexus.ldap.env.java.naming.security.authentication: simple
   # nodeSelector:
@@ -109,15 +111,6 @@ deployment:
   annotations: {}
   # # Add init containers. e.g. to be used to give specific permissions for nexus-data.
   # # Add your own init container or uncomment and modify the given example.
-  initContainers:
-  #   - name: fmp-volume-permission
-  #   image: busybox
-  #   imagePullPolicy: IfNotPresent
-  #   command: ['chown','-R', '200', '/nexus-data']
-  #   volumeMounts:
-  #     - name: nexus-data
-  #       mountPath: /nexus-data
-  # Uncomment and modify this to run a command after starting the nexus container.
   postStart:
     command:    # '["/bin/sh", "-c", "ls"]'
   preStart:
@@ -125,7 +118,11 @@ deployment:
   terminationGracePeriodSeconds: 120
   additionalContainers:
   additionalVolumes:
+    - name: opt-sonatype-nexus-etc-logback
+      emptyDir: {}
   additionalVolumeMounts:
+    - name: opt-sonatype-nexus-etc-logback
+      mountPath: /opt/sonatype/nexus/etc/logback
 
 
 service:

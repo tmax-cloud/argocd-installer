@@ -25,7 +25,7 @@ spec:
           value: {{ .Values.global.domain }}
         - name: ingress.hosts.subdomain
           value: {{ .Values.modules.nexus.subdomain }}
-        - name: nexus.properties.data.root.level
+        - name: global.logLevel
           value: {{ .Values.modules.nexus.logLevel }}
         - name: global.timezone
           value: {{ .Values.global.timeZone }}
