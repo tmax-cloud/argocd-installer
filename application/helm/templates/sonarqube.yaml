@@ -25,6 +25,8 @@ spec:
           value: {{ .Values.modules.sonarqube.logLevel }}
         - name: ingress.hosts.domain
           value: {{ .Values.global.domain }}
+        - name: ingress.hosts.subdomain
+          value: {{ .Values.modules.sonarqube.subdomain }}
         - name: sonarProperties.sonar.auth.oidc.clientSecret.secured
           value: {{ include "hyperAuth.tmaxClientSecret" . }}
         - name: sonarProperties.sonar.auth.oidc.clientId.secured
