@@ -63,6 +63,7 @@ modules:
       storageClass: ""
     # "TRACE", "DEBUG", "INFO", "WARN", "ERROR" or "OFF"
     logLevel: INFO
+    subdomain: nexus
 
   ### cert-manager
   certManager:

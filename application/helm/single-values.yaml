@@ -25,7 +25,7 @@ modules:
 
   ###gitlab
   gitlab:
-    enabled: true
+    enabled: false
     subdomain: gitlab
     pvc:
       storage: 30Gi
@@ -38,7 +38,7 @@ modules:
 
   ###gitea
   gitea:
-    enabled: false
+    enabled: true
     oauth_enabled: false
     subdomain: gitea
     # "Trace", "Debug", "Info", "Warn", "Error", "Critical" or "None"
@@ -52,6 +52,7 @@ modules:
       storageClass: ""
     # "TRACE", "DEBUG", "INFO", "WARN", "ERROR" or "OFF"
     logLevel: INFO
+    subdomain: nexus
 
 
   ### sonarqube
