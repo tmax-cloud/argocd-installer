@@ -905,11 +905,11 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 		"replicas": 1,
 		"resources": {
 		  "requests": {
-		  	"cpu": "100m",
+		  	"cpu": "200m",
 			"memory": "4Gi"
 		  },
 		  "limits": {
-		  	"cpu": "100m",
+		  	"cpu": "1",
 			"memory": "4Gi"
 		  }
 		},
