@@ -12,6 +12,11 @@ global:
   clusterName: cluster-name
   clusterNamespace: cluster-namespace
   domain: testdomain.com
+  domain: testdomain.com
+  # 사용가능한 단위: "h", "m", "s", "ms", "us", "ns"
+  # ex) 3일 3시간 10분 : 75h10m
+  # 기본값은 1년
+  certDuration: 8760h
 
 modules:
   ###calico

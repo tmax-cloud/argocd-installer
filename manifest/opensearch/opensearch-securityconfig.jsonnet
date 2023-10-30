@@ -20,7 +20,8 @@ function (
   is_master_cluster="true",
   opensearch_subdomain="opensearch-dashboard",
   log_level="info",
-  storageClass="default"
+  storageClass="default",
+  certDuration="8760h"
 )
 
 if hyperauth_url != "" then [

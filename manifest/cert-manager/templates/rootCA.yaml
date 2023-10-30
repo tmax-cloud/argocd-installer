@@ -23,7 +23,7 @@ spec:
   isCA: true
   commonName: tmax-cloud
   secretName: tmaxcloud-ca
-  duration: 8760h0m0s # 360d=1y
+  duration: {{ cert-manager.certDuration }}
   renewBefore: 720h0m0s # 30d
   privateKey:
     algorithm: RSA

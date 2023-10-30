@@ -95,5 +95,7 @@ spec:
         - name: cert-manager.startupapicheck.image.repository
           value: "{{ .Values.global.privateRegistry }}/quay.io/jetstack/cert-manager-ctl"
       {{- end }}
+        - name: cert-manager.certDuration
+          value: "{{ .Values.global.certDuration }}"
 ---
 {{- end }}
