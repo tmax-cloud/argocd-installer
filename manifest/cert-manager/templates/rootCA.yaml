@@ -20,10 +20,11 @@ metadata:
     {{- include "cert-manager.labels" . | nindent 4 }}
   name: tmaxcloud-ca
 spec:
+  {{- include "cert-manager.certDuration" . | nindent 2 }}
   isCA: true
+  #test: {{ index .Values "cert-manager" "certDuration" }}
   commonName: tmax-cloud
   secretName: tmaxcloud-ca
-  duration: {{ .certDuration }}
   renewBefore: 720h0m0s # 30d
   privateKey:
     algorithm: RSA

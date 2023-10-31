@@ -15,14 +15,14 @@ Hypercloud의 x509 인증서를 발급하고 관리하는 어플리케이션 입
 
 ## 요약 (TL;DR)
 ```shell
-helm repo add tmax-cloud https://https://tmax-cloud.github.io/charts/
+helm repo add tmax-cloud https://tmax-cloud.github.io/charts/
 helm repo update
 helm install cert-manager tmax-cloud/cert-manager --namespace cert-manager --create-namespace
 ```
 
 ## 차트 설치
 ```shell
-helm repo add tmax-cloud https://https://tmax-cloud.github.io/charts/
+helm repo add tmax-cloud https://tmax-cloud.github.io/charts/
 helm repo update
 helm install cert-manager tmax-cloud/cert-manager --namespace cert-manager --create-namespace
 ```
