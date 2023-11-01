@@ -22,7 +22,6 @@ metadata:
 spec:
   {{- include "cert-manager.certDuration" . | nindent 2 }}
   isCA: true
-  #test: {{ index .Values "cert-manager" "certDuration" }}
   commonName: tmax-cloud
   secretName: tmaxcloud-ca
   renewBefore: 720h0m0s # 30d
