@@ -58,6 +58,8 @@ spec:
             value: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
           - name: storageClass
             value: {{ .Values.modules.opensearch.fluentd.storageClass }}
+          - name: certDuration
+            value: "{{ .Values.global.certDuration }}"
     path: manifest/opensearch
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
