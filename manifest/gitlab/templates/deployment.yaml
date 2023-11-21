@@ -254,9 +254,6 @@ spec:
           mkdir -p /etc/gitlab/trusted-certs
           cp /tmp/shared/keycloak.pem /etc/gitlab/trusted-certs/keycloak.pem
           /assets/wrapper
-        env:
-        - name: GITLAB_LOG_LEVEL
-          value: {{ .Values.global.logLevel }}
         ports:
         - name: http
           containerPort: 80

@@ -6,7 +6,7 @@ global:
   registry:
     is_offline: false
     private_registry: 172.22.6.2:5000
-  logLevel: INFO #DEBUG, INFO, WARN, ERROR, FATAL, UNKNOWN
+  # logLevel: INFO #DEBUG, INFO, WARN, ERROR, FATAL, UNKNOWN
 
 externalURL: http://gitlab.testdomain.com
 tls:
