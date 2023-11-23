@@ -54,6 +54,9 @@ modules:
   sonarqube:
     enabled: false
     # TRACE, DEBUG, INFO
+    persistence:
+      enabled: true
+      storageClass: ""
     logLevel: INFO
     subdomain: sonarqube
 

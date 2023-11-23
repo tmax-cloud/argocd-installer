@@ -10,10 +10,6 @@ global:
 
 tls:
   enabled: true
-
-pvc:
-  storageClassName: ""
-  storage: 30Gi
   
 ingress:
   hosts:
@@ -42,7 +38,7 @@ persistence:
   enabled: true
   storageClass:
   accessMode: ReadWriteOnce
-  size: 5Gi
+  size: 10Gi
 
 plugins:
   install:

@@ -35,6 +35,10 @@ spec:
           value: {{ printf "https://%s.%s" .Values.modules.sonarqube.subdomain .Values.global.domain }}
         - name: sonarProperties.sonar.auth.oidc.issuerUri
           value: https://{{ include "hyperAuth.domain" . }}/auth/realms/tmax"
+        - name: persistence.enabled
+          value: "{{ .Values.modules.sonarqube.persistence.enabled }}"
+        - name: persistence.storageClass
+          value: "{{ .Values.modules.sonarqube.persistence.storageClass }}"
     path: manifest/sonarqube
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
