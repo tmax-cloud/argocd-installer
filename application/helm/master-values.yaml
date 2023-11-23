@@ -53,10 +53,11 @@ modules:
   ### sonarqube
   sonarqube:
     enabled: false
-    # TRACE, DEBUG, INFO
+    oidc_enabled: false
     persistence:
       enabled: true
       storageClass: ""
+    # TRACE, DEBUG, INFO
     logLevel: INFO
     subdomain: sonarqube
 

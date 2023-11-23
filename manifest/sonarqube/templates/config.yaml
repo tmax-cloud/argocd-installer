@@ -6,6 +6,8 @@ metadata:
     app: sonarqube
 data:
   sonar.properties: |
-  {{- range $key, $val := .Values.sonarProperties }}
-    {{ $key }}={{ $val }}
-  {{- end }}
+    sonar.core.serverBaseURL = {{ .Values.sonarProperties.oidc.serverBaseURL }}
+    sonar.auth.oidc.clientId.secured = {{ .Values.sonarProperties.oidc.clientId }}
+    sonar.auth.oidc.clientSecret.secured = {{ .Values.sonarProperties.oidc.clientSecret }}
+    sonar.auth.oidc.enabled = {{ .Values.sonarProperties.oidc.enabled }}
+    sonar.auth.oidc.issuerUri = {{ .Values.sonarProperties.oidc.issuerUri }}

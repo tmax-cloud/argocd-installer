@@ -17,11 +17,12 @@ ingress:
     subdomain: sonarqube
 
 sonarProperties:
-  sonar.core.serverBaseURL: 'serverBaseURL ex)https://sonarqube.testdomain.com'
-  sonar.auth.oidc.clientId.secured: 'client name ex)sonarqube'
-  sonar.auth.oidc.clientSecret.secured: 'client secret'
-  sonar.auth.oidc.enabled: true
-  sonar.auth.oidc.issuerUri: issuerUri 'ex)https://hyperauth.tmaxcloud.org/auth/realms/tmax'
+  oidc:
+    serverBaseURL: ‘serverBaseURL ex)https://sonarqube.testdomain.com’
+    clientId: ‘client name ex)sonarqube’
+    clientSecret: ‘client secret’
+    enabled: false
+    issuerUri: issuerUri ‘ex)https://hyperauth.tmaxcloud.org/auth/realms/tmax’
 
 image:
   curlimages:
