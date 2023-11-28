@@ -106,12 +106,19 @@ spec:
         - name: SONAR_LOG_LEVEL
           value: {{ .Values.global.logLevel }}
         volumeMounts:
+        {{- if and .Values.sonarProperties .Values.sonarSecretProperties }}
         - mountPath: /opt/sonarqube/conf
-          name: sonarqube-conf
+          name: concat-dir
+        {{- else if or .Values.sonarProperties (not .Values.elasticsearch.bootstrapChecks) }}
+        - mountPath: /opt/sonarqube/conf
+          name: config
+        {{- end }}
         - mountPath: /opt/sonarqube/data
-          name: sonarqube-data
+          name: sonarqube
+          subPath: data
         - mountPath: /opt/sonarqube/logs
-          name: sonarqube-logs
+          name: sonarqube
+          subPath: logs
         - mountPath: /opt/sonarqube/extensions/plugins
           name: sonarqube
           subPath: extensions/plugins
@@ -131,15 +138,6 @@ spec:
             cpu: 1000m
             memory: 4000Mi
       volumes:
-      - name: sonarqube-conf
-        persistentVolumeClaim:
-          claimName: sonarqube-conf-pvc
-      - name: sonarqube-data
-        persistentVolumeClaim:
-          claimName: sonarqube-data-pvc
-      - name: sonarqube-logs
-        persistentVolumeClaim:
-          claimName: sonarqube-logs-pvc
       {{- if or .Values.sonarProperties }}
       - name: config
         configMap:

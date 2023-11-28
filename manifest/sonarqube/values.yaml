@@ -10,10 +10,6 @@ global:
 
 tls:
   enabled: true
-
-pvc:
-  storageClassName: ""
-  storage: 30Gi
   
 ingress:
   hosts:
@@ -21,11 +17,12 @@ ingress:
     subdomain: sonarqube
 
 sonarProperties:
-  sonar.core.serverBaseURL: 'serverBaseURL ex)https://sonarqube.testdomain.com'
-  sonar.auth.oidc.clientId.secured: 'client name ex)sonarqube'
-  sonar.auth.oidc.clientSecret.secured: 'client secret'
-  sonar.auth.oidc.enabled: true
-  sonar.auth.oidc.issuerUri: issuerUri 'ex)https://hyperauth.tmaxcloud.org/auth/realms/tmax'
+  oidc:
+    serverBaseURL: ‘serverBaseURL ex)https://sonarqube.testdomain.com’
+    clientId: ‘client name ex)sonarqube’
+    clientSecret: ‘client secret’
+    enabled: false
+    issuerUri: issuerUri ‘ex)https://hyperauth.tmaxcloud.org/auth/realms/tmax’
 
 image:
   curlimages:
@@ -42,7 +39,7 @@ persistence:
   enabled: true
   storageClass:
   accessMode: ReadWriteOnce
-  size: 5Gi
+  size: 10Gi
 
 plugins:
   install:

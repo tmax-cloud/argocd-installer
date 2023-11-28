@@ -27,14 +27,20 @@ spec:
           value: {{ .Values.global.domain }}
         - name: ingress.hosts.subdomain
           value: {{ .Values.modules.sonarqube.subdomain }}
-        - name: sonarProperties.sonar.auth.oidc.clientSecret.secured
+        - name: sonarProperties.oidc.enabled
+          value: "{{ .Values.modules.sonarqube.oidc_enabled }}"
+        - name: sonarProperties.oidc.clientSecret
           value: {{ include "hyperAuth.tmaxClientSecret" . }}
-        - name: sonarProperties.sonar.auth.oidc.clientId.secured
+        - name: sonarProperties.oidc.clientId
           value: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
-        - name: sonarProperties.sonar.core.serverBaseURL
+        - name: sonarProperties.oidc.serverBaseURL
           value: {{ printf "https://%s.%s" .Values.modules.sonarqube.subdomain .Values.global.domain }}
-        - name: sonarProperties.sonar.auth.oidc.issuerUri
-          value: https://{{ include "hyperAuth.domain" . }}/auth/realms/tmax"
+        - name: sonarProperties.oidc.issuerUri
+          value: "https://{{ include "hyperAuth.domain" . }}/auth/realms/tmax"
+        - name: persistence.enabled
+          value: "{{ .Values.modules.sonarqube.persistence.enabled }}"
+        - name: persistence.storageClass
+          value: "{{ .Values.modules.sonarqube.persistence.storageClass }}"
     path: manifest/sonarqube
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
