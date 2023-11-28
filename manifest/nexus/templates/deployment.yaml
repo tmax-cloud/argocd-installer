@@ -39,7 +39,11 @@ spec:
       serviceAccountName: {{ include "nexus.serviceAccountName" . }}
       initContainers:
         - name: set-logger-level
-          image: busybox
+          {{- if .Values.global.registry.is_offline }}
+          image: "{{ .Values.global.registry.private_registry }}/{{ .Values.image.busybox.repo }}:{{ .Values.image.busybox.tag }}"
+          {{- else }}
+          image: "{{ .Values.image.busybox.repo }}:{{ .Values.image.busybox.tag }}"
+          {{- end }}
           imagePullPolicy: IfNotPresent
           securityContext:
               runAsUser: 0
