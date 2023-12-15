@@ -20,36 +20,6 @@ spec:
         fsGroup: 999
         runAsUser: 999
       initContainers:
-        - name: install-plugins
-          {{- if .Values.global.registry.is_offline }}
-          image: "{{ .Values.global.registry.private_registry }}/{{ .Values.image.curlimages.repo }}:{{ .Values.image.curlimages.tag }}"
-          {{- else }}
-          image: "{{ .Values.image.curlimages.repo }}:{{ .Values.image.curlimages.tag }}"
-          {{- end }}
-          imagePullPolicy: {{ .Values.image.pullPolicy  }}
-          command: ["sh",
-            "-e",
-            "/tmp/scripts/install_plugins.sh"]
-          volumeMounts:
-            - mountPath: /opt/sonarqube/extensions/plugins
-              name: sonarqube
-              subPath: extensions/plugins
-            - name: install-plugins
-              mountPath: /tmp/scripts/
-            {{- if .Values.plugins.netrcCreds }}
-            - name: plugins-netrc-file
-              mountPath: /root
-            {{- end }}
-          env:
-            - name: http_proxy
-              value: ""
-            - name: https_proxy
-              value: ""
-            - name: no_proxy
-              value: ""
-          {{- with .Values.env }}
-            {{- . | toYaml | trim | nindent 12 }}
-          {{- end }}
         - name: concat-properties
           {{- if .Values.global.registry.is_offline }}
           image: "{{ .Values.global.registry.private_registry }}/{{ .Values.image.busybox.repo }}:{{ .Values.image.busybox.tag }}"
@@ -62,6 +32,8 @@ spec:
           - -c
           - |
             #!/bin/sh
+            mv /tmp/sonar-auth-oidc-plugin-2.1.1.jar /opt/sonarqube/extensions/plugins
+
             if [ -f /tmp/props/sonar.properties ]; then
               cat /tmp/props/sonar.properties > /tmp/result/sonar.properties
             fi
@@ -77,6 +49,9 @@ spec:
               subPath: sonar.properties
             - mountPath: /tmp/result
               name: concat-dir
+            - mountPath: /opt/sonarqube/extensions/plugins
+              name: sonarqube
+              subPath: extensions/plugins
       containers:
       - name: master
         {{- if .Values.global.registry.is_offline }}
@@ -146,12 +121,6 @@ spec:
           - key: sonar.properties
             path: sonar.properties
       {{- end }}
-      - name: install-plugins
-        configMap:
-          name: install-plugins
-          items:
-            - key: install_plugins.sh
-              path: install_plugins.sh
       - name: sonarqube-account-secret
         secret:
           defaultMode: 420
