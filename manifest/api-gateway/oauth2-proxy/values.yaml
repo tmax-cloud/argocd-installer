@@ -111,7 +111,7 @@ sessionStorage:
 # Enables and configure the automatic deployment of the redis subchart
 redis:
   image:
-      privateRepository: ""
+    privateRepository: ""
   # provision an instance of the redis sub-chart
   enabled: true
   replica:
