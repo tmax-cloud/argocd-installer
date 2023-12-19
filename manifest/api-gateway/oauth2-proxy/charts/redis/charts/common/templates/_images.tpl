@@ -5,6 +5,9 @@ Return the proper image name
 */}}
 {{- define "common.images.image" -}}
 {{- $registryName := .imageRoot.registry -}}
+{{- if .imageRoot.privateRepository }}
+{{- $registryName = printf "%s/%s" .imageRoot.privateRepository .imageRoot.registry -}}
+{{- end -}}
 {{- $repositoryName := .imageRoot.repository -}}
 {{- $tag := .imageRoot.tag | toString -}}
 {{- if .global }}
