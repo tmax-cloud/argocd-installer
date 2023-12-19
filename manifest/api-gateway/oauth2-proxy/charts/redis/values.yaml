@@ -73,6 +73,7 @@ diagnosticMode:
 ## @param image.debug Enable image debug mode
 ##
 image:
+  privateRepository: ""
   registry: docker.io
   repository: bitnami/redis
   tag: 6.2.6-debian-10-r142

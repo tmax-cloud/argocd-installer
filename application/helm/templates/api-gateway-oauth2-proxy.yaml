@@ -65,6 +65,8 @@ spec:
         {{- if .Values.global.network.disabled }}
         - name: image.repository
           value: {{ .Values.global.privateRegistry }}/docker.io/tmaxcloudck/oauth2-proxy
+        - name: redis.image.privateRepository
+          value: {{ .Values.global.privateRegistry }}
         {{- end }}
         - name: image.tag
           value: {{ .Values.modules.gatewayBootstrap.oauth2Proxy.version | default "v7.3.0" }}

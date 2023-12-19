@@ -66,6 +66,7 @@ extraArgs:
   #  pass-access-token: true
   #  scope: "openid profile email groups"
 image:
+  privateRepository: ""
   repository: "docker.io/tmaxcloudck/oauth2-proxy"
   tag: "v7.3.2"
   pullPolicy: "IfNotPresent"
@@ -109,6 +110,8 @@ sessionStorage:
 
 # Enables and configure the automatic deployment of the redis subchart
 redis:
+  image:
+    privateRepository: ""
   # provision an instance of the redis sub-chart
   enabled: true
   replica:

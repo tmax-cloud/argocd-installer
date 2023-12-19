@@ -105,10 +105,10 @@ modules:
 
     console:
       enabled: true
-      version: 5.2.25.0
+      version: 5.2.67.0
       subdomain: console
       mcMode: true
-      chatbotEmbed: true
+      chatbotEmbed: false
       customProductName: hypercloud
       k8sPublicEndpoint: https://kubernetes.default.svc
       svcType: LoadBalancer
@@ -128,7 +128,7 @@ modules:
         logType: "common"
 
     jwtDecodeAuth:
-      enabled: true
+      enabled: false
       version: 5.0.0.5
       logInfo:
         # trace | debug | info | warn | crit // 주로 "debug"를 사용
@@ -139,13 +139,6 @@ modules:
     oauth2Proxy:
       enabled: true
       version: v7.3.2
-
-  ### istio version: 1.15.4 for kubeflow
-  istio:
-    enabled: true
-    autoSync: false
-    # none | error | warn | info | debug
-    logLevel: info
 
   ### istio version: 1.15.4 for kubeflow
   istio:
@@ -191,27 +184,7 @@ modules:
     gatekeeperLogLevel: info
     gatekeeperVersion: v1.0.2
     # 사용 가능 한 값 : debug, info, error
-    logLevel: info    
-
-  ### efk
-  efk:
-    enabled: false
-    es:
-      version: 7.2.1
-      limitMemory: 8Gi
-      requestMemory: 5Gi
-      jvmHeap: "-Xms4g -Xmx4g"
-      volumeSize: 50Gi
-    busyBox:
-      version: 1.32.0
-    kibana:
-      version: 7.2.0
-      svcType: ClusterIP
-      subdomain: kibana
-    gatekeeper:
-      version: 10.0.0
-    fluentd:
-      version: v1.4.2-debian-elasticsearch-1.1
+    logLevel: info
 
   ### argocd
   argocd:
@@ -258,7 +231,7 @@ modules:
 
   ### opensearch
   opensearch:
-    enabled: true
+    enabled: false
     logLevel: info
     # opensearch-dashboards에서 지원하는 loglevel에 대한 config 설정을 기준으로 함.
     # 사용 가능한 값 : error, info, debug
