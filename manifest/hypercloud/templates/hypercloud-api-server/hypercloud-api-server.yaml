@@ -72,8 +72,6 @@ spec:
             value: "7days" # 7days, 1hours, 1minutes
           - name: GODEBUG
             value: "x509ignoreCN=0"  
-          - name: SIDECAR_IMAGE
-            value: "fluent/fluent-bit:1.5-debug"
           - name: KAFKA_ENABLED
             value: "{{ .Values.apiServer.kafka.enabled }}"
           - name: KAFKA_GROUP_ID
