@@ -202,34 +202,34 @@ spec:
           EOT
           # Add keycloak
           {{- if .Values.keycloak.enabled }}
-            kubectl -n hyperauth get secret {{ .Values.keycloak.secret }} -o jsonpath='{.data.tls\.crt}' | base64 -d > /tmp/shared/keycloak.pem
-            cat <<EOY >> /tmp/shared/omnibus.env
-            gitlab_rails['omniauth_enabled'] = true
-            gitlab_rails['omniauth_allow_single_sign_on'] = ['oauth2_generic']
-            gitlab_rails['omniauth_block_auto_created_users'] = false
-            gitlab_rails['omniauth_providers'] = [
-            {
-                    'name' => 'oauth2_generic',
-                    'issuer' => '{{ .Values.keycloak.url }}',
-                    'app_id' => '{{ .Values.keycloak.client }}',
-                    'app_secret' => '{{ .Values.keycloak.client_secret }}',
-                    'discovery' => true,
-                    'args' => {
-                    client_options: {
-                            'site' => '{{ .Values.keycloak.url }}',
-                            'user_info_url' => '/auth/realms/tmax/protocol/openid-connect/userinfo',
-                            'authorize_url' => '/auth/realms/tmax/protocol/openid-connect/auth',
-                            'token_url' => '/auth/realms/tmax/protocol/openid-connect/token',
-                            'redirect_uri' => "{{ .Values.externalURL }}/users/auth/oauth2_generic/callback",
-                    },
-                    user_response_structure: {
-                    attributes: { email:'email', first_name:'given_name', last_name:'family_name', name:'name', nickname:'preferred_username' },
-                    id_path: 'preferred_username'
-                    },
-                    }
-            }
-            ]
-            EOY          
+          kubectl -n hyperauth get secret {{ .Values.keycloak.secret }} -o jsonpath='{.data.tls\.crt}' | base64 -d > /tmp/shared/keycloak.pem
+          cat <<EOY >> /tmp/shared/omnibus.env
+          gitlab_rails['omniauth_enabled'] = true
+          gitlab_rails['omniauth_allow_single_sign_on'] = ['oauth2_generic']
+          gitlab_rails['omniauth_block_auto_created_users'] = false
+          gitlab_rails['omniauth_providers'] = [
+          {
+                  'name' => 'oauth2_generic',
+                  'issuer' => '{{ .Values.keycloak.url }}',
+                  'app_id' => '{{ .Values.keycloak.client }}',
+                  'app_secret' => '{{ .Values.keycloak.client_secret }}',
+                  'discovery' => true,
+                  'args' => {
+                  client_options: {
+                          'site' => '{{ .Values.keycloak.url }}',
+                          'user_info_url' => '/auth/realms/tmax/protocol/openid-connect/userinfo',
+                          'authorize_url' => '/auth/realms/tmax/protocol/openid-connect/auth',
+                          'token_url' => '/auth/realms/tmax/protocol/openid-connect/token',
+                          'redirect_uri' => "{{ .Values.externalURL }}/users/auth/oauth2_generic/callback",
+                  },
+                  user_response_structure: {
+                  attributes: { email:'email', first_name:'given_name', last_name:'family_name', name:'name', nickname:'preferred_username' },
+                  id_path: 'preferred_username'
+                  },
+                  }
+          }
+          ]
+          EOY          
           {{- end }}
 
 
