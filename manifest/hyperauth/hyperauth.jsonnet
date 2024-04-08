@@ -48,7 +48,7 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
           "serviceAccount": "hyperauth-admin",
           "containers": [
             {
-              "image": std.join("", [target_registry, "docker.io/postgres:9.6.2-alpine"]),
+              "image": std.join("", [target_registry, "docker.io/postgres:14-alpine"]),
               "name": "postgresql",
               "env": [
                 {
@@ -127,7 +127,6 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
     "kind": "Deployment",
     "metadata": {
       "name": "hyperauth",
-      "namespace": "hyperauth",
       "labels": {
         "app": "hyperauth"
       }
@@ -154,107 +153,47 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
               }
             },
             {
-              "name": "kafka",
-              "secret": {
-                "secretName": "hyperauth-kafka-jks"
-              }
-            },
-            {
-              "name": "log",
-              "persistentVolumeClaim": {
-                "claimName": "hyperauth-log-pvc"
-              }
-            },
-            {
-              "name": "picture",
-              "persistentVolumeClaim": {
-                "claimName": "hyperauth-profile-picture"
-              }
-            },
-            {
-              "name": "realm",
-              "configMap": {
-                "name": "tmax-realm-import-config"
-              }
-            },
-            {
               "name": "hyperauth-admin-token",
               "secret": {
                 "secretName": "hyperauth-admin-token"
-              },
-            },
-          ]+ (
-            if timezone_setting != "UTC" then [
-              {
-                "name": "timezone-config",
-                "hostPath": {
-                  "path": std.join("", ["/usr/share/zoneinfo/", timezone_setting])
-                }
               }
-            ] else []
-          ),
+            }
+          ]+ (
+           if timezone_setting != "UTC" then [
+             {
+               "name": "timezone-config",
+               "hostPath": {
+                 "path": std.join("", ["/usr/share/zoneinfo/", timezone_setting])
+               }
+             }
+           ] else []
+         ),
           "containers": [
             {
               "name": "hyperauth",
-              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hyperauth:b1.1.2.6"]),
+              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hyperauth:b2.0.0.0"]),
               "args": [
-                "-c standalone-ha.xml",
-                "-Dkeycloak.profile.feature.upload_scripts=enabled",
-                "-Dkeycloak.profile.feature.docker=enabled -b 0.0.0.0"
+                "start"
               ],
               "env": [
                 {
-                  "name": "LOG_LEVEL",
-                  "value": log_level
-                },
-                {
-                  "name": "KEYCLOAK_IMPORT",
-                  "value": "/tmp/realm-import/tmax-realm.json"
-                },
-                {
-                  "name": "KEYCLOAK_USER",
+                  "name": "KEYCLOAK_ADMIN",
                   "value": "admin"
                 },
                 {
-                  "name": "KEYCLOAK_PASSWORD",
-                  "valueFrom": {
-                    "secretKeyRef": {
-                      "name": "passwords",
-                      "key": "HYPERAUTH_PASSWORD"
-                    }
-                  }
+                  "name": "KEYCLOAK_ADMIN_PASSWORD",
+                  "value": "admin"
                 },
                 {
-                  "name": "CERTS_PASSWORD",
-                  "valueFrom": {
-                    "secretKeyRef": {
-                      "name": "passwords",
-                      "key": "CERTS_PASSWORD"
-                    }
-                  }
+                  "name": "KC_PROXY",
+                  "value": "edge"
                 },
                 {
-                  "name": "PROXY_ADDRESS_FORWARDING",
-                  "value": "true"
-                },
-                {
-                  "name": "DB_VENDOR",
+                  "name": "KC_DB",
                   "value": "postgres"
                 },
                 {
-                  "name": "DB_PORT",
-                  "value": "5432"
-                },
-                {
-                  "name": "DB_ADDR",
-                  "value": "postgresql"
-                },
-                {
-                  "name": "DB_USER",
-                  "value": "keycloak"
-                },
-                {
-                  "name": "DB_PASSWORD",
+                  "name": "KC_DB_PASSWORD",
                   "valueFrom": {
                     "secretKeyRef": {
                       "name": "passwords",
@@ -263,32 +202,16 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
                   }
                 },
                 {
-                  "name": "KEYCLOAK_WELCOME_THEME",
-                  "value": "tmax"
+                  "name": "KC_DB_USERNAME",
+                  "value": "keycloak"
                 },
                 {
-                  "name": "NAMESPACE",
-                  "value": "hyperauth"
+                  "name": "KC_DB_URL",
+                  "value": "jdbc:postgresql://postgresql/keycloak"
                 },
                 {
-                  "name": "JGROUPS_DISCOVERY_PROTOCOL",
-                  "value": "kubernetes.KUBE_PING"
-                },
-                {
-                  "name": "JGROUPS_DISCOVERY_PROPERTIES",
-                  "value": "namespace=hyperauth"
-                },
-                {
-                  "name": "CACHE_OWNERS_COUNT",
-                  "value": "2"
-                },
-                {
-                  "name": "CACHE_OWNERS_AUTH_SESSIONS_COUNT",
-                  "value": "2"
-                },
-                {
-                  "name": "KAFKA_BROKERS_ADDR",
-                  "value": "kafka-kafka-bootstrap.hyperauth:9092"
+                  "name": "KC_LOG_LEVEL",
+                  "value": log_level
                 }
               ],
               "ports": [
@@ -301,55 +224,29 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
                   "containerPort": 8443
                 }
               ],
+              "readinessProbe": {
+                "httpGet": {
+                  "path": "/realms/master",
+                  "port": 8080
+                }
+              },
               "volumeMounts": [
                 {
                   "name": "ssl",
                   "mountPath": "/etc/x509/https"
                 },
                 {
-                  "name": "kafka",
-                  "mountPath": "/etc/x509/kafka"
-                },
-                {
-                  "name": "log",
-                  "mountPath": "/opt/jboss/keycloak/standalone/log/hyperauth"
-                },
-                {
-                  "name": "picture",
-                  "mountPath": "/opt/jboss/keycloak/welcome-content/profile-picture"
-                },
-                {
-                  "name": "realm",
-                  "mountPath": "/tmp/realm-import"
-                },
-                {
                   "name": "hyperauth-admin-token",
                   "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
                 }
               ]+ (
-                if timezone_setting != "UTC" then [
-                  {
-                    "name": "timezone-config",
-                    "mountPath": "/etc/localtime"
-                  }
-                ] else []
-              ),
-              "readinessProbe": {
-                "httpGet": {
-                  "path": "/auth/realms/master",
-                  "port": 8080
-                }
-              },
-              "resources": {
-                "limits": {
-                  "cpu": "1",
-                  "memory": "1Gi"
-                },
-                "requests": {
-                  "cpu": "1",
-                  "memory": "1Gi"
-                }
-              }
+                   if timezone_setting != "UTC" then [
+                     {
+                       "name": "timezone-config",
+                       "mountPath": "/etc/localtime"
+                     }
+                   ] else []
+                 ),
             }
           ]
         }
