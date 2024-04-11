@@ -422,7 +422,7 @@ local cicd_domain = std.join("", [cicd_subdomain, ".", custom_domain]);
       "collectPeriod": "120",
       "integrationJobTTL": "120",
       "exposeMode": "Ingress",
-      "ingressClass": "",
+      "ingressClass": "nginx-system",
       "ingressHost": cicd_domain,
       "gitImage": "docker.io/alpine/git:1.0.30",
       "gitCheckoutStepCPURequest": "30m",

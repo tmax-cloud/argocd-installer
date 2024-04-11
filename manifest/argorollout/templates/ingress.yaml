@@ -10,7 +10,7 @@ metadata:
   labels:
     ingress.tmaxcloud.org/name: rollout
 spec:
-  ingressClassName: tmax-cloud
+  ingressClassName: nginx-system
   {{- if .Values.argorolloutIngress.tls.enabled }}
   tls:
   - hosts:

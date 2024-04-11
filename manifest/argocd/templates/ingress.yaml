@@ -10,7 +10,7 @@ metadata:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
     cert-manager.io/cluster-issuer: tmaxcloud-issuer
 spec:
-  ingressClassName: tmax-cloud
+  ingressClassName: nginx-system
   {{- if .Values.argoIngress.tls.enabled }}
   tls:
   - hosts:
