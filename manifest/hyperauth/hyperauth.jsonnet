@@ -253,51 +253,12 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
       }
     }
   },
-  {
-    "apiVersion": "cert-manager.io/v1",
-    "kind": "Certificate",
-    "metadata": {
-      "name": "hyperauth-certificate",
-      "namespace": "hyperauth"
-    },
-    "spec": {
-      "secretName": "hyperauth-https-secret",
-      "duration": "8760h0m0s",
-      "renewBefore": "720h0m0s",
-      "usages": [
-        "digital signature",
-        "key encipherment",
-        "server auth",
-        "client auth"
-      ],
-      "dnsNames": if hyperauth_svc_type == "Ingress" then [
-        hyperauth_external_dns,
-        "tmax-cloud"
-      ] else [
-        "tmax-cloud"
-      ],
-      "issuerRef": {
-        "kind": "ClusterIssuer",
-        "group": "cert-manager.io",
-        "name": "tmaxcloud-issuer"
-      }
-    } + (
-      if hyperauth_svc_type == "LoadBalancer" then {
-        "ipAddresses": [
-          hyperauth_external_ip
-        ]
-      } else {}
-    )
-  },
   if hyperauth_svc_type == "Ingress" then {
     "apiVersion": "networking.k8s.io/v1",
     "kind": "Ingress",
     "metadata": {
       "labels": {
         "ingress.tmaxcloud.org/name": "hyperauth"
-      },
-      "annotations": {
-        "traefik.ingress.kubernetes.io/router.entrypoints": "websecure"
       },
       "name": "hyperauth-api-gateway-ingress",
       "namespace": "hyperauth"
