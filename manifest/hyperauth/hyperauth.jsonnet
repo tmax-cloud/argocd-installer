@@ -303,7 +303,7 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
       "namespace": "hyperauth"
     },
     "spec": {
-      "ingressClassName": "tmax-cloud",
+      "ingressClassName": "nginx-system",
       "rules": [
         {
           "host": hyperauth_external_dns,
