@@ -1,4 +1,3 @@
-{{- if regexMatch "5.2.[1-9][0-9]*.[0-9]*" .Values.image.tag }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -26,15 +25,15 @@ spec:
       {{- end }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      initContainers:
-        - name: init-check-middleware
-          image: "{{ .Values.busybox.image.repository }}:{{ .Values.busybox.image.tag }}"
-          # Wait 30 seconds for a middleware service
-          {{- if regexMatch "5.[2-9].[0-9]*.[0-9]*" (.Values.image.tag | default .Chart.AppVersion ) }}
-          command: ['sh', '-c', 'for i in {1..10}; do sleep 3; if nslookup oauth2-proxy.api-gateway-system.svc; then exit 0; fi; done; exit 1']
-          {{- else }}
-          command: ['sh', '-c', 'for i in {1..10}; do sleep 3; if nslookup jwt-decode-auth.api-gateway-system.svc; then exit 0; fi; done; exit 1']
-          {{- end }}
+      # initContainers:
+      #   - name: init-check-middleware
+      #    image: "{{ .Values.busybox.image.repository }}:{{ .Values.busybox.image.tag }}"
+      #    # Wait 30 seconds for a middleware service
+      #    {{- if regexMatch "5.[2-9].[0-9]*.[0-9]*" (.Values.image.tag | default .Chart.AppVersion ) }}
+      #    command: ['sh', '-c', 'for i in {1..10}; do sleep 3; if nslookup oauth2-proxy.api-gateway-system.svc; then exit 0; fi; done; exit 1']
+      #    {{- else }}
+      #    command: ['sh', '-c', 'for i in {1..10}; do sleep 3; if nslookup jwt-decode-auth.api-gateway-system.svc; then exit 0; fi; done; exit 1']
+      #    {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           command:
@@ -44,7 +43,7 @@ spec:
             - --base-address=http://0.0.0.0:31303
             {{- with .Values.config }}
             - --keycloak-realm={{ .hyperAuth.realm }}
-            - --keycloak-auth-url=https://{{ .hyperAuth.address }}/auth
+            - --keycloak-auth-url=https://{{ .hyperAuth.address }}
             - --keycloak-client-id={{ .hyperAuth.clientID }}
             - --mc-mode={{ .mcMode | default true }}
             - --chatbot-embed={{ .chatbotEmbed | default true }}
@@ -102,107 +101,3 @@ spec:
           hostPath:
             path: "/usr/share/zoneinfo/{{ .Values.timeZone }}"
         {{- end }}
-
-{{- else }}
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: {{ include "console.fullname" . }}
-  namespace: {{ .Release.Namespace }}
-  labels:
-    {{- include "console.labels" . | nindent 4 }}
-spec:
-  replicas: {{ .Values.replicaCount }}
-  selector:
-    matchLabels:
-      {{- include "console.selectorLabels" . | nindent 6 }}
-  template:
-    metadata:
-      {{- with .Values.podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      labels:
-        {{- include "console.selectorLabels" . | nindent 8 }}
-    spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      initContainers:
-        - name: init-check-middleware
-          image: "{{ .Values.busybox.image.repository }}:{{ .Values.busybox.image.tag }}"
-          # Wait 30 seconds for a middleware service
-          {{- if regexMatch "5.[2-9].[0-9]*.[0-9]*" (.Values.image.tag | default "5.2.10.0") }}
-          command: ['sh', '-c', 'for i in {1..10}; do sleep 3; if nslookup oauth2-proxy.api-gateway-system.svc; then exit 0; fi; done; exit 1']
-          {{- else }}
-          command: ['sh', '-c', 'for i in {1..10}; do sleep 3; if nslookup jwt-decode-auth.api-gateway-system.svc; then exit 0; fi; done; exit 1']
-          {{- end }}
-      containers:
-        - name: {{ .Chart.Name }}
-          command:
-            - /opt/bridge/bin/console
-            - server
-            - --public-dir=/opt/bridge/static
-            - --listen=http://0.0.0.0:31303
-            - --base-address=http://0.0.0.0:31303
-            {{- with .Values.config }}
-            - --keycloak-realm={{ .hyperAuth.realm }}
-            - --keycloak-auth-url=https://{{ .hyperAuth.address }}/auth
-            - --keycloak-client-id={{ .hyperAuth.clientID }}
-            - --mc-mode={{ .mcMode | default true }}
-            - --app.chatbotEmbed={{ .chatbotEmbed | default true }}
-            - --logInfo.logLevel={{ .logLevel | default "debug" }}
-            - --logInfo.logType={{ .logType | default "pretty" }}
-            {{- end }}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          ports:
-            - name: http
-              containerPort: 31303
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
-          volumeMounts:
-            - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
-              name: console-token
-              readOnly: true
-            {{- if ne .Values.timeZone "UTC" }}
-            - mountPath: /etc/localtime
-              name: timezone-config
-            {{- end }}
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      volumes:
-        - name: console-token
-          secret:
-            defaultMode: 420
-            secretName: {{ template "console.serviceAccountName" . }}
-        {{- if ne .Values.timeZone "UTC" }}
-        - name: timezone-config
-          hostPath:
-            path: "/usr/share/zoneinfo/{{ .Values.timeZone }}"
-        {{- end }}
-{{- end }}

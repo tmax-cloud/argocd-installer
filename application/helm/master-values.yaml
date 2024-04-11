@@ -105,9 +105,9 @@ modules:
 
     console:
       enabled: true
-      version: 5.2.67.0
+      version: 0.0.8
       subdomain: console
-      mcMode: true
+      mcMode: false
       chatbotEmbed: false
       customProductName: hypercloud
       k8sPublicEndpoint: https://kubernetes.default.svc
