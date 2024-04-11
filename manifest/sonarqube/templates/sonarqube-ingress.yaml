@@ -8,7 +8,7 @@ metadata:
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
 spec:
-  ingressClassName: tmax-cloud
+  ingressClassName: nginx-system
   {{- if .Values.tls.enabled }}
   tls:
   - hosts:

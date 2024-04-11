@@ -64,7 +64,7 @@ expose:
     controller: default
     ## Allow .Capabilities.KubeVersion.Version to be overridden while creating ingress
     kubeVersionOverride: ""
-    className: "tmax-cloud"
+    className: "nginx-system"
     labels:
       ingress.tmaxcloud.org/name: hyperregistry
     annotations:
