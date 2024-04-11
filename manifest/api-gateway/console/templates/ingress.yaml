@@ -1,0 +1,47 @@
+{{- if regexMatch "5.[2-9].[0-9]*.[0-9]*" (.Values.image.tag | default "5.2.10.0") }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "console.fullname" . }}
+  namespace: api-gateway-system
+  labels:
+    {{- include "console.labels" . | nindent 4 }}
+spec:
+  ingressClassName: nginx-system
+  rules:
+  - host: {{ domain }}
+    http:
+      paths:
+      - backend:
+          service:
+            name: {{ include "console.fullname" . }}
+            port:
+              name: http
+        path: /
+        pathType: Prefix
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
+  name: kubernetes
+  namespace: api-gateway-system
+  labels:
+    {{- include "console.labels" . | nindent 4 }}
+spec:
+  ingressClassName: nginx-system
+  rules:
+  - host: {{ domain }}
+    http:
+      paths:
+      - backend:
+          service:
+            name: kubernetes
+            port:
+              number: 443
+        path: /api/kubernetes(/|$)(.*)
+        pathType: Prefix
+{{- end }}

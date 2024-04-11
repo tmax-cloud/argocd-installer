@@ -17,7 +17,7 @@ config:
     address: ""
     realm: "tmax"
     clientID: "hypercloud5"
-  mcMode: true
+  mcMode: false
   chatbotEmbed: true
   customProductName: "hypercloud"
   k8sPublicEndpoint: "https://kubernetes.default.svc"
@@ -29,10 +29,10 @@ config:
   logType: "pretty"
 
 image:
-  repository: "docker.io/tmaxcloudck/hypercloud-console"
+  repository: "docker.io/tmaxcloudck/console-aad"
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "5.2.10.0"
+  tag: "0.0.8"
 imagePullSecrets: []
 #imagePullSecrets:
 #  - name: regcred
