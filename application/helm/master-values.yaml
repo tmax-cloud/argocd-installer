@@ -379,7 +379,7 @@ modules:
     # clusterTsb:
     #   version: 0.1.6
     templateOperator:
-      version: 0.2.8
+      version: 0.3.0
     # debug, info, warn, error, dpanic, panic, fatal 7단계, default 로 error 사용
     logLevel: info
 
