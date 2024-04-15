@@ -1,0 +1,44 @@
+{{ if .Values.modules.ingressNginx.enabled }}
+{{ $isMaster := eq .Values.global.cluster "master" }}
+{{ $prefix := printf "%s-%s" .Values.global.clusterNamespace .Values.global.clusterName }}
+{{ $module := "ingress-nginx-system" }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  labels:
+    cluster: {{ ternary "master" $prefix $isMaster }}
+  name: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
+  namespace: argocd
+spec:
+  syncPolicy:
+    automated: {}
+  destination:
+    name: {{ .Values.global.clusterName }}
+    namespace: ingress-nginx-system
+  project: {{ .Values.spec.project }}
+  source:
+    directory:
+      jsonnet:
+        tlas:
+          - name: is_offline
+            value: "{{ .Values.global.network.disabled }}"
+          - name: private_registry
+            value: {{ .Values.global.privateRegistry }}
+          - name: ingress_nginx_http_port
+            value: {{ .Values.modules.ingressNginx.ingressNginxHttpPort }}
+          - name: ingress_nginx_https_port
+            value: {{ .Values.modules.ingressNginx.ingressNginxHttpsPort }}
+          - name: service_type
+            value: {{ .Values.modules.ingressNginx.serviceType }}
+          - name: controller_version
+            value: {{ .Values.modules.ingressNginx.controllerVersion }}
+          - name: certgen_version
+            value: {{ .Values.modules.ingressNginx.certgenVersion }}
+          - name: timezone
+            value: {{ .Values.global.timeZone }}
+          - name: log_level
+            value: {{ .Values.modules.ingressNginx.logLevel }}
+    path: manifest/ingress-nginx
+    repoURL: {{ .Values.spec.source.repoURL }}
+    targetRevision: {{ .Values.spec.source.targetRevision }}
+{{ end }}

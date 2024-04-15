@@ -1,0 +1,403 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/instance: ingress-nginx-system
+    app.kubernetes.io/name: ingress-nginx-system
+  name: ingress-nginx-system
+--- 
+apiVersion: v1
+automountServiceAccountToken: true
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/instance: ingress-nginx-system
+    app.kubernetes.io/name: ingress-nginx-system
+    app.kubernetes.io/part-of: ingress-nginx-system
+  name: ingress-nginx-system
+  namespace: ingress-nginx-system
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/component: admission-webhook
+    app.kubernetes.io/instance: ingress-nginx-system
+    app.kubernetes.io/name: ingress-nginx-system
+    app.kubernetes.io/part-of: ingress-nginx-system
+  name: ingress-nginx-system-admission
+  namespace: ingress-nginx-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/instance: ingress-nginx-system
+    app.kubernetes.io/name: ingress-nginx-system
+    app.kubernetes.io/part-of: ingress-nginx-system
+  name: ingress-nginx-system
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  - endpoints
+  - nodes
+  - pods
+  - secrets
+  - namespaces
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - nodes
+  verbs:
+  - get
+- apiGroups:
+  - ""
+  resources:
+  - services
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - networking.k8s.io
+  resources:
+  - ingresses
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
+- apiGroups:
+  - networking.k8s.io
+  resources:
+  - ingresses/status
+  verbs:
+  - update
+- apiGroups:
+  - networking.k8s.io
+  resources:
+  - ingressclasses
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - discovery.k8s.io
+  resources:
+  - endpointslices
+  verbs:
+  - list
+  - watch
+  - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/component: admission-webhook
+    app.kubernetes.io/instance: ingress-nginx-system
+    app.kubernetes.io/name: ingress-nginx-system
+    app.kubernetes.io/part-of: ingress-nginx-system
+  name: ingress-nginx-system-admission
+rules:
+- apiGroups:
+  - admissionregistration.k8s.io
+  resources:
+  - validatingwebhookconfigurations
+  verbs:
+  - get
+  - update
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/instance: ingress-nginx-system
+    app.kubernetes.io/name: ingress-nginx-system
+    app.kubernetes.io/part-of: ingress-nginx-system
+  name: ingress-nginx-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: ingress-nginx-system
+subjects:
+- kind: ServiceAccount
+  name: ingress-nginx-system
+  namespace: ingress-nginx-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/component: admission-webhook
+    app.kubernetes.io/instance: ingress-nginx-system
+    app.kubernetes.io/name: ingress-nginx-system
+    app.kubernetes.io/part-of: ingress-nginx-system
+  name: ingress-nginx-system-admission
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: ingress-nginx-system-admission
+subjects:
+- kind: ServiceAccount
+  name: ingress-nginx-system-admission
+  namespace: ingress-nginx-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/instance: ingress-nginx-system
+    app.kubernetes.io/name: ingress-nginx-system
+    app.kubernetes.io/part-of: ingress-nginx-system
+  name: ingress-nginx-system
+  namespace: ingress-nginx-system
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  verbs:
+  - get
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  - pods
+  - secrets
+  - endpoints
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - services
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - networking.k8s.io
+  resources:
+  - ingresses
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - networking.k8s.io
+  resources:
+  - ingresses/status
+  verbs:
+  - update
+- apiGroups:
+  - networking.k8s.io
+  resources:
+  - ingressclasses
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resourceNames:
+  - ingress-nginx-system-leader
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - update
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - create
+- apiGroups:
+  - coordination.k8s.io
+  resourceNames:
+  - ingress-nginx-system-leader
+  resources:
+  - leases
+  verbs:
+  - get
+  - update
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - create
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
+- apiGroups:
+  - discovery.k8s.io
+  resources:
+  - endpointslices
+  verbs:
+  - list
+  - watch
+  - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    app.kubernetes.io/component: admission-webhook
+    app.kubernetes.io/instance: ingress-nginx-system
+    app.kubernetes.io/name: ingress-nginx-system
+    app.kubernetes.io/part-of: ingress-nginx-system
+  name: ingress-nginx-system-admission
+  namespace: ingress-nginx-system
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - get
+  - create
+--- 
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/instance: ingress-nginx-system
+    app.kubernetes.io/name: ingress-nginx-system
+    app.kubernetes.io/part-of: ingress-nginx-system
+  name: ingress-nginx-system
+  namespace: ingress-nginx-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: ingress-nginx-system
+subjects:
+- kind: ServiceAccount
+  name: ingress-nginx-system
+  namespace: ingress-nginx-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/component: admission-webhook
+    app.kubernetes.io/instance: ingress-nginx-system
+    app.kubernetes.io/name: ingress-nginx-system
+    app.kubernetes.io/part-of: ingress-nginx-system
+  name: ingress-nginx-system-admission
+  namespace: ingress-nginx-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: ingress-nginx-system-admission
+subjects:
+- kind: ServiceAccount
+  name: ingress-nginx-system-admission
+  namespace: ingress-nginx-system
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tcp-services
+  namespace: ingress-nginx-system
+  labels:
+    app.kubernetes.io/name: ingress-nginx-system
+    app.kubernetes.io/part-of: ingress-nginx-system
+data:
+  9001: "hyperauth/kafka-1:9093"
+  9002: "hyperauth/kafka-2:9093"
+  9003: "hyperauth/kafka-3:9093"
+---
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/instance: ingress-nginx-system
+    app.kubernetes.io/name: ingress-nginx-system
+    app.kubernetes.io/part-of: ingress-nginx-system
+  name: nginx-system
+spec:
+  controller: k8s.io/ingress-nginx-system
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  labels:
+    app.kubernetes.io/component: admission-webhook
+    app.kubernetes.io/instance: ingress-nginx-system
+    app.kubernetes.io/name: ingress-nginx-system
+    app.kubernetes.io/part-of: ingress-nginx-system
+  name: ingress-nginx-system-admission
+  namespace: ingress-nginx-system
+webhooks:
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: ingress-nginx-system-controller-admission
+      namespace: ingress-nginx-system
+      path: /networking/v1/ingresses
+  failurePolicy: Fail
+  matchPolicy: Equivalent
+  name: validate.nginx.ingress.kubernetes.io
+  rules:
+  - apiGroups:
+    - networking.k8s.io
+    apiVersions:
+    - v1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - ingresses
+  sideEffects: None
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/instance: ingress-nginx-system
+    app.kubernetes.io/name: ingress-nginx-system
+    app.kubernetes.io/part-of: ingress-nginx-system
+  name: ingress-nginx-system-controller-admission
+  namespace: ingress-nginx-system
+spec:
+  type: ClusterIP
+  ports:
+  - name: https-webhook
+    port: 443
+    targetPort: webhook
+  selector:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/instance: ingress-nginx-system
+    app.kubernetes.io/name: ingress-nginx-system
