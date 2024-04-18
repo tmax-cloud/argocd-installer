@@ -446,9 +446,6 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
                 "--secure-cookie=false",
                 "--skip-openid-provider-tls-verify=true",
                 "--enable-self-signed-tls=false",
-                "--tls-cert=/etc/secrets/tls.crt",
-                "--tls-private-key=/etc/secrets/tls.key",
-                "--tls-ca-certificate=/etc/secrets/ca.crt",
                 "--skip-upstream-tls-verify=true",
                 "--upstream-keepalives=false",
                 "--enable-default-deny=true",
@@ -846,13 +843,10 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
         "app.kubernetes.io/name": "jaeger",
         "app.kubernetes.io/component": "query",
         "ingress.tmaxcloud.org/name": "jaeger"
-      },
-      "annotations": {
-        "traefik.ingress.kubernetes.io/router.entrypoints": "websecure"
       }
     },
     "spec": {
-      "ingressClassName": "tmax-cloud",
+      "ingressClassName": "nginx-system",
       "rules": [
         {
           "host": std.join("", [jaeger_subdomain, ".", CUSTOM_DOMAIN_NAME]),

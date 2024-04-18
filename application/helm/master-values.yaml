@@ -28,6 +28,16 @@ modules:
     logSeverityFile: info
     logSeverityScreen: info
     logSeveritySys: info
+  
+  ###ingress-nginx
+  ingressNginx:
+    enabled: false 
+    controllerVersion: v1.5.1 
+    certgenVersion: v20220916-gd32f8c343
+    ingressNginxHttpPort: 30080
+    ingressNginxHttpsPort: 30443
+    serviceType: LoadBalancer
+    logLevel: info 
 
   ### gitlab
   gitlab:
