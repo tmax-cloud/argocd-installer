@@ -4,7 +4,6 @@ metadata:
   labels:
     app.kubernetes.io/name: kube-scheduler
     app.kubernetes.io/part-of: kube-prometheus
-    component: kube-scheduler
   name: kube-scheduler
   namespace: monitoring
 spec:
@@ -15,10 +14,10 @@ spec:
     scheme: https
     tlsConfig:
       insecureSkipVerify: true
-  jobLabel: component
+  jobLabel: app.kubernetes.io/name
   namespaceSelector:
     matchNames:
     - kube-system
   selector:
     matchLabels:
-      component: kube-scheduler
+      app.kubernetes.io/name: kube-scheduler
