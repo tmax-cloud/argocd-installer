@@ -3,10 +3,12 @@ function (
   is_offline="false",
   private_registry="172.22.6.2:5000",
   grafana_pvc="10Gi",
-  grafana_version="8.2.2",
+  grafana_version="10.3.1",
   grafana_image_repo="docker.io/grafana/grafana",
   is_master_cluster="true",
-  grafana_subdomain="grafana"
+  grafana_subdomain="grafana",
+  grafana_ingress="",
+  keycloak_addr=""
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -108,6 +110,10 @@ local admin_info = if is_master_cluster == "true" then "" else "admin_user = " +
               {
                 "name": "grafana-storage",
                 "mountPath": "/var/lib/grafana"
+              },
+              {
+                "name": "grafana-config",
+                "mountPath": "/etc/grafana"
               }
 			  ] + (
 				  if timezone != "UTC" then [
@@ -136,6 +142,13 @@ local admin_info = if is_master_cluster == "true" then "" else "admin_user = " +
             "persistentVolumeClaim": {
               "claimName": "grafana-pvc"
             }
+          },
+          {
+            "name": "grafana-config",
+            "configMap": {
+              "name": "grafana-config",
+              "defaultMode": 420
+            }
           }
 		  ] + (
 			  if timezone != "UTC" then [
@@ -159,5 +172,93 @@ local admin_info = if is_master_cluster == "true" then "" else "admin_user = " +
     },
     "revisionHistoryLimit": 10,
     "progressDeadlineSeconds": 600
+    },
+    {
+      "kind": "ConfigMap",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "grafana-config",
+        "namespace": "monitoring"
+      },
+      "data": {
+        "grafana.ini": [
+          "[auth]",
+          "disable_login_form = false",
+          "",
+          "[auth.anonymous]",
+          "enabled = true",
+          "",
+          "[auth.generic_oauth]",
+          "allow_sign_up = true",
+          "api_url = https://" + keycloak_addr + "/realms/tmax/protocol/openid-connect/userinfo",
+          "auth_url = https://" + keycloak_addr + "/realms/tmax/protocol/openid-connect/auth",
+          "client_id = grafana",
+          "client_secret = tmax_client_secret",
+          "email_attribute_path = email",
+          "enabled = true",
+          "scopes = openid profile email",
+          "tls_skip_verify_insecure = true",
+          "token_url = https://" + keycloak_addr + "/realms/tmax/protocol/openid-connect/token",
+          "",
+          "[log]",
+          "level = debug",
+          "mode = console",
+          "",
+          "[log.frontend]",
+          "enabled = true",
+          "",
+          "[paths]",
+          "data = /var/lib/grafana",
+          "logs = /var/log/grafana",
+          "",
+          "[security]",
+          "admin_password = admin",
+          "admin_user = admin",
+          "allow_embedding = true",
+          "",
+          "[server]",
+          "domain = grafana-aks.tmaxcloudqa.link",
+          "http_port = 3000",
+          "root_url = https://%(domain)s/api/grafana/",
+          "serve_from_sub_path = true"
+        ].join("\n")
+      }
+    },
+    {
+      "apiVersion": "networking.k8s.io/v1",
+      "kind": "Ingress",
+      "metadata": {
+        "labels": {
+          "ingress.tmaxcloud.org/name": "argocd"
+        },
+        "name": "grafana-ingress",
+        "namespace": "monitoring"
+      },
+      "spec": {
+        "ingressClassName": "nginx-system",
+        "rules": [
+          {
+            "host": grafana_ingress,
+            "http": {
+              "paths": [
+                {
+                  "path": "/",
+                  "pathType": "Prefix",
+                  "backend": {
+                    "service": {
+                      "name": "grafana",
+                      "port": {
+                        "name": "http"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
     }
+
+
 ]

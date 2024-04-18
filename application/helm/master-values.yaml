@@ -314,6 +314,7 @@ modules:
     enabled: false
     subdomain: grafana
     pvcSize: 10Gi
+    ingress: grafana-aks.tmaxcloudqa.link
     version: "9.3.2"
     imageRepo: docker.io/grafana/grafana
     

@@ -36,6 +36,8 @@ spec:
             value: "{{ $isMaster }}"
           - name: grafana_subdomain
             value: {{ .Values.modules.grafana.subdomain }}
+          - name: grafana_ingress
+            value: {{ .Values.modules.grafana.ingress }}
           - name: timezone
             value: {{ .Values.global.timeZone }}
     path: manifest/grafana
