@@ -8,7 +8,8 @@ function (
   is_master_cluster="true",
   grafana_subdomain="grafana",
   grafana_ingress="",
-  keycloak_addr=""
+  keycloak_addr="",
+  admin_email=""
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
@@ -195,6 +196,7 @@ local admin_info = if is_master_cluster == "true" then "" else "admin_user = " +
           "client_id = grafana",
           "client_secret = tmax_client_secret",
           "email_attribute_path = email",
+          "role_attribute_path = contains(email, '" + admin_email + "') && 'Admin' || 'Viewer'",
           "enabled = true",
           "scopes = openid profile email",
           "tls_skip_verify_insecure = true",
