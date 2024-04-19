@@ -8,7 +8,7 @@ function(
   kiali_subdomain="kiali",
   kiali_loglevel="info",
   kiali_client_id="kiali",
-  grafana_url="grafana.domain",
+  grafana_external_url="https://grafana.domain",
   time_zone="UTC",
 )
 
@@ -454,7 +454,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "      insecure_skip_verify: true",
         "      username: admin",
         "      password: admin",
-        std.join("", ["    url: https://", grafana_url]),
+        std.join("", ["    url: ", grafana_external_url]),
         "    in_cluster_url: http://grafana.monitoring.svc:3000",
         "  prometheus:",
         "    url: http://prometheus-k8s.monitoring:9090"
