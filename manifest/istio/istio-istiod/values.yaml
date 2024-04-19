@@ -208,6 +208,11 @@ meshConfig:
   # What we may configure in mesh config is the ".global" - and use of other suffixes.
   # No hurry to do this in 1.6, we're trying to prove the code.
 
+
+# enable pod monitor about envoy stats for prometheus
+# should be enabled for topology view of kiali
+podMonitorEnabled: true
+
 global:
   # Used to locate istiod.
   timeZone: UTC
