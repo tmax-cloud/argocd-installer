@@ -292,7 +292,8 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
               "secret":
                 {
                   "defaultMode": 420,
-                  "secretName": "jaeger-secret"
+                  "secretName": "jaeger-secret",
+                  "optional": true
                 }
             },
             {
@@ -597,7 +598,8 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
               "name": "secret",
               "secret": {
                 "defaultMode": 420,
-                "secretName": "jaeger-secret"
+                "secretName": "jaeger-secret",
+                "optional": true
               }
             },
             {
@@ -672,32 +674,6 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
         "app.kubernetes.io/name": "jaeger"
       },
       "type": "ClusterIP"
-    }
-  },
-  {
-    "apiVersion": "cert-manager.io/v1",
-    "kind": "Certificate",
-    "metadata": {
-      "name": "jaeger-cert",
-      "namespace": "istio-system"
-    },
-    "spec": {
-      "secretName": "jaeger-secret",
-      "usages": [
-        "digital signature",
-        "key encipherment",
-        "server auth",
-        "client auth"
-      ],
-      "dnsNames": [
-          "tmax-cloud",
-          "jaeger-query.istio-system.svc"
-      ],
-      "issuerRef": {
-        "kind": "ClusterIssuer",
-        "group": "cert-manager.io",
-        "name": CUSTOM_CLUSTER_ISSUER
-      }
     }
   },
   {
@@ -798,7 +774,8 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
               "secret":
                 {
                   "defaultMode": 420,
-                  "secretName": "jaeger-secret"
+                  "secretName": "jaeger-secret",
+                  "optional": true
                 }
             }
           ] + (
