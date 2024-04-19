@@ -1,3 +1,4 @@
+{{ if .Values.podMonitorEnabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
@@ -32,3 +33,4 @@ spec:
             - __meta_kubernetes_pod_name
           action: replace
           targetLabel: pod_name
+{{ end }}
