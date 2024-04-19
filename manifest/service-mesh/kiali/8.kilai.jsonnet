@@ -452,8 +452,8 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "  grafana:",
         "    auth:",
         "      insecure_skip_verify: true",
-        "      username: admin,"
-        "      password: admin,"
+        "      username: admin",
+        "      password: admin",
         std.join("", ["    url: https://", grafana_url]),
         "    in_cluster_url: http://grafana.monitoring.svc:3000",
         "  prometheus:",
