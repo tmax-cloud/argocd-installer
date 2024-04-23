@@ -147,12 +147,6 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
         "spec": {
           "volumes": [
             {
-              "name": "ssl",
-              "secret": {
-                "secretName": "hyperauth-https-secret"
-              }
-            },
-            {
               "name": "hyperauth-admin-token",
               "secret": {
                 "secretName": "hyperauth-admin-token"
@@ -241,10 +235,6 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
                 }
               },
               "volumeMounts": [
-                {
-                  "name": "ssl",
-                  "mountPath": "/etc/x509/https"
-                },
                 {
                   "name": "hyperauth-admin-token",
                   "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
