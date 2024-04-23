@@ -147,7 +147,7 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
         "spec": {
           "volumes": [
             {
-              "name" : "import-config": {
+              "name" : "import-config",
               "configMap": {
                 "name": "tmax-import-realm-config",
                 "items": [
@@ -156,7 +156,6 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
                       "path": "tmax-realm.json"
                     }
                   ]
-                }
               }
             },
             {
