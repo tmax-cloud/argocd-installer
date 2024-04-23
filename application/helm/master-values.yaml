@@ -34,8 +34,8 @@ modules:
     enabled: false 
     controllerVersion: v1.5.1 
     certgenVersion: v20220916-gd32f8c343
-    ingressNginxHttpPort: 30080
-    ingressNginxHttpsPort: 30443
+    ingressNginxHttpPort: "30080"
+    ingressNginxHttpsPort: "30443"
     serviceType: LoadBalancer
     logLevel: info 
 
