@@ -22,7 +22,7 @@ sonarProperties:
     clientId: ‘client name ex)sonarqube’
     clientSecret: ‘client secret’
     enabled: false
-    issuerUri: issuerUri ‘ex)https://hyperauth.tmaxcloud.org/auth/realms/tmax’
+    issuerUri: issuerUri ‘ex)https://hyperauth.tmaxcloud.org/realms/tmax’
 
 image:
   busybox:
