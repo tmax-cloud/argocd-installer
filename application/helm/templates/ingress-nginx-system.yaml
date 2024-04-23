@@ -23,9 +23,9 @@ spec:
           - name: private_registry
             value: {{ .Values.global.privateRegistry }}
           - name: ingress_nginx_http_port
-            value: "{{ .Values.modules.ingressNginx.ingressNginxHttpPort }}"
+            value: {{ .Values.modules.ingressNginx.ingressNginxHttpPort }}
           - name: ingress_nginx_https_port
-            value: "{{ .Values.modules.ingressNginx.ingressNginxHttpsPort }}"
+            value: {{ .Values.modules.ingressNginx.ingressNginxHttpsPort }}
           - name: service_type
             value: {{ .Values.modules.ingressNginx.serviceType }}
           - name: controller_version
