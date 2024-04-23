@@ -36,7 +36,7 @@ spec:
         - name: sonarProperties.oidc.serverBaseURL
           value: {{ printf "https://%s.%s" .Values.modules.sonarqube.subdomain .Values.global.domain }}
         - name: sonarProperties.oidc.issuerUri
-          value: "https://{{ include "hyperAuth.domain" . }}/auth/realms/tmax"
+          value: "https://{{ include "hyperAuth.domain" . }}/realms/tmax"
         - name: persistence.enabled
           value: "{{ .Values.modules.sonarqube.persistence.enabled }}"
         - name: persistence.storageClass

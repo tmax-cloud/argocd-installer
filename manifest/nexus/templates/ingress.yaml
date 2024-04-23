@@ -6,7 +6,6 @@ metadata:
   labels:
     ingress.tmaxcloud.org/name: nexus
   annotations:
-    cert-manager.io/cluster-issuer: tmaxcloud-issuer
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
 
 spec:
