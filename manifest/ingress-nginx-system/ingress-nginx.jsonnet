@@ -40,7 +40,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
           "port": 80,
           "protocol": "TCP",
           "targetPort": "http",
-          "nodePort": ingress_nginx_http_port
+          "nodePort": std.parsInt(ingress_nginx_http_port)
         },
         {
           "appProtocol": "https",
@@ -48,7 +48,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
           "port": 443,
           "protocol": "TCP",
           "targetPort": "https",
-          "nodePort": ingress_nginx_https_port
+          "nodePort": std.parsInt(ingress_nginx_https_port)
         },
         {
           "name": "kafka-1",
