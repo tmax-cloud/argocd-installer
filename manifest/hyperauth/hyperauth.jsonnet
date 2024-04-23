@@ -147,6 +147,19 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
         "spec": {
           "volumes": [
             {
+              "name" : "import-config": {
+              "configMap": {
+                "name": "tmax-import-realm-config",
+                "items": [
+                    {
+                      "key": "tmax-realm.json",
+                      "path": "tmax-realm.json"
+                    }
+                  ]
+                }
+              }
+            },
+            {
               "name": "hyperauth-admin-token",
               "secret": {
                 "secretName": "hyperauth-admin-token"
@@ -165,9 +178,10 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
           "containers": [
             {
               "name": "hyperauth",
-              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hyperauth:b2.0.0.0"]),
+              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hyperauth:b2.0.0.4"]),
               "args": [
-                "start"
+                "start",
+                "--import-realm"
               ],
               "env": [
                 {
@@ -238,6 +252,10 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
                 {
                   "name": "hyperauth-admin-token",
                   "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
+                },
+                {
+                  "name" : "import-config",
+                  "mountPath" : "/opt/keycloak/data/import"
                 }
               ]+ (
                    if timezone_setting != "UTC" then [
