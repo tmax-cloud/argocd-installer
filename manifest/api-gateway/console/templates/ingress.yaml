@@ -8,7 +8,7 @@ metadata:
 spec:
   ingressClassName: nginx-system
   rules:
-  - host: {{ .Values.subdomain }}.{{ .Values.domain }}
+  - host: {{ .Values.subDomain }}.{{ .Values.domain }}
     http:
       paths:
       - backend:
@@ -33,7 +33,7 @@ metadata:
 spec:
   ingressClassName: nginx-system
   rules:
-  - host: {{ .Values.subdomain }}.{{ .Values.domain }}
+  - host: {{ .Values.subDomain }}.{{ .Values.domain }}
     http:
       paths:
       - backend:
