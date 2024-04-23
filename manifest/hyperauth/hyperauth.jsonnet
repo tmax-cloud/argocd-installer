@@ -3,7 +3,7 @@ function (
   private_registry="172.22.6.2:5000",
   hyperauth_svc_type="Ingress",
   hyperauth_external_ip="172.22.6.8",
-  is_kafka_enabled="true",
+  is_kafka_enabled="false",
   hyperauth_subdomain="hyperauth",
   hypercloud_domain_host="tmaxcloud.org",
   storage_class="default",
@@ -228,6 +228,16 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
                 "httpGet": {
                   "path": "/realms/master",
                   "port": 8080
+                }
+              },
+              "resources": {
+                "limits": {
+                  "cpu": "1",
+                  "memory": "1Gi"
+                },
+                "requests": {
+                  "cpu": "1",
+                  "memory": "1Gi"
                 }
               },
               "volumeMounts": [

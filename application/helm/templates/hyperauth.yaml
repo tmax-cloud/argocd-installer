@@ -24,8 +24,8 @@ spec:
             value: {{ .Values.global.privateRegistry }}
           - name: hyperauth_svc_type
             value: {{ .Values.modules.hyperAuth.svcType }}
-          - name: is_kafka_enabled
-            value: "{{ .Values.modules.hyperAuth.kafka.enabled }}"
+          # - name: is_kafka_enabled
+          #   value: "{{ .Values.modules.hyperAuth.kafka.enabled }}"
           - name: hypercloud_domain_host
             value: {{ .Values.global.domain }}
           - name: hyperauth_subdomain
