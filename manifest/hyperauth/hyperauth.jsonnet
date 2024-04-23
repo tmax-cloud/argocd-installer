@@ -230,6 +230,16 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
                   "port": 8080
                 }
               },
+              "resources": {
+                "limits": {
+                  "cpu": "1",
+                  "memory": "1Gi"
+                },
+                "requests": {
+                  "cpu": "1",
+                  "memory": "1Gi"
+                }
+              },
               "volumeMounts": [
                 {
                   "name": "ssl",
