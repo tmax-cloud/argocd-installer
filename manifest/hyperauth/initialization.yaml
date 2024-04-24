@@ -172,7 +172,8 @@ data:
         "disableableCredentialTypes" : [ ],
         "requiredActions" : [ ],
         "clientRoles" : {
-          "account" : [ "manage-account", "view-profile" ]
+          "account" : [ "manage-account", "view-profile" ],
+          "jaeger" : [ "jaeger-manager" ]
         },
         "clientConsents" : [ ],
         "notBefore" : 0,
@@ -589,7 +590,26 @@ data:
             "attributes": {}
           }
         ],
-        "hypercloud5": []
+        "hypercloud5": [],
+        "jaeger": [
+          {
+            "id": "13d46556-ce26-4d52-be7b-e76ea2375eaa",
+            "name": "jaeger-manager",
+            "description": "jaeger-manager for accessing jaeger via api-gateway",
+            "composite": false,
+            "clientRole": true,
+            "containerId": "f41e8853-b6b6-4780-986f-7de7a9cf1a9e",
+            "attributes": {}
+          },
+          {
+            "id": "9bfb0467-4402-4099-a5d5-ce0147443674",
+            "name": "uma_protection",
+            "composite": false,
+            "clientRole": true,
+            "containerId": "f41e8853-b6b6-4780-986f-7de7a9cf1a9e",
+            "attributes": {}
+          }
+        ]
       }
       },
       "groups": [
@@ -1198,6 +1218,122 @@ data:
           "phone",
           "offline_access",
           "microprofile-jwt"
+        ]
+      },
+      {
+        "id": "f41e8853-b6b6-4780-986f-7de7a9cf1a9e",
+        "clientId": "jaeger",
+        "name": "",
+        "description": "",
+        "rootUrl": "",
+        "adminUrl": "",
+        "baseUrl": "",
+        "surrogateAuthRequired": false,
+        "enabled": true,
+        "alwaysDisplayInConsole": false,
+        "clientAuthenticatorType": "client-secret",
+        "secret": "tmax_client_secret",
+        "redirectUris": [
+          "*"
+        ],
+        "webOrigins": [
+          ""
+        ],
+        "notBefore": 0,
+        "bearerOnly": false,
+        "consentRequired": false,
+        "standardFlowEnabled": true,
+        "implicitFlowEnabled": false,
+        "directAccessGrantsEnabled": true,
+        "serviceAccountsEnabled": true,
+        "publicClient": false,
+        "frontchannelLogout": true,
+        "protocol": "openid-connect",
+        "attributes": {
+          "oidc.ciba.grant.enabled": "false",
+          "client.secret.creation.time": "1713923680",
+          "backchannel.logout.session.required": "true",
+          "oauth2.device.authorization.grant.enabled": "false",
+          "display.on.consent.screen": "false",
+          "backchannel.logout.revoke.offline.tokens": "false"
+        },
+        "authenticationFlowBindingOverrides": {},
+        "fullScopeAllowed": true,
+        "nodeReRegistrationTimeout": -1,
+        "protocolMappers": [
+          {
+            "id": "7df7049b-1d2f-49ae-a0ab-83f8acbbf711",
+            "name": "Client Host",
+            "protocol": "openid-connect",
+            "protocolMapper": "oidc-usersessionmodel-note-mapper",
+            "consentRequired": false,
+            "config": {
+              "user.session.note": "clientHost",
+              "introspection.token.claim": "true",
+              "id.token.claim": "true",
+              "access.token.claim": "true",
+              "claim.name": "clientHost",
+              "jsonType.label": "String"
+            }
+          },
+          {
+            "id": "a0ecd665-1f4e-403f-a88a-0e9ce80b5ff5",
+            "name": "jaeger",
+            "protocol": "openid-connect",
+            "protocolMapper": "oidc-audience-mapper",
+            "consentRequired": false,
+            "config": {
+              "included.client.audience": "jaeger",
+              "id.token.claim": "false",
+              "access.token.claim": "true",
+              "introspection.token.claim": "true"
+            }
+          },
+          {
+            "id": "b93357a9-b139-44bc-bdc8-9eb5a86fc4ae",
+            "name": "Client ID",
+            "protocol": "openid-connect",
+            "protocolMapper": "oidc-usersessionmodel-note-mapper",
+            "consentRequired": false,
+            "config": {
+              "user.session.note": "client_id",
+              "introspection.token.claim": "true",
+              "id.token.claim": "true",
+              "access.token.claim": "true",
+              "claim.name": "client_id",
+              "jsonType.label": "String"
+            }
+          },
+          {
+            "id": "c9bcc8c7-389a-4ef5-8ff9-1b330806de33",
+            "name": "Client IP Address",
+            "protocol": "openid-connect",
+            "protocolMapper": "oidc-usersessionmodel-note-mapper",
+            "consentRequired": false,
+            "config": {
+              "user.session.note": "clientAddress",
+              "introspection.token.claim": "true",
+              "id.token.claim": "true",
+              "access.token.claim": "true",
+              "claim.name": "clientAddress",
+              "jsonType.label": "String"
+            }
+          }
+        ],
+        "defaultClientScopes": [
+          "web-origins",
+          "acr",
+          "roles",
+          "profile",
+          "email",
+          "group"
+        ],
+        "optionalClientScopes": [
+          "address",
+          "phone",
+          "offline_access",
+          "microprofile-jwt",
+          "sa-token"
         ]
       },
       {
@@ -2943,4 +3079,4 @@ data:
       "clientPolicies": {
       "policies": []
       }
-      }
+    }
