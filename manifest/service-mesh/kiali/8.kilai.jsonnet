@@ -8,6 +8,7 @@ function(
   kiali_subdomain="kiali",
   kiali_loglevel="info",
   kiali_client_id="kiali",
+  grafana_external_url="https://grafana.domain",
   time_zone="UTC",
 )
 
@@ -419,7 +420,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "  prometheus: monitoring",
         "istio_namespace: istio-system",
         "auth:",
-        "  strategy: openid",
+        "  strategy: anonymous",
         "  openid:",
         std.join("", ["    client_id: ", kiali_client_id]),
         std.join("", ["    issuer_uri: https://", HYPERAUTH_DOMAIN, "/auth/realms/tmax"]),
@@ -449,7 +450,11 @@ local target_registry = if is_offline == "false" then "" else private_registry +
         "    url:",
         "    in_cluster_url: http://jaeger-query.istio-system.svc:16685",
         "  grafana:",
-        "    url:",
+        "    auth:",
+        "      insecure_skip_verify: true",
+        "      username: admin",
+        "      password: admin",
+        std.join("", ["    url: ", grafana_external_url]),
         "    in_cluster_url: http://grafana.monitoring.svc:3000",
         "  prometheus:",
         "    url: http://prometheus-k8s.monitoring:9090"
@@ -481,7 +486,6 @@ local target_registry = if is_offline == "false" then "" else private_registry +
             "kiali.io/runtimes": "go,kiali",
             "prometheus.io/port": "9090",
             "prometheus.io/scrape": "true",
-            "scheduler.alpha.kubernetes.io/critical-pod": "",
             "sidecar.istio.io/inject": "false"
           },
           "labels": {
@@ -491,71 +495,6 @@ local target_registry = if is_offline == "false" then "" else private_registry +
           "name": "kiali"
         },
         "spec": {
-          "affinity": {
-            "nodeAffinity": {
-              "preferredDuringSchedulingIgnoredDuringExecution": [
-                {
-                  "preference": {
-                    "matchExpressions": [
-                      {
-                        "key": "beta.kubernetes.io/arch",
-                        "operator": "In",
-                        "values": [
-                          "amd64"
-                        ]
-                      }
-                    ]
-                  },
-                  "weight": 2
-                },
-                {
-                  "preference": {
-                    "matchExpressions": [
-                      {
-                        "key": "beta.kubernetes.io/arch",
-                        "operator": "In",
-                        "values": [
-                          "ppc64le"
-                        ]
-                      }
-                    ]
-                  },
-                  "weight": 2
-                },
-                {
-                  "preference": {
-                    "matchExpressions": [
-                      {
-                        "key": "beta.kubernetes.io/arch",
-                        "operator": "In",
-                        "values": [
-                          "s390x"
-                        ]
-                      }
-                    ]
-                  },
-                  "weight": 2
-                }
-              ],
-              "requiredDuringSchedulingIgnoredDuringExecution": {
-                "nodeSelectorTerms": [
-                  {
-                    "matchExpressions": [
-                      {
-                        "key": "beta.kubernetes.io/arch",
-                        "operator": "In",
-                        "values": [
-                          "amd64",
-                          "ppc64le",
-                          "s390x"
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            }
-          },
           "containers": [
             {
               "command": [
@@ -713,46 +652,17 @@ local target_registry = if is_offline == "false" then "" else private_registry +
     }
   },
   {
-    "apiVersion": "cert-manager.io/v1",
-    "kind": "Certificate",
-    "metadata": {
-      "name": "kiali-cert",
-      "namespace": "istio-system"
-    },
-    "spec": {
-      "secretName": "kiali-secret",
-      "usages": [
-        "digital signature",
-        "key encipherment",
-        "server auth",
-        "client auth"
-      ],
-      "dnsNames": [
-          "tmax-cloud",
-          "kiali.istio-system.svc"
-      ],
-      "issuerRef": {
-        "kind": "ClusterIssuer",
-        "group": "cert-manager.io",
-        "name": CUSTOM_CLUSTER_ISSUER
-      }
-    }
-  },
-  {
     "apiVersion": "networking.k8s.io/v1",
     "kind": "Ingress",
     "metadata": {
       "name": "kiali-ingress",
       "namespace": "istio-system",
-      "annotations": {
-        "traefik.ingress.kubernetes.io/router.entrypoints": "websecure"
-      },
       "labels": {
         "ingress.tmaxcloud.org/name": "kiali"
       }
     },
     "spec": {
-      "ingressClassName": "tmax-cloud",
+      "ingressClassName": "nginx-system",
       "tls": [
         {
           "hosts": [

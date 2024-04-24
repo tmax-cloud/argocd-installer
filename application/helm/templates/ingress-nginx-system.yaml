@@ -10,8 +10,6 @@ metadata:
   name: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
   namespace: argocd
 spec:
-  syncPolicy:
-    automated: {}
   destination:
     name: {{ .Values.global.clusterName }}
     namespace: ingress-nginx-system
@@ -38,7 +36,7 @@ spec:
             value: {{ .Values.global.timeZone }}
           - name: log_level
             value: {{ .Values.modules.ingressNginx.logLevel }}
-    path: manifest/ingress-nginx
+    path: manifest/ingress-nginx-system
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}
 {{ end }}

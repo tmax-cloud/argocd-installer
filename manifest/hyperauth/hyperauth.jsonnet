@@ -3,7 +3,7 @@ function (
   private_registry="172.22.6.2:5000",
   hyperauth_svc_type="Ingress",
   hyperauth_external_ip="172.22.6.8",
-  is_kafka_enabled="true",
+  is_kafka_enabled="false",
   hyperauth_subdomain="hyperauth",
   hypercloud_domain_host="tmaxcloud.org",
   storage_class="default",
@@ -132,7 +132,7 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
       }
     },
     "spec": {
-      "replicas": 2,
+      "replicas": 1,
       "selector": {
         "matchLabels": {
           "app": "hyperauth"
@@ -147,9 +147,15 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
         "spec": {
           "volumes": [
             {
-              "name": "ssl",
-              "secret": {
-                "secretName": "hyperauth-https-secret"
+              "name" : "import-config",
+              "configMap": {
+                "name": "tmax-import-realm-config",
+                "items": [
+                    {
+                      "key": "tmax-realm.json",
+                      "path": "tmax-realm.json"
+                    }
+                  ]
               }
             },
             {
@@ -171,9 +177,10 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
           "containers": [
             {
               "name": "hyperauth",
-              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hyperauth:b2.0.0.0"]),
+              "image": std.join("", [target_registry, "docker.io/tmaxcloudck/hyperauth:b2.0.0.4"]),
               "args": [
-                "start"
+                "start",
+                "--import-realm"
               ],
               "env": [
                 {
@@ -230,14 +237,24 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
                   "port": 8080
                 }
               },
-              "volumeMounts": [
-                {
-                  "name": "ssl",
-                  "mountPath": "/etc/x509/https"
+              "resources": {
+                "limits": {
+                  "cpu": "1",
+                  "memory": "1Gi"
                 },
+                "requests": {
+                  "cpu": "1",
+                  "memory": "1Gi"
+                }
+              },
+              "volumeMounts": [
                 {
                   "name": "hyperauth-admin-token",
                   "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
+                },
+                {
+                  "name" : "import-config",
+                  "mountPath" : "/opt/keycloak/data/import"
                 }
               ]+ (
                    if timezone_setting != "UTC" then [

@@ -7,7 +7,7 @@ data:
   url: https://{{ .Values.argoIngress.hosts.subdomain }}.{{ .Values.argoIngress.hosts.domain }}
   oidc.config: |
     name: Keycloak
-    issuer:  https://{{ .Values.OIDC.config.hyperauthUrl }}/auth/realms/tmax
+    issuer:  https://{{ .Values.OIDC.config.hyperauthUrl }}/realms/tmax
     clientID: {{ .Values.OIDC.config.clientId }}
     clientSecret: $oidc.keycloak.clientSecret
     requestedScopes: ["openid", "profile", "email", "groups"]
