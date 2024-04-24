@@ -29,10 +29,10 @@ config:
   logType: "pretty"
 
 image:
-  repository: "docker.io/tmaxcloudck/console-aad"
+  repository: "docker.io/tmaxcloudck/aks-console"
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "0.0.8"
+  tag: "0.0.1"
 imagePullSecrets: []
 #imagePullSecrets:
 #  - name: regcred
