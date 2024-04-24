@@ -2101,7 +2101,7 @@ data:
         "alias": "shinhan-life",
         "internalId": "01b2b69e-a670-4544-a424-000691676d7e",
         "providerId": "shinhan-life",
-        "enabled": true,
+        "enabled": false,
         "updateProfileFirstLoginMode": "on",
         "trustEmail": false,
         "storeToken": false,

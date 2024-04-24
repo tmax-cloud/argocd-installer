@@ -132,7 +132,7 @@ local hyperauth_external_dns = hyperauth_subdomain + "." + hypercloud_domain_hos
       }
     },
     "spec": {
-      "replicas": 2,
+      "replicas": 1,
       "selector": {
         "matchLabels": {
           "app": "hyperauth"
