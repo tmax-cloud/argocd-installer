@@ -643,9 +643,6 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
     "apiVersion": "v1",
     "kind": "Service",
     "metadata": {
-      "annotations": {
-        "traefik.ingress.kubernetes.io/service.serverstransport": "tmaxcloud@file"
-      },
       "labels": {
         "app": "jaeger",
         "app.kubernetes.io/component": "query",

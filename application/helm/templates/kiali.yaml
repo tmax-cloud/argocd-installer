@@ -22,14 +22,10 @@ spec:
             value: "{{ .Values.global.network.disabled }}"
           - name: private_registry
             value: {{ .Values.global.privateRegistry }}
-          - name: HYPERAUTH_DOMAIN
-            value: {{ include "hyperAuth.domain" . }}
           - name: CUSTOM_DOMAIN_NAME
             value: {{ .Values.global.domain }}
           - name: kiali_subdomain
             value: {{ .Values.modules.serviceMesh.kiali.subdomain }}
-          - name: kiali_client_id
-            value: {{ ternary $module (printf "%s-%s" $prefix $module) $isMaster }}
           - name: kiali_loglevel
             value: "{{ .Values.modules.serviceMesh.kiali.kialiLoglevel }}"
           - name: grafana_external_url
