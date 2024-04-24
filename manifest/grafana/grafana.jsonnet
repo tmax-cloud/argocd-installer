@@ -115,6 +115,21 @@ local admin_info = if is_master_cluster == "true" then "" else "admin_user = " +
               {
                 "name": "grafana-config",
                 "mountPath": "/etc/grafana"
+              },
+              {
+                "name": "grafana-datasources-prometheus",
+                "mountPath": "/etc/grafana/provisioning/datasources/prometheus.yaml",
+                "subPath": "datasources.yaml"
+              },
+              {
+                "name": "grafana-datasources-loki",
+                "mountPath": "/etc/grafana/provisioning/datasources/loki.yaml",
+                "subPath": "datasources.yaml"
+              },
+              {
+                "name": "grafana-dashboard-prometheus",
+                "mountPath": "/etc/grafana/provisioning/dashboards/prometheus-dashboard.json",
+                "subPath": "dashboard.json"
               }
 			  ] + (
 				  if timezone != "UTC" then [
@@ -149,6 +164,24 @@ local admin_info = if is_master_cluster == "true" then "" else "admin_user = " +
             "configMap": {
               "name": "grafana-config",
               "defaultMode": 420
+            }
+          },
+          {
+            "name": "grafana-datasources-prometheus",
+            "secret": {
+              "secretName": "grafana-datasources-prometheus"
+            }
+          },
+          {
+            "name": "grafana-datasources-loki",
+            "secret": {
+              "secretName": "grafana-datasources-loki"
+            }
+          },
+          {
+            "name": "grafana-dashboard-prometheus",
+            "configMap": {
+              "name": "prometheus-dashboard"
             }
           }
 		  ] + (
