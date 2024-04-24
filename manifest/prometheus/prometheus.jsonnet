@@ -7,7 +7,7 @@ function (
   prometheus_operator_image_repo="quay.io/prometheus-operator",
   kube_state_metrics_image_repo="k8s.gcr.io/kube-state-metrics",
   brancz_image_repo="quay.io/brancz",
-  prometheus_adapter_image_repo="k8s.gcr.io/prometheus-adapter",
+  prometheus_adapter_image_repo="registry.k8s.io/prometheus-adapter",
   configmap_reload_version="v0.0.1",
   configmap_reloader_version="v0.62.0",
   prometheus_operator_version="v0.62.0",
