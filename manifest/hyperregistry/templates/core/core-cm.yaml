@@ -17,7 +17,7 @@ data:
     {
       "auth_mode": "oidc_auth",
       "oidc_name": "hyperregistry",
-      "oidc_endpoint": "https://{{ .Values.OIDC.config.hyperauthUrl }}/auth/realms/tmax",
+      "oidc_endpoint": "https://{{ .Values.OIDC.config.hyperauthUrl }}/realms/tmax",
       "oidc_client_id": "{{ .Values.OIDC.config.clientId }}",
       "oidc_client_secret": "{{ .Values.OIDC.config.clientSecret }}",
       "oidc_groups_claim": "group",
