@@ -217,7 +217,7 @@ local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
         "namespace": "monitoring"
       },
       "data": {
-        "grafana.ini": [
+        "grafana.ini": std.join('\n', [
           "[auth]",
           "disable_login_form = false",
           "",
@@ -258,7 +258,7 @@ local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
           "http_port = 3000",
           "root_url = https://%(domain)s/api/grafana/",
           "serve_from_sub_path = true"
-        ].join("\n")
+        ])
       }
     },
     {
