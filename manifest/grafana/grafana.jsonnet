@@ -7,13 +7,14 @@ function (
   grafana_image_repo="docker.io/grafana/grafana",
   is_master_cluster="true",
   grafana_subdomain="grafana",
-  grafana_ingress="",
+  grafana_domain="",
   keycloak_addr="",
   admin_email=""
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
 local admin_info = if is_master_cluster == "true" then "" else "admin_user = " + admin_user;
+local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
 
 [
   {
