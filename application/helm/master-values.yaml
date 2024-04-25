@@ -497,8 +497,8 @@ modules:
     # portal의 경우 debug, info, notice, warn, error, crit, alert, emerg 기입 가능 (대소문자 유의)
     portal:
       logLevel: error
-    storageClass: nfs
-    storageClassDatabase: nfs
+    storageClass: default
+    storageClassDatabase: default
 
   ### tekton pipeline
   tektonPipeline:

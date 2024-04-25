@@ -44,7 +44,7 @@ spec:
         - name: OIDC.config.hyperauthUrl
           value: {{ include "hyperAuth.domain" . }}
         - name: OIDC.config.adminGroupName
-          value: {{ ternary "hypercloud5" (printf "%s-hyperregistry" $prefix) $isMaster }}
+          value: {{ ternary "/hypercloud5" (printf "%s-hyperregistry" $prefix) $isMaster }}
         - name: mainsLogLevel
           value: {{ .Values.modules.hyperregistry.mains.logLevel }}
         - name: redisLogLevel

@@ -15,7 +15,7 @@ OIDC:
     clientId: hyperregistry
     clientSecret: tmax_client_secret
     hyperauthUrl: hyperauth_domain
-    adminGroupName: hypercloud5
+    adminGroupName: /hypercloud5
 
 expose:
   # Set how to expose the service. Set the type as "ingress", "clusterIP", "nodePort" or "loadBalancer"
@@ -75,7 +75,6 @@ expose:
       nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
       nginx.ingress.kubernetes.io/proxy-body-size: "0"
-      traefik.ingress.kubernetes.io/router.entrypoints: websecure
     notary:
       # notary ingress-specific annotations
       annotations: {}
