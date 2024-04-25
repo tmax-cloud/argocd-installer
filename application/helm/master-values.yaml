@@ -361,7 +361,6 @@ modules:
       subdomain: kiali
       # trace, debug, info, warn, error, fatal
       kialiLoglevel: info
-      grafanaExternalUrl: grafana.domain
 
   ### cluster-api
   capi:

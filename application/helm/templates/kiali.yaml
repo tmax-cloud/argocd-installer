@@ -29,7 +29,7 @@ spec:
           - name: kiali_loglevel
             value: "{{ .Values.modules.serviceMesh.kiali.kialiLoglevel }}"
           - name: grafana_external_url
-            value: {{ .Values.modules.serviceMesh.kiali.grafanaExternalUrl }}
+            value: "https://{{ .Values.modules.grafana.subdomain }}.{{ .Values.global.domain }}"
           - name: time_zone
             value: {{ .Values.global.timeZone }}
     path: manifest/service-mesh/kiali
