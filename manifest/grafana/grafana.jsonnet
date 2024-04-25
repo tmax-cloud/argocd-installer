@@ -2,7 +2,7 @@ function (
   timezone="UTC",
   is_offline="false",
   private_registry="172.22.6.2:5000",
-  grafana_pvc="10Gi",
+  grafana_pvc_size="10Gi",
   grafana_version="10.3.1",
   grafana_image_repo="docker.io/grafana/grafana",
   is_master_cluster="true",
@@ -10,7 +10,8 @@ function (
   grafana_domain="",
   keycloak_addr="",
   admin_email="",
-  tmax_client_secret=""
+  tmax_client_secret="",
+  
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
