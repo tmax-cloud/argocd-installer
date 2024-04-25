@@ -13,7 +13,6 @@ function (
 )
 
 local target_registry = if is_offline == "false" then "" else private_registry + "/";
-local admin_info = if is_master_cluster == "true" then "" else "admin_user = " + admin_user;
 local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
 
 [
