@@ -79,21 +79,7 @@ function (
           "  retention_enabled: true",
           "  retention_delete_delay: 30m",
           "  working_directory: /loki/compactor",
-          "  shared_store: filesystem",
-          "ruler:",
-          "  storage:",
-          "    type: local",
-          "    local:",
-          "      directory: /loki/rules",
-          "  rule_path: /loki/scratch",
-          "  alertmanager_url: http://alertmanager-main.monitoring.svc:9063",
-          "  wal:",
-          "    dir: /loki/wal",
-          "  ring:",
-          "    kvstore:",
-          "      store: inmemory",
-          "  enable_api: true",
-          "  enable_alertmanager_v2: true"
+          "  shared_store: filesystem"
         ]
       )
     }
