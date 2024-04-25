@@ -5,7 +5,7 @@ function (
   coreos_image_repo="quay.io/coreos",
   prometheus_image_repo="quay.io/prometheus",
   prometheus_operator_image_repo="quay.io/prometheus-operator",
-  kube_state_metrics_image_repo="k8s.gcr.io/kube-state-metrics",
+  kube_state_metrics_image_repo="registry.k8s.io/kube-state-metrics",
   brancz_image_repo="quay.io/brancz",
   prometheus_adapter_image_repo="registry.k8s.io/prometheus-adapter",
   configmap_reload_version="v0.0.1",
@@ -867,7 +867,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 			"volumeClaimTemplate": {
 			  "spec": {
 				"accessModes": [
-				  "ReadWriteMany"
+				  "ReadWriteOnce"
 				],
 				"resources": {
 				  "requests": {
