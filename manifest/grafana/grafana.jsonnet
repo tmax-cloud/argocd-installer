@@ -34,7 +34,7 @@ local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
       ],
       "resources": {
         "requests": {
-          "storage": grafana_pvc
+          "storage": grafana_pvc_size
         }
       }
     }
