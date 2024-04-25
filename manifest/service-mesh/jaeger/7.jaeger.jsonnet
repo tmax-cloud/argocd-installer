@@ -812,6 +812,9 @@ local REDIRECT_URL = jaeger_subdomain + "." + CUSTOM_DOMAIN_NAME;
     "metadata": {
       "name": "jaeger-ingress",
       "namespace": "istio-system",
+      "annotations": {
+        "nginx.ingress.kubernetes.io/proxy-buffer-size": "128k"
+      },
       "labels": {
         "app": "jaeger",
         "app.kubernetes.io/name": "jaeger",
