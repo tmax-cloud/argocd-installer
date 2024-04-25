@@ -290,7 +290,7 @@ modules:
     # 사용 가능한 값 : 0~10
     prometheusLogLevel: info
     # 사용 가능한 값 : error, warn, info, debug
-
+    prometheusStorageClass: azurefile-csi
     versions:
       prometheus: v2.46.0
       cmReload: v0.0.1

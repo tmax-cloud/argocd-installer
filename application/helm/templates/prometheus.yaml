@@ -56,6 +56,8 @@ spec:
             value: "{{ .Values.modules.prometheus.adapterLogLevel }}"
           - name: prometheus_log_level
             value: {{ .Values.modules.prometheus.prometheusLogLevel }} 
+          - name: prometheus_sc
+            value: {{ .Values.modules.prometheus.prometheusStorageClass }} 
     path: manifest/prometheus
     repoURL: {{ .Values.spec.source.repoURL }}
     targetRevision: {{ .Values.spec.source.targetRevision }}

@@ -7,6 +7,7 @@ function (
   prometheus_operator_image_repo="quay.io/prometheus-operator",
   kube_state_metrics_image_repo="registry.k8s.io/kube-state-metrics",
   brancz_image_repo="quay.io/brancz",
+  prometheus_sc="azurefile-csi",
   prometheus_adapter_image_repo="registry.k8s.io/prometheus-adapter",
   configmap_reload_version="v0.0.1",
   configmap_reloader_version="v0.62.0",
@@ -867,8 +868,9 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 			"volumeClaimTemplate": {
 			  "spec": {
 				"accessModes": [
-				  "ReadWriteOnce"
+				  "ReadWriteMany"
 				],
+				"storageClassName": prometheus_sc,
 				"resources": {
 				  "requests": {
 					"storage": prometheus_pvc
