@@ -12,7 +12,7 @@ function (
   keycloak_addr="",
   admin_email="",
   tmax_client_secret="",
-  grafana_sc=""
+  grafana_sc="default"
   
 )
 
