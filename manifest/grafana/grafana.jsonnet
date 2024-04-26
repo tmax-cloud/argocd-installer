@@ -78,6 +78,14 @@ local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
         },
         "containers": [
           {
+            "image": std.join("",
+              [
+                target_registry,
+                grafana_image_repo,
+                ":",
+                grafana_version
+              ]
+            ),
             "resources": {
               "limits": {
                 "cpu": "200m",
@@ -144,15 +152,8 @@ local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
 				),
         }
             ],
-            "terminationMessagePolicy": "File",
-            "image": std.join("",
-              [
-                target_registry,
-                grafana_image_repo,
-                ":",
-                grafana_version
-              ]
-            )
+            "terminationMessagePolicy": "File"
+           
           },
         "serviceAccount": "grafana",
         "volumes": [
