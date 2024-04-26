@@ -19,7 +19,7 @@ local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
 
 [
   {
-    "apiVersion": "apps/v1",
+    "apiVersion": "v1",
     "kind": "PersistentVolumeClaim",
     "metadata": {
       "name": "grafana-pvc",
