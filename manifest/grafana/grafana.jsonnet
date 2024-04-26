@@ -127,7 +127,7 @@ local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
 				  },
 				  {
 					"mountPath": "/etc/grafana/provisioning/datasources",
-					"name": "grafana-datasources-prometheus"
+					"name": "grafana-datasources"
 				  }
 				]+ (
 					  if timezone != "UTC" then [
