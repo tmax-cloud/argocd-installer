@@ -36,7 +36,8 @@ local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
         "requests": {
           "storage": grafana_pvc_size
         }
-      }
+      },
+      "storageClassName": "azurefile-csi"
     }
   },
   {
