@@ -125,14 +125,12 @@ local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
 					"name": "grafana-config"
 				  },
 				  {
-					"mountPath": "/etc/grafana/provisioning/datasources/prometheus.yaml",
-					"name": "grafana-datasources-prometheus",
-					"subPath": "datasources.yaml"
+					"mountPath": "/etc/grafana/provisioning/datasources",
+					"name": "grafana-datasources-prometheus"
 				  },
 				  {
-					"mountPath": "/etc/grafana/provisioning/datasources/loki.yaml",
-					"name": "grafana-datasources-loki",
-					"subPath": "datasources.yaml"
+					"mountPath": "/etc/grafana/provisioning/datasources",
+					"name": "grafana-datasources-loki"
 				  }
 				]+ (
 					  if timezone != "UTC" then [
