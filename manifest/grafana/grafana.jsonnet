@@ -31,7 +31,7 @@ local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
     },
     "spec": {
       "accessModes": [
-        "ReadWriteOnce"
+        "ReadWriteMany"
       ],
       "resources": {
         "requests": {
