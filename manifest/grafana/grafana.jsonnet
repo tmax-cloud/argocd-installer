@@ -56,8 +56,6 @@ local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
 		"name": "grafana",
 		"namespace": "monitoring"
 	  },
-	  "progressDeadlineSeconds": 600,
-	  "revisionHistoryLimit": 10,
 	  "spec": {
 		"replicas": 1,
 		"selector": {
@@ -156,7 +154,6 @@ local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
 			},
 			"serviceAccountName": "grafana",
 			"terminationGracePeriodSeconds": 30,
-			"terminationMessagePolicy": "File",
 			"volumes": [
 			  {
 				"name": "grafana-storage",
