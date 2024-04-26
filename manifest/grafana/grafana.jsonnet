@@ -3,6 +3,7 @@ function (
   is_offline="false",
   private_registry="172.22.6.2:5000",
   grafana_pvc_size="10Gi",
+  grafana_sc="",
   grafana_version="10.3.1",
   grafana_image_repo="docker.io/grafana/grafana",
   is_master_cluster="true",
@@ -126,11 +127,13 @@ local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
 				  },
 				  {
 					"mountPath": "/etc/grafana/provisioning/datasources",
-					"name": "grafana-datasources-prometheus"
+					"name": "grafana-datasources-prometheus",
+          "subPath": "prometheus.yaml"
 				  },
 				  {
 					"mountPath": "/etc/grafana/provisioning/datasources",
-					"name": "grafana-datasources-loki"
+					"name": "grafana-datasources-loki",
+          "subPath": "loki.yaml"
 				  }
 				]+ (
 					  if timezone != "UTC" then [

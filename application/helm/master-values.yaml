@@ -327,6 +327,7 @@ modules:
     pvcSize: 10Gi
     version: "10.3.1"
     imageRepo: docker.io/grafana/grafana
+    grafanaStorageClass: azurefile-csi
     
   ### service-mesh
   serviceMesh:
