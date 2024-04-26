@@ -37,8 +37,12 @@ local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
         "requests": {
           "storage": grafana_pvc_size
         }
-      },
-      "storageClassName": "azurefile-csi"
+      }
+      + (
+      if storage_class != "default" then {
+        "storageClassName": storage_class
+      } else {}
+    )
     }
   },
   	{
@@ -148,7 +152,7 @@ local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
 			"securityContext": {
 			  "runAsNonRoot": false,
 			  "runAsUser": 0
-        
+
 			},
 			"serviceAccountName": "grafana",
 			"terminationGracePeriodSeconds": 30,
@@ -196,6 +200,8 @@ local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
       },
       "data": {
         "grafana.ini": std.join('\n', [
+          "[datasources]",
+          "yaml = /etc/grafana/provisioning/datasources",
           "[auth]",
           "disable_login_form = false",
           "",
