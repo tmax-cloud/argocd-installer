@@ -19,7 +19,7 @@ local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
 
 [
   {
-    "apiVersion": "v1",
+    "apiVersion": "apps/v1",
     "kind": "PersistentVolumeClaim",
     "metadata": {
       "name": "grafana-pvc",
@@ -40,177 +40,174 @@ local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
       "storageClassName": "azurefile-csi"
     }
   },
-  {
-    "kind": "Deployment",
-    "apiVersion": "apps/v1",
-    "metadata": {
-      "name": "grafana",
-      "namespace": "monitoring",
-      "labels": {
-        "app": "grafana"
-      }
-    },
-    "spec": {
-    "replicas": 1,
-    "selector": {
-      "matchLabels": {
-        "app": "grafana"
-      }
-    },
-    "template": {
-      "metadata": {
-        "creationTimestamp": null,
-        "labels": {
-          "app": "grafana"
-        }
-      },
-      "spec": {
-        "nodeSelector": {
-          "beta.kubernetes.io/os": "linux"
-        },
-        "restartPolicy": "Always",
-        "serviceAccountName": "grafana",
-        "schedulerName": "default-scheduler",
-        "terminationGracePeriodSeconds": 30,
-        "securityContext": {
-          "runAsUser": 65534,
-          "runAsNonRoot": true
-        },
-        "containers": [
-          {
-            "image": std.join("",
-              [
-                target_registry,
-                grafana_image_repo,
-                ":",
-                grafana_version
-              ]
-            ),
-            "resources": {
-              "limits": {
-                "cpu": "200m",
-                "memory": "200Mi"
-              },
-              "requests": {
-                "cpu": "100m",
-                "memory": "100Mi"
-              }
-            },
-            "readinessProbe": {
-              "httpGet": {
-                "path": "/api/health",
-                "port": "http",
-                "scheme": "HTTP"
-              },
-              "timeoutSeconds": 1,
-              "periodSeconds": 10,
-              "successThreshold": 1,
-              "failureThreshold": 3
-            },
-            "terminationMessagePath": "/dev/termination-log",
-            "name": "grafana",
-            "ports": [
-              {
-                "name": "http",
-                "containerPort": 3000,
-                "protocol": "TCP"
-              }
-            ],
-            "imagePullPolicy": "IfNotPresent",
-            "volumeMounts": [
-
-              {
-                "name": "grafana-storage",
-                "mountPath": "/var/lib/grafana"
-              },
-              {
-                "name": "grafana-config",
-                "mountPath": "/etc/grafana"
-              },
-              {
-                "name": "grafana-datasources-prometheus",
-                "mountPath": "/etc/grafana/provisioning/datasources/prometheus.yaml",
-                "subPath": "datasources.yaml"
-              },
-              {
-                "name": "grafana-datasources-loki",
-                "mountPath": "/etc/grafana/provisioning/datasources/loki.yaml",
-                "subPath": "datasources.yaml"
-              },
-              {
-                "name": "grafana-dashboard-prometheus",
-                "mountPath": "/etc/grafana/provisioning/dashboards/prometheus-dashboard.json",
-                "subPath": "dashboard.json"
-              }
-			  ] + (
-				  if timezone != "UTC" then [
-            {
-              "name": "timezone-config",
-              "mountPath": "/etc/localtime"
-            }
-				  ] else []
+  	{
+	  "apiVersion": "apps/v1",
+	  "kind": "Deployment",
+	  "metadata": {
+		"labels": {
+		  "app": "grafana",
+		  "app.kubernetes.io/instance": "grafana"
+		},
+		"name": "grafana",
+		"namespace": "monitoring"
+	  },
+	  "progressDeadlineSeconds": 600,
+	  "revisionHistoryLimit": 10,
+	  "spec": {
+		"replicas": 1,
+		"selector": {
+		  "matchLabels": {
+			"app": "grafana"
+		  }
+		},
+		"strategy": {
+		  "rollingUpdate": {
+			"maxSurge": "25%",
+			"maxUnavailable": "25%"
+		  },
+		  "type": "RollingUpdate"
+		},
+		"template": {
+		  "metadata": {
+			"labels": {
+			  "app": "grafana"
+			}
+		  },
+		  "spec": {
+			"containers": [
+			  {
+				"image": std.join("",
+				  [
+					target_registry,
+					grafana_image_repo,
+					":",
+					grafana_version
+				  ]
 				),
-        }
-            ],
-            "terminationMessagePolicy": "File"
-           
-          },
-        "serviceAccount": "grafana",
-        "volumes": [
-          {
-            "name": "grafana-storage",
-            "persistentVolumeClaim": {
-              "claimName": "grafana-pvc"
-            }
-          },
-          {
-            "name": "grafana-config",
-            "configMap": {
-              "name": "grafana-config",
-              "defaultMode": 420
-            }
-          },
-          {
-            "name": "grafana-datasources-prometheus",
-            "secret": {
-              "secretName": "grafana-datasources-prometheus"
-            }
-          },
-          {
-            "name": "grafana-datasources-loki",
-            "secret": {
-              "secretName": "grafana-datasources-loki"
-            }
-          },
-          {
-            "name": "grafana-dashboard-prometheus",
-            "configMap": {
-              "name": "prometheus-dashboard"
-            }
-          }
-		  ] + (
-			  if timezone != "UTC" then [
+				"imagePullPolicy": "IfNotPresent",
+				"name": "grafana",
+				"ports": [
+				  {
+					"containerPort": 3000,
+					"name": "http",
+					"protocol": "TCP"
+				  }
+				],
+				"readinessProbe": {
+				  "failureThreshold": 3,
+				  "httpGet": {
+					"path": "/api/health",
+					"port": "http",
+					"scheme": "HTTP"
+				  },
+				  "periodSeconds": 10,
+				  "successThreshold": 1,
+				  "timeoutSeconds": 1
+				},
+				"resources": {
+				  "limits": {
+					"cpu": "200m",
+					"memory": "200Mi"
+				  },
+				  "requests": {
+					"cpu": "100m",
+					"memory": "100Mi"
+				  }
+				},
+				"terminationMessagePath": "/dev/termination-log",
+				"volumeMounts": [
+				  {
+					"mountPath": "/var/lib/grafana",
+					"name": "grafana-storage"
+				  },
+				  {
+					"mountPath": "/etc/grafana",
+					"name": "grafana-config"
+				  },
+				  {
+					"mountPath": "/etc/grafana/provisioning/datasources/prometheus.yaml",
+					"name": "grafana-datasources-prometheus",
+					"subPath": "datasources.yaml"
+				  },
+				  {
+					"mountPath": "/etc/grafana/provisioning/datasources/loki.yaml",
+					"name": "grafana-datasources-loki",
+					"subPath": "datasources.yaml"
+				  },
+				  {
+					"mountPath": "/etc/grafana/provisioning/dashboards/prometheus-dashboard.json",
+					"name": "grafana-dashboard-prometheus",
+					"subPath": "dashboard.json"
+				  }
+				]+ (
+					  if timezone != "UTC" then [
 				{
 				  "name": "timezone-config",
-				  "hostPath": {
-					"path": std.join("", ["/usr/share/zoneinfo/", timezone])
-				   }
-				 }
-			  ] else []
-			),
-        "dnsPolicy": "ClusterFirst"
-      }
-    },
-    "strategy": {
-      "type": "RollingUpdate",
-      "rollingUpdate": {
-        "maxUnavailable": "25%",
-        "maxSurge": "25%"
-      }
-    },
-    "revisionHistoryLimit": 10,
-    "progressDeadlineSeconds": 600
-    },
+				  "mountPath": "/etc/localtime"
+				}
+					  ] else []
+					),
+			  }
+			],
+			"dnsPolicy": "ClusterFirst",
+			"nodeSelector": {
+			  "beta.kubernetes.io/os": "linux"
+			},
+			"restartPolicy": "Always",
+			"schedulerName": "default-scheduler",
+			"securityContext": {
+			  "runAsNonRoot": true,
+			  "runAsUser": 65534
+			},
+			"serviceAccountName": "grafana",
+			"terminationGracePeriodSeconds": 30,
+			"terminationMessagePolicy": "File",
+			"volumes": [
+			  {
+				"name": "grafana-storage",
+				"persistentVolumeClaim": {
+				  "claimName": "grafana-pvc"
+				}
+			  },
+			  {
+				"name": "grafana-config",
+				"configMap": {
+				  "defaultMode": 420,
+				  "name": "grafana-config"
+				}
+			  },
+			  {
+				"name": "grafana-datasources-prometheus",
+				"secret": {
+				  "secretName": "grafana-datasources-prometheus"
+				}
+			  },
+			  {
+				"name": "grafana-datasources-loki",
+				"secret": {
+				  "secretName": "grafana-datasources-loki"
+				}
+			  },
+			  {
+				"name": "grafana-dashboard-prometheus",
+				"configMap": {
+				  "name": "prometheus-dashboard"
+				}
+			  }
+			]+ (
+				  if timezone != "UTC" then [
+					{
+					  "name": "timezone-config",
+					  "hostPath": {
+						"path": std.join("", ["/usr/share/zoneinfo/", timezone])
+					   }
+					 }
+				  ] else []
+				)
+		  }
+		}
+	  }
+	},
     {
       "kind": "ConfigMap",
       "apiVersion": "v1",
