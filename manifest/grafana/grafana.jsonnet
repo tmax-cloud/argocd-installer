@@ -146,7 +146,7 @@ local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
 				  "mountPath": "/etc/localtime"
 				}
 					  ] else []
-					),
+					)
 			  }
 			],
 			"dnsPolicy": "ClusterFirst",
