@@ -146,8 +146,9 @@ local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
 			"restartPolicy": "Always",
 			"schedulerName": "default-scheduler",
 			"securityContext": {
-			  "runAsNonRoot": true,
-			  "runAsUser": 65534
+			  "runAsNonRoot": false,
+			  "runAsUser": 0
+        
 			},
 			"serviceAccountName": "grafana",
 			"terminationGracePeriodSeconds": 30,
