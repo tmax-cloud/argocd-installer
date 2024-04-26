@@ -12,6 +12,7 @@ function (
   keycloak_addr="",
   admin_email="",
   tmax_client_secret="",
+  grafana_sc=""
   
 )
 
@@ -37,10 +38,9 @@ local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
         "requests": {
           "storage": grafana_pvc_size
         }
-      }
-      + (
-      if storage_class != "default" then {
-        "storageClassName": storage_class
+      } + (
+      if grafana_sc != "default" then {
+        "storageClassName": grafana_sc
       } else {}
     )
     }
