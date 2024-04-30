@@ -88,6 +88,13 @@ spec:
               number: 9090
         path: /api/prometheus(/|$)(.*)
         pathType: Prefix
+      - backend:
+          service:
+            name: prometheus-proxy
+            port:
+              number: 9090
+        path: /api/prometheus-tenancy(/|$)(.*)
+        pathType: Prefix
   tls:
   - hosts:
     - console-aks.tmaxcloudqa.link
