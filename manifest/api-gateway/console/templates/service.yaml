@@ -23,3 +23,18 @@ metadata:
 spec:
   type: ExternalName
   externalName: kubernetes.default.svc.cluster.local
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-proxy
+  namespace: api-gateway-system
+  labels:
+    app: prometheus-proxy
+spec:
+  type: ExternalName
+  externalName: prometheus-k8s.monitoring.svc.cluster.local
+  ports:
+  - name: web
+    port: 9090
+    targetPort: 9090

@@ -43,11 +43,51 @@ spec:
               number: 443
         path: /api/kubernetes(/|$)(.*)
         pathType: Prefix
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
+  name: prometheus-ingress
+  namespace: api-gateway-system
+spec:
+  ingressClassName: nginx-system
+  rules:
+  - host: {{ .Values.subDomain }}.{{ .Values.domain }}
+    http:
+      paths:
       - backend:
           service:
-            name: prometheus-k8s
-            namespace: monitoring
+            name: prometheus-proxy
             port:
               number: 9090
         path: /api/prometheus(/|$)(.*)
         pathType: Prefix
+  tls:
+  - hosts:
+    - apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
+  name: prometheus-ingress
+  namespace: api-gateway-system
+spec:
+  ingressClassName: nginx-system
+  rules:
+  - host: {{ .Values.subDomain }}.{{ .Values.domain }}
+    http:
+      paths:
+      - backend:
+          service:
+            name: prometheus-proxy
+            port:
+              number: 9090
+        path: /api/prometheus(/|$)(.*)
+        pathType: Prefix
+  tls:
+  - hosts:
+    - console-aks.tmaxcloudqa.link
