@@ -127,6 +127,10 @@ local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
 					"mountPath": "/etc/grafana",
 					"name": "grafana-config"
 				  },
+          {
+					"mountPath": "/grafana-dashboard-definitions/0/ns-dashboard",
+					"name": "grafana-dashboard"
+				  },
 				  {
 					"mountPath": "/etc/grafana/provisioning/datasources",
 					"name": "grafana-datasources"
@@ -166,6 +170,13 @@ local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
 				"configMap": {
 				  "defaultMode": 420,
 				  "name": "grafana-config"
+				}
+			  },
+        {
+				"name": "grafana-dashboard",
+				"configMap": {
+				  "defaultMode": 420,
+				  "name": "grafana-dashboard-k8s-resources-namespace"
 				}
 			  },
 			  {
