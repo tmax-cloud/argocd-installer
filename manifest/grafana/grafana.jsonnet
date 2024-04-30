@@ -247,7 +247,7 @@ local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
       "kind": "Ingress",
       "metadata": {
         "labels": {
-          "ingress.tmaxcloud.org/name": "grafaba"
+          "ingress.tmaxcloud.org/name": "grafana"
         },
         "name": "grafana-ingress",
         "namespace": "monitoring"
