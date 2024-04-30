@@ -129,7 +129,11 @@ local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
 				  },
           {
 					"mountPath": "/etc/grafana/provisioning/dashboards",
-					"name": "grafana-dashboard"
+					"name": "grafana-dashboards"
+				  },
+          {
+					"mountPath": "/grafana-dashboard-definitions/0/k8s-resources-namespace",
+					"name": "grafana-dashboard-k8s-resources-namespace"
 				  },
 				  {
 					"mountPath": "/etc/grafana/provisioning/datasources",
@@ -173,10 +177,17 @@ local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
 				}
 			  },
         {
-				"name": "grafana-dashboard",
+				"name": "grafana-dashboard-k8s-resources-namespace",
 				"configMap": {
 				  "defaultMode": 420,
 				  "name": "grafana-dashboard-k8s-resources-namespace"
+				}
+			  },
+        {
+				"name": "grafana-dashboards",
+				"configMap": {
+				  "defaultMode": 420,
+				  "name": "grafana-dashboards"
 				}
 			  },
 			  {
