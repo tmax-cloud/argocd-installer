@@ -43,3 +43,11 @@ spec:
               number: 443
         path: /api/kubernetes(/|$)(.*)
         pathType: Prefix
+      - backend:
+          service:
+            name: prometheus-k8s
+            namespace: monitoring
+            port:
+              number: 9090
+        path: /api/prometheus(/|$)(.*)
+        pathType: Prefix
