@@ -128,7 +128,7 @@ local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
 					"name": "grafana-config"
 				  },
           {
-					"mountPath": "/etc/grafana/provisioning/dashboards",
+					"mountPath": "/var/lib/grafana",
 					"name": "grafana-dashboard"
 				  },
 				  {
