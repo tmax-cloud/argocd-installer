@@ -136,6 +136,10 @@ local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
 					"name": "grafana-dashboard-k8s-resources-namespace"
 				  },
           {
+					"mountPath": "/grafana-dashboard-definitions/0/grafana-loki-dashboard",
+					"name": "grafana-loki-dashboard"
+				  },
+          {
 					"mountPath": "/grafana-dashboard-definitions/0/grafana-node-exporter",
 					"name": "grafana-node-exporter"
 				  },
@@ -192,6 +196,13 @@ local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
 				"configMap": {
 				  "defaultMode": 420,
 				  "name": "grafana-node-exporter"
+				}
+			  },
+        {
+				"name": "grafana-loki-dashboard",
+				"configMap": {
+				  "defaultMode": 420,
+				  "name": "grafana-loki-dashboard"
 				}
 			  },
         {
