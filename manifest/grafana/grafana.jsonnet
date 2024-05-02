@@ -40,7 +40,7 @@ local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
         }
       } + (
       if grafana_sc != "default" then {
-        "storageClassName": grafana_sc
+      "storageClassName": grafana_sc
       } else {}
     )
     }
@@ -135,6 +135,10 @@ local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
 					"mountPath": "/grafana-dashboard-definitions/0/k8s-resources-namespace",
 					"name": "grafana-dashboard-k8s-resources-namespace"
 				  },
+          {
+					"mountPath": "/grafana-dashboard-definitions/0/grafana-node-exporter",
+					"name": "grafana-node-exporter"
+				  },
 				  {
 					"mountPath": "/etc/grafana/provisioning/datasources",
 					"name": "grafana-datasources"
@@ -181,6 +185,13 @@ local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
 				"configMap": {
 				  "defaultMode": 420,
 				  "name": "grafana-dashboard-k8s-resources-namespace"
+				}
+			  },
+        {
+				"name": "grafana-node-exporter",
+				"configMap": {
+				  "defaultMode": 420,
+				  "name": "grafana-node-exporter"
 				}
 			  },
         {
