@@ -1,4 +1,4 @@
- kind: ConfigMap
+kind: ConfigMap
 apiVersion: v1
 metadata:
   name: grafana-node-exporter
