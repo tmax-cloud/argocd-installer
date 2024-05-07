@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: prometheus-dashboard
-  namespace: default
+  namespace: monitoring
 data:
   dashboard.json: |
     {
