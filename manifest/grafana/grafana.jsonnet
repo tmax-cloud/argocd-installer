@@ -41,7 +41,9 @@ local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
       } + (
       if grafana_sc != "default" then {
       "storageClassName": grafana_sc
-      } else {}
+      } else {
+      "storageClassName": "default"
+      }
     )
     }
   },
