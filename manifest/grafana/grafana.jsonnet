@@ -34,12 +34,12 @@ local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
       "accessModes": [
         "ReadWriteOnce"
       ],
-      "resources": [
+      "resources": 
         {
         "requests": {
           "storage": grafana_pvc_size
         }
-      }] + (
+      } + (
       if grafana_sc != "default" then {
       "storageClassName": grafana_sc
       } else {
