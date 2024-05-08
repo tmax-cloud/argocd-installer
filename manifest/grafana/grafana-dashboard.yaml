@@ -172,7 +172,7 @@ data:
 
                                 ],
                                 "dateFormat": "YYYY-MM-DD HH:mm:ss",
-                                "decimals": 2,
+                                "decimals": 6,
                                 "link": false,
                                 "linkTooltip": "Drill down",
                                 "linkUrl": "",
