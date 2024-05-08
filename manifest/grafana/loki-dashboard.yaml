@@ -6,61 +6,14 @@ metadata:
 data:
   grafana-loki-dashboard.json: |-
     {
-      "__inputs": [
-        {
-          "name": "DS_LOKI",
-          "label": "Loki",
-          "description": "",
-          "type": "datasource",
-          "pluginId": "loki",
-          "pluginName": "Loki"
-        },
-        {
-          "name": "DS_PROMETHEUS",
-          "label": "prometheus",
-          "description": "",
-          "type": "datasource",
-          "pluginId": "prometheus",
-          "pluginName": "Prometheus"
-        }
-      ],
-      "__requires": [
-        {
-          "type": "grafana",
-          "id": "grafana",
-          "name": "Grafana",
-          "version": "7.0.3"
-        },
-        {
-          "type": "panel",
-          "id": "graph",
-          "name": "Graph",
-          "version": ""
-        },
-        {
-          "type": "panel",
-          "id": "logs",
-          "name": "Logs",
-          "version": ""
-        },
-        {
-          "type": "datasource",
-          "id": "loki",
-          "name": "Loki",
-          "version": "1.0.0"
-        },
-        {
-          "type": "datasource",
-          "id": "prometheus",
-          "name": "Prometheus",
-          "version": "1.0.0"
-        }
-      ],
       "annotations": {
         "list": [
           {
             "builtIn": 1,
-            "datasource": "-- Grafana --",
+            "datasource": {
+              "type": "datasource",
+              "uid": "grafana"
+            },
             "enable": true,
             "hide": true,
             "iconColor": "rgba(0, 211, 255, 1)",
@@ -71,21 +24,26 @@ data:
       },
       "description": "Loki dashboard with quick search and timeline.",
       "editable": true,
+      "fiscalYearStartMonth": 0,
       "gnetId": 13186,
       "graphTooltip": 0,
-      "id": null,
-      "iteration": 1602756869174,
+      "id": 17,
       "links": [],
+      "liveNow": false,
       "panels": [
         {
           "aliasColors": {},
           "bars": true,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "${DS_LOKI}",
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
           "fieldConfig": {
             "defaults": {
-              "custom": {}
+              "links": [],
+              "unitScale": true
             },
             "overrides": []
           },
@@ -112,9 +70,10 @@ data:
           "linewidth": 1,
           "nullPointMode": "null",
           "options": {
-            "dataLinks": []
+            "alertThreshold": true
           },
           "percentage": false,
+          "pluginVersion": "10.3.1",
           "pointradius": 2,
           "points": false,
           "renderer": "flot",
@@ -124,14 +83,18 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(count_over_time({namespace=\"$namespace\", app=\"$workload\", instance=~\"$pod\"} |~ \"$search\"[$__interval]))",
+              "datasource": {
+                "type": "loki",
+                "uid": "${DS_LOKI}"
+              },
+              "editorMode": "code",
+              "expr": "sum(count_over_time({namespace=\"$namespace\", pod_name=\"$pod\"}[$__interval]))",
+              "queryType": "range",
               "refId": "A"
             }
           ],
           "thresholds": [],
-          "timeFrom": null,
           "timeRegions": [],
-          "timeShift": null,
           "title": "Timeline",
           "tooltip": {
             "shared": true,
@@ -140,42 +103,30 @@ data:
           },
           "type": "graph",
           "xaxis": {
-            "buckets": null,
             "mode": "time",
-            "name": null,
             "show": true,
             "values": []
           },
           "yaxes": [
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": false
             },
             {
               "format": "short",
-              "label": null,
               "logBase": 1,
-              "max": null,
-              "min": null,
               "show": false
             }
           ],
           "yaxis": {
-            "align": false,
-            "alignLevel": null
+            "align": false
           }
         },
         {
-          "datasource": "${DS_LOKI}",
-          "fieldConfig": {
-            "defaults": {
-              "custom": {}
-            },
-            "overrides": []
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
           },
           "gridPos": {
             "h": 25,
@@ -186,6 +137,10 @@ data:
           "id": 2,
           "maxDataPoints": "",
           "options": {
+            "dedupStrategy": "none",
+            "enableLogDetails": true,
+            "prettifyLogMessage": false,
+            "showCommonLabels": false,
             "showLabels": true,
             "showTime": true,
             "sortOrder": "Descending",
@@ -193,84 +148,82 @@ data:
           },
           "targets": [
             {
-              "expr": "{namespace=\"$namespace\", app=\"$workload\", instance=~\"$pod\"} |~ \"$search\"",
+              "datasource": {
+                "uid": "${DS_LOKI}"
+              },
+              "editorMode": "code",
+              "expr": "{namespace=\"$namespace\", pod_name=~\"$pod\"} ",
+              "queryType": "range",
               "refId": "A"
             }
           ],
-          "timeFrom": null,
-          "timeShift": null,
           "title": "Logs",
           "type": "logs"
         }
       ],
-      "refresh": false,
-      "schemaVersion": 25,
-      "style": "dark",
+      "refresh": "",
+      "schemaVersion": 39,
       "tags": [],
       "templating": {
         "list": [
           {
-            "allValue": null,
-            "current": {},
-            "datasource": "${DS_PROMETHEUS}",
-            "definition": "label_values(kube_pod_info, namespace)",
+            "current": {
+              "selected": false,
+              "text": "api-gateway-system",
+              "value": "api-gateway-system"
+            },
+            "datasource": {
+              "uid": "${DS_LOKI}"
+            },
+            "definition": "",
+            "description": "namespace",
             "hide": 0,
             "includeAll": false,
-            "label": null,
             "multi": false,
             "name": "namespace",
             "options": [],
-            "query": "label_values(kube_pod_info, namespace)",
+            "query": {
+              "label": "namespace",
+              "refId": "LokiVariableQueryEditor-VariableQuery",
+              "stream": "",
+              "type": 1
+            },
             "refresh": 1,
             "regex": "",
             "skipUrlSync": false,
             "sort": 0,
             "tagValuesQuery": "",
-            "tags": [],
             "tagsQuery": "",
             "type": "query",
             "useTags": false
           },
           {
             "allValue": ".*",
-            "current": {},
-            "datasource": "${DS_PROMETHEUS}",
-            "definition": "label_values(mixin_pod_workload{namespace=\"$namespace\"}, workload)",
-            "hide": 0,
-            "includeAll": false,
-            "label": null,
-            "multi": false,
-            "name": "workload",
-            "options": [],
-            "query": "label_values(mixin_pod_workload{namespace=\"$namespace\"}, workload)",
-            "refresh": 1,
-            "regex": "",
-            "skipUrlSync": false,
-            "sort": 5,
-            "tagValuesQuery": "",
-            "tags": [],
-            "tagsQuery": "",
-            "type": "query",
-            "useTags": false
-          },
-          {
-            "allValue": ".*",
-            "current": {},
-            "datasource": "${DS_PROMETHEUS}",
-            "definition": "label_values(mixin_pod_workload{namespace=\"$namespace\", workload=\"$workload\"}, pod)",
+            "current": {
+              "selected": false,
+              "text": "All",
+              "value": "$__all"
+            },
+            "datasource": {
+              "uid": "${DS_LOKI}"
+            },
+            "definition": "",
             "hide": 0,
             "includeAll": true,
-            "label": null,
             "multi": false,
             "name": "pod",
             "options": [],
-            "query": "label_values(mixin_pod_workload{namespace=\"$namespace\", workload=\"$workload\"}, pod)",
+            "query": {
+              "label": "pod_name",
+              "refId": "LokiVariableQueryEditor-VariableQuery",
+              "stream": "{namespace=\"$namespace\"}",
+              "type": 1
+            },
             "refresh": 1,
             "regex": "",
             "skipUrlSync": false,
             "sort": 0,
             "tagValuesQuery": "",
-            "tags": [],
             "tagsQuery": "",
             "type": "query",
             "useTags": false
@@ -278,22 +231,20 @@ data:
           {
             "current": {
               "selected": false,
-              "text": "",
-              "value": ""
+              "text": "loki",
+              "value": "P982945308D3682D1"
             },
             "hide": 0,
-            "label": null,
-            "name": "search",
-            "options": [
-              {
-                "selected": true,
-                "text": "",
-                "value": ""
-              }
-            ],
-            "query": "",
+            "includeAll": false,
+            "multi": false,
+            "name": "DS_LOKI",
+            "options": [],
+            "query": "loki",
+            "queryValue": "",
+            "refresh": 1,
+            "regex": "",
             "skipUrlSync": false,
-            "type": "textbox"
+            "type": "datasource"
           }
         ]
       },
@@ -315,7 +266,8 @@ data:
         ]
       },
       "timezone": "",
-      "title": "Loki Dashboard",
-      "uid": "liz0yRCZz",
-      "version": 5
+      "title": "Loki Dashboard Copy",
+      "uid": "aff0804d-b1e8-481b-9d0d-524fa7280b82",
+      "version": 12,
+      "weekStart": ""
     }
