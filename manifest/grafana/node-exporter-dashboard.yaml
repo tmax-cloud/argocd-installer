@@ -1,6 +1,8 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  annotations:
+    argocd.argoproj.io/sync-options: Replace=true
   name: grafana-node-exporter
   namespace: monitoring
 data:
@@ -14048,7 +14050,7 @@ data:
         ]
       },
       "timezone": "browser",
-      "title": "Node Exporter Full2",
+      "title": "Node Exporter Full",
       "uid": "rYdddlPWj",
       "version": 1,
       "weekStart": ""
