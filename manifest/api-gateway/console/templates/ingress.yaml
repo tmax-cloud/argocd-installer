@@ -26,6 +26,13 @@ metadata:
     nginx.ingress.kubernetes.io/backend-protocol: HTTPS
     nginx.ingress.kubernetes.io/rewrite-target: /$2
     nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      set $token $arg_token;
+      set $auth $http_authorization;
+      if ($token != "") {
+        set $auth "Bearer $token";
+      }
+      proxy_set_header Authorization $auth;
   name: kubernetes
   namespace: api-gateway-system
   labels:
