@@ -868,7 +868,7 @@ local target_registry = if is_offline == "false" then "" else private_registry +
 			"volumeClaimTemplate": {
 			  "spec": {
 				"accessModes": [
-				  "ReadWriteMany"
+				  "ReadWriteOnce"
 				],
 				"storageClassName": prometheus_sc,
 				"resources": {
