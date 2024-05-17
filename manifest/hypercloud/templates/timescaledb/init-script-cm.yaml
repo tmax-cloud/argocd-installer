@@ -31,7 +31,7 @@ data:
     SELECT add_retention_policy('metering_month', INTERVAL '{{ .Values.timescaleDB.metering.month.retentionPolicy }}', if_not_exists => TRUE);
     SELECT create_hypertable('metering_year', 'metering_time', chunk_time_interval => INTERVAL '{{ .Values.timescaleDB.metering.year.chunkTimeInterval }}', if_not_exists => TRUE);
     SELECT add_retention_policy('metering_year', INTERVAL '{{ .Values.timescaleDB.metering.year.retentionPolicy }}', if_not_exists => TRUE);
-    CREATE TABLE EVENT (NAMESPACE VARCHAR(128) , KIND VARCHAR(32) NOT NULL, NAME VARCHAR(128) NOT NULL, UID VARCHAR(64) NOT NULL, APIVERSION VARCHAR(64), FIELDPATH VARCHAR(64), ACTION VARCHAR(128), REASON VARCHAR(128), NOTE VARCHAR(512), REPORTING_CONTROLLER VARCHAR(128), REPORTING_INSTANCE VARCHAR(128), HOST VARCHAR(16), COUNT INT, TYPE VARCHAR(32), FIRST_TIMESTAMP TIMESTAMP, LAST_TIMESTAMP TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);
+    CREATE TABLE EVENT (NAMESPACE VARCHAR(128) , KIND VARCHAR(32) NOT NULL, NAME VARCHAR(128) NOT NULL, UID VARCHAR(64) NOT NULL, APIVERSION VARCHAR(64), FIELDPATH VARCHAR(64), ACTION VARCHAR(128), REASON VARCHAR(128), NOTE VARCHAR(512), REPORTING_CONTROLLER VARCHAR(128), REPORTING_INSTANCE VARCHAR(128), HOST VARCHAR(64), COUNT INT, TYPE VARCHAR(32), FIRST_TIMESTAMP TIMESTAMP, LAST_TIMESTAMP TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);
     SELECT create_hypertable('event', 'last_timestamp', chunk_time_interval => INTERVAL '{{ .Values.timescaleDB.event.chunkTimeInterval }}', if_not_exists => TRUE, migrate_data => TRUE);
     SELECT add_retention_policy('event', INTERVAL '{{ .Values.timescaleDB.event.retentionPolicy }}', if_not_exists => TRUE);
     
