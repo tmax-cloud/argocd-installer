@@ -1,0 +1,369 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: timescaledb
+    cluster-name: timescaledb
+    release: timescaledb
+  name: timescaledb
+  namespace: hypercloud5-system
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: timescaledb
+      cluster-name: timescaledb
+      release: timescaledb
+  serviceName: timescaledb-service
+  template:
+    metadata:
+      labels:
+        app: timescaledb
+        cluster-name: timescaledb
+        release: timescaledb
+      name: timescaledb
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app: timescaledb
+                  cluster-name: timescaledb
+                  release: timescaledb
+              topologyKey: kubernetes.io/hostname
+            weight: 100
+          - podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app: timescaledb
+                  cluster-name: timescaledb
+                  release: timescaledb
+              topologyKey: failure-domain.beta.kubernetes.io/zone
+            weight: 50
+      containers:
+      - command:
+        - /bin/bash
+        - -c
+        - |2
+          install -o postgres -g postgres -d -m 0700 "/var/lib/postgresql/data" "/var/lib/postgresql/wal/pg_wal" || exit 1
+          TABLESPACES=""
+          for tablespace in ; do
+            install -o postgres -g postgres -d -m 0700 "/var/lib/postgresql/tablespaces/${tablespace}/data"
+          done
+          # Environment variables can be read by regular users of PostgreSQL. Especially in a Kubernetes
+          # context it is likely that some secrets are part of those variables.
+          # To ensure we expose as little as possible to the underlying PostgreSQL instance, we have a list
+          # of allowed environment variable patterns to retain.
+          #
+          # We need the KUBERNETES_ environment variables for the native Kubernetes support of Patroni to work.
+          #
+          # NB: Patroni will remove all PATRONI_.* environment variables before starting PostgreSQL
+          # We store the current environment, as initscripts, callbacks, archive_commands etc. may require
+          # to have the environment available to them
+          set -o posix
+          export -p > "${HOME}/.pod_environment"
+          export -p | grep PGBACKREST > "${HOME}/.pgbackrest_environment"
+          for UNKNOWNVAR in $(env | awk -F '=' '!/^(PATRONI_.*|HOME|PGDATA|PGHOST|LC_.*|LANG|PATH|KUBERNETES_SERVICE_.*)=/ {print $1}')
+          do
+              unset "${UNKNOWNVAR}"
+          done
+          touch /var/run/postgresql/timescaledb.conf
+          touch /var/run/postgresql/wal_status
+          echo "*:*:*:postgres:${PATRONI_SUPERUSER_PASSWORD}" >> ${HOME}/.pgpass
+          chmod 0600 ${HOME}/.pgpass
+          export PATRONI_POSTGRESQL_PGPASS="${HOME}/.pgpass.patroni"
+          exec patroni /etc/timescaledb/patroni.yaml
+        env:
+        - name: TZ
+          value: Asia/Seoul
+        - name: PATRONI_admin_OPTIONS
+          value: createrole,createdb
+        - name: PATRONI_REPLICATION_USERNAME
+          value: standby
+        - name: PATRONI_KUBERNETES_POD_IP
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.podIP
+        - name: PATRONI_POSTGRESQL_CONNECT_ADDRESS
+          value: $(PATRONI_KUBERNETES_POD_IP):5432
+        - name: PATRONI_RESTAPI_CONNECT_ADDRESS
+          value: $(PATRONI_KUBERNETES_POD_IP):8008
+        - name: PATRONI_KUBERNETES_PORTS
+          value: '[{"name": "postgresql", "port": 5432}]'
+        - name: PATRONI_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: PATRONI_POSTGRESQL_DATA_DIR
+          value: /var/lib/postgresql/data
+        - name: PATRONI_KUBERNETES_NAMESPACE
+          value: hypercloud5-system
+        - name: PATRONI_KUBERNETES_LABELS
+          value: '{app: timescaledb, cluster-name: timescaledb, release: timescaledb}'
+        - name: PATRONI_SCOPE
+          value: timescaledb
+        - name: PGBACKREST_CONFIG
+          value: /etc/pgbackrest/pgbackrest.conf
+        - name: PGDATA
+          value: $(PATRONI_POSTGRESQL_DATA_DIR)
+        - name: PGHOST
+          value: /var/run/postgresql
+        - name: BOOTSTRAP_FROM_BACKUP
+          value: "0"
+        envFrom:
+        - secretRef:
+            name: timescaledb-credentials
+        - secretRef:
+            name: timescaledb-pgbackrest
+            optional: true
+        {{- if .Values.global.offline.enabled }}
+        image: {{ .Values.global.offline.registry }}/docker.io/tmaxcloudck/timescaledb-cron:{{ .Values.timescaleDB.version }}
+        {{- else }}
+        image: docker.io/tmaxcloudck/timescaledb-cron:{{ .Values.timescaleDB.version }}
+        {{- end }}
+        imagePullPolicy: Always
+        lifecycle:
+          preStop:
+            exec:
+              command:
+              - psql
+              - -X
+              - --file
+              - /etc/timescaledb/scripts/lifecycle_preStop.psql
+        name: timescaledb
+        ports:
+        - containerPort: 8008
+          name: patroni
+          protocol: TCP
+        - containerPort: 5432
+          name: postgresql
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - pg_isready
+            - -h
+            - /var/run/postgresql
+          failureThreshold: 6
+          initialDelaySeconds: 5
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: 300m
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 256Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /var/lib/postgresql
+          name: storage-volume
+        - mountPath: /var/lib/postgresql/wal
+          name: wal-volume
+        - mountPath: /etc/timescaledb/patroni.yaml
+          name: patroni-config
+          readOnly: true
+          subPath: patroni.yaml
+        - mountPath: /etc/timescaledb/scripts
+          name: timescaledb-scripts
+          readOnly: true
+        - mountPath: /etc/timescaledb/post_init.d
+          name: post-init
+          readOnly: true
+        - mountPath: /etc/certificate
+          name: certificate
+          readOnly: true
+        - mountPath: /var/run/postgresql
+          name: socket-directory
+        - mountPath: /etc/pgbackrest
+          name: pgbackrest
+          readOnly: true
+        - mountPath: /etc/pgbackrest/bootstrap
+          name: pgbackrest-bootstrap
+          readOnly: true
+        {{- include "hypercloud.volumeMounts.timeZone" . | nindent 8 }}
+      dnsPolicy: ClusterFirst
+      initContainers:
+      - command:
+        - sh
+        - -c
+        - |
+          set -e
+          [ $CPUS -eq 0 ]   && CPUS="${RESOURCES_CPU_LIMIT}"
+          [ $MEMORY -eq 0 ] && MEMORY="${RESOURCES_MEMORY_LIMIT}"
+          if [ -f "${PGDATA}/postgresql.base.conf" ] && ! grep "${INCLUDE_DIRECTIVE}" postgresql.base.conf -qxF; then
+            echo "${INCLUDE_DIRECTIVE}" >> "${PGDATA}/postgresql.base.conf"
+          fi
+          touch "${TSTUNE_FILE}"
+          timescaledb-tune -quiet -pg-version 11 -conf-path "${TSTUNE_FILE}" -cpus "${CPUS}" -memory "${MEMORY}MB" \
+             -yes
+          # If there is a dedicated WAL Volume, we want to set max_wal_size to 60% of that volume
+          # If there isn't a dedicated WAL Volume, we set it to 20% of the data volume
+          if [ "${RESOURCES_WAL_VOLUME}" = "0" ]; then
+            WALMAX="${RESOURCES_DATA_VOLUME}"
+            WALPERCENT=20
+          else
+            WALMAX="${RESOURCES_WAL_VOLUME}"
+            WALPERCENT=60
+          fi
+          WALMAX=$(numfmt --from=auto ${WALMAX})
+          # Wal segments are 16MB in size, in this way we get a "nice" number of the nearest
+          # 16MB
+          WALMAX=$(( $WALMAX / 100 * $WALPERCENT / 16777216 * 16 ))
+          WALMIN=$(( $WALMAX / 2 ))
+          echo "max_wal_size=${WALMAX}MB" >> "${TSTUNE_FILE}"
+          echo "min_wal_size=${WALMIN}MB" >> "${TSTUNE_FILE}"
+        env:
+        - name: TZ
+          value: Asia/Seoul
+        - name: TSTUNE_FILE
+          value: /var/run/postgresql/timescaledb.conf
+        - name: RESOURCES_WAL_VOLUME
+          value: 30Gi
+        - name: RESOURCES_DATA_VOLUME
+          value: 10Gi
+        - name: INCLUDE_DIRECTIVE
+          value: include_if_exists = '/var/run/postgresql/timescaledb.conf'
+        - name: CPUS
+          valueFrom:
+            resourceFieldRef:
+              containerName: timescaledb
+              divisor: "1"
+              resource: requests.cpu
+        - name: MEMORY
+          valueFrom:
+            resourceFieldRef:
+              containerName: timescaledb
+              divisor: 1Mi
+              resource: requests.memory
+        - name: RESOURCES_CPU_LIMIT
+          valueFrom:
+            resourceFieldRef:
+              containerName: timescaledb
+              divisor: "1"
+              resource: limits.cpu
+        - name: RESOURCES_MEMORY_LIMIT
+          valueFrom:
+            resourceFieldRef:
+              containerName: timescaledb
+              divisor: 1Mi
+              resource: limits.memory
+        {{- if .Values.global.offline.enabled }}
+        image: {{ .Values.global.offline.registry }}/docker.io/tmaxcloudck/timescaledb-cron:{{ .Values.timescaleDB.version }}
+        {{- else }}
+        image: docker.io/tmaxcloudck/timescaledb-cron:{{ .Values.timescaleDB.version }}
+        {{- end }}
+        imagePullPolicy: IfNotPresent
+        name: tstune
+        resources:
+          limits:
+            cpu: 300m
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 256Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /var/run/postgresql
+          name: socket-directory
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      serviceAccount: hypercloud5-admin
+      serviceAccountName: hypercloud5-admin
+      terminationGracePeriodSeconds: 600
+      volumes:
+      - emptyDir: {}
+        name: socket-directory
+      - configMap:
+          defaultMode: 420
+          name: timescaledb-patroni
+        name: patroni-config
+      - configMap:
+          defaultMode: 488
+          name: timescaledb-scripts
+        name: timescaledb-scripts
+      - name: post-init
+        projected:
+          defaultMode: 488
+          sources:
+          - configMap:
+              name: custom-init-scripts
+              optional: true
+          - secret:
+              name: custom-secret-scripts
+              optional: true
+      - configMap:
+          defaultMode: 416
+          name: timescaledb-pgbouncer
+          optional: true
+        name: pgbouncer
+      - configMap:
+          defaultMode: 416
+          name: timescaledb-pgbackrest
+          optional: true
+        name: pgbackrest
+      - name: certificate
+        secret:
+          defaultMode: 416
+          optional: true
+          secretName: timescaledb-certificate
+      - name: pgbackrest-bootstrap
+        secret:
+          defaultMode: 420
+          optional: true
+          secretName: pgbackrest-bootstrap
+      {{- include "hypercloud.volumes.timeZone" . | nindent 6 }}          
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      labels:
+        app: timescaledb
+        cluster-name: timescaledb
+        purpose: data-directory
+        release: timescaledb
+      name: storage-volume
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi
+      volumeMode: Filesystem
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      labels:
+        app: timescaledb
+        cluster-name: timescaledb
+        purpose: wal-directory
+        release: timescaledb
+      name: wal-volume
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 30Gi
+      volumeMode: Filesystem
