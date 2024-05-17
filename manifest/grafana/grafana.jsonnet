@@ -278,7 +278,7 @@ local grafana_ingress = std.join("", [grafana_subdomain, ".", grafana_domain]);
           "allow_embedding = true",
           "",
           "[server]",
-          "domain = grafana-aks.tmaxcloudqa.link",
+          "domain = '" + grafana_ingress + "'",
           "http_port = 3000",
           "root_url = https://%(domain)s/api/grafana/",
           "serve_from_sub_path = true"

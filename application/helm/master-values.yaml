@@ -322,7 +322,7 @@ modules:
   ### grafana
   grafana:
     adminEmail: hc-admin@tmax.co.kr
-    enabled: false
+    enabled: true
     subdomain: grafana
     pvcSize: 10Gi
     version: "10.3.1"
