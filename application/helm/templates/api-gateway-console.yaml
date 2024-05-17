@@ -56,7 +56,7 @@ spec:
         {{- end }}
         {{- if eq .Values.global.network.disabled "true" }}
         - name: image.repository
-          value: {{ .Values.global.privateRegistry }}/docker.io/tmaxcloudck/hypercloud-console
+          value: {{ .Values.global.privateRegistry }}/docker.io/tmaxcloudck/aks-console
         - name: busybox.image.repository
           value: {{ .Values.global.privateRegistry }}/docker.io/library/busybox
         {{- end }}
