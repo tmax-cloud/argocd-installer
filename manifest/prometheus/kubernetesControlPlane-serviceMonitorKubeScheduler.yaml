@@ -14,7 +14,7 @@ spec:
     scheme: https
     tlsConfig:
       insecureSkipVerify: true
-  jobLabel: app.kubernetes.io/name
+  jobLabel: component
   namespaceSelector:
     matchNames:
     - kube-system
