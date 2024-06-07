@@ -22,7 +22,7 @@ data:
     ALTER TABLE METERING_MONTH ADD CONSTRAINT UNIQUE_METERING_MONTH UNIQUE (NAMESPACE, METERING_TIME);
     CREATE TABLE METERING_YEAR (ID VARCHAR(64) NOT NULL,NAMESPACE VARCHAR(255) NOT NULL,CPU DOUBLE PRECISION,MEMORY BIGINT,STORAGE BIGINT,GPU DOUBLE PRECISION,PUBLIC_IP INT,PRIVATE_IP INT, TRAFFIC_IN BIGINT, TRAFFIC_OUT BIGINT, METERING_TIME TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,STATUS VARCHAR(255));
     ALTER TABLE METERING_YEAR ADD CONSTRAINT UNIQUE_METERING_YEAR UNIQUE (NAMESPACE, METERING_TIME);
-    
+
     SELECT create_hypertable('metering_hour', 'metering_time', chunk_time_interval => INTERVAL '{{ .Values.timescaleDB.metering.hour.chunkTimeInterval }}', if_not_exists => TRUE);
     SELECT add_retention_policy('metering_hour', INTERVAL '{{ .Values.timescaleDB.metering.hour.retentionPolicy }}', if_not_exists => TRUE);
     SELECT create_hypertable('metering_day', 'metering_time', chunk_time_interval => INTERVAL '{{ .Values.timescaleDB.metering.day.chunkTimeInterval }}', if_not_exists => TRUE);
@@ -31,10 +31,10 @@ data:
     SELECT add_retention_policy('metering_month', INTERVAL '{{ .Values.timescaleDB.metering.month.retentionPolicy }}', if_not_exists => TRUE);
     SELECT create_hypertable('metering_year', 'metering_time', chunk_time_interval => INTERVAL '{{ .Values.timescaleDB.metering.year.chunkTimeInterval }}', if_not_exists => TRUE);
     SELECT add_retention_policy('metering_year', INTERVAL '{{ .Values.timescaleDB.metering.year.retentionPolicy }}', if_not_exists => TRUE);
-    CREATE TABLE EVENT (NAMESPACE VARCHAR(128) , KIND VARCHAR(32) NOT NULL, NAME VARCHAR(128) NOT NULL, UID VARCHAR(64) NOT NULL, APIVERSION VARCHAR(64), FIELDPATH VARCHAR(64), ACTION VARCHAR(128), REASON VARCHAR(128), NOTE VARCHAR(512), REPORTING_CONTROLLER VARCHAR(128), REPORTING_INSTANCE VARCHAR(128), HOST VARCHAR(64), COUNT INT, TYPE VARCHAR(32), FIRST_TIMESTAMP TIMESTAMP, LAST_TIMESTAMP TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);
+    CREATE TABLE EVENT (NAMESPACE VARCHAR(128) , KIND VARCHAR(32) NOT NULL, NAME VARCHAR(128) NOT NULL, UID VARCHAR(64) NOT NULL, APIVERSION VARCHAR(64), FIELDPATH VARCHAR(64), ACTION VARCHAR(128), REASON VARCHAR(128), NOTE VARCHAR(1024), REPORTING_CONTROLLER VARCHAR(128), REPORTING_INSTANCE VARCHAR(128), HOST VARCHAR(64), COUNT INT, TYPE VARCHAR(32), FIRST_TIMESTAMP TIMESTAMP, LAST_TIMESTAMP TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);
     SELECT create_hypertable('event', 'last_timestamp', chunk_time_interval => INTERVAL '{{ .Values.timescaleDB.event.chunkTimeInterval }}', if_not_exists => TRUE, migrate_data => TRUE);
     SELECT add_retention_policy('event', INTERVAL '{{ .Values.timescaleDB.event.retentionPolicy }}', if_not_exists => TRUE);
-    
+
     CREATE EXTENSION pg_cron;
     SELECT cron.schedule('* * * * *', \$\$DELETE FROM CLUSTER_MEMBER WHERE STATUS = 'pending' AND CREATEDTIME < now() - interval '1days'\$\$);
     CREATE OR REPLACE FUNCTION UPDATE_TIME() RETURNS TRIGGER AS \$\$ BEGIN NEW.updatedtime = NOW(); RETURN NEW; END; \$\$ LANGUAGE plpgsql;
