@@ -147,7 +147,7 @@ metadata:
 spec:
   ingressClassName: nginx-system
   rules:
-  - host: {{ .Values.subDomain }}.{{ .Values.domain }}
+  - host: {{ .Values.global.console.subDomain }}.{{ .Values.global.domain }}
     http:
       paths:
       - backend:
